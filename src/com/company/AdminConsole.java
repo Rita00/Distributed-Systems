@@ -20,6 +20,11 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Menu que apresenta as opções que os administradores podem realizar
+     * @param command valor da instrução a realizar
+     * @throws IOException
+     */
     static public void admin(int command) throws IOException {
         while (command != 0) {
             System.out.println("1- Registar Pessoas");
@@ -40,6 +45,11 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Lê da consola a informação pessoal de uma determinada pessoa.
+     * As pessoas serão introduzidas na base de dados no servidor RMI, por questões de segurança
+     * @throws IOException
+     */
     static public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);

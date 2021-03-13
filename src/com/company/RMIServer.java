@@ -23,33 +23,48 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Função de inserção de uma determinada pessoa na base de dados
-     * @param cargo Cargo (Estudante, Docente ou Funcionário)
-     * @param pass código de acesso para aceder a uma determinada eleição
-     * @param dep Departamento a que a pessoa pertence
+     *
+     * @param cargo     Cargo (Estudante, Docente ou Funcionário)
+     * @param pass      código de acesso para aceder a uma determinada eleição
+     * @param dep       Departamento a que a pessoa pertence
      * @param num_phone Número de telemóvel
-     * @param address Morada
-     * @param num_cc Número de cartão de cidadão
-     * @param ano_cc, @param mes_cc, @param dia_cc validade do cartão de cidadão
+     * @param address   Morada
+     * @param num_cc    Número de cartão de cidadão
+     * @param ano_cc    validade do cartão de cidadão (ano)
+     * @param mes_cc    validade do cartão de cidadão (mes)
+     * @param dia_cc    validade do cartão de cidadão (dia)
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
     public boolean insertPerson(String cargo, String pass, String dep, int num_phone, String address, int num_cc, int ano_cc, int mes_cc, int dia_cc) {
         int data = ano_cc * 10000 + mes_cc * 100 + dia_cc;
         String sql = String.format("INSERT INTO person(funcao,password,depart,phone,address,numcc,validadecc) VALUES('%s','%s','%s',%s,'%s',%s,%s)", cargo, pass, dep, num_phone, address, num_cc, data);
-        Connection conn = connectDB();
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-            conn.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return false;
-        }
-        return true;
+        return insertOnDB(sql);
+    }
+
+    /**
+     * @param anoIni    Inicio da eleição (ano)
+     * @param mesIni    Inicio da eleição (mes)
+     * @param diaIni    Inicio da eleição (dia)
+     * @param horaIni   Inicio da eleição (hora)
+     * @param minIni    Inicio da eleição (minuto)
+     * @param anoFim    Fim da eleição (ano)
+     * @param mesFim    Fim da eleição (mes)
+     * @param diaFim    Fim da eleição (dia)
+     * @param horaFim   Fim da eleição (hora)
+     * @param minFim    Fim da eleição (minuto)
+     * @param titulo    Título da eleição
+     * @param descricao Breve descrição da eleição
+     * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
+     */
+    public boolean insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao) {
+        long dataIni = anoIni * 100000000L + mesIni * 1000000L + diaIni * 10000L + horaIni * 100L + minIni, dataFim = anoFim * 100000000L + mesFim * 1000000L + diaFim * 10000L + horaFim * 10L + minFim;
+        String sql = String.format("INSERT INTO election(inidate,fimdate,title,description) VALUES(%s,%s,'%s','%s')", dataIni, dataFim, titulo, descricao);
+        return insertOnDB(sql);
     }
 
     /**
      * Conexão à base de dados
+     *
      * @return conn
      */
     static public Connection connectDB() {
@@ -63,10 +78,31 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return conn;
     }
 
+    /**
+     * @param sql Insere na base de dados na respetivas tabela
+     * @return true ou false dependendo se a inserção teve ou não sucesso
+     */
+    static public boolean insertOnDB(String sql) {
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public String saySomething() throws RemoteException {
         return "I'm alive!";
     }
 
+    /**
+     * @return true ou false caso o servidor secundário consiga enviar com sucesso ou não pings ao servidor primário
+     */
     static public boolean isPrimaryFunctional() {
         DatagramSocket aSocket = null;
         boolean ok = true;
@@ -96,6 +132,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return ok;
     }
 
+    /**
+     * Inicializa a ligação do Servidor RMI com o Servidor Multicast
+     */
     static public void initializeRMI() {
         System.out.println("Becoming Primary Server!");
         try {
@@ -109,6 +148,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    /**
+     * Inicializa a ligação do servidor primário com o servidor secundário via UDP
+     * Necessário para verificar se o servidor primária se mantém ligado, caso contrário o servidor secundário passa a ser primário
+     * Quando o servidor primário que deixou de estar funcional se reconectar irá assumir o papel de servidor secundário
+     */
     static public void initializeUDP() {
         String s;
         try (DatagramSocket aSocket = new DatagramSocket(7001)) {

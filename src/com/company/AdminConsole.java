@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class AdminConsole {
     static RMI rmiServer;
+
     public static void main(String[] args) {
         try {
             rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
@@ -48,6 +49,7 @@ public class AdminConsole {
     /**
      * Lê da consola a informação pessoal de uma determinada pessoa.
      * As pessoas serão introduzidas na base de dados no servidor RMI, por questões de segurança
+     *
      * @throws IOException
      */
     static public void register() throws IOException {
@@ -68,11 +70,8 @@ public class AdminConsole {
         System.out.println("Número do cartão de cidadão: ");
         num_cc = input.nextInt();
         System.out.println("validade do cartão de cidadão: ");
-        System.out.println("\tAno: ");
         ano_cc = input.nextInt();
-        System.out.println("\tMês: ");
         mes_cc = input.nextInt();
-        System.out.println("\tDia: ");
         dia_cc = input.nextInt();
         try {
             if (!rmiServer.insertPerson(cargo, pass, dep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
@@ -85,11 +84,41 @@ public class AdminConsole {
         }
     }
 
-    static public void createElection() {
-
+    /**
+     * Lê da consola a informação necessária para criar uma eleição
+     * As eleições serão introduzidas na base de dados no servidor RMI, por questões de segurança
+     * @throws IOException
+     */
+    static public void createElection() throws IOException {
+        int anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim;
+        String titulo, descricao;
+        Scanner input = new Scanner(System.in);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Início da Eleição: ");
+        anoIni = input.nextInt();
+        mesIni = input.nextInt();
+        diaIni = input.nextInt();
+        horaIni = input.nextInt();
+        minIni = input.nextInt();
+        System.out.println("Fim da Eleição: ");
+        anoFim = input.nextInt();
+        mesFim = input.nextInt();
+        diaFim = input.nextInt();
+        horaFim = input.nextInt();
+        minFim = input.nextInt();
+        System.out.println("Título da Eleição: ");
+        titulo = reader.readLine();
+        descricao = reader.readLine();
+        try {
+            if (!rmiServer.insertElection(anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, titulo, descricao)) {
+                System.out.println("Impossível inserir eleição :(");
+            } else {
+                System.out.println("Eleição criada com sucesso! :)");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
-
-
 }
 
 /*

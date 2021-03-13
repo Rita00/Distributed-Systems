@@ -9,12 +9,43 @@ import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static java.lang.Thread.sleep;
 
 public class RMIServer extends UnicastRemoteObject implements RMI {
     public RMIServer() throws RemoteException {
         super();
+    }
+
+    public boolean insertPerson(String cargo, String pass, String dep, int num_phone, String address, int num_cc, int ano_cc, int mes_cc, int dia_cc) {
+        int data = ano_cc * 10000 + mes_cc * 100 + dia_cc;
+        String sql = String.format("INSERT INTO person(funcao,password,depart,phone,address,numcc,validadecc) VALUES('%s','%s','%s',%s,'%s',%s,%s)", cargo, pass, dep, num_phone, address, num_cc, data);
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    static public Connection connectDB() {
+        String url = "jdbc:sqlite:Election.db";
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(url);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return conn;
     }
 
     public String saySomething() throws RemoteException {
@@ -99,4 +130,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         initializeRMI();
         initializeUDP();
     }
+
+
 }

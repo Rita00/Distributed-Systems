@@ -8,7 +8,8 @@ import java.rmi.registry.LocateRegistry;
 
 public class MulticastServer extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
-    private int PORT_RMI = 7000, PORT_MULTICAST = 7001;
+    private int PORT_RMI = 7000;
+    private int PORT_MULTICAST = 7001;
     private long SLEEP_TIME = 5000;
 
     public MulticastServer() {
@@ -41,8 +42,8 @@ public class MulticastServer extends Thread {
 
     public static void main(String[] args) {
         // Works like a client of the RMI Server
-        /*try {
-            RMI h = (RMI) LocateRegistry.getRegistry(PORT_RMI).lookup("test");
+        try {
+            RMI h = (RMI) LocateRegistry.getRegistry(7000).lookup("test");
             while (true) {
                 String message = h.saySomething();
                 System.out.println("HelloClient: " + message);
@@ -50,15 +51,15 @@ public class MulticastServer extends Thread {
         } catch (Exception e) {
             System.out.println("Exception in main: " + e);
             e.printStackTrace();
-        }*/
+        }
 
         // Works like a server of the voting terminals
-        MulticastServer server = new MulticastServer();
+        /*MulticastServer server = new MulticastServer();
         server.start();
         try {
             sleep(1000000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

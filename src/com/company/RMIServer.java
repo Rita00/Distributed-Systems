@@ -45,6 +45,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             RMIServer obj = new RMIServer();
             Registry r = LocateRegistry.createRegistry(7000);
             r.rebind("test", obj);
+            r.rebind("admin", obj);
             System.out.println("RMI Server ready!");
         } catch (RemoteException re) {
             System.out.println("Exception in Server.main: " + re);

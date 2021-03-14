@@ -11,8 +11,11 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import pt.uc.dei.student.elections.Election;
 
 import static java.lang.Thread.sleep;
 
@@ -61,7 +64,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         String sql = String.format("INSERT INTO election(inidate,fimdate,title,description) VALUES(%s,%s,'%s','%s')", dataIni, dataFim, titulo, descricao);
         return insertOnDB(sql);
     }
-
+    
+    public Election getElections() {
+        return new Election(this.selectOnDB("SELECT * FROM election"));
+    }
+    
     /**
      * Conexão à base de dados
      *
@@ -96,6 +103,26 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return true;
     }
+    /**
+     * Seleciona na base de dados
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
+    public ResultSet selectOnDB(String sql) {
+        Connection conn = connectDB();
+        ResultSet query;
+        try {
+            Statement stmt = conn.createStatement();
+            query = stmt.executeQuery(sql);
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return query;
+    }
+    
 
     public String saySomething() throws RemoteException {
         return "I'm alive!";

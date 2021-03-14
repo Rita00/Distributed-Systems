@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.rmi.registry.LocateRegistry;
 import java.util.Scanner;
 
-public class AdminConsole {
+public class AdminConsole{
 	
 	private RMI rmiServer;
 	
@@ -23,6 +23,7 @@ public class AdminConsole {
         while (command != 0) {
             System.out.println("1- Registar Pessoas");
             System.out.println("2- Criar Eleição");
+            System.out.println("3- Gerir Eleição");
             System.out.println("0- Sair");
             Scanner input = new Scanner(System.in);
             command = input.nextInt();
@@ -33,6 +34,9 @@ public class AdminConsole {
                 case 2:
                     this.createElection();
                     break;
+                case 3:
+                    this.manageElection();
+                    break;
                 default:
                     break;
             }
@@ -40,7 +44,7 @@ public class AdminConsole {
         }
     }
 
-    /**
+	/**
      * Lê da consola a informação pessoal de uma determinada pessoa.
      * As pessoas serão introduzidas na base de dados no servidor RMI, por questões de segurança
      *
@@ -116,14 +120,17 @@ public class AdminConsole {
         input.close();
     }
     
+    private void manageElection() {
+		this.rmiServer.getElection();
+		
+	}
+
     public static void main(String[] args) {
         try {
         	RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
             String message = rmiServer.saySomething();
             System.out.println("Hello Admin: " + message);
             AdminConsole console = new AdminConsole(rmiServer);
-            console.admin(-1);
-        } catch (Exception e) {
             System.out.println("Exception in Admin: " + e);
             e.printStackTrace();
         }

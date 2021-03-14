@@ -1,1 +1,1 @@
-typeSearchIndex = [{"p":"com.company","l":"AdminConsole"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.company","l":"MulticastServer"},{"p":"com.company","l":"RMI"},{"p":"com.company","l":"RMIServer"},{"p":"com.company","l":"VoteTerm"}]
+typeSearchIndex = [{"p":"pt.uc.dei.student","l":"AdminConsole"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"pt.uc.dei.student","l":"MulticastServer"},{"p":"pt.uc.dei.student","l":"RMI"},{"p":"pt.uc.dei.student","l":"RMIServer"},{"p":"pt.uc.dei.student","l":"VoteTerm"}]

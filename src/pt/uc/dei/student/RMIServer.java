@@ -67,7 +67,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      *
      * @return conn
      */
-    static public Connection connectDB() {
+    public Connection connectDB() {
         String url = "jdbc:sqlite:Election.db";
         Connection conn = null;
         try {
@@ -79,10 +79,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
-     * @param sql Insere na base de dados na respetivas tabela
+     * Insere na base de dados na respetivas tabela
+     * @param sql commando sql
      * @return true ou false dependendo se a inserção teve ou não sucesso
      */
-    static public boolean insertOnDB(String sql) {
+    public boolean insertOnDB(String sql) {
         Connection conn = connectDB();
         try {
             Statement stmt = conn.createStatement();
@@ -103,7 +104,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * @return true ou false caso o servidor secundário consiga enviar com sucesso ou não pings ao servidor primário
      */
-    static public boolean isPrimaryFunctional() {
+    public boolean isPrimaryFunctional() {
         DatagramSocket aSocket = null;
         boolean ok = true;
         try {
@@ -135,7 +136,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Inicializa a ligação do Servidor RMI com o Servidor Multicast
      */
-    static public void initializeRMI() {
+    public void initializeRMI() {
         System.out.println("Becoming Primary Server!");
         try {
             RMIServer obj = new RMIServer();
@@ -153,7 +154,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Necessário para verificar se o servidor primária se mantém ligado, caso contrário o servidor secundário passa a ser primário
      * Quando o servidor primário que deixou de estar funcional se reconectar irá assumir o papel de servidor secundário
      */
-    static public void initializeUDP() {
+    public void initializeUDP() {
         String s;
         try (DatagramSocket aSocket = new DatagramSocket(7001)) {
             System.out.println("Socket Datagram à escuta no porto 7001");
@@ -174,19 +175,20 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
+    	RMIServer rmiServer = new RMIServer();
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {
             try {
                 sleep(200);
-                if (!isPrimaryFunctional())
+                if (!rmiServer.isPrimaryFunctional())
                     numPingsFailed++;
                 else numPingsFailed = 0;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        initializeRMI();
-        initializeUDP();
+        rmiServer.initializeRMI();
+        rmiServer.initializeUDP();
     }
 }

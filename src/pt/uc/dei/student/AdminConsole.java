@@ -7,26 +7,19 @@ import java.rmi.registry.LocateRegistry;
 import java.util.Scanner;
 
 public class AdminConsole {
-    static RMI rmiServer;
-
-    public static void main(String[] args) {
-        try {
-            rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
-            String message = rmiServer.saySomething();
-            System.out.println("Hello Admin: " + message);
-            admin(-1);
-        } catch (Exception e) {
-            System.out.println("Exception in Admin: " + e);
-            e.printStackTrace();
-        }
-    }
+	
+	private RMI rmiServer;
+	
+	public AdminConsole(RMI rmiServer) {
+		this.rmiServer=rmiServer;
+	}
 
     /**
      * Menu que apresenta as opções que os administradores podem realizar
      * @param command valor da instrução a realizar
      * @throws IOException
      */
-    static public void admin(int command) throws IOException {
+    public void admin(int command) throws IOException {
         while (command != 0) {
             System.out.println("1- Registar Pessoas");
             System.out.println("2- Criar Eleição");
@@ -35,14 +28,15 @@ public class AdminConsole {
             command = input.nextInt();
             switch (command) {
                 case 1:
-                    register();
+                    this.register();
                     break;
                 case 2:
-                    createElection();
+                    this.createElection();
                     break;
                 default:
                     break;
             }
+            input.close();
         }
     }
 
@@ -52,7 +46,7 @@ public class AdminConsole {
      *
      * @throws IOException
      */
-    static public void register() throws IOException {
+    public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
         String cargo, pass, dep, address;
@@ -74,7 +68,7 @@ public class AdminConsole {
         mes_cc = input.nextInt();
         dia_cc = input.nextInt();
         try {
-            if (!rmiServer.insertPerson(cargo, pass, dep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
+            if (!this.rmiServer.insertPerson(cargo, pass, dep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");
@@ -82,6 +76,7 @@ public class AdminConsole {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        input.close();
     }
 
     /**
@@ -89,7 +84,7 @@ public class AdminConsole {
      * As eleições serão introduzidas na base de dados no servidor RMI, por questões de segurança
      * @throws IOException
      */
-    static public void createElection() throws IOException {
+    public void createElection() throws IOException {
         int anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim;
         String titulo, descricao;
         Scanner input = new Scanner(System.in);
@@ -110,12 +105,26 @@ public class AdminConsole {
         titulo = reader.readLine();
         descricao = reader.readLine();
         try {
-            if (!rmiServer.insertElection(anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, titulo, descricao)) {
+            if (!this.rmiServer.insertElection(anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, titulo, descricao)) {
                 System.out.println("Impossível inserir eleição :(");
             } else {
                 System.out.println("Eleição criada com sucesso! :)");
             }
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        input.close();
+    }
+    
+    public void main(String[] args) {
+        try {
+        	RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
+            String message = rmiServer.saySomething();
+            System.out.println("Hello Admin: " + message);
+            AdminConsole console = new AdminConsole(rmiServer);
+            console.admin(-1);
+        } catch (Exception e) {
+            System.out.println("Exception in Admin: " + e);
             e.printStackTrace();
         }
     }

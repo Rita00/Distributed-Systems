@@ -9,12 +9,17 @@ import java.net.MulticastSocket;
  * Clientes do Multicast Server (Terminais de Voto)
  */
 public class VoteTerm extends Thread {
-    private int PORT = 7001;
-    private String MULTICAST_ADDRESS = "224.3.2.1";
+    private int port;
+    private String multicastAddress;
+    
+    VoteTerm(String multicastAddress, int port){
+    	this.multicastAddress=multicastAddress;
+    	this.port=port;
+    }
 
     public void run() {
-        try (MulticastSocket socket = new MulticastSocket(PORT)) {
-            InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+        try (MulticastSocket socket = new MulticastSocket(this.port)) {
+            InetAddress group = InetAddress.getByName(this.multicastAddress);
             socket.joinGroup(group);
             while (true) {
                 byte[] buffer = new byte[256];
@@ -31,7 +36,7 @@ public class VoteTerm extends Thread {
     }
 
     public static void main(String[] args) {
-        VoteTerm client = new VoteTerm();
+        VoteTerm client = new VoteTerm("224.3.2.1",7001);
         client.start();
     }
 }

@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"com.company","l":"AdminConsole"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.company","l":"MulticastServer"},{"p":"com.company","l":"RMI"},{"p":"com.company","l":"RMIServer"},{"p":"com.company","l":"VoteTerm"}]

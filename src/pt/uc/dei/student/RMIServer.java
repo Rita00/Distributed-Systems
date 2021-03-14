@@ -1,4 +1,4 @@
-package com.company;
+package pt.uc.dei.student;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

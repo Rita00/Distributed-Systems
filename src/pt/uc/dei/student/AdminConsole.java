@@ -1,4 +1,4 @@
-package com.company;
+package pt.uc.dei.student;
 
 import java.io.BufferedReader;
 import java.io.IOException;

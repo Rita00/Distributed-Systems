@@ -1,5 +1,7 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.elections.Election;
+
 import java.rmi.*;
 
 public interface RMI extends Remote {
@@ -8,4 +10,6 @@ public interface RMI extends Remote {
     boolean insertPerson(String cargo, String pass, String dep, int num_phone, String address, int num_cc, int ano_cc, int mes_cc, int dia_cc) throws java.rmi.RemoteException, InterruptedException;
 
     boolean insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao) throws java.rmi.RemoteException, InterruptedException;
+
+    Election getElections() throws java.rmi.RemoteException, InterruptedException;
 }

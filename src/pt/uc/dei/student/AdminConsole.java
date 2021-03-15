@@ -1,5 +1,7 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.elections.Election;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,7 +13,7 @@ public class AdminConsole{
 	private RMI rmiServer;
 	
 	public AdminConsole(RMI rmiServer) {
-		this.rmiServer=rmiServer;
+	    this.rmiServer=rmiServer;
 	}
 
     /**
@@ -19,7 +21,7 @@ public class AdminConsole{
      * @param command valor da instrução a realizar
      * @throws IOException
      */
-    public void admin(int command) throws IOException {
+    public void admin(int command) throws IOException, InterruptedException {
         while (command != 0) {
             System.out.println("1- Registar Pessoas");
             System.out.println("2- Criar Eleição");
@@ -120,9 +122,8 @@ public class AdminConsole{
         input.close();
     }
     
-    private void manageElection() {
-		this.rmiServer.getElection();
-		
+    private void manageElection() throws IOException, InterruptedException {
+		Election election = this.rmiServer.getElections();
 	}
 
     public static void main(String[] args) {
@@ -131,6 +132,8 @@ public class AdminConsole{
             String message = rmiServer.saySomething();
             System.out.println("Hello Admin: " + message);
             AdminConsole console = new AdminConsole(rmiServer);
+            console.admin(-1);
+        } catch (Exception e) {
             System.out.println("Exception in Admin: " + e);
             e.printStackTrace();
         }

@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AdminConsole{
@@ -123,7 +124,28 @@ public class AdminConsole{
     }
     
     private void manageElection() throws IOException, InterruptedException {
-		Election election = this.rmiServer.getElections();
+        int command = -1;
+        while(command != 0){
+            //buscar eleiçoes à BD
+            ArrayList<Election> elections = this.rmiServer.getElections();
+            //listar eleiçoes
+            System.out.println("Remover a eleição:");
+            for (Election e:elections) {
+                System.out.println("\t"+(elections.indexOf(e)+1)+"- "+e.getTitle());
+            }
+            System.out.println("0-Voltar");
+            //esperar pelo input
+            Scanner input = new Scanner(System.in);
+            command = input.nextInt();
+            switch (command) {
+                case 0:
+                    this.admin(-1);
+                    break;
+                default:
+                    this.rmiServer.removeElection(elections.get(command-1).getTitle());
+                    break;
+            }
+        }
 	}
 
     public static void main(String[] args) {

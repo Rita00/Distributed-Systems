@@ -1,17 +1,23 @@
 package pt.uc.dei.student.elections;
 
-import java.sql.ResultSet;
-import java.util.Date;
+import java.io.Serializable;
 
-public class Election {
-	
+public class Election implements Serializable {
+
+	private long begin;
+	private long end;
 	private String title;
 	private String description;
-    private String electoralComission;
-    private Date begin;
-    private Date end;
 
-	public Election(ResultSet query) {
-		System.out.println(query.toString());
+	public Election(long begin, long end, String title, String description) {
+		this.begin=begin;
+		this.end=end;
+		this.title=title;
+		this.description=description;
 	}
+
+	public long getBegin(){return this.begin;}
+	public long getEnd(){return this.end;}
+	public String getTitle(){return this.title;}
+	public String getDescription(){return this.description;}
 }

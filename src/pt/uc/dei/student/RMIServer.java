@@ -1,5 +1,7 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.elections.Election;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -9,13 +11,8 @@ import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import pt.uc.dei.student.elections.Election;
+import java.sql.*;
+import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
@@ -41,7 +38,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public boolean insertPerson(String cargo, String pass, String dep, int num_phone, String address, int num_cc, int ano_cc, int mes_cc, int dia_cc) {
         int data = ano_cc * 10000 + mes_cc * 100 + dia_cc;
         String sql = String.format("INSERT INTO person(funcao,password,depart,phone,address,numcc,validadecc) VALUES('%s','%s','%s',%s,'%s',%s,%s)", cargo, pass, dep, num_phone, address, num_cc, data);
-        return insertOnDB(sql);
+        return updateOnDB(sql);
     }
 
     /**
@@ -62,11 +59,18 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public boolean insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao) {
         long dataIni = anoIni * 100000000L + mesIni * 1000000L + diaIni * 10000L + horaIni * 100L + minIni, dataFim = anoFim * 100000000L + mesFim * 1000000L + diaFim * 10000L + horaFim * 10L + minFim;
         String sql = String.format("INSERT INTO election(inidate,fimdate,title,description) VALUES(%s,%s,'%s','%s')", dataIni, dataFim, titulo, descricao);
-        return insertOnDB(sql);
+        return updateOnDB(sql);
     }
     
-    public Election getElections() {
-        return new Election(this.selectOnDB("SELECT * FROM election"));
+    public ArrayList<Election> getElections() {
+        return this.selectOnDB("SELECT * FROM election");
+    }
+    public void removeElection(String title) {
+        if (this.updateOnDB("DELETE FROM election WHERE title = '"+title+"'")){
+            System.out.println("Removed "+title+" from database");
+        }else{
+            System.out.println(title+" was not removed from database");
+        }
     }
     
     /**
@@ -86,11 +90,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
-     * Insere na base de dados na respetivas tabela
+     * Insere/Remove na base de dados na respetivas tabela
      * @param sql commando sql
      * @return true ou false dependendo se a inserção teve ou não sucesso
      */
-    public boolean insertOnDB(String sql) {
+    public boolean updateOnDB(String sql) {
         Connection conn = connectDB();
         try {
             Statement stmt = conn.createStatement();
@@ -108,21 +112,28 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
-    public ResultSet selectOnDB(String sql) {
+    public ArrayList<Election> selectOnDB(String sql) {
         Connection conn = connectDB();
-        ResultSet query;
+        ArrayList<Election> elections = new ArrayList();;
         try {
             Statement stmt = conn.createStatement();
-            query = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                elections.add(new Election(
+                        rs.getLong(1),
+                        rs.getLong(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                ));
+            }
             stmt.close();
             conn.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return null;
         }
-        return query;
+        return elections;
     }
-    
 
     public String saySomething() throws RemoteException {
         return "I'm alive!";

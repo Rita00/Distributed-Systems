@@ -1,5 +1,6 @@
-drop table person;
-drop table election;
+drop table if exists person;
+drop table if exists election;
+drop table if exists election_person;
 
 CREATE TABLE person
 (

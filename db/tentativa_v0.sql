@@ -5,6 +5,8 @@ CREATE TABLE election (
 	description	 VARCHAR(512),
 	begin_date	 DATE NOT NULL,
 	end_date	 DATE NOT NULL,
+	blank_votes	 BIGINT NOT NULL DEFAULT 0,
+	null_votes	 BIGINT NOT NULL DEFAULT 0,
 	department_id INTEGER NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY (department_id) REFERENCES department(id)
@@ -13,6 +15,7 @@ CREATE TABLE election (
 CREATE TABLE candidacy (
 	id		 BIGINT,
 	type	 VARCHAR(512) NOT NULL,
+	votes	 BIGINT NOT NULL DEFAULT 0,
 	election_id BIGINT NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY (election_id) REFERENCES election(id)

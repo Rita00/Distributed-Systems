@@ -43,7 +43,6 @@ public class AdminConsole {
                 default:
                     break;
             }
-            input.close();
         }
     }
 
@@ -81,7 +80,7 @@ public class AdminConsole {
         mes_cc = input.nextInt();
         dia_cc = input.nextInt();
         try {
-            if (!this.rmiServer.insertPerson(decideCargo(cargo), pass, dep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
+            if (!this.rmiServer.insertPerson(this.decideCargo(cargo), pass, dep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");
@@ -90,6 +89,13 @@ public class AdminConsole {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Função para decidir em formato String o cargo da pessoa
+     * Usado para proteção de dados
+     * @param cargo Inteiro escolhido pela pessoa para representar o seu cargoo
+     * @return String que corresponde ao seu cargo
+     */
     public String decideCargo(int cargo) {
         return switch (cargo) {
             case 1 -> "Estudante";
@@ -98,6 +104,7 @@ public class AdminConsole {
             default -> null;
         };
     }
+
     /**
      * Lê da consola a informação necessária para criar uma eleição
      * As eleições serão introduzidas na base de dados no servidor RMI, por questões de segurança

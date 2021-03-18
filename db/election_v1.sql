@@ -17,7 +17,7 @@ begin_date	 DATE NOT NULL,
 end_date	 DATE NOT NULL,
 blank_votes BIGINT NOT NULL DEFAULT 0,
 null_votes	 BIGINT NOT NULL DEFAULT 0,
-PRIMARY KEY(id),
+PRIMARY KEY(id)
 );
 
 CREATE TABLE candidacy (
@@ -45,7 +45,7 @@ FOREIGN KEY (department_id) REFERENCES department(id)
 CREATE TABLE department (
 id	 INTEGER,
 name VARCHAR(512),
-PRIMARY KEY(id),
+PRIMARY KEY(id)
 );
 
 CREATE TABLE voting_record (

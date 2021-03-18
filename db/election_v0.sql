@@ -28,3 +28,5 @@ CREATE TABLE election_person
     PRIMARY KEY (person_numcc),
     FOREIGN KEY (person_numcc) REFERENCES Person (numCC)
 );
+
+select * from person;

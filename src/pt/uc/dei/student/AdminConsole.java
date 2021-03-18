@@ -9,7 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class AdminConsole{
+public class AdminConsole {
 	
 	private RMI rmiServer;
 	
@@ -43,7 +43,6 @@ public class AdminConsole{
                 default:
                     break;
             }
-            input.close();
         }
     }
 
@@ -56,26 +55,32 @@ public class AdminConsole{
     public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
-        String cargo, pass, dep, address;
-        int num_phone, num_cc, ano_cc, mes_cc, dia_cc;
-        System.out.println("Cargo: ");
-        cargo = reader.readLine();
-        System.out.println("Password: ");
+        String pass, dep, address;
+        int cargo = 0, num_phone, num_cc, ano_cc, mes_cc, dia_cc;
+        while (cargo != 1 && cargo != 2 && cargo != 3) {
+            System.out.println("Cargo: ");
+            System.out.println("\t1 - Estudante");
+            System.out.println("\t2 - Docente");
+            System.out.println("\t3 - Funcionário");
+            System.out.print("\t");
+            cargo = input.nextInt();
+        }
+        System.out.print("Password: ");
         pass = reader.readLine();
-        System.out.println("Nome do departamento que frequenta: ");
+        System.out.print("Nome do departamento que frequenta: ");
         dep = reader.readLine();
-        System.out.println("Número de telemóvel: ");
+        System.out.print("Número de telemóvel: ");
         num_phone = input.nextInt();
-        System.out.println("Morada: ");
+        System.out.print("Morada: ");
         address = reader.readLine();
-        System.out.println("Número do cartão de cidadão: ");
+        System.out.print("Número do cartão de cidadão: ");
         num_cc = input.nextInt();
-        System.out.println("validade do cartão de cidadão: ");
+        System.out.print("validade do cartão de cidadão: ");
         ano_cc = input.nextInt();
         mes_cc = input.nextInt();
         dia_cc = input.nextInt();
         try {
-            if (!this.rmiServer.insertPerson(cargo, pass, dep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
+            if (!this.rmiServer.insertPerson(this.decideCargo(cargo), pass, dep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");
@@ -83,7 +88,21 @@ public class AdminConsole{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        input.close();
+    }
+
+    /**
+     * Função para decidir em formato String o cargo da pessoa
+     * Usado para proteção de dados
+     * @param cargo Inteiro escolhido pela pessoa para representar o seu cargoo
+     * @return String que corresponde ao seu cargo
+     */
+    public String decideCargo(int cargo) {
+        return switch (cargo) {
+            case 1 -> "Estudante";
+            case 2 -> "Docente";
+            case 3 -> "Funcionário";
+            default -> null;
+        };
     }
 
     /**
@@ -120,7 +139,6 @@ public class AdminConsole{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        input.close();
     }
     
     private void manageElection() throws IOException, InterruptedException {

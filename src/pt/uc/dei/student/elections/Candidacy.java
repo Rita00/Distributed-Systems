@@ -3,7 +3,7 @@ package pt.uc.dei.student.elections;
 import java.io.Serializable;
 
 public class Candidacy implements Serializable {
-    private int id;
+    private final int id;
     private String name;
     private String type;
 
@@ -15,4 +15,6 @@ public class Candidacy implements Serializable {
     public int getId(){return this.id;}
     public String getName(){return this.name;}
     public String getType(){return this.type;}
+    public void setName(String name){this.name=name;}
+    public void setType(String type){this.type=type;}
 }

@@ -15,6 +15,7 @@ public interface RMI extends Remote {
 
     ArrayList<Election> getElections() throws java.rmi.RemoteException, InterruptedException;
     ArrayList<Candidacy> getCandidacies(int election_id) throws java.rmi.RemoteException, InterruptedException;
-    public void removeOnDB(String table, int id) throws java.rmi.RemoteException, InterruptedException;
+    void updateElections(Election e) throws java.rmi.RemoteException, InterruptedException;
+    void removeOnDB(String table, int id) throws java.rmi.RemoteException, InterruptedException;
 
 }

@@ -70,7 +70,18 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Candidacy> getCandidacies(int election_id) {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = "+election_id);
     }
-
+    public void updateElections(Election e) {
+        if (this.updateOnDB("UPDATE election" +
+                    String.format("SET title=%s,type=%s,description=%s,begin_date=%s,end_date=%s",e.getTitle(),e.getType(),e.getDescription(),e.getBegin().toString(),e.getEnd().toString()) +
+                    String.format("WERE id=%s",e.getId())
+                )
+            )
+        {
+            System.out.println("Successfully updated election");
+        }else{
+            System.out.println("Problem updating election");
+        }
+    }
     public void removeOnDB(String table, int id) {
         if (this.updateOnDB("DELETE FROM "+table+" WHERE id = "+id)){
             System.out.println("Removed from"+table+" id #"+id);

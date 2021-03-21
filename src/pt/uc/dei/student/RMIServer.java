@@ -1,5 +1,6 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Election;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
@@ -63,13 +65,17 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
     
     public ArrayList<Election> getElections() {
-        return this.selectOnDB("SELECT * FROM election");
+        return this.selectElections("SELECT * FROM election");
     }
-    public void removeElection(String title) {
-        if (this.updateOnDB("DELETE FROM election WHERE title = '"+title+"'")){
-            System.out.println("Removed "+title+" from database");
+    public ArrayList<Candidacy> getCandidacies(int election_id) {
+        return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = "+election_id);
+    }
+
+    public void removeOnDB(String table, int id) {
+        if (this.updateOnDB("DELETE FROM "+table+" WHERE id = "+id)){
+            System.out.println("Removed from"+table+" id #"+id);
         }else{
-            System.out.println(title+" was not removed from database");
+            System.out.println("Problem removing id #"+id+" from database");
         }
     }
     
@@ -108,11 +114,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return true;
     }
     /**
-     * Seleciona na base de dados
+     * Seleciona eleições na base de dados
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
-    public ArrayList<Election> selectOnDB(String sql) {
+    public ArrayList<Election> selectElections(String sql) {
         Connection conn = connectDB();
         ArrayList<Election> elections = new ArrayList();;
         try {
@@ -120,10 +126,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 elections.add(new Election(
-                        rs.getLong(1),
-                        rs.getLong(2),
-                        rs.getString(3),
-                        rs.getString(4)
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("type"),
+                        rs.getString("description"),
+                        rs.getString("begin_date"),
+                        rs.getString("end_date")
                 ));
             }
             stmt.close();
@@ -133,6 +141,32 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             return null;
         }
         return elections;
+    }
+    /**
+     * Seleciona listas(candidaturas) na base de dados
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
+    public ArrayList<Candidacy> selectCandidacies(String sql) {
+        Connection conn = connectDB();
+        ArrayList<Candidacy> candidacies = new ArrayList();;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                candidacies.add(new Candidacy(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("type")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return candidacies;
     }
 
     public String saySomething() throws RemoteException {
@@ -213,7 +247,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public static void main(String[] args) throws RemoteException {
+    public static void main(String[] args) throws RemoteException{
     	RMIServer rmiServer = new RMIServer();
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {

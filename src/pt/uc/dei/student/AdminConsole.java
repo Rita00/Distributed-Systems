@@ -1,5 +1,6 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Election;
 
 import java.io.BufferedReader;
@@ -11,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AdminConsole {
-	
+
+	private final int RETURN = 0;
+    private final int EDIT = -1;
 	private RMI rmiServer;
 	
 	public AdminConsole(RMI rmiServer) {
@@ -148,26 +151,28 @@ public class AdminConsole {
     
     private void manageElection() {
         int command = -1;
-        while(command != 0){
+        while(command != RETURN){
             //buscar eleiçoes à BD
-            ArrayList<Election> elections = null;
+            ArrayList<Election> elections;
             try {
                 elections = this.rmiServer.getElections();
                 //listar eleiçoes
-                System.out.println("Remover a eleição:");
+                System.out.println("Ver a eleição:");
                 for (Election e: elections) {
                     System.out.println("\t"+(elections.indexOf(e)+1)+"- "+e.getTitle());
                 }
-                System.out.println("0-Voltar");
+                System.out.println("("+RETURN+")-Voltar");
                 //esperar pelo input
                 Scanner input = new Scanner(System.in);
                 command = input.nextInt();
                 switch (command) {
-                    case 0:
+                    case EDIT:
+                        break;
+                    case RETURN:
                         this.admin(-1);
                         break;
                     default:
-                        this.rmiServer.removeElection(elections.get(command-1).getTitle());
+                        this.manageCandidacy(elections.get(command - 1));
                         break;
                 }
             } catch (InterruptedException | IOException e) {
@@ -175,6 +180,34 @@ public class AdminConsole {
             }
         }
 	}
+	private void manageCandidacy(Election election){
+        int command = -1;
+        while(command != RETURN){
+            System.out.println(election.toString());
+            try {
+                ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(election.getId());
+                //listar eleiçoes
+                System.out.println("Remover lista:");
+                for (Candidacy c : candidacies) {
+                    System.out.println("\t"+(candidacies.indexOf(c)+1)+"- "+c.getName());
+                }
+                System.out.println("("+RETURN+")-Voltar");
+                //esperar pelo input
+                Scanner input = new Scanner(System.in);
+                command = input.nextInt();
+                switch (command) {
+                    case RETURN:
+                        this.manageElection();
+                        break;
+                    default:
+                        this.rmiServer.removeOnDB("candidacy",candidacies.get(command-1).getId());
+                        break;
+                }
+            } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static void main(String[] args) {
         try {

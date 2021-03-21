@@ -1,5 +1,3 @@
-drop table if exists election_person;
-
 drop table if exists election;
 drop table if exists candidacy;
 drop table if exists person;
@@ -9,22 +7,23 @@ drop table if exists election_department;
 drop table if exists candidacy_person;
 
 CREATE TABLE election (
-id		 BIGINT,
+id		 INTEGER,
 title	 VARCHAR(512) NOT NULL,
 type	 VARCHAR(512) NOT NULL,
 description VARCHAR(512),
-begin_date	 DATE NOT NULL,
-end_date	 DATE NOT NULL,
+begin_date	 VARCHAR(32) NOT NULL,
+end_date	 VARCHAR(32) NOT NULL,
 blank_votes BIGINT NOT NULL DEFAULT 0,
 null_votes	 BIGINT NOT NULL DEFAULT 0,
 PRIMARY KEY(id)
 );
 
 CREATE TABLE candidacy (
-id		 BIGINT,
+id		 INTEGER,
+name	 VARCHAR(512) NOT NULL,
 type	 VARCHAR(512) NOT NULL,
 votes	 BIGINT NOT NULL DEFAULT 0,
-election_id BIGINT NOT NULL,
+election_id INTEGER NOT NULL,
 PRIMARY KEY(id),
 FOREIGN KEY (election_id) REFERENCES election(id)
 );
@@ -61,7 +60,7 @@ CREATE TABLE voting_record (
 );
 
 CREATE TABLE election_department (
-         election_id	 BIGINT,
+         election_id	 INTEGER,
          department_id INTEGER,
          PRIMARY KEY(election_id,department_id),
          FOREIGN KEY (election_id) REFERENCES election(id),

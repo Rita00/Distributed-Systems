@@ -34,7 +34,7 @@ public class AdminConsole {
      * @param command valor da instrução a realizar
      * @throws IOException exceção de I/O
      */
-    public void admin(int command) throws IOException, InterruptedException {
+    public void admin(int command) throws IOException {
         try {
             while (command != 0) {
                 System.out.println("(1)- Registar Pessoas");
@@ -117,7 +117,7 @@ public class AdminConsole {
         try {
             departments = this.rmiServer.getDepartments();
             for (Department dep : departments) {
-                System.out.println(String.format("\t(%d)- %s", dep.getId(), dep.getName()));
+                System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
             }
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
@@ -222,7 +222,7 @@ public class AdminConsole {
                 if (elections.size() > 0) {
                     System.out.println("Ver a eleição:");
                     for (Election e : elections) {
-                        System.out.println(String.format("\t(%s)- %s", elections.indexOf(e) + 1, e.getTitle()));
+                        System.out.printf("\t(%s)- %s%n", elections.indexOf(e) + 1, e.getTitle());
                     }
                 } else {
                     System.out.println("Não existem eleições\n");
@@ -266,7 +266,7 @@ public class AdminConsole {
                 if(candidacies.size()>0){
                     System.out.println("Ver lista:");
                     for (Candidacy c : candidacies) {
-                        System.out.println(String.format("\t(%s)- %s",candidacies.indexOf(c)+1,c.getName()));
+                        System.out.printf("\t(%s)- %s%n",candidacies.indexOf(c)+1,c.getName());
                     }
                 }else{
                     System.out.println("A eleição não tem listas\n");
@@ -376,7 +376,7 @@ public class AdminConsole {
                 if(people.size()>0){
                     System.out.println("Remover a pessoa com o CC:");
                     for (Person p : people) {
-                        System.out.println(String.format("\t(%s)- %s",people.indexOf(p)+1,p.getCc_number()));
+                        System.out.printf("\t(%s)- %s%n",people.indexOf(p)+1,p.getCc_number());
                     }
                 }else{
                     System.out.println("A lista não tem pessoas\n");

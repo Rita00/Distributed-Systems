@@ -41,7 +41,7 @@ public class Election implements Serializable {
                 String.format("%s\n", this.description) +
                 String.format("Inicio - %s às %s\n", this.begin.toLocalDate().toString(), this.begin.toLocalTime().toString()) +
                 String.format("Fim - %s às %s\n", this.end.toLocalDate().toString(), this.end.toLocalTime().toString()) +
-                "=============================\n";
+                "-----------------------------\n";
     }
 
     public int getId() {

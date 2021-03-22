@@ -37,6 +37,7 @@ public class AdminConsole {
     public void admin(int command) throws IOException {
         try {
             while (command != 0) {
+                System.out.println("===========CONSOLA ADMINISTRADORA===========");
                 System.out.println("(1)- Registar Pessoas");
                 System.out.println("(2)- Criar Eleição");
                 System.out.println("(3)- Gerir Eleição");
@@ -218,11 +219,12 @@ public class AdminConsole {
                 /*
                  * LISTAR ELEICOES
                  */
+                System.out.println("===========GERIR ELEICOES===========");
                 ArrayList<Election> elections = this.rmiServer.getElections();
                 if (elections.size() > 0) {
                     System.out.println("Ver a eleição:");
                     for (Election e : elections) {
-                        System.out.printf("\t(%s)- %s%n", elections.indexOf(e) + 1, e.getTitle());
+                        System.out.printf("\t(%s)- %s\n", elections.indexOf(e) + 1, e.getTitle());
                     }
                 } else {
                     System.out.println("Não existem eleições\n");

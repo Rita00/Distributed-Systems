@@ -86,8 +86,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return updateOnDB(sql);
     }
 
+    public boolean insertCandidacyIntoElection(String name, String type, int election_id) {
+        return this.updateOnDB(String.format("INSERT INTO candidacy(id,name,type,election_id) VALUES (NULL,'%s','%s',%s);",name,type,election_id));
+    }
+
     public boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) {
-        return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s)",candidacy_id,cc_number));
+        return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);",candidacy_id,cc_number));
     }
 
     public ArrayList<Election> getElections() {

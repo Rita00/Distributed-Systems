@@ -13,14 +13,17 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class AdminConsole {
 
 
+    private final String OPTION_STRING = ">>> ";
     private final int RETURN = 0;
     private final int EDIT = -1;
-    private final int ADD = -1;
-    private final int REMOVE = -2;
+    private final int REMOVE = -1;
+    private final int ADD = -2;
+
 
 	private RMI rmiServer;
 	
@@ -37,12 +40,13 @@ public class AdminConsole {
     public void admin(int command) throws IOException {
         try {
             while (command != 0) {
-                System.out.println("===========CONSOLA ADMINISTRADORA===========");
-                System.out.println("(1)- Registar Pessoas");
-                System.out.println("(2)- Criar Eleição");
-                System.out.println("(3)- Gerir Eleição");
+                System.out.println("========CONSOLA ADMINISTRADORA========");
+                System.out.println("\t(1)- Registar Pessoas");
+                System.out.println("\t(2)- Criar Eleição");
+                System.out.println("\t(3)- Gerir Eleição");
                 System.out.println("(0)- Sair");
                 Scanner input = new Scanner(System.in);
+                System.out.print(OPTION_STRING);
                 command = input.nextInt();
                 switch (command) {
                     case 1:
@@ -212,6 +216,13 @@ public class AdminConsole {
         }
     }
 
+    private void addCandidacy(Election election) throws RemoteException, InterruptedException {
+        Scanner input = new Scanner(System.in);
+        System.out.println("========ADICIONAR LISTA=======");
+        System.out.print("Nome: ");
+        this.rmiServer.insertCandidacyIntoElection(input.nextLine(), election.getType(), election.getId());
+    }
+
     private void listElections() {
         int command = -1;
         while(command != RETURN){
@@ -219,7 +230,7 @@ public class AdminConsole {
                 /*
                  * LISTAR ELEICOES
                  */
-                System.out.println("===========GERIR ELEICOES===========");
+                System.out.println("==========GERIR ELEICOES==========");
                 ArrayList<Election> elections = this.rmiServer.getElections();
                 if (elections.size() > 0) {
                     System.out.println("Ver a eleição:");
@@ -229,23 +240,20 @@ public class AdminConsole {
                 } else {
                     System.out.println("Não existem eleições\n");
                 }
-                System.out.println("(" + RETURN + ")-Voltar");
+                System.out.println("(" + RETURN + ")- Voltar");
                 /*
                  * ESPERAR PELA ESCOLHA DO UTILIZADOR
                  */
                 Scanner input = new Scanner(System.in);
+                System.out.print(OPTION_STRING);
                 command = input.nextInt();
-                switch (command) {
-                    case RETURN:
-                        break;
-                    default:
-                        if (0 < command && command <= elections.size()) {
-                            this.manageElection(elections.get(command - 1));
-                        }else{
-                            //volta para este menu caso o numero do comando esteja errado
-                            this.listElections();
-                        }
-                        break;
+                if (command != RETURN) {
+                    if (0 < command && command <= elections.size()) {
+                        this.manageElection(elections.get(command - 1));
+                    } else {
+                        //volta para este menu caso o numero do comando esteja errado
+                        this.listElections();
+                    }
                 }
             }catch (InputMismatchException ime) {
                 //volta para este menu caso o input esteja errado
@@ -273,16 +281,21 @@ public class AdminConsole {
                 }else{
                     System.out.println("A eleição não tem listas\n");
                 }
-                System.out.println("("+EDIT+")-Editar");
-                System.out.println("("+RETURN+")-Voltar");
+                System.out.println("("+EDIT+")- Editar");
+                System.out.println("("+ADD+")- Adicionar lista");
+                System.out.println("("+RETURN+")- Voltar");
                 /*
                  * ESPERAR PELA ESCOLHA DO UTILIZADOR
                  */
                 Scanner input = new Scanner(System.in);
+                System.out.print(OPTION_STRING);
                 command = input.nextInt();
                 switch (command) {
                     case EDIT:
                         this.editElection(election);
+                        break;
+                    case ADD:
+                        this.addCandidacy(election);
                         break;
                     case RETURN:
                         break;
@@ -315,9 +328,10 @@ public class AdminConsole {
             System.out.println("\t(3)- Descricao");
             System.out.println("\t(4)- Data Inicio");
             System.out.println("\t(5)- Data Fim");
-            System.out.println("(" + RETURN + ")-Voltar");
+            System.out.println("(" + RETURN + ")- Voltar");
             //esperar pelo input
             Scanner input = new Scanner(System.in);
+            System.out.print(OPTION_STRING);
             command = input.nextInt();
             switch (command) {
                 case RETURN:
@@ -383,11 +397,12 @@ public class AdminConsole {
                 }else{
                     System.out.println("A lista não tem pessoas\n");
                 }
-                System.out.println("("+ADD+")-Adicionar pessoa");
-                System.out.println("("+REMOVE+")-Remover lista");
-                System.out.println("("+RETURN+")-Voltar");
+                System.out.println("("+REMOVE+")- Remover lista");
+                System.out.println("("+ADD+")- Adicionar pessoa");
+                System.out.println("("+RETURN+")- Voltar");
                 //esperar pelo input
                 Scanner input = new Scanner(System.in);
+                System.out.print(OPTION_STRING);
                 command = input.nextInt();
                 switch (command) {
                     case ADD:

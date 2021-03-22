@@ -17,10 +17,10 @@ public interface RMI extends Remote {
 
     boolean insertElectionDepartment(int id_election, int id_dep) throws java.rmi.RemoteException, InterruptedException;;
 
+    boolean insertCandidacyIntoElection(String name, String type, int election_id) throws java.rmi.RemoteException, InterruptedException;
     boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Election> getElections() throws java.rmi.RemoteException, InterruptedException;
-
     ArrayList<Candidacy> getCandidacies(int election_id) throws java.rmi.RemoteException, InterruptedException;
     ArrayList<Person> getPeople(int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
 

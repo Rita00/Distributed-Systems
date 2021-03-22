@@ -14,9 +14,9 @@ public class Candidacy implements Serializable {
     }
 
     public String toString() {
-        return "===========LISTA===========\n" +
+        return  "===========LISTA===========\n" +
                 String.format("%s\t(%s)\n", this.name, this.type) +
-                "--------------------------\n";
+                "---------------------------\n";
     }
 
     public int getId() {

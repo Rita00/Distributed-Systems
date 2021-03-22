@@ -1,6 +1,7 @@
 package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.Candidacy;
+import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 
 import java.io.IOException;
@@ -63,38 +64,39 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         String sql = String.format("INSERT INTO election(title,type,description,begin_date,end_data) VALUES(%s,%s,'%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
         return updateOnDB(sql);
     }
-    
+
     public ArrayList<Election> getElections() {
         return this.selectElections("SELECT * FROM election");
     }
+
     public ArrayList<Candidacy> getCandidacies(int election_id) {
-        return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = "+election_id);
+        return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = " + election_id);
     }
+
     public void updateElections(Election e) {
         if (this.updateOnDB("UPDATE election" +
-                    String.format("SET title=%s,type=%s,description=%s,begin_date=%s,end_date=%s",e.getTitle(),e.getType(),e.getDescription(),e.getBegin().toString(),e.getEnd().toString()) +
-                    String.format("WERE id=%s",e.getId())
-                )
-            )
-        {
+                String.format("SET title=%s,type=%s,description=%s,begin_date=%s,end_date=%s", e.getTitle(), e.getType(), e.getDescription(), e.getBegin().toString(), e.getEnd().toString()) +
+                String.format("WERE id=%s", e.getId())
+        )
+        ) {
             System.out.println("Successfully updated election");
-        }else{
+        } else {
             System.out.println("Problem updating election");
         }
     }
 
     public void removeOnDB(String table, int id) {
-        if (this.updateOnDB("DELETE FROM "+table+" WHERE id = "+id)){
-            System.out.println("Removed from"+table+" id #"+id);
-        }else{
-            System.out.println("Problem removing id #"+id+" from database");
+        if (this.updateOnDB("DELETE FROM " + table + " WHERE id = " + id)) {
+            System.out.println("Removed from" + table + " id #" + id);
+        } else {
+            System.out.println("Problem removing id #" + id + " from database");
         }
     }
 
-    public void returnListDepart() {
-
+    public ArrayList<Department> getDepartments() {
+        return this.selectDepartments("SELECT * FROM department");
     }
-    
+
     /**
      * Conexão à base de dados
      *
@@ -113,6 +115,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Insere/Remove na base de dados na respetivas tabela
+     *
      * @param sql commando sql
      * @return true ou false dependendo se a inserção teve ou não sucesso
      */
@@ -129,14 +132,17 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return true;
     }
+
     /**
      * Seleciona eleições na base de dados
+     *
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
     public ArrayList<Election> selectElections(String sql) {
         Connection conn = connectDB();
-        ArrayList<Election> elections = new ArrayList();;
+        ArrayList<Election> elections = new ArrayList();
+        ;
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -158,14 +164,16 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return elections;
     }
+
     /**
      * Seleciona listas(candidaturas) na base de dados
+     *
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
     public ArrayList<Candidacy> selectCandidacies(String sql) {
         Connection conn = connectDB();
-        ArrayList<Candidacy> candidacies = new ArrayList();;
+        ArrayList<Candidacy> candidacies = new ArrayList();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -183,6 +191,27 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             return null;
         }
         return candidacies;
+    }
+
+    public ArrayList<Department> selectDepartments(String sql) {
+        Connection conn = connectDB();
+        ArrayList<Department> departments = new ArrayList();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                departments.add(new Department(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return departments;
     }
 
     public String saySomething() throws RemoteException {
@@ -263,8 +292,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public static void main(String[] args) throws RemoteException{
-    	RMIServer rmiServer = new RMIServer();
+    public static void main(String[] args) throws RemoteException {
+        RMIServer rmiServer = new RMIServer();
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {
             try {

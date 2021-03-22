@@ -10,10 +10,6 @@ import java.util.Scanner;
 
 public class Election implements Serializable {
 
-    public enum types {STUDENT, TEACHER, FUNCTIONARY}
-
-    ;
-
     private final int id;
     private String title;
     private String type;
@@ -29,6 +25,18 @@ public class Election implements Serializable {
         this.begin = LocalDateTime.parse(begin, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
+
+	private LocalDateTime parseTime(String date, String time) {
+		LocalDateTime dateTime;
+		try {
+			LocalDate d = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			LocalTime t = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm:ss"));
+			dateTime = LocalDateTime.of(d, t);
+		} catch (DateTimeParseException e) {
+			return null;
+		}
+		return dateTime;
+	}
 
     public String toString() {
         return "===========ELEICAO===========\n" +
@@ -86,24 +94,20 @@ public class Election implements Serializable {
     }
 
     public boolean setBegin(String date, String time) {
-        try {
-            LocalDate d = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalTime t = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm:ss"));
-            this.begin = LocalDateTime.of(d, t);
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-        return true;
-    }
+		LocalDateTime dateTime = parseTime(date, time);
+		if (dateTime!=null){
+			this.begin = dateTime;
+			return true;
+		}
+		return false;
+	}
 
-    public boolean setEnd(String date, String time) {
-        try {
-            LocalDate d = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalTime t = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm:ss"));
-            this.begin = LocalDateTime.of(d, t);
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-        return true;
-    }
+	public boolean setEnd(String date, String time) {
+		LocalDateTime dateTime = parseTime(date, time);
+		if (dateTime!=null){
+			this.end = dateTime;
+			return true;
+		}
+		return false;
+	}
 }

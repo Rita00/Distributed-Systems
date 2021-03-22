@@ -2,6 +2,7 @@ package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Election;
+import pt.uc.dei.student.elections.Person;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -63,12 +64,27 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         String sql = String.format("INSERT INTO election(title,type,description,begin_date,end_data) VALUES(%s,%s,'%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
         return updateOnDB(sql);
     }
-    
+
+    public boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) {
+        return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s)",candidacy_id,cc_number));
+    }
+
     public ArrayList<Election> getElections() {
         return this.selectElections("SELECT * FROM election");
     }
     public ArrayList<Candidacy> getCandidacies(int election_id) {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = "+election_id);
+    }
+    public ArrayList<Person> getPeople(int candidacy_id) {
+        return this.selectPeople(
+                "SELECT *\n" +
+                    "FROM person\n" +
+                    "WHERE cc_number IN (\n" +
+                    "    SELECT person_cc_number\n" +
+                    "    FROM candidacy_person\n" +
+                    "    WHERE candidacy_id = "+candidacy_id+"\n" +
+                    "); "
+        );
     }
     public void updateElections(Election e) {
         if (this.updateOnDB("UPDATE election" +
@@ -83,8 +99,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public void removeOnDB(String table, int id) {
-        if (this.updateOnDB("DELETE FROM "+table+" WHERE id = "+id)){
+    public void removeOnDB(String table,String idName ,int id) {
+        if (this.updateOnDB("DELETE FROM "+table+" WHERE "+idName+" = "+id)){
             System.out.println("Removed from"+table+" id #"+id);
         }else{
             System.out.println("Problem removing id #"+id+" from database");
@@ -183,6 +199,37 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             return null;
         }
         return candidacies;
+    }
+
+    /**
+     * Seleciona listas(candidaturas) na base de dados
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
+    public ArrayList<Person> selectPeople(String sql) {
+        Connection conn = connectDB();
+        ArrayList<Person> people = new ArrayList();;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                people.add(new Person(
+                        rs.getString("address"),
+                        rs.getInt("cc_number"),
+                        rs.getInt("cc_validity"),
+                        rs.getInt("department_id"),
+                        rs.getString("job"),
+                        rs.getString("password"),
+                        rs.getInt("phone")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return people;
     }
 
     public String saySomething() throws RemoteException {

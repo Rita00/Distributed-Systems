@@ -13,14 +13,18 @@ public class Candidacy implements Serializable {
         this.type = type;
     }
 
+    public String toString() {
+        return "===========LISTA===========\n" +
+                String.format("%s\t(%s)\n", this.name, this.type) +
+                "=============================\n";
+    }
+
     public int getId() {
         return this.id;
     }
-
     public String getName() {
         return this.name;
     }
-
     public String getType() {
         return this.type;
     }
@@ -28,7 +32,6 @@ public class Candidacy implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
     public void setType(String type) {
         this.type = type;
     }

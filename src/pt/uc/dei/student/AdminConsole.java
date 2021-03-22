@@ -1,6 +1,7 @@
 package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.Candidacy;
+import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 
@@ -29,6 +30,7 @@ public class AdminConsole {
 
     /**
      * Menu que apresenta as opções que os administradores podem realizar
+     *
      * @param command valor da instrução a realizar
      * @throws IOException exceção de I/O
      */
@@ -62,7 +64,7 @@ public class AdminConsole {
 
     }
 
-	/**
+    /**
      * Lê da consola a informação pessoal de uma determinada pessoa.
      * As pessoas serão introduzidas na base de dados no servidor RMI, por questões de segurança
      *
@@ -72,7 +74,7 @@ public class AdminConsole {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
         String pass, address;
-        int cargo = 0, num_phone, num_cc, ano_cc, mes_cc, dia_cc, dep;
+        int cargo = 0, ndep = 0, num_phone, num_cc, ano_cc, mes_cc, dia_cc;
         while (cargo != 1 && cargo != 2 && cargo != 3) {
             System.out.println("Cargo: ");
             System.out.println("\t1 - Estudante");
@@ -83,25 +85,41 @@ public class AdminConsole {
         }
         System.out.print("Password: ");
         pass = reader.readLine();
-        System.out.print("Nome do departamento que frequenta: ");
-        dep = input.nextInt();
+        while (!(ndep >= 1 && ndep <= 11)) {
+            System.out.println("Departamento que frequenta: ");
+            this.listDepart();
+            System.out.print("\t");
+            ndep = input.nextInt();
+        }
         System.out.print("Número de telemóvel: ");
         num_phone = input.nextInt();
         System.out.print("Morada: ");
         address = reader.readLine();
         System.out.print("Número do cartão de cidadão: ");
         num_cc = input.nextInt();
-        System.out.print("validade do cartão de cidadão: ");
+        System.out.print("Validade do cartão de cidadão: ");
         ano_cc = input.nextInt();
         mes_cc = input.nextInt();
         dia_cc = input.nextInt();
         try {
-            if (!this.rmiServer.insertPerson(this.decideCargo(cargo), pass, dep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
+            if (!this.rmiServer.insertPerson(this.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");
             }
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void listDepart() {
+        ArrayList<Department> departments;
+        try {
+            departments = this.rmiServer.getDepartments();
+            for (Department dep : departments) {
+                System.out.println(String.format("\t(%d)- %s", dep.getId(), dep.getName()));
+            }
+        } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -128,10 +146,11 @@ public class AdminConsole {
     /**
      * Lê da consola a informação necessária para criar uma eleição
      * As eleições serão introduzidas na base de dados no servidor RMI, por questões de segurança
+     *
      * @throws IOException exceção de I/O
      */
     public void createElection() throws IOException {
-        int anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, type_ele = 0;
+        int anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, type_ele = 0, restr = -1, ndep = -1;
         String titulo, descricao;
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -147,9 +166,25 @@ public class AdminConsole {
         diaFim = input.nextInt();
         horaFim = input.nextInt();
         minFim = input.nextInt();
-        System.out.println("Título da Eleição: ");
+        System.out.print("Título da Eleição: ");
         titulo = reader.readLine();
+        System.out.print("Breve descrição: ");
         descricao = reader.readLine();
+        while (restr != 1 && restr != 2) {
+            System.out.println("Restringir Eleição?");
+            System.out.println("\t(1)- Sim");
+            System.out.println("\t(2)- Não");
+            System.out.print("\t");
+            restr = input.nextInt();
+        }
+        if (restr == 1) {
+            while (!(ndep >= 1 && ndep <= 11)) {
+                System.out.println("\tDepartamento: ");
+                listDepart();
+                System.out.print("\t");
+                ndep = input.nextInt();
+            }
+        }
         while (type_ele != 1 && type_ele != 2 && type_ele != 3) {
             System.out.println("Tipo de eleição: ");
             System.out.println("\t1 - Estudante");
@@ -159,16 +194,23 @@ public class AdminConsole {
             type_ele = input.nextInt();
         }
         try {
-            if (!this.rmiServer.insertElection(anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, titulo, descricao, this.decideCargo(type_ele))) {
+            int id = this.rmiServer.insertElection(anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, titulo, descricao, this.decideCargo(type_ele));
+            if (id == -1) {
                 System.out.println("Impossível inserir eleição :(");
             } else {
                 System.out.println("Eleição criada com sucesso! :)");
+                try {
+                    this.rmiServer.insertElectionDepartment(id, ndep);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-    
+
     private void listElections() {
         int command = -1;
         while(command != RETURN){
@@ -210,8 +252,9 @@ public class AdminConsole {
                 e.printStackTrace();
             }
         }
-	}
-	private void manageElection(Election election){
+    }
+
+    private void manageElection(Election election) {
         int command = -1;
         while(command != RETURN){
             try {
@@ -261,7 +304,7 @@ public class AdminConsole {
 
     private void editElection(Election election) throws RemoteException, InterruptedException {
         int command = -1;
-        while(command != RETURN){
+        while (command != RETURN) {
             System.out.println(election.toString());
             //opcoes
             System.out.println("Editar:");
@@ -270,7 +313,7 @@ public class AdminConsole {
             System.out.println("\t(3)- Descricao");
             System.out.println("\t(4)- Data Inicio");
             System.out.println("\t(5)- Data Fim");
-            System.out.println("("+RETURN+")-Voltar");
+            System.out.println("(" + RETURN + ")-Voltar");
             //esperar pelo input
             Scanner input = new Scanner(System.in);
             command = input.nextInt();
@@ -377,7 +420,7 @@ public class AdminConsole {
 
     public static void main(String[] args) {
         try {
-        	RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
+            RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
             String message = rmiServer.saySomething();
             System.out.println("Hello Admin: " + message);
             AdminConsole console = new AdminConsole(rmiServer);

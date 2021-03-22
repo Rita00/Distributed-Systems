@@ -3,6 +3,7 @@ package pt.uc.dei.student;
 import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
+import pt.uc.dei.student.elections.Person;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,17 +11,22 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class AdminConsole {
 
+
     private final int RETURN = 0;
     private final int EDIT = -1;
-    private RMI rmiServer;
+    private final int ADD = -1;
+    private final int REMOVE = -2;
 
-    public AdminConsole(RMI rmiServer) {
-        this.rmiServer = rmiServer;
-    }
+	private RMI rmiServer;
+	
+	public AdminConsole(RMI rmiServer) {
+	    this.rmiServer=rmiServer;
+	}
 
     /**
      * Menu que apresenta as opções que os administradores podem realizar
@@ -29,27 +35,33 @@ public class AdminConsole {
      * @throws IOException exceção de I/O
      */
     public void admin(int command) throws IOException, InterruptedException {
-        while (command != 0) {
-            System.out.println("(1)- Registar Pessoas");
-            System.out.println("(2)- Criar Eleição");
-            System.out.println("(3)- Gerir Eleição");
-            System.out.println("(0)- Sair");
-            Scanner input = new Scanner(System.in);
-            command = input.nextInt();
-            switch (command) {
-                case 1:
-                    this.register();
-                    break;
-                case 2:
-                    this.createElection();
-                    break;
-                case 3:
-                    this.listElections();
-                    break;
-                default:
-                    break;
+        try {
+            while (command != 0) {
+                System.out.println("(1)- Registar Pessoas");
+                System.out.println("(2)- Criar Eleição");
+                System.out.println("(3)- Gerir Eleição");
+                System.out.println("(0)- Sair");
+                Scanner input = new Scanner(System.in);
+                command = input.nextInt();
+                switch (command) {
+                    case 1:
+                        this.register();
+                        break;
+                    case 2:
+                        this.createElection();
+                        break;
+                    case 3:
+                        this.listElections();
+                        break;
+                    default:
+                        break;
+                }
             }
+        } catch (InputMismatchException ime) {
+            //volta para este menu caso o input esteja errado
+            this.admin(-1);
         }
+
     }
 
     /**
@@ -115,8 +127,7 @@ public class AdminConsole {
     /**
      * Função para decidir em formato String o cargo da pessoa
      * Usado para proteção de dados
-     *
-     * @param cargo Inteiro escolhido pela pessoa para representar o seu cargoo
+     * @param cargo Inteiro escolhido pela pessoa para representar o seu cargo
      * @return String que corresponde ao seu cargo
      */
     public String decideCargo(int cargo) {
@@ -202,28 +213,41 @@ public class AdminConsole {
 
     private void listElections() {
         int command = -1;
-        while (command != RETURN) {
-            //buscar eleiçoes à BD
-            ArrayList<Election> elections;
+        while(command != RETURN){
             try {
-                elections = this.rmiServer.getElections();
-                //listar eleiçoes
-                System.out.println("Ver a eleição:");
-                for (Election e : elections) {
-                    System.out.println(String.format("\t(%s)- %s", elections.indexOf(e) + 1, e.getTitle()));
+                /*
+                 * LISTAR ELEICOES
+                 */
+                ArrayList<Election> elections = this.rmiServer.getElections();
+                if (elections.size() > 0) {
+                    System.out.println("Ver a eleição:");
+                    for (Election e : elections) {
+                        System.out.println(String.format("\t(%s)- %s", elections.indexOf(e) + 1, e.getTitle()));
+                    }
+                } else {
+                    System.out.println("Não existem eleições\n");
                 }
                 System.out.println("(" + RETURN + ")-Voltar");
-                //esperar pelo input
+                /*
+                 * ESPERAR PELA ESCOLHA DO UTILIZADOR
+                 */
                 Scanner input = new Scanner(System.in);
                 command = input.nextInt();
                 switch (command) {
                     case RETURN:
-                        this.admin(-1);
                         break;
                     default:
-                        this.manageElection(elections.get(command - 1));
+                        if (0 < command && command <= elections.size()) {
+                            this.manageElection(elections.get(command - 1));
+                        }else{
+                            //volta para este menu caso o numero do comando esteja errado
+                            this.listElections();
+                        }
                         break;
                 }
+            }catch (InputMismatchException ime) {
+                //volta para este menu caso o input esteja errado
+                this.listElections();
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
@@ -232,18 +256,26 @@ public class AdminConsole {
 
     private void manageElection(Election election) {
         int command = -1;
-        while (command != RETURN) {
-            System.out.println(election.toString());
+        while(command != RETURN){
             try {
+                /*
+                 * LISTAR LISTAS CANDIDATAS
+                 */
+                System.out.println(election.toString());
                 ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(election.getId());
-                //listar eleiçoes
-                System.out.println("Remover lista:");
-                for (Candidacy c : candidacies) {
-                    System.out.println(String.format("\t(%s)- %s", candidacies.indexOf(c) + 1, c.getName()));
+                if(candidacies.size()>0){
+                    System.out.println("Ver lista:");
+                    for (Candidacy c : candidacies) {
+                        System.out.println(String.format("\t(%s)- %s",candidacies.indexOf(c)+1,c.getName()));
+                    }
+                }else{
+                    System.out.println("A eleição não tem listas\n");
                 }
-                System.out.println("(" + EDIT + ")-Editar");
-                System.out.println("(" + RETURN + ")-Voltar");
-                //esperar pelo input
+                System.out.println("("+EDIT+")-Editar");
+                System.out.println("("+RETURN+")-Voltar");
+                /*
+                 * ESPERAR PELA ESCOLHA DO UTILIZADOR
+                 */
                 Scanner input = new Scanner(System.in);
                 command = input.nextInt();
                 switch (command) {
@@ -251,12 +283,19 @@ public class AdminConsole {
                         this.editElection(election);
                         break;
                     case RETURN:
-                        this.listElections();
                         break;
                     default:
-                        this.rmiServer.removeOnDB("candidacy", candidacies.get(command - 1).getId());
+                        if (0<command && command<=candidacies.size()) {
+                            this.manageCandidacy(candidacies.get(command - 1));
+                        }else{
+                            //volta para este menu caso o numero do comando esteja errado
+                            this.manageElection(election);
+                        }
                         break;
                 }
+            } catch (InputMismatchException ime) {
+                //volta para este menu caso os input esteja errado
+                this.manageElection(election);
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
@@ -280,14 +319,16 @@ public class AdminConsole {
             command = input.nextInt();
             switch (command) {
                 case RETURN:
+                    //VAZIO PARA VOLTAR
                     return;
                 case 1:
                     System.out.println("Editar titulo:");
                     election.setTitle(input.next());
+                    this.rmiServer.updateElections(election);
                     break;
                 case 2:
-                    int type = -1;
-                    while (type > Election.types.values().length || 0 > type) {
+                    int type=-1;
+                    while(type>3 || 0>type){
                         System.out.println("Editar tipo de eleição:");
                         System.out.println("\t(1)- Estudante");
                         System.out.println("\t(2)- Docente");
@@ -300,26 +341,80 @@ public class AdminConsole {
                             election.setType(type);
                         }
                     }
-                    election.setType(type - 1);
+                    election.setType(type-1);
+                    this.rmiServer.updateElections(election);
                     break;
                 case 3:
                     System.out.println("Editar descricao:");
                     election.setDescription(input.next());
+                    this.rmiServer.updateElections(election);
                     break;
                 case 4:
                     System.out.println("Editar data de inicio (YYYY-MM-DD HH:mm:SS):");
-                    if (!election.setBegin(input.next(), input.next())) {
-                        System.out.println("Data invalida");
-                    }
+                    while(!election.setBegin(input.next(),input.next())) System.out.println("Data invalida - formato (YYYY-MM-DD HH:mm:SS)");
+                    this.rmiServer.updateElections(election);
                     break;
                 case 5:
                     System.out.println("Editar data de fim (YYYY-MM-DD HH:mm:SS):");
-                    if (!election.setEnd(input.next(), input.next())) {
-                        System.out.println("Data invalida");
-                    }
+                    while(!election.setEnd(input.next(),input.next())) System.out.println("Data invalida - formato (YYYY-MM-DD HH:mm:SS)");
+                    this.rmiServer.updateElections(election);
+                    break;
+                default:
+                    //volta para este menu caso esteja algo errado
+                    this.editElection(election);
                     break;
             }
-            this.rmiServer.updateElections(election);
+        }
+    }
+    private void manageCandidacy(Candidacy candidacy){
+        int command = -1;
+        while(command != RETURN){
+            System.out.println(candidacy.toString());
+            try {
+                ArrayList<Person> people = this.rmiServer.getPeople(candidacy.getId());
+                //listar pessoas
+                if(people.size()>0){
+                    System.out.println("Remover a pessoa com o CC:");
+                    for (Person p : people) {
+                        System.out.println(String.format("\t(%s)- %s",people.indexOf(p)+1,p.getCc_number()));
+                    }
+                }else{
+                    System.out.println("A lista não tem pessoas\n");
+                }
+                System.out.println("("+ADD+")-Adicionar pessoa");
+                System.out.println("("+REMOVE+")-Remover lista");
+                System.out.println("("+RETURN+")-Voltar");
+                //esperar pelo input
+                Scanner input = new Scanner(System.in);
+                command = input.nextInt();
+                switch (command) {
+                    case ADD:
+                        System.out.println("Numero do Cartao de Cidadao da pessoa:");
+                        this.rmiServer.insertPersonIntoCandidacy(candidacy.getId(),input.nextInt());
+                        break;
+                    case REMOVE:
+                        this.rmiServer.removeOnDB("candidacy","id", candidacy.getId());
+                        this.rmiServer.removeOnDB("candidacy_person", "candidacy_id",candidacy.getId());
+                        command=RETURN;//para voltar ao menu das eleicoes
+                        break;
+                    case RETURN:
+                        //VAZIO PARA VOLTAR
+                        break;
+                    default:
+                        if (0<command && command<=people.size()) {
+                            this.rmiServer.removeOnDB("candidacy_person","person_cc_number",people.get(command-1).getCc_number());
+                        }else{
+                            //volta para este menu caso esteja algo errado
+                            this.manageCandidacy(candidacy);
+                        }
+                        break;
+                }
+            } catch (InputMismatchException ime) {
+                //volta para este menu caso o input esteja errado
+                this.manageCandidacy(candidacy);
+            } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

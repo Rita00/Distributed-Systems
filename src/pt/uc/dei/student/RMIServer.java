@@ -3,6 +3,7 @@ package pt.uc.dei.student;
 import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
+import pt.uc.dei.student.elections.Person;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -14,7 +15,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
@@ -86,6 +86,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return updateOnDB(sql);
     }
 
+    public boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) {
+        return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s)",candidacy_id,cc_number));
+    }
+
     public ArrayList<Election> getElections() {
         return this.selectElections("SELECT * FROM election");
     }
@@ -93,7 +97,17 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Candidacy> getCandidacies(int election_id) {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = " + election_id);
     }
-
+    public ArrayList<Person> getPeople(int candidacy_id) {
+        return this.selectPeople(
+                "SELECT *\n" +
+                    "FROM person\n" +
+                    "WHERE cc_number IN (\n" +
+                    "    SELECT person_cc_number\n" +
+                    "    FROM candidacy_person\n" +
+                    "    WHERE candidacy_id = "+candidacy_id+"\n" +
+                    "); "
+        );
+    }
     public void updateElections(Election e) {
         if (this.updateOnDB("UPDATE election" +
                 String.format("SET title=%s,type=%s,description=%s,begin_date=%s,end_date=%s", e.getTitle(), e.getType(), e.getDescription(), e.getBegin().toString(), e.getEnd().toString()) +
@@ -106,11 +120,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public void removeOnDB(String table, int id) {
-        if (this.updateOnDB("DELETE FROM " + table + " WHERE id = " + id)) {
-            System.out.println("Removed from" + table + " id #" + id);
-        } else {
-            System.out.println("Problem removing id #" + id + " from database");
+    public void removeOnDB(String table,String idName ,int id) {
+        if (this.updateOnDB("DELETE FROM "+table+" WHERE "+idName+" = "+id)){
+            System.out.println("Removed from"+table+" id #"+id);
+        }else{
+            System.out.println("Problem removing id #"+id+" from database");
         }
     }
 
@@ -218,6 +232,41 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return candidacies;
     }
 
+    /**
+     * Seleciona listas(candidaturas) na base de dados
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
+    public ArrayList<Person> selectPeople(String sql) {
+        Connection conn = connectDB();
+        ArrayList<Person> people = new ArrayList();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                people.add(new Person(
+                        rs.getString("address"),
+                        rs.getInt("cc_number"),
+                        rs.getInt("cc_validity"),
+                        rs.getInt("department_id"),
+                        rs.getString("job"),
+                        rs.getString("password"),
+                        rs.getInt("phone")
+                ));
+            }
+            stmt.close();
+            conn.close();     
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return people;
+    }
+    /**
+     * Seleciona departamentos na base de dados
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
     public ArrayList<Department> selectDepartments(String sql) {
         Connection conn = connectDB();
         ArrayList<Department> departments = new ArrayList();

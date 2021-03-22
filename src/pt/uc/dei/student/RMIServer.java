@@ -59,9 +59,30 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param descricao Breve descrição da eleição
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
-    public boolean insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao, String type_ele) {
+    public int insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao, String type_ele) {
         String dataIni = String.format("%d-%d-%d %d:%d:00", anoIni, mesIni, diaIni, horaIni, minIni), dataFim = String.format("%d-%d-%d %d:%d:00", anoFim, mesFim, diaFim, horaFim, minFim);
-        String sql = String.format("INSERT INTO election(title,type,description,begin_date,end_data) VALUES(%s,%s,'%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
+        String sql = String.format("INSERT INTO election(title,type,description,begin_date,end_date) VALUES('%s','%s','%s','%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
+        Connection conn = connectDB();
+        try {
+            conn.setAutoCommit(false);
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+            Statement stmt2 = conn.createStatement();
+            ResultSet generate_keys = stmt2.executeQuery("SELECT last_insert_rowid()");
+            generate_keys.next();
+            int auto_id = generate_keys.getInt(1);
+            conn.commit();
+            stmt.close();
+            conn.close();
+            return auto_id;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return -1;
+        }
+    }
+
+    public boolean insertElectionDepartment(int id_election, int id_dep) {
+        String sql = String.format("INSERT INTO election_department(election_id,department_id) VALUES(%s,%s)", id_election, id_dep);
         return updateOnDB(sql);
     }
 
@@ -97,6 +118,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectDepartments("SELECT * FROM department");
     }
 
+    public ArrayList<Department> popDepartment(ArrayList<Department> listDep, int id) {
+        listDep.remove(id - 1);
+        return listDep;
+    }
     /**
      * Conexão à base de dados
      *

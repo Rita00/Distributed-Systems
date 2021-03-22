@@ -12,7 +12,9 @@ public interface RMI extends Remote {
 
     boolean insertPerson(String cargo, String pass, int dep, int num_phone, String address, int num_cc, int ano_cc, int mes_cc, int dia_cc) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao, String type_ele) throws java.rmi.RemoteException, InterruptedException;
+    int insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao, String type_ele) throws java.rmi.RemoteException, InterruptedException;
+
+    boolean insertElectionDepartment(int id_election, int id_dep) throws java.rmi.RemoteException, InterruptedException;;
 
     ArrayList<Election> getElections() throws java.rmi.RemoteException, InterruptedException;
 
@@ -23,5 +25,7 @@ public interface RMI extends Remote {
     void removeOnDB(String table, int id) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Department> getDepartments() throws java.rmi.RemoteException, InterruptedException;
+
+    ArrayList<Department> popDepartment(ArrayList<Department> listDep, int id) throws java.rmi.RemoteException, InterruptedException;
 }
 

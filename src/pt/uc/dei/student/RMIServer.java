@@ -82,12 +82,16 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             System.out.println("Problem updating election");
         }
     }
+
     public void removeOnDB(String table, int id) {
         if (this.updateOnDB("DELETE FROM "+table+" WHERE id = "+id)){
             System.out.println("Removed from"+table+" id #"+id);
         }else{
             System.out.println("Problem removing id #"+id+" from database");
         }
+    }
+
+    public void returnListDepart() {
     }
     
     /**

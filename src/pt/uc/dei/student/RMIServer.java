@@ -15,7 +15,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
@@ -286,7 +285,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             throwables.printStackTrace();
             return null;
         }
-        return people;
         return departments;
     }
 

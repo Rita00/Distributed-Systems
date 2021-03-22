@@ -320,7 +320,7 @@ public class AdminConsole {
             switch (command) {
                 case RETURN:
                     //VAZIO PARA VOLTAR
-                    return;
+                    break;
                 case 1:
                     System.out.println("Editar titulo:");
                     election.setTitle(input.next());

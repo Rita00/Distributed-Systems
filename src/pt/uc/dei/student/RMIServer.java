@@ -109,11 +109,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         );
     }
     public void updateElections(Election e) {
-        if (this.updateOnDB("UPDATE election" +
-                String.format("SET title=%s,type=%s,description=%s,begin_date=%s,end_date=%s", e.getTitle(), e.getType(), e.getDescription(), e.getBegin().toString(), e.getEnd().toString()) +
-                String.format("WERE id=%s", e.getId())
-        )
-        ) {
+        if (this.updateOnDB(String.format("UPDATE election SET title='%s',type='%s',description='%s',begin_date='%s',end_date='%s' WHERE id=%s", e.getTitle(), e.getType(), e.getDescription(), e.getBegin().toString(), e.getEnd().toString(), e.getId()))){
             System.out.println("Successfully updated election");
         } else {
             System.out.println("Problem updating election");

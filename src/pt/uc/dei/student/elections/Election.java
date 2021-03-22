@@ -21,16 +21,14 @@ public class Election implements Serializable {
         this.title = title;
         this.type = type;
         this.description = description;
-        this.begin = LocalDateTime.parse(begin, DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
-        this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
     }
 
 	private LocalDateTime parseTime(String date, String time) {
 		LocalDateTime dateTime;
 		try {
-			LocalDate d = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-M-d"));
-			LocalTime t = LocalTime.parse(time, DateTimeFormatter.ofPattern("H:m:s"));
-			dateTime = LocalDateTime.of(d, t);
+			dateTime = LocalDateTime.parse(date+" "+time,DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
 		} catch (DateTimeParseException e) {
 			return null;
 		}

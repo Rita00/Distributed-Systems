@@ -92,6 +92,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public void returnListDepart() {
+
     }
     
     /**

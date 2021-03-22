@@ -59,8 +59,8 @@ public class AdminConsole {
     public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
-        String pass, dep, address;
-        int cargo = 0, num_phone, num_cc, ano_cc, mes_cc, dia_cc;
+        String pass, address;
+        int cargo = 0, num_phone, num_cc, ano_cc, mes_cc, dia_cc, dep;
         while (cargo != 1 && cargo != 2 && cargo != 3) {
             System.out.println("Cargo: ");
             System.out.println("\t1 - Estudante");
@@ -72,7 +72,7 @@ public class AdminConsole {
         System.out.print("Password: ");
         pass = reader.readLine();
         System.out.print("Nome do departamento que frequenta: ");
-        dep = reader.readLine();
+        dep = input.nextInt();
         System.out.print("Número de telemóvel: ");
         num_phone = input.nextInt();
         System.out.print("Morada: ");
@@ -119,7 +119,7 @@ public class AdminConsole {
      * @throws IOException exceção de I/O
      */
     public void createElection() throws IOException {
-        int anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim;
+        int anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, type_ele = 0;
         String titulo, descricao;
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -138,8 +138,16 @@ public class AdminConsole {
         System.out.println("Título da Eleição: ");
         titulo = reader.readLine();
         descricao = reader.readLine();
+        while (type_ele != 1 && type_ele != 2 && type_ele != 3) {
+            System.out.println("Tipo de eleição: ");
+            System.out.println("\t1 - Estudante");
+            System.out.println("\t2 - Docente");
+            System.out.println("\t3 - Funcionário");
+            System.out.print("\t");
+            type_ele = input.nextInt();
+        }
         try {
-            if (!this.rmiServer.insertElection(anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, titulo, descricao)) {
+            if (!this.rmiServer.insertElection(anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, titulo, descricao, this.decideCargo(type_ele))) {
                 System.out.println("Impossível inserir eleição :(");
             } else {
                 System.out.println("Eleição criada com sucesso! :)");

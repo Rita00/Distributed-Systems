@@ -29,14 +29,13 @@ FOREIGN KEY (election_id) REFERENCES election(id)
 );
 
 CREATE TABLE person (
-name		 VARCHAR(32) NOT NULL,
-cc_number	 INTEGER,
-cc_validity	 DATE NOT NULL,
-address	 VARCHAR(512) NOT NULL,
-phone	 INTEGER NOT NULL,
 job		 VARCHAR(512) NOT NULL,
 password	 VARCHAR(512),
 department_id INTEGER NOT NULL,
+phone	 INTEGER NOT NULL,
+address	 VARCHAR(512) NOT NULL,
+cc_number	 INTEGER,
+cc_validity	 DATE NOT NULL,
 PRIMARY KEY(cc_number),
 FOREIGN KEY (department_id) REFERENCES department(id)
 );

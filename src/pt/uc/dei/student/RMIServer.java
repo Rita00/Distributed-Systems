@@ -37,9 +37,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param dia_cc    validade do cartão de cidadão (dia)
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
-    public boolean insertPerson(String cargo, String pass, String dep, int num_phone, String address, int num_cc, int ano_cc, int mes_cc, int dia_cc) {
-        int data = ano_cc * 10000 + mes_cc * 100 + dia_cc;
-        String sql = String.format("INSERT INTO person(funcao,password,depart,phone,address,numcc,validadecc) VALUES('%s','%s','%s',%s,'%s',%s,%s)", cargo, pass, dep, num_phone, address, num_cc, data);
+    public boolean insertPerson(String cargo, String pass, int dep, int num_phone, String address, int num_cc, int ano_cc, int mes_cc, int dia_cc) {
+        String data = String.format("%d-%d-%d 00:00:00", ano_cc, mes_cc, dia_cc);
+        String sql = String.format("INSERT INTO person(job,password,department_id,phone,address,cc_number,cc_validity) VALUES('%s','%s',%s,%s,'%s',%s,'%s')", cargo, pass, dep, num_phone, address, num_cc, data);
         return updateOnDB(sql);
     }
 
@@ -58,9 +58,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param descricao Breve descrição da eleição
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
-    public boolean insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao) {
-        long dataIni = anoIni * 100000000L + mesIni * 1000000L + diaIni * 10000L + horaIni * 100L + minIni, dataFim = anoFim * 100000000L + mesFim * 1000000L + diaFim * 10000L + horaFim * 10L + minFim;
-        String sql = String.format("INSERT INTO election(inidate,fimdate,title,description) VALUES(%s,%s,'%s','%s')", dataIni, dataFim, titulo, descricao);
+    public boolean insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao, String type_ele) {
+        String dataIni = String.format("%d-%d-%d %d:%d:00", anoIni, mesIni, diaIni, horaIni, minIni), dataFim = String.format("%d-%d-%d %d:%d:00", anoFim, mesFim, diaFim, horaFim, minFim);
+        String sql = String.format("INSERT INTO election(title,type,description,begin_date,end_data) VALUES(%s,%s,'%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
         return updateOnDB(sql);
     }
     

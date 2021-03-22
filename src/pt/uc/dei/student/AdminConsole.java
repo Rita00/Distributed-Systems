@@ -165,13 +165,13 @@ public class AdminConsole {
             System.out.println("\t(2)- Não");
             System.out.print("\t");
             restr = input.nextInt();
-            if (restr == 1) {
-                while (!(ndep >= 1 && ndep <= 11)) {
-                    System.out.println("\tDepartamento: ");
-                    listDepart();
-                    System.out.print("\t");
-                    ndep = input.nextInt();
-                }
+        }
+        if (restr == 1) {
+            while (!(ndep >= 1 && ndep <= 11)) {
+                System.out.println("\tDepartamento: ");
+                listDepart();
+                System.out.print("\t");
+                ndep = input.nextInt();
             }
         }
         while (type_ele != 1 && type_ele != 2 && type_ele != 3) {

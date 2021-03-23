@@ -5,6 +5,7 @@ drop table if exists department;
 drop table if exists voting_record;
 drop table if exists election_department;
 drop table if exists candidacy_person;
+drop table if exists multicastserver;
 
 CREATE TABLE election (
 id		 INTEGER,
@@ -74,4 +75,9 @@ CREATE TABLE candidacy_person (
       FOREIGN KEY (person_cc_number) REFERENCES person(cc_number)
 );
 
-
+CREATE TABLE multicastserver (
+                                 id		 BIGINT,
+                                 department_id INTEGER NOT NULL,
+                                 PRIMARY KEY(id),
+                                 FOREIGN KEY (department_id) REFERENCES department(id)
+);

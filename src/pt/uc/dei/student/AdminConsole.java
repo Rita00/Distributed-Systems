@@ -44,6 +44,7 @@ public class AdminConsole {
                 System.out.println("\t(1)- Registar Pessoas");
                 System.out.println("\t(2)- Criar Eleição");
                 System.out.println("\t(3)- Gerir Eleição");
+                System.out.println("\t(4)- Gerir Mesas de Voto");
                 System.out.println("(0)- Sair");
                 Scanner input = new Scanner(System.in);
                 System.out.print(OPTION_STRING);

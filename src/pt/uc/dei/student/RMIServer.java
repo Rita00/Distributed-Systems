@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 
 public class RMIServer extends UnicastRemoteObject implements RMI {
-    private int NUM_MULTICAST_SERVERS = 2;
+    private final int NUM_MULTICAST_SERVERS = 2;
 
 
-    private String SERVER_ADDRESS = "127.0.0.1";
-    private int SERVER_PORT = 7001;
+    private final String SERVER_ADDRESS = "127.0.0.1";
+    private final int SERVER_PORT = 7001;
     private int REGISTRY_PORT = 7000;
 
     public RMIServer() throws RemoteException {
@@ -197,7 +197,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Election> selectElections(String sql) {
         Connection conn = connectDB();
         ArrayList<Election> elections = new ArrayList();
-        ;
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);

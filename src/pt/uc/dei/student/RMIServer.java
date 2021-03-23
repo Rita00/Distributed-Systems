@@ -29,6 +29,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         super();
     }
 
+
     /**
      * Função de inserção de uma determinada pessoa na base de dados
      *

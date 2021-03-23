@@ -1,10 +1,15 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.elections.Department;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MulticastServer extends Thread {
     private String MULTICAST_ADDRESS = "224.3.2.1";
@@ -12,8 +17,10 @@ public class MulticastServer extends Thread {
     private int PORT_MULTICAST = 7001;
     private long SLEEP_TIME = 5000;
 
-    public MulticastServer() {
-        super("Server " + (long) (Math.random() * 1000));
+    private RMI rmiServer;
+
+    public MulticastServer(RMI rmiServer) {
+        this.rmiServer = rmiServer;
     }
 
     public void run() {
@@ -40,13 +47,38 @@ public class MulticastServer extends Thread {
         }
     }
 
+    public void listDepart() {
+        try {
+            ArrayList<Department> departments;
+            departments = this.rmiServer.getDepartments();
+            for (Department dep : departments) {
+                System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         // Works like a client of the RMI Server
+        int dep = -1;
         try {
-            RMI h = (RMI) LocateRegistry.getRegistry(7000).lookup("test");
-            while (true) {
-                String message = h.saySomething();
-                System.out.println("HelloClient: " + message);
+            Scanner input = new Scanner(System.in);
+            RMI h = (RMI) LocateRegistry.getRegistry(7000).lookup("clientMulticast");
+            MulticastServer multicastServer = new MulticastServer(h);
+            while (!(dep >= 1 && dep <= 11)) {
+                System.out.println("Departamento onde se localiza: ");
+                multicastServer.listDepart();
+                System.out.print(">>> ");
+                dep = input.nextInt();
+            }
+            if (h.initializeMulticast(dep)) {
+                //do stuff
+                //h.listDepart();
+                while (true) {
+                    //String message = h.saySomething();
+                    //System.out.println("HelloClient: " + message);
+                }
             }
         } catch (Exception e) {
             System.out.println("Exception in main: " + e);

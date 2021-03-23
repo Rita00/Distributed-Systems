@@ -39,6 +39,7 @@ public class AdminConsole {
      */
     public void admin(int command) throws IOException {
         try {
+            Scanner input = new Scanner(System.in);
             while (command != 0) {
                 System.out.println("========CONSOLA ADMINISTRADORA========");
                 System.out.println("\t(1)- Registar Pessoas");
@@ -46,7 +47,6 @@ public class AdminConsole {
                 System.out.println("\t(3)- Gerir Eleição");
                 System.out.println("\t(4)- Gerir Mesas de Voto");
                 System.out.println("(0)- Sair");
-                Scanner input = new Scanner(System.in);
                 System.out.print(OPTION_STRING);
                 command = input.nextInt();
                 switch (command) {
@@ -93,7 +93,7 @@ public class AdminConsole {
         pass = reader.readLine();
         while (!(ndep >= 1 && ndep <= 11)) {
             System.out.println("Departamento que frequenta: ");
-            this.listDepart();
+            listDepart();
             System.out.print("\t");
             ndep = input.nextInt();
         }

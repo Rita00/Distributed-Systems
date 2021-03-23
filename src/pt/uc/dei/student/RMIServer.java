@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 
 public class RMIServer extends UnicastRemoteObject implements RMI {
+    private int NUM_MULTICAST_SERVERS = 2;
+
     public RMIServer() throws RemoteException {
         super();
     }
-
 
     /**
      * Função de inserção de uma determinada pessoa na base de dados
@@ -88,11 +89,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public boolean insertCandidacyIntoElection(String name, String type, int election_id) {
-        return this.updateOnDB(String.format("INSERT INTO candidacy(id,name,type,election_id) VALUES (NULL,'%s','%s',%s);",name,type,election_id));
+        return this.updateOnDB(String.format("INSERT INTO candidacy(id,name,type,election_id) VALUES (NULL,'%s','%s',%s);", name, type, election_id));
     }
 
     public boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) {
-        return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);",candidacy_id,cc_number));
+        return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);", candidacy_id, cc_number));
+    }
+
+    public boolean insertMulticastServer(int dep_id) {
+        return this.updateOnDB(String.format("INSERT INTO multicastserver(department_id) VALUES (%s)", dep_id));
     }
 
     public ArrayList<Election> getElections() {
@@ -102,30 +107,32 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Candidacy> getCandidacies(int election_id) {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = " + election_id);
     }
+
     public ArrayList<Person> getPeople(int candidacy_id) {
         return this.selectPeople(
                 "SELECT *\n" +
-                    "FROM person\n" +
-                    "WHERE cc_number IN (\n" +
-                    "    SELECT person_cc_number\n" +
-                    "    FROM candidacy_person\n" +
-                    "    WHERE candidacy_id = "+candidacy_id+"\n" +
-                    "); "
+                        "FROM person\n" +
+                        "WHERE cc_number IN (\n" +
+                        "    SELECT person_cc_number\n" +
+                        "    FROM candidacy_person\n" +
+                        "    WHERE candidacy_id = " + candidacy_id + "\n" +
+                        "); "
         );
     }
+
     public void updateElections(Election e) {
-        if (this.updateOnDB(String.format("UPDATE election SET title='%s',type='%s',description='%s',begin_date='%s',end_date='%s' WHERE id=%s", e.getTitle(), e.getType(), e.getDescription(), e.getBegin().toString(), e.getEnd().toString(), e.getId()))){
+        if (this.updateOnDB(String.format("UPDATE election SET title='%s',type='%s',description='%s',begin_date='%s',end_date='%s' WHERE id=%s", e.getTitle(), e.getType(), e.getDescription(), e.getBegin().toString(), e.getEnd().toString(), e.getId()))) {
             System.out.println("Successfully updated election");
         } else {
             System.out.println("Problem updating election");
         }
     }
 
-    public void removeOnDB(String table,String idName ,int id) {
-        if (this.updateOnDB("DELETE FROM "+table+" WHERE "+idName+" = "+id)){
-            System.out.println("Removed from"+table+" id #"+id);
-        }else{
-            System.out.println("Problem removing id #"+id+" from database");
+    public void removeOnDB(String table, String idName, int id) {
+        if (this.updateOnDB("DELETE FROM " + table + " WHERE " + idName + " = " + id)) {
+            System.out.println("Removed from" + table + " id #" + id);
+        } else {
+            System.out.println("Problem removing id #" + id + " from database");
         }
     }
 
@@ -133,10 +140,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectDepartments("SELECT * FROM department");
     }
 
+
     public ArrayList<Department> popDepartment(ArrayList<Department> listDep, int id) {
         listDep.remove(id - 1);
         return listDep;
     }
+
     /**
      * Conexão à base de dados
      *
@@ -235,6 +244,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Seleciona listas(candidaturas) na base de dados
+     *
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
@@ -256,15 +266,17 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 ));
             }
             stmt.close();
-            conn.close();     
+            conn.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return null;
         }
         return people;
     }
+
     /**
      * Seleciona departamentos na base de dados
+     *
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
@@ -287,6 +299,22 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             return null;
         }
         return departments;
+    }
+
+    public int countRowsBD(String table) {
+        Connection conn = connectDB();
+        try{
+            Statement stmt = conn.createStatement();
+            ResultSet res = stmt.executeQuery("SELECT COUNT(*) FROM " + table);
+            int count = res.getInt(1);
+            stmt.close();
+            conn.close();
+            return count;
+        } catch (Exception e){
+            System.out.println("Erro a contar o número de colunas da tabela");
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public String saySomething() throws RemoteException {
@@ -325,6 +353,20 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return ok;
     }
 
+    public boolean initializeMulticast(int dep_id) {
+        int numMulticast = countRowsBD("department WHERE hasMulticastServer = 1");
+        if (numMulticast < NUM_MULTICAST_SERVERS && countRowsBD("department WHERE hasMulticastServer != 1 AND id = " + dep_id) != 0) {
+            if (!updateOnDB("UPDATE department SET hasMulticastServer = 1 WHERE id = " + dep_id)) {
+                System.out.println("Impossível adicionar mesa de voto! :(");
+                return false;
+            } else {
+                System.out.println("Mesa de voto criada com sucesso! :)");
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Inicializa a ligação do Servidor RMI com o Servidor Multicast
      */
@@ -333,7 +375,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         try {
             RMIServer obj = new RMIServer();
             Registry r = LocateRegistry.createRegistry(7000);
-            r.rebind("test", obj);
+            r.rebind("clientMulticast", obj);
             r.rebind("admin", obj);
             System.out.println("RMI Server ready!");
         } catch (RemoteException re) {

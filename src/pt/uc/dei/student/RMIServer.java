@@ -22,9 +22,15 @@ import static java.lang.Thread.sleep;
 public class RMIServer extends UnicastRemoteObject implements RMI {
     private int NUM_MULTICAST_SERVERS = 2;
 
+
+    private String SERVER_ADDRESS = "127.0.0.1";
+    private int SERVER_PORT = 7001;
+    private int REGISTRY_PORT = 7000;
+
     public RMIServer() throws RemoteException {
         super();
     }
+
 
     /**
      * Função de inserção de uma determinada pessoa na base de dados
@@ -244,7 +250,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Seleciona listas(candidaturas) na base de dados
-     *
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
@@ -331,10 +336,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             aSocket = new DatagramSocket();
             System.out.print("Mensagem a enviar = ");
 
-            InetAddress aHost = InetAddress.getByName("127.0.0.1");
-            int serverPort = 7001;
+            InetAddress aHost = InetAddress.getByName(this.SERVER_ADDRESS);
             byte[] m = "Pinging".getBytes();
-            DatagramPacket request = new DatagramPacket(m, m.length, aHost, serverPort);
+            DatagramPacket request = new DatagramPacket(m, m.length, aHost, this.SERVER_PORT);
             aSocket.send(request);
             aSocket.setSoTimeout(200);
             byte[] buffer = new byte[1000];
@@ -374,7 +378,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         System.out.println("Becoming Primary Server!");
         try {
             RMIServer obj = new RMIServer();
-            Registry r = LocateRegistry.createRegistry(7000);
+            Registry r = LocateRegistry.createRegistry(this.REGISTRY_PORT);
+            r.rebind("test", obj);
             r.rebind("clientMulticast", obj);
             r.rebind("admin", obj);
             System.out.println("RMI Server ready!");
@@ -390,7 +395,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public void initializeUDP() {
         String s;
-        try (DatagramSocket aSocket = new DatagramSocket(7001)) {
+        try (DatagramSocket aSocket = new DatagramSocket(this.SERVER_PORT)) {
             System.out.println("Socket Datagram à escuta no porto 7001");
             while (true) {
                 byte[] buffer = new byte[1000];

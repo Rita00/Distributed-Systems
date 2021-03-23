@@ -241,7 +241,7 @@ public class AdminConsole {
                 } else {
                     System.out.println("Não existem eleições\n");
                 }
-                System.out.println("(" + RETURN + ")- Voltar");
+                System.out.println("(" + RETURN + ")-  Voltar");
                 /*
                  * ESPERAR PELA ESCOLHA DO UTILIZADOR
                  */
@@ -284,7 +284,7 @@ public class AdminConsole {
                 }
                 System.out.println("("+EDIT+")- Editar");
                 System.out.println("("+ADD+")- Adicionar lista");
-                System.out.println("("+RETURN+")- Voltar");
+                System.out.println("("+RETURN+")-  Voltar");
                 /*
                  * ESPERAR PELA ESCOLHA DO UTILIZADOR
                  */
@@ -329,7 +329,7 @@ public class AdminConsole {
             System.out.println("\t(3)- Descricao");
             System.out.println("\t(4)- Data Inicio");
             System.out.println("\t(5)- Data Fim");
-            System.out.println("(" + RETURN + ")- Voltar");
+            System.out.println("(" + RETURN + ")-  Voltar");
             //esperar pelo input
             Scanner input = new Scanner(System.in);
             System.out.print(OPTION_STRING);
@@ -350,7 +350,7 @@ public class AdminConsole {
                         System.out.println("\t(1)- Estudante");
                         System.out.println("\t(2)- Docente");
                         System.out.println("\t(3)- Funcionario");
-                        System.out.println("(0)- Voltar");
+                        System.out.println("(0)-  Voltar");
                         type = input.nextInt();
                         if (type == RETURN) {
                             this.editElection(election);
@@ -400,7 +400,7 @@ public class AdminConsole {
                 }
                 System.out.println("("+REMOVE+")- Remover lista");
                 System.out.println("("+ADD+")- Adicionar pessoa");
-                System.out.println("("+RETURN+")- Voltar");
+                System.out.println("("+RETURN+")-  Voltar");
                 //esperar pelo input
                 Scanner input = new Scanner(System.in);
                 System.out.print(OPTION_STRING);

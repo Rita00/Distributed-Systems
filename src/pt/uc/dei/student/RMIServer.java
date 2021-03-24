@@ -311,6 +311,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
     }
 
+    public ArrayList<Department> selectNoAssociatedPollingStation() {
+        return selectDepartments("");
+    }
     public int countRowsBD(String table) {
         Connection conn = connectDB();
         try {
@@ -333,6 +336,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public void removePollingVote(int department_id) {
         removeOnDB("election_department", "department_id", department_id);
+        updateOnDB("UPDATE department SET hasMulticastServer = null WHERE id = " + department_id);
     }
 
     public String saySomething() throws RemoteException {

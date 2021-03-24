@@ -94,7 +94,22 @@ public class AdminConsole {
         }
         switch (option) {
             case 1:
-
+                try {
+                    ArrayList<Department> departments = this.rmiServer.selectNoAssociatedPollingStation(election);
+                    if(departments.size() == 0) {
+                        System.out.println("Não existem mesas de voto para associar a esta eleição!");
+                    } else {
+                        while (!hasDep(mesaVoto, departments)) {
+                            System.out.println("Escolha a mesa de voto a adicionar");
+                            listDepart(departments);
+                            System.out.print(OPTION_STRING);
+                            mesaVoto = input.nextInt();
+                        }
+                        this.rmiServer.insertPollingStation(election, mesaVoto);
+                    }
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 2:
                 try {
@@ -109,7 +124,7 @@ public class AdminConsole {
                             mesaVoto = input.nextInt();
 
                         }
-                        this.rmiServer.removePollingVote(mesaVoto);
+                        this.rmiServer.removePollingStation(mesaVoto);
                     }
                 } catch (RemoteException | InterruptedException e) {
                     e.printStackTrace();
@@ -126,6 +141,7 @@ public class AdminConsole {
         }
         return false;
     }
+
     /**
      * Lê da consola a informação pessoal de uma determinada pessoa.
      * As pessoas serão introduzidas na base de dados no servidor RMI, por questões de segurança

@@ -21,8 +21,6 @@ public interface RMI extends Remote {
 
     boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean insertMulticastServer(int dep_id) throws java.rmi.RemoteException, InterruptedException;
-
     ArrayList<Election> getElections() throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Candidacy> getCandidacies(int election_id) throws java.rmi.RemoteException, InterruptedException;
@@ -39,10 +37,15 @@ public interface RMI extends Remote {
 
     ArrayList<Department> selectPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    ArrayList<Department> selectNoAssociatedPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
     int countRowsBD(String sql) throws java.rmi.RemoteException, InterruptedException;
 
     int numElections() throws java.rmi.RemoteException, InterruptedException;
 
-    void removePollingVote(int department_id) throws java.rmi.RemoteException, InterruptedException;
+    void removePollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
+
+    void insertPollingStation(int election_id, int department_id) throws java.rmi.RemoteException, InterruptedException;
+
 }
 

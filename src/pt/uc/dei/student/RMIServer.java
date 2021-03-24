@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 
 public class RMIServer extends UnicastRemoteObject implements RMI {
-    private final int NUM_MULTICAST_SERVERS = 2;
+    private final int NUM_MULTICAST_SERVERS = 4;
 
 
     private final String SERVER_ADDRESS = "127.0.0.1";
@@ -311,9 +311,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
     }
 
-    public ArrayList<Department> selectNoAssociatedPollingStation() {
-        return selectDepartments("");
+    public ArrayList<Department> selectNoAssociatedPollingStation(int election_id) {
+        return selectDepartments("SELECT id, name FROM department WHERE department.hasmulticastserver = 1 " +
+                        "EXCEPT " +
+                "SELECT id, name FROM department, election_department " +
+                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
     }
+
     public int countRowsBD(String table) {
         Connection conn = connectDB();
         try {
@@ -334,9 +338,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return countRowsBD("election");
     }
 
-    public void removePollingVote(int department_id) {
+    public void removePollingStation(int department_id) {
         removeOnDB("election_department", "department_id", department_id);
-        updateOnDB("UPDATE department SET hasMulticastServer = null WHERE id = " + department_id);
+    }
+
+    public void insertPollingStation(int election_id, int department_id) {
+        insertElectionDepartment(election_id, department_id);
     }
 
     public String saySomething() throws RemoteException {

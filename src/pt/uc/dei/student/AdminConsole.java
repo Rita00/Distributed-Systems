@@ -59,6 +59,8 @@ public class AdminConsole {
                     case 3:
                         this.listElections();
                         break;
+                    case 4:
+                        menuMesaVoto();
                     default:
                         break;
                 }
@@ -70,6 +72,28 @@ public class AdminConsole {
 
     }
 
+    public void menuMesaVoto() {
+        int mesaVoto = -1;
+        Scanner input = new Scanner(System.in);
+        while (mesaVoto != 1 && mesaVoto != 2) {
+            System.out.println("\t\t(1)- Adicionar");
+            System.out.println("\t\t(2)- Remover");
+            mesaVoto = input.nextInt();
+        }
+        switch (mesaVoto) {
+            case 1:
+
+                break;
+            case 2:
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void listPollingStations(int election_id) {
+        
+    }
     /**
      * Lê da consola a informação pessoal de uma determinada pessoa.
      * As pessoas serão introduzidas na base de dados no servidor RMI, por questões de segurança

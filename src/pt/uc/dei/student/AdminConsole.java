@@ -97,13 +97,12 @@ public class AdminConsole {
 
                 break;
             case 2:
-
                 try {
                     ArrayList<Department> departments = this.rmiServer.selectPollingStation(election);
                     if (departments.size() == 0) {
                         System.out.println("Não existem mesas de voto associadas a esta eleição!");
                     } else {
-                        while (!(mesaVoto >= 1 && mesaVoto <= departments.size())) {
+                        while (!hasDep(mesaVoto, departments)) {
                             System.out.println("Escolha a mesa de voto a remover: ");
                             listDepart(departments);
                             System.out.print(OPTION_STRING);
@@ -121,6 +120,12 @@ public class AdminConsole {
         }
     }
 
+    public boolean hasDep(int dep, ArrayList<Department> departments) {
+        for (Department department : departments) {
+            if (department.getId() == dep) return true;
+        }
+        return false;
+    }
     /**
      * Lê da consola a informação pessoal de uma determinada pessoa.
      * As pessoas serão introduzidas na base de dados no servidor RMI, por questões de segurança

@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 public class Election implements Serializable {
 
@@ -15,7 +16,12 @@ public class Election implements Serializable {
     private String description;
     private LocalDateTime begin;
     private LocalDateTime end;
+    private ArrayList<Department> departments;
 
+    public Election(int id, ArrayList<Department> departments) {
+        this.id = id;
+        this.departments=departments;
+    }
     public Election(int id, String title, String type, String description, String begin, String end) {
         this.id = id;
         this.title = title;
@@ -23,6 +29,15 @@ public class Election implements Serializable {
         this.description = description;
         this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
         this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+    }
+    public Election(int id, String title, String type, String description, String begin, String end, ArrayList<Department> departments) {
+        this.id = id;
+        this.title = title;
+        this.type = type;
+        this.description = description;
+        this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.departments=departments;
     }
 
 	private LocalDateTime parseTime(String date, String time) {
@@ -66,6 +81,10 @@ public class Election implements Serializable {
 
     public LocalDateTime getEnd() {
         return this.end;
+    }
+
+    public ArrayList<Department> getDepartments() {
+        return this.departments;
     }
 
     public void setTitle(String title) {

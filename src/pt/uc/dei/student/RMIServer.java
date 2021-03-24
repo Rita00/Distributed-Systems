@@ -305,6 +305,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return departments;
     }
 
+    public ArrayList<Department> selectPollingStation(int election_id) {
+        return selectDepartments("SELECT id, name FROM department, election_department WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
+    }
+
     public int countRowsBD(String table) {
         Connection conn = connectDB();
         try{
@@ -321,6 +325,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return 0;
     }
 
+    public int numElections() {
+        return countRowsBD("election");
+    }
     public String saySomething() throws RemoteException {
         return "I'm alive!";
     }

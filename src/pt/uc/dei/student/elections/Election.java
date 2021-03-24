@@ -22,6 +22,7 @@ public class Election implements Serializable {
         this.id = id;
         this.departments=departments;
     }
+
     public Election(int id, String title, String type, String description, String begin, String end) {
         this.id = id;
         this.title = title;
@@ -30,6 +31,7 @@ public class Election implements Serializable {
         this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
         this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
     }
+
     public Election(int id, String title, String type, String description, String begin, String end, ArrayList<Department> departments) {
         this.id = id;
         this.title = title;

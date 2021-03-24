@@ -315,7 +315,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             conn.close();
             return count;
         } catch (Exception e){
-            System.out.println("Erro a contar o número de colunas da tabela");
+            System.out.println("Erro a contar o número de linhas da tabela");
             e.printStackTrace();
         }
         return 0;

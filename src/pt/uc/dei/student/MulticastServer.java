@@ -72,7 +72,9 @@ public class MulticastServer extends Thread {
                 System.out.print(">>> ");
                 dep = input.nextInt();
             }
-            if (h.initializeMulticast(dep)) {
+            String name_dep = h.initializeMulticast(dep);
+            if (name_dep != null) {
+                System.out.printf("======== Mesa de Voto do %s ========%n", name_dep);
                 //do stuff
                 //h.listDepart();
                 while (true) {

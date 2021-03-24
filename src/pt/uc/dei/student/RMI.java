@@ -35,7 +35,7 @@ public interface RMI extends Remote {
 
     ArrayList<Department> getDepartments() throws java.rmi.RemoteException, InterruptedException;
 
-    boolean initializeMulticast(int dep_id) throws java.rmi.RemoteException, InterruptedException;
+    String initializeMulticast(int dep_id) throws java.rmi.RemoteException, InterruptedException;
 
     int countRowsBD(String sql) throws java.rmi.RemoteException, InterruptedException;
 

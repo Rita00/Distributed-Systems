@@ -249,6 +249,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Seleciona listas(candidaturas) na base de dados
+     *
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
@@ -306,19 +307,20 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public ArrayList<Department> selectPollingStation(int election_id) {
-        return selectDepartments("SELECT id, name FROM department, election_department WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
+        return selectDepartments("SELECT id, name FROM department, election_department " +
+                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
     }
 
     public int countRowsBD(String table) {
         Connection conn = connectDB();
-        try{
+        try {
             Statement stmt = conn.createStatement();
             ResultSet res = stmt.executeQuery("SELECT COUNT(*) FROM " + table);
             int count = res.getInt(1);
             stmt.close();
             conn.close();
             return count;
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Erro a contar o número de linhas da tabela");
             e.printStackTrace();
         }
@@ -328,6 +330,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public int numElections() {
         return countRowsBD("election");
     }
+
     public String saySomething() throws RemoteException {
         return "I'm alive!";
     }

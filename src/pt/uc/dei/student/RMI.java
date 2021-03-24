@@ -43,6 +43,6 @@ public interface RMI extends Remote {
 
     int numElections() throws java.rmi.RemoteException, InterruptedException;
 
-    ArrayList<Department> popDepartment(ArrayList<Department> listDep, int id) throws java.rmi.RemoteException, InterruptedException;
+    void removePollingVote(int department_id) throws java.rmi.RemoteException, InterruptedException;
 }
 

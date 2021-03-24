@@ -76,7 +76,6 @@ public class MulticastServer extends Thread {
             if (name_dep != null) {
                 System.out.printf("======== Mesa de Voto do %s ========%n", name_dep);
                 //do stuff
-                //h.listDepart();
                 while (true) {
                     //String message = h.saySomething();
                     //System.out.println("HelloClient: " + message);

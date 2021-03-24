@@ -331,6 +331,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return countRowsBD("election");
     }
 
+    public void removePollingVote(int department_id) {
+        removeOnDB("election_department", "department_id", department_id);
+    }
+
     public String saySomething() throws RemoteException {
         return "I'm alive!";
     }

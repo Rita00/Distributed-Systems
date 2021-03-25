@@ -96,7 +96,7 @@ public class AdminConsole {
             case 1:
                 try {
                     ArrayList<Department> departments = this.rmiServer.selectNoAssociatedPollingStation(election);
-                    if(departments.size() == 0) {
+                    if (departments.size() == 0) {
                         System.out.println("Não existem mesas de voto para associar a esta eleição!");
                     } else {
                         while (!hasDep(mesaVoto, departments)) {
@@ -269,18 +269,18 @@ public class AdminConsole {
             System.out.print("\t");
             restr = input.nextInt();
         }
+
         if (restr == 1) {
-            while (!(ndep >= 1 && ndep <= 11)) {
-                System.out.println("\tDepartamento: ");
-                ArrayList<Department> departments;
-                try {
-                    departments = this.rmiServer.getDepartments();
+            try {
+                ArrayList<Department> departments = this.rmiServer.selectPollingStation(-1);
+                while (!hasDep(ndep, departments)) {
+                    System.out.println("\tDepartamento: ");
                     listDepart(departments);
                     System.out.print("\t");
                     ndep = input.nextInt();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 

@@ -19,7 +19,9 @@ public class MulticastServer extends Thread {
 
     private RMI rmiServer;
 
-    public MulticastServer(RMI rmiServer) {
+    private final NotifierCallBack NOTIFIER = new NotifierCallBack();
+
+    public MulticastServer(RMI rmiServer) throws RemoteException {
         this.rmiServer = rmiServer;
     }
 
@@ -72,7 +74,7 @@ public class MulticastServer extends Thread {
                 System.out.print(">>> ");
                 dep = input.nextInt();
             }
-            String name_dep = h.initializeMulticast(dep);
+            String name_dep = h.initializeMulticast(dep, (Notifier) multicastServer.NOTIFIER);
             if (name_dep != null) {
                 System.out.printf("======== Mesa de Voto do %s ========%n", name_dep);
                 //do stuff

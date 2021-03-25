@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MulticastServer extends Thread {
-    private String MULTICAST_ADDRESS = "224.3.2.1";
-    private int PORT_RMI = 7000;
-    private int PORT_MULTICAST = 7001;
-    private long SLEEP_TIME = 5000;
+    private final String MULTICAST_ADDRESS = "224.3.2.1";
+    private final int PORT_RMI = 7000;
+    private final int PORT_MULTICAST = 7001;
+    private final long SLEEP_TIME = 5000;
 
     private RMI rmiServer;
 

@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
-    private final int PORT_MULTICAST = 7002;
+    public final static int MULTICAST_PORT = 7002;
     private final long SLEEP_TIME = 5000;
 
     private RMI rmiServer;
@@ -27,7 +27,7 @@ public class MulticastServer extends Thread {
 
     public void run() {
         long counter = 0;
-        try (MulticastSocket socket = new MulticastSocket(PORT_MULTICAST)) {
+        try (MulticastSocket socket = new MulticastSocket(MULTICAST_PORT)) {
             //O servidor não recebe mensagens dos clientes (sem o Port)
             InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
@@ -35,7 +35,7 @@ public class MulticastServer extends Thread {
                 String message = this.getName() + "packet " + counter++;
                 byte[] buffer = message.getBytes();
 
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT_MULTICAST);
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
                 socket.send(packet);
                 socket.receive(packet); // Para o servidor receber mensagens
                 System.out.println(message);

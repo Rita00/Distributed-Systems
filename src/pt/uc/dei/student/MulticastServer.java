@@ -15,6 +15,7 @@ public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
     public final static int MULTICAST_PORT = 7002;
     private final long SLEEP_TIME = 5000;
+    private boolean ON = true;
 
     private RMI rmiServer;
 
@@ -22,7 +23,7 @@ public class MulticastServer extends Thread {
 
     public MulticastServer(RMI rmiServer) throws RemoteException {
         this.rmiServer = rmiServer;
-        this.start();
+        //this.start();
     }
 
     public void run() {
@@ -31,7 +32,7 @@ public class MulticastServer extends Thread {
             //O servidor não recebe mensagens dos clientes (sem o Port)
             InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
-            while (true) {
+            while (ON) {
                 String message = this.getName() + "packet " + counter++;
                 byte[] buffer = message.getBytes();
 
@@ -83,6 +84,7 @@ public class MulticastServer extends Thread {
                     //System.out.println("HelloClient: " + message);
                 }
             }
+            System.exit(0);
         } catch (Exception e) {
             System.out.println("Exception in main: " + e);
             e.printStackTrace();

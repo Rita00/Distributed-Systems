@@ -8,7 +8,8 @@ class StatusChecker extends Thread {
 
     private RMI rmi;
 
-    public StatusChecker(ConcurrentHashMap<Integer, Notifier> notifiers) {
+    public StatusChecker(ConcurrentHashMap<Integer, Notifier> notifiers, RMI rmi) {
+        this.rmi = rmi;
         this.notifiers = notifiers;
         this.start();
     }

@@ -336,7 +336,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public boolean turnOffPollingStation(int department_id) {
-        return updateOnDB("UPDATE department SET hasMulticastServer = 1 WHERE id = " + department_id);
+        return updateOnDB("UPDATE department SET hasMulticastServer = null WHERE id = " + department_id);
     }
 
     public String saySomething() throws RemoteException {
@@ -467,6 +467,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     private void initializeStatusChecker() {
-        statcheck = new StatusChecker(notifiers);
+        statcheck = new StatusChecker(notifiers, this);
     }
 }

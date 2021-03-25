@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 
 public class RMIServer extends UnicastRemoteObject implements RMI {
-    private final int NUM_MULTICAST_SERVERS = 2;
+    private final int NUM_MULTICAST_SERVERS = 4;
 
 
     private final String SERVER_ADDRESS = "127.0.0.1";
@@ -249,6 +249,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Seleciona listas(candidaturas) na base de dados
+     *
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
@@ -305,20 +306,44 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return departments;
     }
 
+    public ArrayList<Department> selectPollingStation(int election_id) {
+        return selectDepartments("SELECT id, name FROM department, election_department " +
+                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
+    }
+
+    public ArrayList<Department> selectNoAssociatedPollingStation(int election_id) {
+        return selectDepartments("SELECT id, name FROM department WHERE department.hasmulticastserver = 1 " +
+                        "EXCEPT " +
+                "SELECT id, name FROM department, election_department " +
+                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
+    }
+
     public int countRowsBD(String table) {
         Connection conn = connectDB();
-        try{
+        try {
             Statement stmt = conn.createStatement();
             ResultSet res = stmt.executeQuery("SELECT COUNT(*) FROM " + table);
             int count = res.getInt(1);
             stmt.close();
             conn.close();
             return count;
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Erro a contar o número de linhas da tabela");
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public int numElections() {
+        return countRowsBD("election");
+    }
+
+    public void removePollingStation(int department_id) {
+        removeOnDB("election_department", "department_id", department_id);
+    }
+
+    public void insertPollingStation(int election_id, int department_id) {
+        insertElectionDepartment(election_id, department_id);
     }
 
     public String saySomething() throws RemoteException {

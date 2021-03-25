@@ -16,19 +16,24 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.sleep;
 
 public class RMIServer extends UnicastRemoteObject implements RMI {
-    private final int NUM_MULTICAST_SERVERS = 4;
+    private final int NUM_MULTICAST_SERVERS = 11;
 
 
     private final String SERVER_ADDRESS = "127.0.0.1";
     public final static int SERVER_PORT = 7001;
     public final static int RMI_PORT = 7000;
+    static ConcurrentHashMap<Integer, Notifier> notifiers;
+    private StatusChecker statcheck;
+
 
     public RMIServer() throws RemoteException {
         super();
+        notifiers = new ConcurrentHashMap<>();
     }
 
 
@@ -102,10 +107,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);", candidacy_id, cc_number));
     }
 
-    public boolean insertMulticastServer(int dep_id) {
-        return this.updateOnDB(String.format("INSERT INTO multicastserver(department_id) VALUES (%s)", dep_id));
-    }
-
     public ArrayList<Election> getElections() {
         return this.selectElections("SELECT * FROM election");
     }
@@ -144,12 +145,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public ArrayList<Department> getDepartments() {
         return this.selectDepartments("SELECT * FROM department");
-    }
-
-
-    public ArrayList<Department> popDepartment(ArrayList<Department> listDep, int id) {
-        listDep.remove(id - 1);
-        return listDep;
     }
 
     /**
@@ -307,13 +302,17 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public ArrayList<Department> selectPollingStation(int election_id) {
-        return selectDepartments("SELECT id, name FROM department, election_department " +
-                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
+        if (election_id == -1) {
+            return selectDepartments("SELECT id, name FROM department WHERE hasmulticastserver = 1");
+        } else {
+            return selectDepartments("SELECT id, name FROM department, election_department " +
+                    "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
+        }
     }
 
     public ArrayList<Department> selectNoAssociatedPollingStation(int election_id) {
         return selectDepartments("SELECT id, name FROM department WHERE department.hasmulticastserver = 1 " +
-                        "EXCEPT " +
+                "EXCEPT " +
                 "SELECT id, name FROM department, election_department " +
                 "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
     }
@@ -344,6 +343,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public void insertPollingStation(int election_id, int department_id) {
         insertElectionDepartment(election_id, department_id);
+    }
+
+    public boolean turnOffPollingStation(int department_id) {
+        return updateOnDB("UPDATE department SET hasMulticastServer = 1 WHERE id = " + department_id);
     }
 
     public String saySomething() throws RemoteException {
@@ -381,7 +384,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return ok;
     }
 
-    public String initializeMulticast(int dep_id) {
+    public String initializeMulticast(int dep_id, Notifier NOTIFIER) {
         int numMulticast = countRowsBD("department WHERE hasMulticastServer = 1");
         if (numMulticast < NUM_MULTICAST_SERVERS && countRowsBD("department WHERE hasMulticastServer IS NULL AND id = " + dep_id) != 0) {
             if (!updateOnDB("UPDATE department SET hasMulticastServer = 1 WHERE id = " + dep_id)) {
@@ -389,6 +392,14 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 return null;
             } else {
                 System.out.println("Mesa de voto criada com sucesso! :)");
+                synchronized (notifiers) {
+                    notifiers.put(dep_id, NOTIFIER);
+                }
+                try {
+                    notifiers.get(dep_id).ping();
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return selectDepartments("SELECT * FROM department WHERE id = " + dep_id).get(0).getName();
             }
         }
@@ -403,7 +414,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         try {
             RMIServer obj = new RMIServer();
             Registry r = LocateRegistry.createRegistry(this.RMI_PORT);
-            r.rebind("test", obj);
             r.rebind("clientMulticast", obj);
             r.rebind("admin", obj);
             System.out.println("RMI Server ready!");
@@ -452,6 +462,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
         }
         rmiServer.initializeRMI();
+        rmiServer.initializeStatusChecker();
         rmiServer.initializeUDP();
+    }
+
+    private void initializeStatusChecker() {
+        statcheck = new StatusChecker(notifiers);
     }
 }

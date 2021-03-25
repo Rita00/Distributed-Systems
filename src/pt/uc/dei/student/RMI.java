@@ -33,7 +33,7 @@ public interface RMI extends Remote {
 
     ArrayList<Department> getDepartments() throws java.rmi.RemoteException, InterruptedException;
 
-    String initializeMulticast(int dep_id) throws java.rmi.RemoteException, InterruptedException;
+    String initializeMulticast(int dep_id, Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Department> selectPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
@@ -46,6 +46,8 @@ public interface RMI extends Remote {
     void removePollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
 
     void insertPollingStation(int election_id, int department_id) throws java.rmi.RemoteException, InterruptedException;
+
+    boolean turnOffPollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
 
 }
 

@@ -37,7 +37,7 @@ public class VoteTerm extends Thread {
     }
 
     public static void main(String[] args) {
-        VoteTerm client = new VoteTerm("224.3.2.1",7001);
+        VoteTerm client = new VoteTerm("224.3.2.1",MulticastServer.MULTICAST_PORT);
         client.start();
     }
 }

@@ -15,7 +15,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.sleep;
@@ -46,35 +48,25 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param num_phone Número de telemóvel
      * @param address   Morada
      * @param num_cc    Número de cartão de cidadão
-     * @param ano_cc    validade do cartão de cidadão (ano)
-     * @param mes_cc    validade do cartão de cidadão (mes)
-     * @param dia_cc    validade do cartão de cidadão (dia)
+     * @param cc_validity Formato da data (ano, mes, dia)
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
-    public boolean insertPerson(String cargo, String pass, int dep, int num_phone, String address, int num_cc, int ano_cc, int mes_cc, int dia_cc) {
-        String data = String.format("%d-%d-%d 00:00:00", ano_cc, mes_cc, dia_cc);
+    public boolean insertPerson(String cargo, String pass, int dep, int num_phone, String address, int num_cc, String cc_validity) {
+        String data = String.format("%s 00:00:00", cc_validity);
         String sql = String.format("INSERT INTO person(job,password,department_id,phone,address,cc_number,cc_validity) VALUES('%s','%s',%s,%s,'%s',%s,'%s')", cargo, pass, dep, num_phone, address, num_cc, data);
+        if (sql == null) return false;
         return updateOnDB(sql);
     }
 
     /**
-     * @param anoIni    Inicio da eleição (ano)
-     * @param mesIni    Inicio da eleição (mes)
-     * @param diaIni    Inicio da eleição (dia)
-     * @param horaIni   Inicio da eleição (hora)
-     * @param minIni    Inicio da eleição (minuto)
-     * @param anoFim    Fim da eleição (ano)
-     * @param mesFim    Fim da eleição (mes)
-     * @param diaFim    Fim da eleição (dia)
-     * @param horaFim   Fim da eleição (hora)
-     * @param minFim    Fim da eleição (minuto)
      * @param titulo    Título da eleição
      * @param descricao Breve descrição da eleição
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
-    public int insertElection(int anoIni, int mesIni, int diaIni, int horaIni, int minIni, int anoFim, int mesFim, int diaFim, int horaFim, int minFim, String titulo, String descricao, String type_ele) {
-        String dataIni = String.format("%d-%d-%d %d:%d:00", anoIni, mesIni, diaIni, horaIni, minIni), dataFim = String.format("%d-%d-%d %d:%d:00", anoFim, mesFim, diaFim, horaFim, minFim);
+    public int insertElection(String begin_data, String end_data, String titulo, String descricao, String type_ele) {
+        String dataIni = String.format("%s:00", begin_data), dataFim = String.format("%s:00", end_data);
         String sql = String.format("INSERT INTO election(title,type,description,begin_date,end_date) VALUES('%s','%s','%s','%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
+        if (sql == null) return -1;
         Connection conn = connectDB();
         try {
             conn.setAutoCommit(false);

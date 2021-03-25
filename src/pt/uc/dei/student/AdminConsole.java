@@ -151,8 +151,8 @@ public class AdminConsole {
     public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
-        String pass, address;
-        int cargo = 0, ndep = 0, num_phone, num_cc, ano_cc, mes_cc, dia_cc;
+        String pass, address, cc_validity;
+        int cargo = 0, ndep = 0, num_phone, num_cc;
         while (cargo != 1 && cargo != 2 && cargo != 3) {
             System.out.println("Cargo: ");
             System.out.println("\t1 - Estudante");
@@ -180,12 +180,10 @@ public class AdminConsole {
         address = reader.readLine();
         System.out.print("Número do cartão de cidadão: ");
         num_cc = input.nextInt();
-        System.out.print("Validade do cartão de cidadão: ");
-        ano_cc = input.nextInt();
-        mes_cc = input.nextInt();
-        dia_cc = input.nextInt();
+        System.out.print("Validade do cartão de cidadão (YYYY-MM-DD): ");
+        cc_validity = reader.readLine();
         try {
-            if (!this.rmiServer.insertPerson(this.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, ano_cc, mes_cc, dia_cc)) {
+            if (!this.rmiServer.insertPerson(this.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, cc_validity)) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");
@@ -242,22 +240,14 @@ public class AdminConsole {
      * @throws IOException exceção de I/O
      */
     public void createElection() throws IOException {
-        int anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, type_ele = 0, restr = -1, ndep = -1;
-        String titulo, descricao;
+        int type_ele = 0, restr = -1, ndep = -1;
+        String titulo, descricao, begin_data, end_data;
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Início da Eleição: ");
-        anoIni = input.nextInt();
-        mesIni = input.nextInt();
-        diaIni = input.nextInt();
-        horaIni = input.nextInt();
-        minIni = input.nextInt();
-        System.out.println("Fim da Eleição: ");
-        anoFim = input.nextInt();
-        mesFim = input.nextInt();
-        diaFim = input.nextInt();
-        horaFim = input.nextInt();
-        minFim = input.nextInt();
+        System.out.print("Início da Eleição (YYYY-MM-DD HH:mm): ");
+        begin_data = reader.readLine();
+        System.out.print("Fim da Eleição (YYYY-MM-DD HH:mm): ");
+        end_data = reader.readLine();
         System.out.print("Título da Eleição: ");
         titulo = reader.readLine();
         System.out.print("Breve descrição: ");
@@ -293,7 +283,7 @@ public class AdminConsole {
             type_ele = input.nextInt();
         }
         try {
-            int id = this.rmiServer.insertElection(anoIni, mesIni, diaIni, horaIni, minIni, anoFim, mesFim, diaFim, horaFim, minFim, titulo, descricao, this.decideCargo(type_ele));
+            int id = this.rmiServer.insertElection(begin_data, end_data, titulo, descricao, this.decideCargo(type_ele));
             if (id == -1) {
                 System.out.println("Impossível inserir eleição :(");
             } else {

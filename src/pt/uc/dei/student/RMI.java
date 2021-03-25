@@ -51,5 +51,7 @@ public interface RMI extends Remote {
 
     boolean checkCorrectPhone(int num_phone) throws java.rmi.RemoteException, InterruptedException;
 
+    boolean checkCorrectCCNumber(int cc_number) throws java.rmi.RemoteException, InterruptedException;
+
 }
 

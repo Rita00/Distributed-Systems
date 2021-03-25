@@ -183,11 +183,18 @@ public class AdminConsole {
             }
         } catch (Exception ignored) {}
 
-
         System.out.print("Morada: ");
         address = reader.readLine();
+
         System.out.print("Número do cartão de cidadão: ");
         num_cc = input.nextInt();
+        try {
+            while (!rmiServer.checkCorrectCCNumber(num_cc)) {
+                System.out.print("Número de cartão de cidadão inválido! Insira novamente: ");
+                num_cc = input.nextInt();
+            }
+        } catch (Exception ignored) {}
+
         System.out.print("Validade do cartão de cidadão (YYYY-MM-DD): ");
         cc_validity = reader.readLine();
         try {

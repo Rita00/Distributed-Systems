@@ -402,6 +402,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return length == 9 && ((secondNum % 10) == 2 || (secondNum % 10) == 3 || (secondNum % 10) == 6 || (secondNum % 10) == 1) && secondNum / 10 == 9;
     }
 
+    public boolean checkCorrectCCNumber(int cc_number) {
+        int length = (int) (Math.log10(cc_number) + 1);
+        return length == 8;
+    }
     /**
      * Inicializa a ligação do Servidor RMI com o Servidor Multicast
      */

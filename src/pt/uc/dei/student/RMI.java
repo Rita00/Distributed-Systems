@@ -49,5 +49,7 @@ public interface RMI extends Remote {
 
     boolean turnOffPollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
 
+    boolean checkCorrectPhone(int num_phone) throws java.rmi.RemoteException, InterruptedException;
+
 }
 

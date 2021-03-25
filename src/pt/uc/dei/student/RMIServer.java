@@ -15,9 +15,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.sleep;
@@ -42,12 +40,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Função de inserção de uma determinada pessoa na base de dados
      *
-     * @param cargo     Cargo (Estudante, Docente ou Funcionário)
-     * @param pass      código de acesso para aceder a uma determinada eleição
-     * @param dep       Departamento a que a pessoa pertence
-     * @param num_phone Número de telemóvel
-     * @param address   Morada
-     * @param num_cc    Número de cartão de cidadão
+     * @param cargo       Cargo (Estudante, Docente ou Funcionário)
+     * @param pass        código de acesso para aceder a uma determinada eleição
+     * @param dep         Departamento a que a pessoa pertence
+     * @param num_phone   Número de telemóvel
+     * @param address     Morada
+     * @param num_cc      Número de cartão de cidadão
      * @param cc_validity Formato da data (ano, mes, dia)
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
@@ -396,6 +394,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
         }
         return null;
+    }
+
+    public boolean checkCorrectPhone(int num_phone) {
+        int length = (int) (Math.log10(num_phone) + 1);
+        int secondNum = num_phone / 10000000;
+        return length == 9 && ((secondNum % 10) == 2 || (secondNum % 10) == 3 || (secondNum % 10) == 6 || (secondNum % 10) == 1) && secondNum / 10 == 9;
     }
 
     /**

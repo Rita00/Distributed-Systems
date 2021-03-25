@@ -176,6 +176,14 @@ public class AdminConsole {
         }
         System.out.print("Número de telemóvel: ");
         num_phone = input.nextInt();
+        try {
+            while (!rmiServer.checkCorrectPhone(num_phone)) {
+                System.out.print("Número de telemóvel inválido! Insira novamente: ");
+                num_phone = input.nextInt();
+            }
+        } catch (Exception ignored) {}
+
+
         System.out.print("Morada: ");
         address = reader.readLine();
         System.out.print("Número do cartão de cidadão: ");

@@ -13,14 +13,14 @@ import java.util.Scanner;
 
 public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
-    private final int PORT_RMI = 7000;
-    private final int PORT_MULTICAST = 7001;
+    private final int PORT_MULTICAST = 7002;
     private final long SLEEP_TIME = 5000;
 
     private RMI rmiServer;
 
     public MulticastServer(RMI rmiServer) {
         this.rmiServer = rmiServer;
+        this.start();
     }
 
     public void run() {
@@ -64,7 +64,7 @@ public class MulticastServer extends Thread {
         int dep = -1;
         try {
             Scanner input = new Scanner(System.in);
-            RMI h = (RMI) LocateRegistry.getRegistry(7000).lookup("clientMulticast");
+            RMI h = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
             MulticastServer multicastServer = new MulticastServer(h);
             while (!(dep >= 1 && dep <= 11)) {
                 System.out.println("Departamento onde se localiza: ");
@@ -85,14 +85,5 @@ public class MulticastServer extends Thread {
             System.out.println("Exception in main: " + e);
             e.printStackTrace();
         }
-
-        // Works like a server of the voting terminals
-        /*MulticastServer server = new MulticastServer();
-        server.start();
-        try {
-            sleep(1000000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
     }
 }

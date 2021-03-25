@@ -24,8 +24,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
 
     private final String SERVER_ADDRESS = "127.0.0.1";
-    private final int SERVER_PORT = 7001;
-    private int REGISTRY_PORT = 7000;
+    public final static int SERVER_PORT = 7001;
+    public final static int RMI_PORT = 7000;
 
     public RMIServer() throws RemoteException {
         super();
@@ -402,7 +402,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         System.out.println("Becoming Primary Server!");
         try {
             RMIServer obj = new RMIServer();
-            Registry r = LocateRegistry.createRegistry(this.REGISTRY_PORT);
+            Registry r = LocateRegistry.createRegistry(this.RMI_PORT);
             r.rebind("test", obj);
             r.rebind("clientMulticast", obj);
             r.rebind("admin", obj);

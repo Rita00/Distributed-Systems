@@ -48,11 +48,12 @@ public class MulticastServer extends Thread {
             while (isON) {
                 String message = String.format("sender | %s ; department | %s ; message | hello", this.getName(), this.department.getId());
                 byte[] buffer = message.getBytes();
-
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
                 socket.send(packet);
                 socket.receive(packet); // Para o servidor receber mensagens
-                this.parseMessage(packet.toString());
+                if(packet.getLength()>0){
+                    this.parseMessage(new String(packet.getData(),0,packet.getLength()));
+                }
                 try {
                     sleep((long) (Math.random() * SLEEP_TIME));
                 } catch (InterruptedException ignored) { }
@@ -63,10 +64,11 @@ public class MulticastServer extends Thread {
     }
 
     private HashMap<String,String> parseMessage(String msg){
+        System.out.println(msg);
         HashMap<String,String> hash = new HashMap<String,String>();
         String[] dividedMessage = msg.split(" ; ");
         for(String token : dividedMessage){
-            String[] keyVal = token.split(" | ");
+            String[] keyVal = token.split(" \\| ");
             if(keyVal.length == 2){
                 hash.put(keyVal[0], keyVal[1]);
             }else{

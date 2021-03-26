@@ -18,7 +18,7 @@ public class MulticastServer extends Thread {
     private final long SLEEP_TIME = 5000;
     private boolean isON = true;
 
-    private int id;
+    private int multicastId;
     private RMI rmiServer;
     private Department department;
 
@@ -31,7 +31,7 @@ public class MulticastServer extends Thread {
     private void connect() throws InterruptedException {
         String depName =  this.department.getName();
         if (depName != null) {
-            System.out.printf("======== Mesa de Voto #%s (%s) ========%n",this.id ,depName);
+            System.out.printf("======== Mesa de Voto #%s (%s) ========%n",this.getMulticastId() ,depName);
             while (true) {
                 System.out.println("HelloClient: ");
                 sleep(1000);
@@ -46,14 +46,20 @@ public class MulticastServer extends Thread {
             InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
             while (isON) {
-                String message = String.format("sender | %s ; department | %s ; message | hello", this.getName(), this.department.getId());
+                String message = String.format("sender | multicast%s ; department | %s ; message | hello", this.getMulticastId(), this.department.getId());
                 byte[] buffer = message.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
                 socket.send(packet);
-                socket.receive(packet); // Para o servidor receber mensagens
-                if(packet.getLength()>0){
-                    this.parseMessage(new String(packet.getData(),0,packet.getLength()));
-                }
+                /*
+                RECEBER E PARSE DO PACOTE
+                 */
+                socket.receive(packet);
+                HashMap<String,String> msgHash = this.parseMessage(new String(packet.getData(),0,packet.getLength()));
+                /*
+                USAR A INFORMACOES DO PACOTE
+                 */
+                this.doThings(msgHash);
+
                 try {
                     sleep((long) (Math.random() * SLEEP_TIME));
                 } catch (InterruptedException ignored) { }
@@ -63,8 +69,14 @@ public class MulticastServer extends Thread {
         }
     }
 
+    private void doThings(HashMap<String, String> msgHash) {
+        //nao ler as suas proprias mensagens
+        if(!msgHash.get("sender").equals("multicast" + this.getMulticastId())){
+            System.out.println(msgHash.get("message"));
+        }
+    }
+
     private HashMap<String,String> parseMessage(String msg){
-        System.out.println(msg);
         HashMap<String,String> hash = new HashMap<String,String>();
         String[] dividedMessage = msg.split(" ; ");
         for(String token : dividedMessage){
@@ -85,9 +97,9 @@ public class MulticastServer extends Thread {
     }
 
 
-
-    public void setId(int id){
-        this.id=id;
+    public int getMulticastId(){ return this.multicastId;}
+    public void setMulticastId(int multicastId){
+        this.multicastId=multicastId;
     }
     public void setDepartment(Department department){
         this.department=department;
@@ -110,7 +122,7 @@ public class MulticastServer extends Thread {
                 dep = input.nextInt();
             }
             rmiServer.initializeMulticast(dep, multicastServer.NOTIFIER);
-            multicastServer.setId(dep);
+            multicastServer.setMulticastId(dep);
             multicastServer.setDepartment(departments.get(dep-1));
             /*
             LIGAR

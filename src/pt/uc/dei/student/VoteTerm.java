@@ -36,11 +36,16 @@ public class VoteTerm extends Thread {
                 byte[] buffer = sendMsg.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length,group, MULTICAST_PORT);
                 socket.send(packet);
+                /*
+                RECEBER E PARSE DO PACOTE
+                 */
                 socket.receive(packet);
-
-                //System.out.println("Received packet from " + packet.getAddress().getHostAddress() + ":" + packet.getPort() + " with message::");
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
-                this.parseMessage(recvMsg);
+                HashMap<String, String> msgHash = this.parseMessage(recvMsg);
+                /*
+                USAR A INFORMACOES DO PACOTE
+                 */
+                doThings(msgHash);
                 sleep(1000);
             }
         } catch (IOException | InterruptedException e) {
@@ -49,9 +54,14 @@ public class VoteTerm extends Thread {
     }
 
 
+    private void doThings(HashMap<String, String> msgHash) {
+        //so ler as mensagens do multicast
+        if(msgHash.get("sender").startsWith("multicast")){
+            System.out.println(msgHash.get("message"));
+        }
+    }
 
     private HashMap<String,String> parseMessage(String msg){
-        System.out.println(msg);
         HashMap<String,String> hash = new HashMap<String,String>();
         String[] dividedMessage = msg.split(" ; ");
         for(String token : dividedMessage){

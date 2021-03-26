@@ -370,7 +370,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public float getPercentVotesCandidacy(int id_election, int id_candidacy) {
-        return ((float)getVotesCandidacy(id_election, id_candidacy) / (float)countRowsBD("candidacy", "SUM(votes)")) * 100;
+        int totalVotes = countRowsBD("candidacy", "SUM(votes)") + getBlackVotes(id_election) + getNullVotes(id_election);
+        if (id_candidacy == -1) return ((float)getBlackVotes(id_election) / (float)totalVotes) * 100;
+        else return ((float)getVotesCandidacy(id_election, id_candidacy) / (float)totalVotes) * 100;
     }
 
     public String saySomething() throws RemoteException {

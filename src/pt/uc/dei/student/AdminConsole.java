@@ -89,7 +89,7 @@ public class AdminConsole {
                     System.out.print(OPTION_STRING);
                     election = input.nextInt();
                 }
-                System.out.println("\tVotos em branco: " + this.rmiServer.getBlackVotes(election));
+                System.out.printf("\tVotos em branco: %d  (%.2f)", this.rmiServer.getBlackVotes(election), this.rmiServer.getPercentVotesCandidacy(election, -1));
                 System.out.println("\tVotos nulos: " + this.rmiServer.getNullVotes(election));
                 listCandidacyWithVotes(election);
             }

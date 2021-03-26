@@ -51,9 +51,7 @@ public class MulticastServer extends Thread {
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
             while (isON) {
                 String message = String.format("sender | multicast-%s-%s ; destination | %s ; message | I'm Multicast", this.getMulticastId(), this.department.getId(),"voteterm");
-                byte[] buffer = message.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
-                socket.send(packet);
+                DatagramPacket packet = this.send(socket, group, message);
                 /*
                 RECEBER E PARSE DO PACOTE
                  */
@@ -62,7 +60,7 @@ public class MulticastServer extends Thread {
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
-                this.doThings(msgHash);
+                this.doThings(msgHash,socket,group);
 
                 try {
                     sleep((long) (Math.random() * SLEEP_TIME));
@@ -74,34 +72,49 @@ public class MulticastServer extends Thread {
         }
     }
 
-    private void doThings(HashMap<String, String> msgHash) {
+    private DatagramPacket send(MulticastSocket socket, InetAddress group, String message) {
+        byte[] buffer = message.getBytes();
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
+        try {
+            socket.send(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return packet;
+    }
+
+    private void doThings(HashMap<String, String> msgHash,MulticastSocket socket, InetAddress group) {
         //nao ler as suas proprias mensagens
         if (!msgHash.get("sender").startsWith("multicast")) {
             switch(msgHash.get("message")){
                 case "I'm VoteTerm":
 
                     break;
+                case "login":
+                    verifyLogin(msgHash.get("username"),msgHash.get("password"),socket,group);
+                    break;
             }
         }
+    }
+
+    private void verifyLogin(String username, String password,MulticastSocket socket, InetAddress group){
+        String message;
+        try {
+            if(this.rmiServer.getPerson(username, password)!=null){
+                message = String.format("sender | multicast-%s-%s ; destination | %s ; message | true", this.getMulticastId(), this.department.getId(),"voteterm");
+            }else{
+                message = String.format("sender | multicast-%s-%s ; destination | %s ; message | false", this.getMulticastId(), this.department.getId(),"voteterm");
+            }
+        }catch (RemoteException | InterruptedException e){
+            message = String.format("sender | multicast-%s-%s ; destination | %s ; message | false", this.getMulticastId(), this.department.getId(),"voteterm");
+        }
+        this.send(socket, group, message);
     }
 
     public void listDepart( ArrayList<Department> departments) {
         for (Department dep : departments) {
             System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
         }
-    }
-
-
-    public int getMulticastId() {
-        return this.multicastId;
-    }
-
-    public void setMulticastId(int multicastId) {
-        this.multicastId = multicastId;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
     }
 
     public void reconnectToRMI() {
@@ -114,6 +127,18 @@ public class MulticastServer extends Thread {
                 remoteException.printStackTrace();
             }
         }
+    }
+
+    public int getMulticastId() {
+        return this.multicastId;
+    }
+
+    public void setMulticastId(int multicastId) {
+        this.multicastId = multicastId;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public static void main(String[] args) {

@@ -105,6 +105,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = " + election_id);
     }
 
+    public Person getPerson(String username,String password) {
+        return this.selectPeople("SELECT * FROM person WHERE cc_number='"+username+"' AND password='"+password+"');").get(0);
+    }
     public ArrayList<Person> getPeople(int candidacy_id) {
         return this.selectPeople(
                 "SELECT *\n" +

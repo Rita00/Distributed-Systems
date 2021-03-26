@@ -48,7 +48,7 @@ public class VoteTerm extends Thread {
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
-                doThings(msgHash);
+                doThings(msgHash,socket,group);
                 sleep(1000);
             }
         } catch (IOException | InterruptedException e) {
@@ -57,7 +57,7 @@ public class VoteTerm extends Thread {
     }
 
 
-    private void doThings(HashMap<String, String> msgHash) {
+    private void doThings(HashMap<String, String> msgHash, MulticastSocket socket, InetAddress group) {
         //so ler as mensagens do multicast
         if(msgHash.get("sender").startsWith("multicast")){
             switch(msgHash.get("message")){
@@ -72,6 +72,44 @@ public class VoteTerm extends Thread {
         this.interrupt();
     }
 
+    private void login(MulticastSocket socket, InetAddress group) {
+        HashMap<String, String> msgHash;
+        boolean isFirstAttempt = true;
+        do {
+            if(!isFirstAttempt){
+                System.out.print("Wrong username or password");
+            }
+            isFirstAttempt=false;
+            /*
+            GET USERNAME PASSWORD
+             */
+            Scanner input = new Scanner(System.in);
+            System.out.print("Username: ");
+            String username = input.nextLine();
+            System.out.print("Password: ");
+            String password = input.nextLine();
+            String sendMsg = String.format("sender | voteterm-%s-%s ; destination | %s ; message | login ; username | %s ; password | %s", this.getVoteTermId(), this.getDepartmentId(), "multicast", username, password);
+            byte[] buffer = sendMsg.getBytes();
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
+            /*
+            SEND TO MULTICAST FOR VERIFICATION
+            */
+            try {
+                socket.send(packet);
+                socket.receive(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String recvMsg = new String(packet.getData(), 0, packet.getLength());
+            msgHash = Utilitary.parseMessage(recvMsg);
+        } while (msgHash.get("message") != "false");
+        System.out.print("Successfully Logged In");
+        this.accessVotingForm();
+    }
+
+    private void accessVotingForm() {
+        //TODO;
+    }
 
     public int getVoteTermId(){return this.voteTermId;}
     public int getDepartmentId(){return this.departmentId;}

@@ -35,7 +35,7 @@ public class VoteTerm extends Thread {
             InetAddress group = InetAddress.getByName(this.MULTICAST_ADDRESS);
             socket.joinGroup(group);
             while (true) {
-                String sendMsg = String.format("sender | term-%s-%s ; destination | %s ; message | i'm a voteTerm", this.getVoteTermId(), this.getDepartmentId(),1);
+                String sendMsg = String.format("sender | voteterm-%s-%s ; destination | %s ; message | I'm VoteTerm", this.getVoteTermId(), this.getDepartmentId(),"multicast");
                 byte[] buffer = sendMsg.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length,group, MULTICAST_PORT);
                 socket.send(packet);
@@ -60,10 +60,17 @@ public class VoteTerm extends Thread {
     private void doThings(HashMap<String, String> msgHash) {
         //so ler as mensagens do multicast
         if(msgHash.get("sender").startsWith("multicast")){
-            System.out.println(msgHash.get("message"));
+            switch(msgHash.get("message")){
+                case "stop":
+                    stopTerminal();
+                    break;
+            }
         }
     }
 
+    private void stopTerminal(){
+        this.interrupt();
+    }
 
 
     public int getVoteTermId(){return this.voteTermId;}

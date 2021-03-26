@@ -50,7 +50,7 @@ public class MulticastServer extends Thread {
             InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
             while (isON) {
-                String message = String.format("sender | multicast-%s-%s ; destination | %s ; message | hello", this.getMulticastId(), this.department.getId(),1);
+                String message = String.format("sender | multicast-%s-%s ; destination | %s ; message | I'm Multicast", this.getMulticastId(), this.department.getId(),"voteterm");
                 byte[] buffer = message.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
                 socket.send(packet);
@@ -76,8 +76,12 @@ public class MulticastServer extends Thread {
 
     private void doThings(HashMap<String, String> msgHash) {
         //nao ler as suas proprias mensagens
-        if (!msgHash.get("sender").equals("multicast" + this.getMulticastId())) {
-            System.out.println(msgHash.get("message"));
+        if (!msgHash.get("sender").startsWith("multicast")) {
+            switch(msgHash.get("message")){
+                case "I'm VoteTerm":
+
+                    break;
+            }
         }
     }
 

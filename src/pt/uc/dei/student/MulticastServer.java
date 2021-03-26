@@ -132,14 +132,15 @@ public class MulticastServer extends Thread {
                 System.out.print(">>> ");
                 dep = input.nextInt();
             }
-            rmiServer.initializeMulticast(dep, multicastServer.NOTIFIER);
-            multicastServer.setMulticastId(dep);
-            multicastServer.setDepartment(departments.get(dep - 1));
+            if (rmiServer.initializeMulticast(dep, multicastServer.NOTIFIER) != null) {
+                multicastServer.setMulticastId(dep);
+                multicastServer.setDepartment(departments.get(dep - 1));
             /*
             LIGAR
              */
-            multicastServer.start();
-            multicastServer.connect();
+                multicastServer.start();
+                multicastServer.connect();
+            }
             System.exit(0);
         } catch (Exception e) {
             while (true) {

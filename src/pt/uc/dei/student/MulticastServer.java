@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public class MulticastServer extends Thread {
     private RMI rmiServer;
     private Department department;
 
+    static MulticastServer multicastServer;
+
     private final NotifierCallBack NOTIFIER = new NotifierCallBack();
 
     public MulticastServer(RMI rmiServer) throws RemoteException {
@@ -29,9 +32,9 @@ public class MulticastServer extends Thread {
     }
 
     private void connect() throws InterruptedException {
-        String depName =  this.department.getName();
+        String depName = this.department.getName();
         if (depName != null) {
-            System.out.printf("======== Mesa de Voto #%s (%s) ========%n",this.getMulticastId() ,depName);
+            System.out.printf("======== Mesa de Voto #%s (%s) ========%n", this.getMulticastId(), depName);
             while (true) {
                 System.out.println("HelloClient: ");
                 sleep(1000);
@@ -54,7 +57,7 @@ public class MulticastServer extends Thread {
                 RECEBER E PARSE DO PACOTE
                  */
                 socket.receive(packet);
-                HashMap<String,String> msgHash = this.parseMessage(new String(packet.getData(),0,packet.getLength()));
+                HashMap<String, String> msgHash = this.parseMessage(new String(packet.getData(), 0, packet.getLength()));
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
@@ -62,7 +65,8 @@ public class MulticastServer extends Thread {
 
                 try {
                     sleep((long) (Math.random() * SLEEP_TIME));
-                } catch (InterruptedException ignored) { }
+                } catch (InterruptedException ignored) {
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,38 +75,54 @@ public class MulticastServer extends Thread {
 
     private void doThings(HashMap<String, String> msgHash) {
         //nao ler as suas proprias mensagens
-        if(!msgHash.get("sender").equals("multicast" + this.getMulticastId())){
+        if (!msgHash.get("sender").equals("multicast" + this.getMulticastId())) {
             System.out.println(msgHash.get("message"));
         }
     }
 
-    private HashMap<String,String> parseMessage(String msg){
-        HashMap<String,String> hash = new HashMap<String,String>();
+    private HashMap<String, String> parseMessage(String msg) {
+        HashMap<String, String> hash = new HashMap<String, String>();
         String[] dividedMessage = msg.split(" ; ");
-        for(String token : dividedMessage){
+        for (String token : dividedMessage) {
             String[] keyVal = token.split(" \\| ");
-            if(keyVal.length == 2){
+            if (keyVal.length == 2) {
                 hash.put(keyVal[0], keyVal[1]);
-            }else{
+            } else {
                 System.out.println("Error with tokens");
             }
         }
         return hash;
     }
 
-    public void listDepart( ArrayList<Department> departments) {
+    public void listDepart(ArrayList<Department> departments) {
         for (Department dep : departments) {
             System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
         }
     }
 
 
-    public int getMulticastId(){ return this.multicastId;}
-    public void setMulticastId(int multicastId){
-        this.multicastId=multicastId;
+    public int getMulticastId() {
+        return this.multicastId;
     }
-    public void setDepartment(Department department){
-        this.department=department;
+
+    public void setMulticastId(int multicastId) {
+        this.multicastId = multicastId;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public void reconnectToRMI() {
+        while (true) {
+            try {
+                RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
+                multicastServer = new MulticastServer(rmiServer);
+                break;
+            } catch (RemoteException | NotBoundException remoteException) {
+                remoteException.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -110,7 +130,7 @@ public class MulticastServer extends Thread {
             int dep = -1;
             Scanner input = new Scanner(System.in);
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-            MulticastServer multicastServer = new MulticastServer(rmiServer);
+            multicastServer = new MulticastServer(rmiServer);
             /*
             SETUP
              */
@@ -123,7 +143,7 @@ public class MulticastServer extends Thread {
             }
             rmiServer.initializeMulticast(dep, multicastServer.NOTIFIER);
             multicastServer.setMulticastId(dep);
-            multicastServer.setDepartment(departments.get(dep-1));
+            multicastServer.setDepartment(departments.get(dep - 1));
             /*
             LIGAR
              */
@@ -131,8 +151,15 @@ public class MulticastServer extends Thread {
             multicastServer.connect();
             System.exit(0);
         } catch (Exception e) {
-            System.out.println("Exception in main: " + e);
-            e.printStackTrace();
+            while (true) {
+                try {
+                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
+                    multicastServer = new MulticastServer(rmiServer);
+                    break;
+                } catch (RemoteException | NotBoundException remoteException) {
+                    remoteException.printStackTrace();
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.Department;
+import pt.uc.dei.student.others.Utilitary;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -49,7 +50,7 @@ public class MulticastServer extends Thread {
             InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
             while (isON) {
-                String message = String.format("sender | multicast%s ; department | %s ; message | hello", this.getMulticastId(), this.department.getId());
+                String message = String.format("sender | multicast-%s-%s ; destination | %s ; message | hello", this.getMulticastId(), this.department.getId(),1);
                 byte[] buffer = message.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
                 socket.send(packet);
@@ -57,7 +58,7 @@ public class MulticastServer extends Thread {
                 RECEBER E PARSE DO PACOTE
                  */
                 socket.receive(packet);
-                HashMap<String, String> msgHash = this.parseMessage(new String(packet.getData(), 0, packet.getLength()));
+                HashMap<String,String> msgHash = Utilitary.parseMessage(new String(packet.getData(),0,packet.getLength()));
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
@@ -80,21 +81,7 @@ public class MulticastServer extends Thread {
         }
     }
 
-    private HashMap<String, String> parseMessage(String msg) {
-        HashMap<String, String> hash = new HashMap<String, String>();
-        String[] dividedMessage = msg.split(" ; ");
-        for (String token : dividedMessage) {
-            String[] keyVal = token.split(" \\| ");
-            if (keyVal.length == 2) {
-                hash.put(keyVal[0], keyVal[1]);
-            } else {
-                System.out.println("Error with tokens");
-            }
-        }
-        return hash;
-    }
-
-    public void listDepart(ArrayList<Department> departments) {
+    public void listDepart( ArrayList<Department> departments) {
         for (Department dep : departments) {
             System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
         }

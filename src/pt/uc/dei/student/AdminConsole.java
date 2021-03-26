@@ -540,9 +540,9 @@ public class AdminConsole {
                 ArrayList<Person> people = this.rmiServer.getPeople(candidacy.getId());
                 //listar pessoas
                 if (people.size() > 0) {
-                    System.out.println("Remover a pessoa com o CC:");
+                    System.out.println("Remover Sra./Sr.:");
                     for (Person p : people) {
-                        System.out.printf("\t(%s)- %s%n", people.indexOf(p) + 1, p.getCc_number());
+                        System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1,p.getName() ,p.getCc_number());
                     }
                 } else {
                     System.out.println("A lista não tem pessoas\n");

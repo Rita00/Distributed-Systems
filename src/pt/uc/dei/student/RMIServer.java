@@ -50,8 +50,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
     public boolean insertPerson(String name, String cargo, String pass, int dep, int num_phone, String address, int num_cc, String cc_validity) {
-        String data = String.format("%s 00:00:00", cc_validity);
-        String sql = String.format("INSERT INTO person(name,job,password,department_id,phone,address,cc_number,cc_validity) VALUES('%s','%s','%s',%s,%s,'%s',%s,'%s')", name, cargo, pass, dep, num_phone, address, num_cc, data);
+        String sql = String.format("INSERT INTO person(name,job,password,department_id,phone,address,cc_number,cc_validity) VALUES('%s','%s','%s',%s,%s,'%s',%s,'%s')", name, cargo, pass, dep, num_phone, address, num_cc, cc_validity);
         if (sql == null) return false;
         return updateOnDB(sql);
     }
@@ -249,13 +248,14 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 people.add(new Person(
-                        rs.getString("address"),
+                        rs.getString("name"),
                         rs.getInt("cc_number"),
-                        rs.getInt("cc_validity"),
-                        rs.getInt("department_id"),
-                        rs.getString("job"),
+                        rs.getString("cc_validity"),
                         rs.getString("password"),
-                        rs.getInt("phone")
+                        rs.getString("address"),
+                        rs.getInt("phone"),
+                        rs.getString("job"),
+                        rs.getInt("department_id")
                 ));
             }
             stmt.close();

@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import pt.uc.dei.student.elections.Department;
+import pt.uc.dei.student.others.Utilitary;
+
+import static pt.uc.dei.student.others.Utilitary.parseMessage;
 
 /**
  * Clientes do Multicast Server (Terminais de Voto)
@@ -20,8 +23,8 @@ public class VoteTerm extends Thread {
     private int voteTermId;
     private int departmentId;
 
-    VoteTerm(int voteTermId, int departmentId ,String multicastAddress, int multicastPort){
-        this.voteTermId=voteTermId;
+    VoteTerm(int departmentId ,String multicastAddress, int multicastPort){
+        this.voteTermId=(int)Math.round(Math.random()*Integer.MAX_VALUE)+1;
         this.departmentId=departmentId;
     	this.MULTICAST_ADDRESS=multicastAddress;
     	this.MULTICAST_PORT=multicastPort;
@@ -32,7 +35,7 @@ public class VoteTerm extends Thread {
             InetAddress group = InetAddress.getByName(this.MULTICAST_ADDRESS);
             socket.joinGroup(group);
             while (true) {
-                String sendMsg = String.format("sender | %s ; department | %s ; message | i'm a voteTerm", this.getVoteTermId(), this.getDepartmentId());
+                String sendMsg = String.format("sender | term-%s-%s ; destination | %s ; message | i'm a voteTerm", this.getVoteTermId(), this.getDepartmentId(),1);
                 byte[] buffer = sendMsg.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length,group, MULTICAST_PORT);
                 socket.send(packet);
@@ -41,7 +44,7 @@ public class VoteTerm extends Thread {
                  */
                 socket.receive(packet);
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
-                HashMap<String, String> msgHash = this.parseMessage(recvMsg);
+                HashMap<String, String> msgHash = Utilitary.parseMessage(recvMsg);
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
@@ -61,27 +64,14 @@ public class VoteTerm extends Thread {
         }
     }
 
-    private HashMap<String,String> parseMessage(String msg){
-        HashMap<String,String> hash = new HashMap<String,String>();
-        String[] dividedMessage = msg.split(" ; ");
-        for(String token : dividedMessage){
-            String[] keyVal = token.split(" \\| ");
-            if(keyVal.length == 2){
-                hash.put(keyVal[0], keyVal[1]);
-            }else{
-                System.out.println("Error with tokens");
-            }
-        }
-        return hash;
-    }
+
 
     public int getVoteTermId(){return this.voteTermId;}
     public int getDepartmentId(){return this.departmentId;}
 
     public static void main(String[] args) {
-        int id = 123;
         int departmentId = 1;
-        VoteTerm client = new VoteTerm(id,departmentId,"224.3.2.1",MulticastServer.MULTICAST_PORT);
+        VoteTerm client = new VoteTerm(departmentId,"224.3.2.1",MulticastServer.MULTICAST_PORT);
         client.start();
     }
 }

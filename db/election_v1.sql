@@ -29,6 +29,7 @@ FOREIGN KEY (election_id) REFERENCES election(id)
 );
 
 CREATE TABLE person (
+name    VARCHAR(512) NOT NULL,
 job		 VARCHAR(512) NOT NULL,
 password	 VARCHAR(512),
 department_id INTEGER NOT NULL,

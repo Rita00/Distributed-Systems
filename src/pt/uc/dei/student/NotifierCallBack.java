@@ -9,7 +9,6 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
     }
 
     public boolean ping()  throws RemoteException{
-        System.out.println("teste");
         return true;
     }
 }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public interface RMI extends Remote {
     String saySomething() throws java.rmi.RemoteException, InterruptedException;
 
-    boolean insertPerson(String cargo, String pass, int dep, int num_phone, String address, int num_cc, String cc_validity) throws java.rmi.RemoteException, InterruptedException;
+    boolean insertPerson(String name, String cargo, String pass, int dep, int num_phone, String address, int num_cc, String cc_validity) throws java.rmi.RemoteException, InterruptedException;
 
     int insertElection(String begin_data, String end_data, String titulo, String descricao, String type_ele) throws java.rmi.RemoteException, InterruptedException;
 

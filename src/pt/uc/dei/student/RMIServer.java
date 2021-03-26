@@ -49,9 +49,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param cc_validity Formato da data (ano, mes, dia)
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
-    public boolean insertPerson(String cargo, String pass, int dep, int num_phone, String address, int num_cc, String cc_validity) {
+    public boolean insertPerson(String name, String cargo, String pass, int dep, int num_phone, String address, int num_cc, String cc_validity) {
         String data = String.format("%s 00:00:00", cc_validity);
-        String sql = String.format("INSERT INTO person(job,password,department_id,phone,address,cc_number,cc_validity) VALUES('%s','%s',%s,%s,'%s',%s,'%s')", cargo, pass, dep, num_phone, address, num_cc, data);
+        String sql = String.format("INSERT INTO person(name,job,password,department_id,phone,address,cc_number,cc_validity) VALUES('%s','%s','%s',%s,%s,'%s',%s,'%s')", name, cargo, pass, dep, num_phone, address, num_cc, data);
         if (sql == null) return false;
         return updateOnDB(sql);
     }

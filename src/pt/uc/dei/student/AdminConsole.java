@@ -203,8 +203,10 @@ public class AdminConsole {
     public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
-        String pass, address, cc_validity;
+        String pass, address, cc_validity, nome;
         int cargo = 0, ndep = 0, num_phone, num_cc;
+        System.out.print("Nome: ");
+        nome = reader.readLine();
         while (cargo != 1 && cargo != 2 && cargo != 3) {
             System.out.println("Cargo: ");
             System.out.println("\t1 - Estudante");
@@ -250,7 +252,7 @@ public class AdminConsole {
         System.out.print("Validade do cartão de cidadão (YYYY-MM-DD): ");
         cc_validity = reader.readLine();
         try {
-            if (!this.rmiServer.insertPerson(this.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, cc_validity)) {
+            if (!this.rmiServer.insertPerson(nome, this.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, cc_validity)) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");

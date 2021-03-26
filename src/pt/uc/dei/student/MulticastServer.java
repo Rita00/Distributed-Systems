@@ -10,6 +10,7 @@ import java.net.MulticastSocket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -19,6 +20,7 @@ public class MulticastServer extends Thread {
     public final static int MULTICAST_PORT = 7002;
     private final long SLEEP_TIME = 5000;
     private boolean isON = true;
+    private final String OPTION_STRING = ">>> ";
 
     private int multicastId;
     private RMI rmiServer;
@@ -32,14 +34,35 @@ public class MulticastServer extends Thread {
         this.rmiServer = rmiServer;
     }
 
+    public void menuPollingStation() {
+        int command = -1;
+        Scanner input = new Scanner(System.in);
+        while (!(command >= 1 && command <= 3)) {
+            System.out.println("Identificação de eleitor: ");
+            System.out.println("\tPesquisar por: ");
+            System.out.println("\t\t(1)- Departamento");
+            System.out.println("\t\t(2)- Morada");
+            System.out.println("\t\t(3)- Número de cartão de cidadão");
+            System.out.print(OPTION_STRING);
+            command = input.nextInt();
+        }
+        switch (command) {
+            case 1:
+
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            default:
+                break;
+        }
+    }
     private void connect() throws InterruptedException {
         String depName = this.department.getName();
         if (depName != null) {
             System.out.printf("======== Mesa de Voto #%s (%s) ========%n", this.getMulticastId(), depName);
-            while (true) {
-                System.out.println("HelloClient: ");
-                sleep(1000);
-            }
+            menuPollingStation();
         }
     }
 

@@ -18,6 +18,7 @@ INSERT INTO department(id,name) VALUES(NULL, 'Departamento de Matemática');
 INSERT INTO department(id,name) VALUES(NULL, 'Departamento de Química');
 
 INSERT INTO election(id,title, type, description, begin_date, end_date) VALUES (NULL,'NEI','students','Eleicoes do NEI','2021-03-20 00:00:00','2021-05-31 23:59:59');
+INSERT INTO election(id,title, type, description, begin_date, end_date) VALUES (NULL,'NEI','students','Eleicoes do NEI','2021-03-20 00:00:00','2021-05-31 23:59:59');
 INSERT INTO election_department(election_id,department_id) VALUES (1,1);
 INSERT INTO election_department(election_id,department_id) VALUES (1,4);
 INSERT INTO election_department(election_id,department_id) VALUES (1,3);

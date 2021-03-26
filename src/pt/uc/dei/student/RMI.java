@@ -39,7 +39,7 @@ public interface RMI extends Remote {
 
     ArrayList<Department> selectNoAssociatedPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
-    int countRowsBD(String sql) throws java.rmi.RemoteException, InterruptedException;
+    int countRowsBD(String sql, String returnCount) throws java.rmi.RemoteException, InterruptedException;
 
     int numElections() throws java.rmi.RemoteException, InterruptedException;
 
@@ -52,6 +52,16 @@ public interface RMI extends Remote {
     boolean checkCorrectPhone(int num_phone) throws java.rmi.RemoteException, InterruptedException;
 
     boolean checkCorrectCCNumber(int cc_number) throws java.rmi.RemoteException, InterruptedException;
+
+    ArrayList<Election> getEndedElections() throws java.rmi.RemoteException, InterruptedException;
+
+    int getBlackVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
+
+    int getNullVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
+
+    int getVotesCandidacy(int id_election, int id_candidacy) throws java.rmi.RemoteException, InterruptedException;
+
+    float getPercentVotesCandidacy(int id_election, int id_candidacy) throws java.rmi.RemoteException, InterruptedException;
 
 }
 

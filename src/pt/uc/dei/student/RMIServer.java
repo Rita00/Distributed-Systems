@@ -307,11 +307,14 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
     }
 
-    public int countRowsBD(String table) {
+    public int countRowsBD(String sql, String returnCount) {
         Connection conn = connectDB();
         try {
             Statement stmt = conn.createStatement();
-            ResultSet res = stmt.executeQuery("SELECT COUNT(*) FROM " + table);
+            ResultSet res;
+            if (returnCount == null)
+                res = stmt.executeQuery("SELECT COUNT(*) FROM " + sql);
+            else res = stmt.executeQuery("SELECT " + returnCount + " FROM " + sql);
             int count = res.getInt(1);
             stmt.close();
             conn.close();
@@ -324,7 +327,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public int numElections() {
-        return countRowsBD("election");
+        return countRowsBD("election", null);
     }
 
     public void removePollingStation(int department_id) {
@@ -337,6 +340,37 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public boolean turnOffPollingStation(int department_id) {
         return updateOnDB("UPDATE department SET hasMulticastServer = null WHERE id = " + department_id);
+    }
+
+    public boolean checkCorrectPhone(int num_phone) {
+        int length = (int) (Math.log10(num_phone) + 1);
+        int secondNum = num_phone / 10000000;
+        return length == 9 && ((secondNum % 10) == 2 || (secondNum % 10) == 3 || (secondNum % 10) == 6 || (secondNum % 10) == 1) && secondNum / 10 == 9;
+    }
+
+    public boolean checkCorrectCCNumber(int cc_number) {
+        int length = (int) (Math.log10(cc_number) + 1);
+        return length == 8;
+    }
+
+    public ArrayList<Election> getEndedElections() {
+        return selectElections("SELECT * FROM election WHERE end_date < date('now')");
+    }
+
+    public int getBlackVotes(int id_election) {
+        return countRowsBD("election WHERE id = " + id_election, "blank_votes");
+    }
+
+    public int getNullVotes(int id_election) {
+        return countRowsBD("election WHERE id = " + id_election, "null_votes");
+    }
+
+    public int getVotesCandidacy(int id_election, int id_candidacy) {
+        return countRowsBD("candidacy WHERE id = " + id_candidacy + " and election_id = " + id_election, "votes");
+    }
+
+    public float getPercentVotesCandidacy(int id_election, int id_candidacy) {
+        return ((float)getVotesCandidacy(id_election, id_candidacy) / (float)countRowsBD("candidacy", "SUM(votes)")) * 100;
     }
 
     public String saySomething() throws RemoteException {
@@ -375,8 +409,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public String initializeMulticast(int dep_id, Notifier NOTIFIER) {
-        int numMulticast = countRowsBD("department WHERE hasMulticastServer = 1");
-        if (numMulticast < NUM_MULTICAST_SERVERS && countRowsBD("department WHERE hasMulticastServer IS NULL AND id = " + dep_id) != 0) {
+        int numMulticast = countRowsBD("department WHERE hasMulticastServer = 1", null);
+        if (numMulticast < NUM_MULTICAST_SERVERS && countRowsBD("department WHERE hasMulticastServer IS NULL AND id = " + dep_id, null) != 0) {
             if (!updateOnDB("UPDATE department SET hasMulticastServer = 1 WHERE id = " + dep_id)) {
                 System.out.println("Impossível adicionar mesa de voto! :(");
                 return null;
@@ -396,16 +430,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return null;
     }
 
-    public boolean checkCorrectPhone(int num_phone) {
-        int length = (int) (Math.log10(num_phone) + 1);
-        int secondNum = num_phone / 10000000;
-        return length == 9 && ((secondNum % 10) == 2 || (secondNum % 10) == 3 || (secondNum % 10) == 6 || (secondNum % 10) == 1) && secondNum / 10 == 9;
-    }
-
-    public boolean checkCorrectCCNumber(int cc_number) {
-        int length = (int) (Math.log10(cc_number) + 1);
-        return length == 8;
-    }
     /**
      * Inicializa a ligação do Servidor RMI com o Servidor Multicast
      */

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -22,7 +23,7 @@ public class AdminConsole {
     private final int EDIT = -1;
     private final int REMOVE = -1;
     private final int ADD = -2;
-
+    private static DecimalFormat df = new DecimalFormat("0.00");
 
     private RMI rmiServer;
 
@@ -45,6 +46,7 @@ public class AdminConsole {
                 System.out.println("\t(2)- Criar Eleição");
                 System.out.println("\t(3)- Gerir Eleição");
                 System.out.println("\t(4)- Gerir Mesas de Voto");
+                System.out.println("\t(5)- Consultar resultados detalhados de eleições passadas");
                 System.out.println("(0)- Sair");
                 System.out.print(OPTION_STRING);
                 command = input.nextInt();
@@ -59,7 +61,11 @@ public class AdminConsole {
                         this.listElectionsToManage();
                         break;
                     case 4:
-                        menuMesaVoto();
+                        this.menuMesaVoto();
+                        break;
+                    case 5:
+                        this.electionsResults();
+                        break;
                     default:
                         break;
                 }
@@ -69,6 +75,45 @@ public class AdminConsole {
             this.admin(-1);
         }
 
+    }
+
+    public void electionsResults() {
+        int election = 0;
+        Scanner input = new Scanner(System.in);
+        try {
+            ArrayList<Election> elections = this.rmiServer.getEndedElections();
+            if (elections.size() != 0) {
+                while (!hasElection(election, elections)) {
+                    System.out.println("\tEscolha a eleição: ");
+                    listElections(elections);
+                    System.out.print(OPTION_STRING);
+                    election = input.nextInt();
+                }
+                System.out.println("\tVotos em branco: " + this.rmiServer.getBlackVotes(election));
+                System.out.println("\tVotos nulos: " + this.rmiServer.getNullVotes(election));
+                listCandidacyWithVotes(election);
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void listCandidacyWithVotes(int id_election) {
+        try {
+            ArrayList<Candidacy> candidates = this.rmiServer.getCandidacies(id_election);
+            if (candidates != null) {
+                for (Candidacy cand : candidates) {
+                    System.out.println("\tLista " + cand.getName());
+                    System.out.println("\t\tNúmero total de votos: " + this.rmiServer.getVotesCandidacy(id_election, cand.getId()));
+                    System.out.printf("\t\tPercentagem de votos: %.2f%%", this.rmiServer.getPercentVotesCandidacy(id_election, cand.getId()));
+                    System.out.println("\n");
+                }
+            } else {
+                System.out.println("\tSem candidatos");
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void menuMesaVoto() {
@@ -138,6 +183,13 @@ public class AdminConsole {
     public boolean hasDep(int dep, ArrayList<Department> departments) {
         for (Department department : departments) {
             if (department.getId() == dep) return true;
+        }
+        return false;
+    }
+
+    public boolean hasElection(int election, ArrayList<Election> elections) {
+        for (Election ele : elections) {
+            if (ele.getId() == election) return true;
         }
         return false;
     }

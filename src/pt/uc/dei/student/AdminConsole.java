@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -198,7 +199,8 @@ public class AdminConsole {
     public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
-        String pass, address, cc_validity, nome;
+        String pass, address, nome;
+        LocalDate cc_validity;
         int cargo = 0, ndep = 0, num_phone, num_cc;
         System.out.print("Nome: ");
         nome = reader.readLine();
@@ -243,11 +245,12 @@ public class AdminConsole {
                 num_cc = input.nextInt();
             }
         } catch (Exception ignored) {}
-
         System.out.print("Validade do cartão de cidadão (YYYY-MM-DD): ");
-        cc_validity = reader.readLine();
+        while((cc_validity = Utilitary.parseDate(reader.readLine()))==null) {
+            System.out.print("Data de validade do CC inválida, use este formato (YYYY-MM-DD): ");
+        }
         try {
-            if (!this.rmiServer.insertPerson(nome, this.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, cc_validity)) {
+            if (!this.rmiServer.insertPerson(nome, this.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, cc_validity.toString())) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");
@@ -518,7 +521,7 @@ public class AdminConsole {
                 if (people.size() > 0) {
                     System.out.println("Remover Sra./Sr.:");
                     for (Person p : people) {
-                        System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1,p.getName() ,p.getCc_number());
+                        System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1,p.getName() ,p.getCensoredCc_number(4));
                     }
                 } else {
                     System.out.println("A lista não tem pessoas\n");

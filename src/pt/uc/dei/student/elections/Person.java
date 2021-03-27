@@ -52,6 +52,23 @@ public class Person implements Serializable {
      */
     public int getCc_number() { return cc_number; }
     /**
+     * Getter para o numero de cartao de cidadao censurado da pessoa
+     * @param n numero de digitos a censurar
+     * @return numero de cartao de cidadao da pessoa censurado ou sem censura se o
+     *         parametro não é inferior ao tamanho do numero do cartão de cidadão
+     */
+    public String getCensoredCc_number(int n) {
+        String str = String.format("%s",this.cc_number);
+        String aux="";
+        int size = str.length();
+        if(n<size){
+            for(int i=n;i<size;i++){aux += "*";}
+            str = str.substring(n, size);
+            return aux+str;
+        }
+        return String.format("%s",this.cc_number);
+    }
+    /**
      * Getter para a validade do cartao de cidadao
      * @return validade do cartao de cidadao
      */

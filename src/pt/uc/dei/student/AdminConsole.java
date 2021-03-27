@@ -63,7 +63,7 @@ public class AdminConsole {
                         this.listElectionsToManage();
                         break;
                     case 4:
-                        this.menuMesaVoto();
+                        this.listElectionToManagePollingStation();
                         break;
                     case 5:
                         this.electionsResults();
@@ -88,8 +88,12 @@ public class AdminConsole {
                 while (!this.rmiServer.hasElection(election, elections)) {
                     System.out.println("\tEscolha a eleição: ");
                     Utilitary.listElections(elections);
+                    System.out.println("(" + RETURN + ")-  Voltar");
                     System.out.print(OPTION_STRING);
                     election = input.nextInt();
+                    if(election==0){
+                        return;
+                    }
                 }
                 System.out.printf("\tVotos em branco: %d  (%.2f%%)\n", this.rmiServer.getBlackVotes(election), this.rmiServer.getPercentVotesCandidacy(election, -1));
                 System.out.println("\tVotos nulos: " + this.rmiServer.getNullVotes(election));
@@ -101,6 +105,8 @@ public class AdminConsole {
     }
 
     public void listCandidacyWithVotes(int id_election) {
+        Scanner input = new Scanner(System.in);
+        int command=-1;
         try {
             ArrayList<Candidacy> candidates = this.rmiServer.getCandidacies(id_election);
             if (candidates != null) {
@@ -113,72 +119,114 @@ public class AdminConsole {
             } else {
                 System.out.println("\tSem candidatos");
             }
+            while(command!=0){
+                System.out.println("(" + RETURN + ")-  Voltar");
+                System.out.print(OPTION_STRING);
+                command = input.nextInt();
+                if(command==0){
+                    this.electionsResults();
+                    return;
+                }//other cases if needed
+            }
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void menuMesaVoto() {
-        int option = -1;
-        int election = -1, mesaVoto = -1;
+    public void listElectionToManagePollingStation() {
+        int election = -1;
         Scanner input = new Scanner(System.in);
         try {
             ArrayList<Election> elections = this.rmiServer.getElections();
             while (!(election >= 1 && election <= this.rmiServer.numElections())) {
                 System.out.println("\tEscolha a eleição: ");
                 Utilitary.listElections(elections);
+                System.out.println("(" + RETURN + ")-  Voltar");
                 System.out.print(OPTION_STRING);
                 election = input.nextInt();
+                if (election == 0) {
+                    return;
+                }
             }
+            this.managePollingStation(election);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-        while (option != 1 && option != 2) {
+    }
+    public void managePollingStation(int election) {
+        int option = -1;
+        Scanner input = new Scanner(System.in);
+        while (option<0 || 2<option) {
             System.out.println("\t(1)- Adicionar Mesa de Voto");
             System.out.println("\t(2)- Remover Mesa de Voto");
+            System.out.println("(" + RETURN + ")-  Voltar");
             System.out.print(OPTION_STRING);
             option = input.nextInt();
         }
         switch (option) {
+            case 0:
+                this.listElectionToManagePollingStation();
+                break;
             case 1:
-                try {
-                    ArrayList<Department> departments = this.rmiServer.selectNoAssociatedPollingStation(election);
-                    if (departments.size() == 0) {
-                        System.out.println("Não existem mesas de voto para associar a esta eleição!");
-                    } else {
-                        while (!hasDep(mesaVoto, departments)) {
-                            System.out.println("Escolha a mesa de voto a adicionar");
-                            Utilitary.listDepart(departments);
-                            System.out.print(OPTION_STRING);
-                            mesaVoto = input.nextInt();
-                        }
-                        this.rmiServer.insertPollingStation(election, mesaVoto);
-                    }
-                } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
-                }
+                this.addPollingStation(election);
                 break;
             case 2:
-                try {
-                    ArrayList<Department> departments = this.rmiServer.selectPollingStation(election);
-                    if (departments.size() == 0) {
-                        System.out.println("Não existem mesas de voto associadas a esta eleição!");
-                    } else {
-                        while (!hasDep(mesaVoto, departments)) {
-                            System.out.println("Escolha a mesa de voto a remover: ");
-                            Utilitary.listDepart(departments);
-                            System.out.print(OPTION_STRING);
-                            mesaVoto = input.nextInt();
-
-                        }
-                        this.rmiServer.removePollingStation(mesaVoto);
-                    }
-                } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
-                }
+                this.removePollingStation(election);
                 break;
             default:
                 break;
+        }
+    }
+    private void addPollingStation(int election){
+        int  mesaVoto = -1;
+        Scanner input = new Scanner(System.in);
+        try {
+            ArrayList<Department> departments = this.rmiServer.selectNoAssociatedPollingStation(election);
+            if (departments.size() == 0) {
+                System.out.println("Não existem mesas de voto para associar a esta eleição!");
+            } else {
+                while (!hasDep(mesaVoto, departments)) {
+                    System.out.println("Escolha a mesa de voto a adicionar");
+                    Utilitary.listDepart(departments);
+                    System.out.println("(" + RETURN + ")-  Voltar");
+                    System.out.print(OPTION_STRING);
+                    mesaVoto = input.nextInt();
+                    if (mesaVoto == 0) {
+                        this.managePollingStation(election);
+                        return;
+                    }
+                }
+                this.rmiServer.insertPollingStation(election, mesaVoto);
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removePollingStation(int election){
+        int  mesaVoto = -1;
+        Scanner input = new Scanner(System.in);
+        try {
+            ArrayList<Department> departments = this.rmiServer.selectPollingStation(election);
+            if (departments.size() == 0) {
+                System.out.println("Não existem mesas de voto associadas a esta eleição!");
+            } else {
+                while (!hasDep(mesaVoto, departments)) {
+                    System.out.println("Escolha a mesa de voto a remover: ");
+                    Utilitary.listDepart(departments);
+                    System.out.println("(" + RETURN + ")-  Voltar");
+                    System.out.print(OPTION_STRING);
+                    mesaVoto = input.nextInt();
+                    if (mesaVoto == 0) {
+                        this.managePollingStation(election);
+                        return;
+                    }
+
+                }
+                this.rmiServer.removePollingStation(mesaVoto);
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

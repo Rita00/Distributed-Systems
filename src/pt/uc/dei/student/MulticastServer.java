@@ -71,8 +71,8 @@ public class MulticastServer extends Thread {
                 System.out.print("Introduza o seu nome: ");
                 campo = reader.readLine();
                 try {
-                    ArrayList<Person> persons = this.rmiServer.getRegisPeople(election, dep_id, campo);
-                    Utilitary.listPerson(persons);
+                    ArrayList<Person> people = this.rmiServer.getRegisPeople(election, dep_id, campo);
+                    Utilitary.listPerson(people);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

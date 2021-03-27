@@ -25,6 +25,7 @@ public class Utilitary {
      * O " | " permite separar os valores das chaves.
      * Se ao separar as chaves dos valores, o tamanho do array resultante é
      * superior a dois então escreve uma mensagem de erro e nao guarda o par
+     *
      * @param msg mensagem enviada por multicast pelo Servidor multicast ou
      *            pelo terminal de voto
      * @return Uma HashMap com as informacoes da mensagem
@@ -44,8 +45,10 @@ public class Utilitary {
         }
         return hash;
     }
+
     /**
      * Permite verificar se uma data segue o padrao "YYYY-M-d"
+     *
      * @param date data que necessita ser verificada
      * @return data que foi verificada ou null em caso de erro
      * @throws DateTimeParseException excecao caso a data seja invalida
@@ -59,6 +62,7 @@ public class Utilitary {
         }
         return d;
     }
+
     public static void listDepart(ArrayList<Department> departments) {
         if (departments.size() == 0) System.out.println("");
         for (Department dep : departments) {
@@ -76,10 +80,10 @@ public class Utilitary {
         }
     }
 
-    public static void listPerson(ArrayList<Person> persons) {
-        if (persons.size() != 0) {
-            for (Person p : persons) {
-                System.out.println("\t" + p.getName());
+    public static void listPerson(ArrayList<Person> people) {
+        if (people.size() != 0) {
+            for (Person p : people) {
+                System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1, p.getName(), p.getCensoredCc_number(4));
             }
         } else {
             System.out.println("Sem pessoas registadas com esse nome.");

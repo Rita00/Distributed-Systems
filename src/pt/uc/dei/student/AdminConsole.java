@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -482,7 +483,14 @@ public class AdminConsole {
                 command = input.nextInt();
                 switch (command) {
                     case EDIT:
-                        this.editElection(election);
+                        //verificar se a data é antes da atual
+                        if(election.getBegin().isBefore(LocalDateTime.now())){
+                            this.editElection(election);
+                        }else{
+                            System.out.println("⚠️ Não é possivel editar eleições a decorrer/passadas!");
+                            this.manageElection(election);
+                            return;
+                        }
                         break;
                     case ADD:
                         this.addCandidacy(election);

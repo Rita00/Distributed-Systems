@@ -31,6 +31,17 @@ INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,depart
 INSERT INTO candidacy_person(candidacy_id, person_cc_number) VALUES (1,11111111);
 INSERT INTO candidacy_person(candidacy_id, person_cc_number) VALUES (1,22222222);
 
+-------------------------------LISTAS DE TESTE COM RESPETIVAS PESSOAS------------------------
+--ELEICAO POR INICIAR
+INSERT INTO election(id,title, type, description, begin_date, end_date) VALUES (NULL,'NEEEC','Estudante','Eleicoes do NEEEC','2021-03-20 00:00:00','2021-03-26 23:59:59');
+--ELEICAO A DECORRER
+INSERT INTO election(id,title, type, description, begin_date, end_date) VALUES (NULL,'BestDEECDocentes','Docente','Eleicoes dos Docentes do DEEC','2021-03-20 00:00:00','2022-01-01 00:00:00');
+--ELEICAO PASSADA
+INSERT INTO election(id,title, type, description, begin_date, end_date) VALUES (NULL,'BestDEECFuncionarios','Funcionário','Eleicoes dos Funcionarios do DEEC','2022-01-01 00:00:00','2023-01-01 00:00:00');
+--pessoas
+INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Nuno Markl',55555551,'2025-01-01','Rua 1° Marco',934887788,'Funcionário','1986',5);
+INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Matias Correios',55555553,'2025-01-02','Rua da AAC',934887769,'Estudante','dux',5);
+INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Cristina Ferreira',55555557,'2025-01-02','Rua da TVI',934886969,'Docente','estacerta',5);
 
 
 

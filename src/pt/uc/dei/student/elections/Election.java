@@ -45,7 +45,7 @@ public class Election implements Serializable {
      * @return objeto LocalDateTime com parse da string efetuado ou null se erro
      * @throws DateTimeParseException caso uma das strings nao esteja valida
      */
-	private LocalDateTime parseTime(String date, String time) {
+	private LocalDateTime parseDateTime(String date, String time) {
 		LocalDateTime dateTime;
 		try {
 			dateTime = LocalDateTime.parse(date+" "+time,DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
@@ -117,9 +117,9 @@ public class Election implements Serializable {
     }
     /**
      * Setter do tipo da eleicao
-     *  Se 1 -> Estudante
-     *  Se 2 -> Docente
-     *  Se 3 -> Funcionario
+     *  Se 1: Estudante
+     *  Se 2: Docente
+     *  Se 3: Funcionario
      * @param type tipo da eleicao
      */
     public void setType(int type) {
@@ -149,7 +149,7 @@ public class Election implements Serializable {
      * @return true se nao houve problemas ou false caso um problema ocorra
      */
     public boolean setBegin(String date, String time) {
-		LocalDateTime dateTime = parseTime(date, time);
+		LocalDateTime dateTime = parseDateTime(date, time);
 		if (dateTime!=null){
 			this.begin = dateTime;
 			return true;
@@ -163,7 +163,7 @@ public class Election implements Serializable {
      * @return true se nao houve problemas ou false caso um problema ocorra
      */
 	public boolean setEnd(String date, String time) {
-		LocalDateTime dateTime = parseTime(date, time);
+		LocalDateTime dateTime = parseDateTime(date, time);
 		if (dateTime!=null){
 			this.end = dateTime;
 			return true;

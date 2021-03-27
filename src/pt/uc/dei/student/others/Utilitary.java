@@ -4,6 +4,10 @@ import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,7 +31,6 @@ public class Utilitary {
      * @see pt.uc.dei.student.MulticastServer Servidor Multicast
      * @see pt.uc.dei.student.VoteTerm Terminal de Voto
      */
-
     public static HashMap<String, String> parseMessage(String msg) {
         HashMap<String, String> hash = new HashMap<String, String>();
         String[] dividedMessage = msg.split(" ; ");
@@ -41,7 +44,21 @@ public class Utilitary {
         }
         return hash;
     }
-
+    /**
+     * Permite verificar se uma data segue o padrao "YYYY-M-d"
+     * @param date data que necessita ser verificada
+     * @return data que foi verificada ou null em caso de erro
+     * @throws DateTimeParseException excecao caso a data seja invalida
+     */
+    public static LocalDate parseDate(String date) {
+        LocalDate d;
+        try {
+            d = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-M-d"));
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+        return d;
+    }
     public static void listDepart(ArrayList<Department> departments) {
         if (departments.size() == 0) System.out.println("");
         for (Department dep : departments) {

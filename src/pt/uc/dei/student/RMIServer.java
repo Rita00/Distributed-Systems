@@ -365,8 +365,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return selectElections("SELECT * FROM election WHERE end_date < date('now')");
     }
 
-    public ArrayList<Election> getCurrentElections() {
-        return selectElections("SELECT * FROM election WHERE begin_date >= date('now') AND end_date <= date('now')");
+    public ArrayList<Election> getCurrentElections(int department_id) {
+        return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND department_id = " + department_id);
     }
 
     public int getBlackVotes(int id_election) {
@@ -392,6 +392,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             if (ele.getId() == election) return true;
         }
         return false;
+    }
+
+    public ArrayList<Person> getRegisPeople(int election_id, int department_id, String name) {
+        return selectPeople("SELECT DISTINCT * " +
+                "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id " +
+                "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person.name = '" + name + "'");
     }
 
     public String saySomething() throws RemoteException {

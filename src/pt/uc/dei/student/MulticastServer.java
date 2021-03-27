@@ -5,7 +5,9 @@ import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 import pt.uc.dei.student.others.Utilitary;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -36,14 +38,16 @@ public class MulticastServer extends Thread {
         this.rmiServer = rmiServer;
     }
 
-    public void menuPollingStation() {
+    public void menuPollingStation(int dep_id) throws IOException {
         int command = -1, election = -1;
+        String campo;
         Scanner input = new Scanner(System.in);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
-            ArrayList<Election> currentElections = this.rmiServer.getCurrentElections();
+            ArrayList<Election> currentElections = this.rmiServer.getCurrentElections(dep_id);
             while (!rmiServer.hasElection(election, currentElections)) {
                 System.out.println("Eleições a decorrer: ");
-                //Utilitary.listDepart();
+                Utilitary.listElections(currentElections);
                 election = input.nextInt();
             }
         } catch (RemoteException | InterruptedException e) {
@@ -52,31 +56,52 @@ public class MulticastServer extends Thread {
 
         while (!(command >= 1 && command <= 3)) {
             System.out.println("Identificação de eleitor: ");
-            System.out.println("\tPesquisar por: ");
-            System.out.println("\t\t(1)- Departamento");
-            System.out.println("\t\t(2)- Morada");
-            System.out.println("\t\t(3)- Número de cartão de cidadão");
+            System.out.println("Pesquisar por: ");
+            System.out.println("\t(1)- Nome");
+            System.out.println("\t(2)- Cargo");
+            System.out.println("\t(3)- Departamento");
+            System.out.println("\t(4)- Número de telemóvel");
+            System.out.println("\t(5)- Morada");
+            System.out.println("\t(6)- Número de cartão de cidadão");
             System.out.print(OPTION_STRING);
             command = input.nextInt();
         }
         switch (command) {
             case 1:
-
+                System.out.print("Introduza o seu nome: ");
+                campo = reader.readLine();
+                try {
+                    ArrayList<Person> persons = this.rmiServer.getRegisPeople(election, dep_id, campo);
+                    Utilitary.listPerson(persons);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 2:
                 break;
             case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
                 break;
             default:
                 break;
         }
     }
 
-    private void connect() throws InterruptedException {
+    private void connect() {
         String depName = this.department.getName();
         if (depName != null) {
             System.out.printf("======== Mesa de Voto #%s (%s) ========%n", this.getMulticastId(), depName);
-            menuPollingStation();
+            try {
+                int id = this.department.getId();
+                this.menuPollingStation(this.department.getId());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -149,7 +174,6 @@ public class MulticastServer extends Thread {
     }
 
 
-
     void listElections(ArrayList<Election> elections) {
         try {
             if (this.rmiServer.numElections() > 0) {
@@ -162,10 +186,6 @@ public class MulticastServer extends Thread {
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public void listPerson(ArrayList<Person> persons) {
-
     }
 
     public void reconnectToRMI() {

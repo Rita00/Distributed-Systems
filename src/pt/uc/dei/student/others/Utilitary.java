@@ -2,6 +2,7 @@ package pt.uc.dei.student.others;
 
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
+import pt.uc.dei.student.elections.Person;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,10 +52,20 @@ public class Utilitary {
     public static void listElections(ArrayList<Election> elections) {
         if (elections.size() != 0) {
             for (Election e : elections) {
-                System.out.printf("\t(%s)- %s\n", elections.indexOf(e) + 1, e.getTitle());
+                System.out.printf("\t(%d)- %s\n", e.getId(), e.getTitle());
             }
         } else {
             System.out.println("Não existem eleições\n");
+        }
+    }
+
+    public static void listPerson(ArrayList<Person> persons) {
+        if (persons.size() != 0) {
+            for (Person p : persons) {
+                System.out.println("\t" + p.getName());
+            }
+        } else {
+            System.out.println("Sem pessoas registadas com esse nome.");
         }
     }
 }

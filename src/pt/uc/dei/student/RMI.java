@@ -57,7 +57,7 @@ public interface RMI extends Remote {
 
     ArrayList<Election> getEndedElections() throws java.rmi.RemoteException, InterruptedException;
 
-    ArrayList<Election> getCurrentElections() throws java.rmi.RemoteException, InterruptedException;
+    ArrayList<Election> getCurrentElections(int department_id) throws java.rmi.RemoteException, InterruptedException;
 
     int getBlackVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
 
@@ -68,6 +68,8 @@ public interface RMI extends Remote {
     float getPercentVotesCandidacy(int id_election, int id_candidacy) throws java.rmi.RemoteException, InterruptedException;
 
     boolean hasElection(int election, ArrayList<Election> elections) throws java.rmi.RemoteException, InterruptedException;
+
+    ArrayList<Person> getRegisPeople(int election_id, int department_id, String name) throws java.rmi.RemoteException, InterruptedException;
 
 }
 

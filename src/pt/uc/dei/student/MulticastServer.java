@@ -1,6 +1,8 @@
 package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.Department;
+import pt.uc.dei.student.elections.Election;
+import pt.uc.dei.student.elections.Person;
 import pt.uc.dei.student.others.Utilitary;
 
 import java.io.IOException;
@@ -35,8 +37,19 @@ public class MulticastServer extends Thread {
     }
 
     public void menuPollingStation() {
-        int command = -1;
+        int command = -1, election = -1;
         Scanner input = new Scanner(System.in);
+        try {
+            ArrayList<Election> currentElections = this.rmiServer.getCurrentElections();
+            while (!rmiServer.hasElection(election, currentElections)) {
+                System.out.println("Eleições a decorrer: ");
+                //Utilitary.listDepart();
+                election = input.nextInt();
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
         while (!(command >= 1 && command <= 3)) {
             System.out.println("Identificação de eleitor: ");
             System.out.println("\tPesquisar por: ");
@@ -58,6 +71,7 @@ public class MulticastServer extends Thread {
                 break;
         }
     }
+
     private void connect() throws InterruptedException {
         String depName = this.department.getName();
         if (depName != null) {
@@ -73,17 +87,17 @@ public class MulticastServer extends Thread {
             InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
             while (isON) {
-                String message = String.format("sender | multicast-%s-%s ; destination | %s ; message | I'm Multicast", this.getMulticastId(), this.department.getId(),"voteterm");
+                String message = String.format("sender | multicast-%s-%s ; destination | %s ; message | I'm Multicast", this.getMulticastId(), this.department.getId(), "voteterm");
                 DatagramPacket packet = this.send(socket, group, message);
                 /*
                 RECEBER E PARSE DO PACOTE
                  */
                 socket.receive(packet);
-                HashMap<String,String> msgHash = Utilitary.parseMessage(new String(packet.getData(),0,packet.getLength()));
+                HashMap<String, String> msgHash = Utilitary.parseMessage(new String(packet.getData(), 0, packet.getLength()));
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
-                this.doThings(msgHash,socket,group);
+                this.doThings(msgHash, socket, group);
 
                 try {
                     sleep((long) (Math.random() * SLEEP_TIME));
@@ -106,38 +120,52 @@ public class MulticastServer extends Thread {
         return packet;
     }
 
-    private void doThings(HashMap<String, String> msgHash,MulticastSocket socket, InetAddress group) {
+    private void doThings(HashMap<String, String> msgHash, MulticastSocket socket, InetAddress group) {
         //nao ler as suas proprias mensagens
         if (!msgHash.get("sender").startsWith("multicast")) {
-            switch(msgHash.get("message")){
+            switch (msgHash.get("message")) {
                 case "I'm VoteTerm":
 
                     break;
                 case "login":
-                    verifyLogin(msgHash.get("username"),msgHash.get("password"),socket,group);
+                    verifyLogin(msgHash.get("username"), msgHash.get("password"), socket, group);
                     break;
             }
         }
     }
 
-    private void verifyLogin(String username, String password,MulticastSocket socket, InetAddress group){
+    private void verifyLogin(String username, String password, MulticastSocket socket, InetAddress group) {
         String message;
         try {
-            if(this.rmiServer.getPerson(username, password)!=null){
-                message = String.format("sender | multicast-%s-%s ; destination | %s ; message | true", this.getMulticastId(), this.department.getId(),"voteterm");
-            }else{
-                message = String.format("sender | multicast-%s-%s ; destination | %s ; message | false", this.getMulticastId(), this.department.getId(),"voteterm");
+            if (this.rmiServer.getPerson(username, password) != null) {
+                message = String.format("sender | multicast-%s-%s ; destination | %s ; message | true", this.getMulticastId(), this.department.getId(), "voteterm");
+            } else {
+                message = String.format("sender | multicast-%s-%s ; destination | %s ; message | false", this.getMulticastId(), this.department.getId(), "voteterm");
             }
-        }catch (RemoteException | InterruptedException e){
-            message = String.format("sender | multicast-%s-%s ; destination | %s ; message | false", this.getMulticastId(), this.department.getId(),"voteterm");
+        } catch (RemoteException | InterruptedException e) {
+            message = String.format("sender | multicast-%s-%s ; destination | %s ; message | false", this.getMulticastId(), this.department.getId(), "voteterm");
         }
         this.send(socket, group, message);
     }
 
-    public void listDepart( ArrayList<Department> departments) {
-        for (Department dep : departments) {
-            System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
+
+
+    void listElections(ArrayList<Election> elections) {
+        try {
+            if (this.rmiServer.numElections() > 0) {
+                for (Election e : elections) {
+                    System.out.printf("\t(%s)- %s\n", elections.indexOf(e) + 1, e.getTitle());
+                }
+            } else {
+                System.out.println("Não existem eleições\n");
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
         }
+    }
+
+    public void listPerson(ArrayList<Person> persons) {
+
     }
 
     public void reconnectToRMI() {
@@ -176,7 +204,7 @@ public class MulticastServer extends Thread {
             ArrayList<Department> departments = multicastServer.rmiServer.getDepartments();
             while (!(dep >= 1 && dep <= 11)) {
                 System.out.println("Departamento onde se localiza: ");
-                multicastServer.listDepart(departments);
+                Utilitary.listDepart(departments);
                 System.out.print(">>> ");
                 dep = input.nextInt();
             }

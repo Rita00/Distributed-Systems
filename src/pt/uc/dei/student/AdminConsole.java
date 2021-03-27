@@ -4,6 +4,7 @@ import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
+import pt.uc.dei.student.others.Utilitary;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -83,9 +84,9 @@ public class AdminConsole {
         try {
             ArrayList<Election> elections = this.rmiServer.getEndedElections();
             if (elections.size() != 0) {
-                while (!hasElection(election, elections)) {
+                while (!this.rmiServer.hasElection(election, elections)) {
                     System.out.println("\tEscolha a eleição: ");
-                    listElections(elections);
+                    Utilitary.listElections(elections);
                     System.out.print(OPTION_STRING);
                     election = input.nextInt();
                 }
@@ -124,7 +125,7 @@ public class AdminConsole {
             ArrayList<Election> elections = this.rmiServer.getElections();
             while (!(election >= 1 && election <= this.rmiServer.numElections())) {
                 System.out.println("\tEscolha a eleição: ");
-                listElections(elections);
+                Utilitary.listElections(elections);
                 System.out.print(OPTION_STRING);
                 election = input.nextInt();
             }
@@ -146,7 +147,7 @@ public class AdminConsole {
                     } else {
                         while (!hasDep(mesaVoto, departments)) {
                             System.out.println("Escolha a mesa de voto a adicionar");
-                            listDepart(departments);
+                            Utilitary.listDepart(departments);
                             System.out.print(OPTION_STRING);
                             mesaVoto = input.nextInt();
                         }
@@ -164,7 +165,7 @@ public class AdminConsole {
                     } else {
                         while (!hasDep(mesaVoto, departments)) {
                             System.out.println("Escolha a mesa de voto a remover: ");
-                            listDepart(departments);
+                            Utilitary.listDepart(departments);
                             System.out.print(OPTION_STRING);
                             mesaVoto = input.nextInt();
 
@@ -187,12 +188,6 @@ public class AdminConsole {
         return false;
     }
 
-    public boolean hasElection(int election, ArrayList<Election> elections) {
-        for (Election ele : elections) {
-            if (ele.getId() == election) return true;
-        }
-        return false;
-    }
 
     /**
      * Lê da consola a informação pessoal de uma determinada pessoa.
@@ -221,7 +216,7 @@ public class AdminConsole {
             try {
                 ArrayList<Department> departments = this.rmiServer.getDepartments();
                 System.out.println("Departamento que frequenta: ");
-                listDepart(departments);
+                Utilitary.listDepart(departments);
                 System.out.print("\t");
                 ndep = input.nextInt();
             } catch (InterruptedException e) {
@@ -262,25 +257,6 @@ public class AdminConsole {
         }
     }
 
-    void listDepart(ArrayList<Department> departments) {
-        for (Department dep : departments) {
-            System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
-        }
-    }
-
-    void listElections(ArrayList<Election> elections) {
-        try {
-            if (this.rmiServer.numElections() > 0) {
-                for (Election e : elections) {
-                    System.out.printf("\t(%s)- %s\n", elections.indexOf(e) + 1, e.getTitle());
-                }
-            } else {
-                System.out.println("Não existem eleições\n");
-            }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Função para decidir em formato String o cargo da pessoa
@@ -334,7 +310,7 @@ public class AdminConsole {
                 ArrayList<Department> departments = this.rmiServer.selectPollingStation(-1);
                 while (!hasDep(ndep, departments)) {
                     System.out.println("\tDepartamento: ");
-                    listDepart(departments);
+                    Utilitary.listDepart(departments);
                     System.out.print("\t");
                     ndep = input.nextInt();
                 }
@@ -386,7 +362,7 @@ public class AdminConsole {
                 System.out.println("==========GERIR ELEICOES==========");
 
                 ArrayList<Election> elections = this.rmiServer.getElections();
-                listElections(elections);
+                Utilitary.listElections(elections);
                 System.out.println("(" + RETURN + ")-  Voltar");
                 /*
                  * ESPERAR PELA ESCOLHA DO UTILIZADOR

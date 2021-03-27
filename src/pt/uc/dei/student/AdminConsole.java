@@ -90,7 +90,13 @@ public class AdminConsole {
                     Utilitary.listElections(elections);
                     System.out.println("(" + RETURN + ")-  Voltar");
                     System.out.print(OPTION_STRING);
-                    election = input.nextInt();
+                    try{
+                        election = input.nextInt();
+                    } catch (InputMismatchException ime) {
+                        //volta para este menu caso os input esteja errado
+                        this.electionsResults();
+                        return;
+                    }
                     if(election==0){
                         return;
                     }
@@ -122,7 +128,13 @@ public class AdminConsole {
             while(command!=0){
                 System.out.println("(" + RETURN + ")-  Voltar");
                 System.out.print(OPTION_STRING);
-                command = input.nextInt();
+                try{
+                    command = input.nextInt();
+                } catch (InputMismatchException ime) {
+                    //volta para este menu caso os input esteja errado
+                    this.listCandidacyWithVotes(id_election);
+                    return;
+                }
                 if(command==0){
                     this.electionsResults();
                     return;

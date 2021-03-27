@@ -104,9 +104,14 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = " + election_id);
     }
 
-    public Person getPerson(String username,String password) {
-        return this.selectPeople("SELECT * FROM person WHERE cc_number='"+username+"' AND password='"+password+"');").get(0);
+    public Person getPerson(String username, String password) {
+        return this.selectPeople("SELECT * FROM person WHERE cc_number='" + username + "' AND password='" + password + "');").get(0);
     }
+
+    /*public Person getPersonByName(String name) {
+        //return this.selectPeople("SELECT nome FROM person ");
+    }*/
+
     public ArrayList<Person> getPeople(int candidacy_id) {
         return this.selectPeople(
                 "SELECT *\n" +
@@ -360,6 +365,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return selectElections("SELECT * FROM election WHERE end_date < date('now')");
     }
 
+    public ArrayList<Election> getCurrentElections() {
+        return selectElections("SELECT * FROM election WHERE begin_date >= date('now') AND end_date <= date('now')");
+    }
+
     public int getBlackVotes(int id_election) {
         return countRowsBD("election WHERE id = " + id_election, "blank_votes");
     }
@@ -374,8 +383,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public float getPercentVotesCandidacy(int id_election, int id_candidacy) {
         int totalVotes = countRowsBD("candidacy", "SUM(votes)") + getBlackVotes(id_election) + getNullVotes(id_election);
-        if (id_candidacy == -1) return ((float)getBlackVotes(id_election) / (float)totalVotes) * 100;
-        else return ((float)getVotesCandidacy(id_election, id_candidacy) / (float)totalVotes) * 100;
+        if (id_candidacy == -1) return ((float) getBlackVotes(id_election) / (float) totalVotes) * 100;
+        else return ((float) getVotesCandidacy(id_election, id_candidacy) / (float) totalVotes) * 100;
+    }
+
+    public boolean hasElection(int election, ArrayList<Election> elections) {
+        for (Election ele : elections) {
+            if (ele.getId() == election) return true;
+        }
+        return false;
     }
 
     public String saySomething() throws RemoteException {

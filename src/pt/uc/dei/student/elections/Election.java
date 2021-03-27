@@ -117,9 +117,9 @@ public class Election implements Serializable {
     }
     /**
      * Setter do tipo da eleicao
-     *  Se 1 -> Estudante
-     *  Se 2 -> Docente
-     *  Se 3 -> Funcionario
+     *  Se 1: Estudante
+     *  Se 2: Docente
+     *  Se 3: Funcionario
      * @param type tipo da eleicao
      */
     public void setType(int type) {

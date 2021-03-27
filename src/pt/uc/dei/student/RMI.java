@@ -69,7 +69,7 @@ public interface RMI extends Remote {
 
     boolean hasElection(int election, ArrayList<Election> elections) throws java.rmi.RemoteException, InterruptedException;
 
-    ArrayList<Person> getRegisPeople(int election_id, int department_id, String name) throws java.rmi.RemoteException, InterruptedException;
+    ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) throws java.rmi.RemoteException, InterruptedException;
 
 }
 

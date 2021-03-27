@@ -250,7 +250,7 @@ public class AdminConsole {
             System.out.print("Data de validade do CC inválida, use este formato (YYYY-MM-DD): ");
         }
         try {
-            if (!this.rmiServer.insertPerson(nome, this.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, cc_validity.toString())) {
+            if (!this.rmiServer.insertPerson(nome, Utilitary.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, cc_validity.toString())) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");
@@ -260,26 +260,6 @@ public class AdminConsole {
         }
     }
 
-
-    /**
-     * Função para decidir em formato String o cargo da pessoa
-     * Usado para proteção de dados
-     *
-     * @param cargo Inteiro escolhido pela pessoa para representar o seu cargo
-     * @return String que corresponde ao seu cargo
-     */
-    public String decideCargo(int cargo) {
-        switch (cargo) {
-            case 1:
-                return "Estudante";
-            case 2:
-                return "Docente";
-            case 3:
-                return "Funcionário";
-            default:
-                return null;
-        }
-    }
 
     /**
      * Lê da consola a informação necessária para criar uma eleição
@@ -331,7 +311,7 @@ public class AdminConsole {
             type_ele = input.nextInt();
         }
         try {
-            int id = this.rmiServer.insertElection(begin_data, end_data, titulo, descricao, this.decideCargo(type_ele));
+            int id = this.rmiServer.insertElection(begin_data, end_data, titulo, descricao, Utilitary.decideCargo(type_ele));
             if (id == -1) {
                 System.out.println("Impossível inserir eleição :(");
             } else {

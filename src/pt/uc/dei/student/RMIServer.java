@@ -394,11 +394,18 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return false;
     }
 
-    public ArrayList<Person> getRegisPeople(int election_id, int department_id, String name) {
-        return selectPeople("SELECT DISTINCT * " +
-                "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id " +
-                "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person.name = '" + name + "'");
+    public ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) {
+        if (campo_num == -1) {
+            return selectPeople("SELECT DISTINCT * " +
+                    "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id " +
+                    "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = '" + campo + "'");
+        } else {
+            return selectPeople("SELECT DISTINCT * " +
+                    "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id " +
+                    "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = " + campo_num + "");
+        }
     }
+
 
     public String saySomething() throws RemoteException {
         return "I'm alive!";

@@ -89,4 +89,24 @@ public class Utilitary {
             System.out.println("Sem pessoas registadas com esse nome.");
         }
     }
+
+    /**
+     * Função para decidir em formato String o cargo da pessoa
+     * Usado para proteção de dados
+     *
+     * @param cargo Inteiro escolhido pela pessoa para representar o seu cargo
+     * @return String que corresponde ao seu cargo
+     */
+    public static String decideCargo(int cargo) {
+        switch (cargo) {
+            case 1:
+                return "Estudante";
+            case 2:
+                return "Docente";
+            case 3:
+                return "Funcionário";
+            default:
+                return null;
+        }
+    }
 }

@@ -143,7 +143,13 @@ public class AdminConsole {
                 Utilitary.listElections(elections);
                 System.out.println("(" + RETURN + ")-  Voltar");
                 System.out.print(OPTION_STRING);
-                election = input.nextInt();
+                try{
+                    election = input.nextInt();
+                } catch (InputMismatchException ime) {
+                    //volta para este menu caso os input esteja errado
+                    this.listElectionToManagePollingStation();
+                    return;
+                }
                 if (election == 0) {
                     return;
                 }
@@ -161,7 +167,13 @@ public class AdminConsole {
             System.out.println("\t(2)- Remover Mesa de Voto");
             System.out.println("(" + RETURN + ")-  Voltar");
             System.out.print(OPTION_STRING);
-            option = input.nextInt();
+            try{
+                option = input.nextInt();
+            } catch (InputMismatchException ime) {
+                //volta para este menu caso os input esteja errado
+                this.managePollingStation(election);
+                return;
+            }
         }
         switch (option) {
             case 0:
@@ -190,7 +202,13 @@ public class AdminConsole {
                     Utilitary.listDepart(departments);
                     System.out.println("(" + RETURN + ")-  Voltar");
                     System.out.print(OPTION_STRING);
-                    mesaVoto = input.nextInt();
+                    try{
+                        mesaVoto = input.nextInt();
+                    } catch (InputMismatchException ime) {
+                        //volta para este menu caso os input esteja errado
+                        this.addPollingStation(election);
+                        return;
+                    }
                     if (mesaVoto == 0) {
                         this.managePollingStation(election);
                         return;
@@ -216,7 +234,13 @@ public class AdminConsole {
                     Utilitary.listDepart(departments);
                     System.out.println("(" + RETURN + ")-  Voltar");
                     System.out.print(OPTION_STRING);
-                    mesaVoto = input.nextInt();
+                    try{
+                        mesaVoto = input.nextInt();
+                    } catch (InputMismatchException ime) {
+                        //volta para este menu caso os input esteja errado
+                        this.removePollingStation(election);
+                        return;
+                    }
                     if (mesaVoto == 0) {
                         this.managePollingStation(election);
                         return;

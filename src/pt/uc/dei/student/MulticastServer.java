@@ -228,7 +228,6 @@ public class MulticastServer extends Thread {
             e.printStackTrace();
         }
     }
-
     private void send(String message) {
         byte[] buffer = message.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);

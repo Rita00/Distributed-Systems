@@ -150,6 +150,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectDepartments("SELECT * FROM department");
     }
 
+    public ArrayList<Department> getActiveMulticasts() {
+        return this.selectDepartments("SELECT * FROM department WHERE hasmulticastserver=1");
+    }
     /**
      * Conexão à base de dados
      *

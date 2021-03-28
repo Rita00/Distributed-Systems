@@ -35,6 +35,8 @@ public interface RMI extends Remote {
 
     ArrayList<Department> getDepartments() throws java.rmi.RemoteException, InterruptedException;
 
+    ArrayList<Department> getActiveMulticasts() throws java.rmi.RemoteException, InterruptedException;
+
     String initializeMulticast(int dep_id, Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Department> selectPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;

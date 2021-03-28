@@ -46,15 +46,13 @@ public class VoteTerm extends Thread {
                 } else {
                     sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|occupied", this.getVoteTermId(), this.getDepartmentId(), "multicast");
                 }
-                byte[] buffer = sendMsg.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
-                this.getSocket().send(packet);
+                this.send(sendMsg);
                 /*
                 RECEBER E PARSE DO PACOTE
                  */
                 //sem isto o tamanho da mensagem a receber é limitada ao tamanho da mensagem antes enviada
                 byte[] bufferReceive = new byte[256];
-                packet = new DatagramPacket(bufferReceive, bufferReceive.length);
+                DatagramPacket packet = new DatagramPacket(bufferReceive, bufferReceive.length);
                 this.getSocket().receive(packet);
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
                 HashMap<String, String> msgHash = Utilitary.parseMessage(recvMsg);
@@ -68,6 +66,15 @@ public class VoteTerm extends Thread {
         }
     }
 
+    private void send(String message) {
+        byte[] buffer = message.getBytes();
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
+        try {
+            this.getSocket().send(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void doThings(HashMap<String, String> msgHash) {
         //so ler as mensagens do multicast
@@ -96,6 +103,8 @@ public class VoteTerm extends Thread {
 
     private void login(String cc) {
         HashMap<String, String> msgHash;
+        byte[] bufferReceive = new byte[256];
+        DatagramPacket packet = new DatagramPacket(bufferReceive, bufferReceive.length);
         boolean isFirstAttempt = true;
         do {
             if (!isFirstAttempt) {
@@ -112,14 +121,12 @@ public class VoteTerm extends Thread {
             System.out.print("Password: ");
             String password = input.nextLine();
             String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", cc, password);
-            byte[] buffer = sendMsg.getBytes();
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
             /*
             SEND TO MULTICAST FOR VERIFICATION
             */
             do {
                 try {
-                    this.getSocket().send(packet);
+                    this.send(sendMsg);
                     this.getSocket().receive(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -128,13 +135,27 @@ public class VoteTerm extends Thread {
                 msgHash = Utilitary.parseMessage(recvMsg);
             }while(!(msgHash.get("message").equals("logged in") || msgHash.get("message").equals("wrong password")));
         } while (!msgHash.get("message").equals("logged in"));
-        System.out.print("Successfully Logged In");
-        this.accessVotingForm();
+        System.out.println("Successfully Logged In");
+        this.accessVotingForm(msgHash.get("election_id"));
     }
 
-    private void accessVotingForm() {
-        //TODO;
+    private void accessVotingForm(String election_id) {
+        //TODO
+        HashMap<String, String> msgHash;
+        byte[] bufferReceive = new byte[2048];
+        DatagramPacket packet = new DatagramPacket(bufferReceive, bufferReceive.length);
         System.out.println("PODES VOTAR");
+        try {
+            //envia confirmacao de login
+            this.send("logged in");
+            //recebe listas para votar
+            this.getSocket().receive(packet);
+            String recvMsg = new String(packet.getData(), 0, packet.getLength());
+            msgHash = Utilitary.parseMessage(recvMsg);
+            System.out.println(msgHash.get("message"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getVoteTermId() { return this.voteTermId; }

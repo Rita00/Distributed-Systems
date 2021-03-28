@@ -1,5 +1,6 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
@@ -128,7 +129,7 @@ public class MulticastServer extends Thread {
                 System.out.println("Não pode votar nesta eleição!");
             } else {
                 //select voting terminal
-                selectTerminal(people.get(command2 - 1).getCc_number());
+                selectTerminal(people.get(command2 - 1).getCc_number(), election);
 
             }
         } catch (InterruptedException e) {
@@ -136,7 +137,7 @@ public class MulticastServer extends Thread {
         }
     }
 
-    private void selectTerminal(int cc_number) {
+    private void selectTerminal(int cc_number, int election_id) {
         String id = null;
         // choose terminal
         while (id == null) {
@@ -149,7 +150,7 @@ public class MulticastServer extends Thread {
             }
         }
         //send to voting terminal the cc
-        String message = String.format("sender|multicast-%s-%s;destination|%s;message|identify;cc|%d", this.getMulticastId(), this.department.getId(), id, cc_number);
+        String message = String.format("sender|multicast-%s-%s;destination|%s;message|identify;cc|%d;election_id|%s", this.getMulticastId(), this.department.getId(), id, cc_number, election_id);
         this.send(message);
         String[] getId = id.split("-");
         System.out.println("Desbloqueado terminal " + getId[1]);
@@ -185,7 +186,7 @@ public class MulticastServer extends Thread {
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
-                this.doThings(msgHash, socket, group);
+                this.doThings(msgHash);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -194,30 +195,33 @@ public class MulticastServer extends Thread {
 
     private void send(String message) {
         byte[] buffer = message.getBytes();
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.group, MULTICAST_PORT);
         try {
-            socket.send(packet);
+            this.socket.send(packet);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void doThings(HashMap<String, String> msgHash, MulticastSocket socket, InetAddress group) {
+    private void doThings(HashMap<String, String> msgHash) {
         //nao ler as suas proprias mensagens
         if (!msgHash.get("sender").startsWith("multicast")) {
             switch (msgHash.get("message")) {
                 case "occupied":
                 case "available":
-                    registerTerminal(msgHash.get("sender"), msgHash.get("message"), socket, group);
+                    registerTerminal(msgHash.get("sender"), msgHash.get("message"));
                     break;
                 case "login":
                     this.verifyLogin(msgHash.get("username"), msgHash.get("password"));
+                    break;
+                case "logged in":
+                    this.sendVotingForm();
                     break;
             }
         }
     }
 
-    private void registerTerminal(String id, String status, MulticastSocket socket, InetAddress group) {
+    private void registerTerminal(String id, String status) {
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), id);
         if (status.equals("available")) {
             availableTerminals.put(id, true);
@@ -242,6 +246,22 @@ public class MulticastServer extends Thread {
             message = String.format("sender|multicast-%s-%s;destination|%s;message|wrong password", this.getMulticastId(), this.department.getId(), "voteterm");
         }
         this.send(message);
+    }
+
+    private void sendVotingForm(int election_id){
+        String votingForm = "Candidatos:\n";
+        try {
+            for (Candidacy c : this.getRmiServer().getCandidacies(election_id)) {
+                votingForm += String.format("\t(%s)- %s\n", c.getId(), c.getName());
+            }
+        }catch(RemoteException | InterruptedException e){
+            e.printStackTrace();
+        }
+        votingForm += "(-1)- Voto Branco\n";
+        votingForm += "(-2)- Voto Nulo\n";
+        String message = String.format("sender|multicast-%s-%s;destination|%s;message|%s", this.getMulticastId(), this.department.getId(), "voteterm",votingForm);
+        this.send(message);
+        //TODO
     }
 
 

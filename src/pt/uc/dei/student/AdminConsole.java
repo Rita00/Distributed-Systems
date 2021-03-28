@@ -88,7 +88,7 @@ public class AdminConsole {
             if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");
             else {
                 for (VotingRecord vr : votingRecords) {
-                    System.out.printf("%st\t%s\t\t%s\t\t%s\n", vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date());
+                    System.out.printf("%s\t\t%s\t\t%s\t\t%s\n", vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date());
                 }
             }
         } catch (RemoteException | InterruptedException e) {

@@ -461,7 +461,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 "JOIN person p on voting_record.person_cc_number = p.cc_number " +
                 "JOIN election e on voting_record.election_id = e.id " +
                 "JOIN department d on d.id = voting_record.department " +
-                "ORDER BY voting_record.election_id");
+                "ORDER BY voting_record.election_id, p.name");
     }
 
     public String saySomething() throws RemoteException {

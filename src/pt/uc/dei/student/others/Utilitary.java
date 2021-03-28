@@ -1,5 +1,6 @@
 package pt.uc.dei.student.others;
 
+import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
@@ -39,8 +40,17 @@ public class Utilitary {
             String[] keyVal = token.split("\\|");
             if (keyVal.length == 2) {
                 hash.put(keyVal[0], keyVal[1]);
-            } else {
-                System.out.println("Error with tokens");
+            } else if (keyVal.length == 0) {
+                System.out.println("Wrong token.");
+            }
+            else {
+                StringBuilder list = new StringBuilder();
+                for (int i = 1; i < keyVal.length; i++) {
+                    list.append(keyVal[i]);
+                    list.append("|");
+                }
+                list.deleteCharAt(list.length() - 1);
+                hash.put(keyVal[0], list.toString());
             }
         }
         return hash;
@@ -89,6 +99,12 @@ public class Utilitary {
             }
         } else {
             System.out.println("Sem pessoas registadas com esse nome.");
+        }
+    }
+
+    public static void listCandidacy(ArrayList<Candidacy> candidacies) {
+        for (Candidacy c : candidacies) {
+            System.out.printf("\t(%s)- %s%n", c.getId(), c.getName());
         }
     }
 

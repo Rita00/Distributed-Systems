@@ -82,7 +82,7 @@ public class VoteTerm extends Thread {
                             //do nothing? print something?
                             break;
                         case "identify":
-                            this.login(msgHash.get("cc"));
+                            this.login(msgHash.get("cc"), msgHash.get("arrayList"), msgHash.get("arrayIds"));
                             break;
                     }
                 }
@@ -90,11 +90,18 @@ public class VoteTerm extends Thread {
         }
     }
 
+    private void listInfo(String infoElectionByName, String infoElectionById) {
+        String[] infoName = infoElectionByName.split("\\|"), infoID = infoElectionById.split("\\|");
+        for (int i = 0; i < infoName.length; i++) {
+            System.out.printf("(%s)- %s\n", infoID[i], infoName[i]);
+        }
+    }
+
     private void stopTerminal() {
         this.interrupt();
     }
 
-    private void login(String cc) {
+    private void login(String cc, String infoByName, String infoById) {
         HashMap<String, String> msgHash;
         boolean isFirstAttempt = true;
         do {
@@ -120,21 +127,26 @@ public class VoteTerm extends Thread {
             do {
                 try {
                     this.getSocket().send(packet);
+                    byte[] buffer2 = new byte[256];
+                    packet = new DatagramPacket(buffer2, buffer2.length, this.getGroup(), MULTICAST_PORT);
                     this.getSocket().receive(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
                 msgHash = Utilitary.parseMessage(recvMsg);
+                //TODO check if message is for me
             }while(!(msgHash.get("message").equals("logged in") || msgHash.get("message").equals("wrong password")));
         } while (!msgHash.get("message").equals("logged in"));
-        System.out.print("Successfully Logged In");
-        this.accessVotingForm();
+        System.out.println("Successfully Logged In");
+        this.accessVotingForm(infoByName, infoById);
     }
 
-    private void accessVotingForm() {
+    private void accessVotingForm(String infoByName, String infoById) {
         //TODO;
         System.out.println("PODES VOTAR");
+        this.listInfo(infoByName, infoById);
+
     }
 
     public int getVoteTermId() { return this.voteTermId; }

@@ -29,6 +29,7 @@ class StatusChecker extends Thread {
                         //multicast morreu
                         try {
                             this.rmi.turnOffPollingStation(id);
+                            this.notifiers.remove(id);
                         } catch (RemoteException | InterruptedException remoteException) {
                             remoteException.printStackTrace();
                         }

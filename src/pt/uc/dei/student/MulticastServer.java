@@ -1,10 +1,12 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 import pt.uc.dei.student.others.Utilitary;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +16,7 @@ import java.net.MulticastSocket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.sql.Array;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,7 +131,8 @@ public class MulticastServer extends Thread {
                 System.out.println("Não pode votar nesta eleição!");
             } else {
                 //select voting terminal
-                selectTerminal(people.get(command2 - 1).getCc_number());
+                int cc_number = people.get(command2 - 1).getCc_number();
+                selectTerminal(cc_number, election);
 
             }
         } catch (InterruptedException e) {
@@ -136,7 +140,7 @@ public class MulticastServer extends Thread {
         }
     }
 
-    private void selectTerminal(int cc_number) {
+    private void selectTerminal(int cc_number, int election) {
         String id = null;
         // choose terminal
         while (id == null) {
@@ -149,10 +153,32 @@ public class MulticastServer extends Thread {
             }
         }
         //send to voting terminal the cc
-        String message = String.format("sender|multicast-%s-%s;destination|%s;message|identify;cc|%d", this.getMulticastId(), this.department.getId(), id, cc_number);
+        String info = getElectionInfo(election);
+        String message = String.format("sender|multicast-%s-%s;destination|%s;message|identify;cc|%d;%s", this.getMulticastId(), this.department.getId(), id, cc_number, info);
         this.send(message);
         String[] getId = id.split("-");
         System.out.println("Desbloqueado terminal " + getId[1]);
+    }
+
+    private String getElectionInfo(int election) {
+        StringBuilder res = new StringBuilder();
+        try {
+            ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(election);
+            res.append("arrayList");
+            for (Candidacy c : candidacies) {
+                res.append("|");
+                res.append(c.getName());
+            }
+            res.append(";arrayIds");
+            for (Candidacy c : candidacies) {
+                res.append("|");
+                res.append(c.getId());
+            }
+
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return res.toString();
     }
 
     private void connect() {
@@ -224,7 +250,7 @@ public class MulticastServer extends Thread {
         } else {
             availableTerminals.put(id, false);
         }
-        this.send(message);
+        //this.send(message);
     }
 
     private void verifyLogin(String username, String password) {

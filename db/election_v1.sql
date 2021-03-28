@@ -5,6 +5,15 @@ drop table if exists department;
 drop table if exists voting_record;
 drop table if exists election_department;
 drop table if exists candidacy_person;
+drop table if exists voting_terminal;
+
+CREATE TABLE voting_terminal (
+    id		        INTEGER,
+    department_id   INTERGER,
+    FOREIGN KEY (department_id) REFERENCES department(id),
+    PRIMARY KEY(id)
+);
+
 
 CREATE TABLE election (
 id		 INTEGER,

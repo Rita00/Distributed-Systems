@@ -12,6 +12,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -47,7 +48,7 @@ public class AdminConsole {
                 System.out.println("\t(3)- Gerir Eleição");
                 System.out.println("\t(4)- Gerir Mesas de Voto");
                 System.out.println("\t(5)- Local em que cada eleitor votou");
-                System.out.println("\t(5)- Consultar resultados detalhados de eleições passadas");
+                System.out.println("\t(6)- Consultar resultados detalhados de eleições passadas");
                 System.out.println("\t(7)- Consultar estado das mesas de voto e respetivos terminais de voto");
                 System.out.println("(0)- Sair");
                 System.out.print(OPTION_STRING);
@@ -85,15 +86,21 @@ public class AdminConsole {
 
     }
 
-    private void statusPollingStation(){
+    private void statusPollingStation() {
         try {
             System.out.println("Mesas de voto e respetivos terminais de voto ativos");
-            for(Department m : this.rmiServer.getActiveMulticasts()){
-                System.out.println("- "+m.getName());
-                System.out.println("\t"+m.getName());
+            HashMap<Integer,ArrayList<Integer>> terminals =  this.rmiServer.getActiveTerminals();
+            for (Department m : this.rmiServer.getActiveMulticasts()) {
+                System.out.println("- " + m.getName());
+                if(terminals.containsKey(m.getId())) {
+                    for (int t : terminals.get(m.getId())) {
+                        System.out.println("\t#" + t);
+                    }
+                }
             }
             System.out.println("(ENTER)-\tAtualizar");
-            System.out.println("(" + RETURN + ")-\tVoltar");
+            System.out.println("(" + RETURN + ")-\t\tVoltar");
+            System.out.print(OPTION_STRING);
             Scanner input = new Scanner(System.in);
             String command = input.nextLine();
             if (command.equals("0")) {
@@ -101,15 +108,16 @@ public class AdminConsole {
             } else {
                 this.statusPollingStation();
             }
-        }catch(Exception e){
-            try{
-                wait(5000);
-            }catch(InterruptedException ignore){}
-            this.statusPollingStation();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void listVotingRecord() {
+        public void listVotingRecord() {
         try {
             ArrayList<VotingRecord> votingRecords = this.rmiServer.getVotingRecords();
             if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");

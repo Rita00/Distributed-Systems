@@ -15,6 +15,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.sleep;
@@ -132,6 +133,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    public void updateTerminals(int department_id, HashMap<String, Boolean> availableTerminals){
+        this.updateOnDB("DELETE FROM voting_terminal WHERE department_id=" + department_id);
+        for (String t : availableTerminals.keySet()) {
+            if(availableTerminals.get(t)){
+                this.updateOnDB(String.format("INSERT INTO voting_terminal(id,department_id) VALUES (%s,%s)",t.split("-")[1],department_id));
+            }
+        }
+    }
+
     public void removeOnDB(String table, String idName, int id) {
         if (this.updateOnDB("DELETE FROM " + table + " WHERE " + idName + " = " + id)) {
             System.out.println("Removed from" + table + " id #" + id);
@@ -146,6 +156,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public ArrayList<Department> getActiveMulticasts() {
         return this.selectDepartments("SELECT * FROM department WHERE hasmulticastserver=1");
+    }
+    public HashMap<Integer,ArrayList<Integer>> getActiveTerminals() {
+        return this.selectActiveTerminals("SELECT * FROM voting_terminal");
     }
     /**
      * Conexão à base de dados
@@ -330,6 +343,39 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             return null;
         }
         return votingRecords;
+    }
+
+    /**
+     * Seleciona os terminais de voto na base de dados
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
+    public HashMap<Integer,ArrayList<Integer>> selectActiveTerminals(String sql) {
+        Connection conn = connectDB();
+        HashMap<Integer,ArrayList<Integer>> depToTerm = new HashMap<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            ArrayList<Integer> terminals;
+            while (rs.next()) {
+                int key = rs.getInt("department_id");
+                int value = rs.getInt("id");
+                if(depToTerm.containsKey(key)){
+                    terminals = depToTerm.get(key);
+                    terminals.add(value);
+                } else {
+                    terminals = new ArrayList<Integer>();
+                    terminals.add(value);
+                    depToTerm.put(key, terminals);
+                }
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return depToTerm;
     }
 
     public ArrayList<Department> selectPollingStation(int election_id) {

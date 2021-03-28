@@ -18,3 +18,9 @@ WHERE id=1;
 INSERT INTO candidacy(id,name,type,election_id) VALUES (NULL,'aaaa','student',1);
 
 SELECT * FROM person WHERE cc_number='55555557' AND password='estacerta';
+
+DELETE FROM voting_terminal WHERE department_id=1;
+INSERT INTO voting_terminal(id,department_id) VALUES (65667544567,1);
+INSERT INTO voting_terminal(id,department_id) VALUES (35463456354,1);
+
+

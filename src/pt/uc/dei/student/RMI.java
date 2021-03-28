@@ -4,6 +4,7 @@ import pt.uc.dei.student.elections.*;
 
 import java.rmi.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface RMI extends Remote {
     String saySomething() throws java.rmi.RemoteException, InterruptedException;
@@ -78,9 +79,11 @@ public interface RMI extends Remote {
 
     void updateNullVotes(String id_election) throws java.rmi.RemoteException, InterruptedException;
 
-    public ArrayList<Person> checkIfAlreadyVote(int cc, int election) throws java.rmi.RemoteException, InterruptedException;
+    ArrayList<Person> checkIfAlreadyVote(int cc, int election) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
 
+    void updateTerminals(int department_id, HashMap<String, Boolean> availableTerminals) throws java.rmi.RemoteException, InterruptedException;
+    HashMap<Integer,ArrayList<Integer>> getActiveTerminals() throws java.rmi.RemoteException, InterruptedException;
 }
 

@@ -267,18 +267,22 @@ public class MulticastServer extends Thread {
             }
             this.rmiServer.insertVotingRecord(id_election, cc, ndep);
         } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace();//TODO tratar excecao
         }
     }
 
-    private void registerTerminal(String id, String status) {
+    private void registerTerminal(String id, String status){
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), id);
         if (status.equals("available")) {
             availableTerminals.put(id, true);
         } else {
             availableTerminals.put(id, false);
         }
-        //this.send(message);
+        try{
+            this.rmiServer.updateTerminals(this.getMulticastId(), availableTerminals);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();//TODO tratar excecao
+        }
     }
 
     private void verifyLogin(String id, String username, String password) {

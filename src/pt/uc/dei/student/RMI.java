@@ -71,5 +71,13 @@ public interface RMI extends Remote {
 
     ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) throws java.rmi.RemoteException, InterruptedException;
 
+    void insertVotingRecord(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateCandidacyVotes(String id_election, String candidacyOption) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateBlankVotes(String id_election) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateNullVotes(String id_election) throws java.rmi.RemoteException, InterruptedException;
+
 }
 

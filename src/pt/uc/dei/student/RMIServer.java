@@ -15,10 +15,12 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.sleep;
+import static java.time.LocalTime.now;
 
 public class RMIServer extends UnicastRemoteObject implements RMI {
     private final int NUM_MULTICAST_SERVERS = 11;
@@ -412,6 +414,25 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    public void insertVotingRecord(String id_election, String cc, String ndep) {
+        updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(date('now'),'%s,'%s','%s')", ndep, cc, id_election));
+    }
+
+    public void updateCandidacyVotes(String id_election, String candidacyOption) {
+        updateOnDB("UPDATE candidacy SET votes = votes + 1 WHERE election_id = " + id_election + " AND id = " + candidacyOption);
+    }
+
+    public void updateBlankVotes(String id_election) {
+        updateOnDB("UPDATE election SET blank_votes = blank_votes + 1 WHERE id = " + id_election);
+    }
+
+    public void updateNullVotes(String id_election) {
+        updateOnDB("UPDATE electio SET null_votes = null_votes + 1 WHERE id = " + id_election);
+    }
+
+    public boolean getRegister(int cc) {
+        return updateOnDB("SELECT * FROM voting_record WHERE person_cc_number = " + cc);
+    }
 
     public String saySomething() throws RemoteException {
         return "I'm alive!";

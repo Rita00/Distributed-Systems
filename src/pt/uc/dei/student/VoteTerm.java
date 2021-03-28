@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.others.Utilitary;
 
@@ -74,6 +75,7 @@ public class VoteTerm extends Thread {
     private void doThings(HashMap<String, String> msgHash) {
         //so ler as mensagens do multicast
         if (msgHash.get("sender").startsWith("multicast")) {
+            String[] ndep = msgHash.get("sender").split("-");
             try {
                 if (Integer.parseInt(msgHash.get("destination").split("-")[1]) == this.voteTermId) {
                     switch (msgHash.get("message")) {
@@ -84,26 +86,33 @@ public class VoteTerm extends Thread {
                             //do nothing? print something?
                             break;
                         case "identify":
-                            this.login(msgHash.get("cc"), msgHash.get("arrayList"), msgHash.get("arrayIds"));
+                            this.available = false;
+                            this.login(msgHash.get("cc"), msgHash.get("arrayList"), msgHash.get("arrayIds"), msgHash.get("election"), ndep[2]);
                             break;
                     }
                 }
-            }catch(ArrayIndexOutOfBoundsException e){}
+            } catch (ArrayIndexOutOfBoundsException e) {
+            }
         }
     }
 
-    private void listInfo(String infoElectionByName, String infoElectionById) {
+    private int[] listInfo(String infoElectionByName, String infoElectionById) {
+        int[] candidaciesId = new int[infoElectionById.length()];
         String[] infoName = infoElectionByName.split("\\|"), infoID = infoElectionById.split("\\|");
         for (int i = 0; i < infoName.length; i++) {
             System.out.printf("\t(%s)- %s\n", infoID[i], infoName[i]);
+            candidaciesId[i] = (Integer.parseInt(infoID[i]));
         }
+        System.out.printf("(%s)- Volo em branco\n", infoName.length + 1);
+        candidaciesId[infoName.length] = infoID.length + 1;
+        return candidaciesId;
     }
 
     private void stopTerminal() {
         this.interrupt();
     }
 
-    private void login(String cc, String infoByName, String infoById) {
+    private void login(String cc, String infoByName, String infoById, String election, String ndep) {
         HashMap<String, String> msgHash;
         boolean isFirstAttempt = true;
         do {
@@ -115,7 +124,7 @@ public class VoteTerm extends Thread {
             GET USERNAME PASSWORD
              */
             Scanner input = new Scanner(System.in);
-            System.out.println("User: "+cc);
+            System.out.println("User: " + cc);
             //System.out.print("Número de cartão de cidadão: ");
             //String username = input.nextLine();
             System.out.print("Password: ");
@@ -138,26 +147,59 @@ public class VoteTerm extends Thread {
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
                 msgHash = Utilitary.parseMessage(recvMsg);
                 //TODO check if message is for me
-            }while(!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || (!(msgHash.get("message").equals("logged in") || msgHash.get("message").equals("wrong password"))));
+            } while (!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || (!(msgHash.get("message").equals("logged in") || msgHash.get("message").equals("wrong password"))));
         } while (!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || !msgHash.get("message").equals("logged in"));
         System.out.println("Successfully Logged In");
-        this.accessVotingForm(infoByName, infoById);
+        this.accessVotingForm(infoByName, infoById, election, cc, ndep);
     }
 
-    private void accessVotingForm(String infoByName, String infoById) {
+    private void accessVotingForm(String infoByName, String infoById, String election, String cc, String ndep) {
         //TODO;
+        Scanner input = new Scanner(System.in);
+        String sendMsg;
+        int command = -1;
         System.out.println("Escolha uma lista para votar: ");
         this.listInfo(infoByName, infoById);
         System.out.print(OPTION_STRING);
+        command = input.nextInt();
+        sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|vote;id_candidacy|%s;id_election|%s;cc|%s;dep|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", command, election, cc, ndep);
+        sendMessage(sendMsg);
+        this.available = true;
     }
 
-    public int getVoteTermId() { return this.voteTermId; }
-    public int getDepartmentId() { return this.departmentId; }
-    public MulticastSocket getSocket() { return this.socket; }
-    public InetAddress getGroup() { return this.group; }
+    public void sendMessage(String message) {
+        byte[] buffer = message.getBytes();
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
+        try {
+            this.getSocket().send(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void setSocket(MulticastSocket socket) { this.socket=socket; }
-    public void setGroup(InetAddress group) { this.group=group; }
+    public int getVoteTermId() {
+        return this.voteTermId;
+    }
+
+    public int getDepartmentId() {
+        return this.departmentId;
+    }
+
+    public MulticastSocket getSocket() {
+        return this.socket;
+    }
+
+    public InetAddress getGroup() {
+        return this.group;
+    }
+
+    public void setSocket(MulticastSocket socket) {
+        this.socket = socket;
+    }
+
+    public void setGroup(InetAddress group) {
+        this.group = group;
+    }
 
     public static void main(String[] args) {
         int departmentId = 1;

@@ -160,16 +160,19 @@ public class MulticastServer extends Thread {
         StringBuilder res = new StringBuilder();
         try {
             ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(election);
-            res.append("arrayList");
+            res.append(String.format("election|%d;arrayList", election));
             for (Candidacy c : candidacies) {
                 res.append("|");
                 res.append(c.getName());
             }
+            res.append("|Voto Branco|Voto Nulo");
             res.append(";arrayIds");
             for (Candidacy c : candidacies) {
                 res.append("|");
                 res.append(c.getId());
             }
+            int size = candidacies.size();
+            res.append(String.format("|%d|%d", size, size + 1));
 
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
@@ -207,7 +210,7 @@ public class MulticastServer extends Thread {
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
-                this.doThings(msgHash, socket, group);
+                this.doThings(msgHash);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -224,7 +227,7 @@ public class MulticastServer extends Thread {
         }
     }
 
-    private void doThings(HashMap<String, String> msgHash, MulticastSocket socket, InetAddress group) {
+    private void doThings(HashMap<String, String> msgHash) {
         //nao ler as suas proprias mensagens
         if (!msgHash.get("sender").startsWith("multicast")) {
             switch (msgHash.get("message")) {
@@ -235,9 +238,28 @@ public class MulticastServer extends Thread {
                 case "login":
                     this.verifyLogin(msgHash.get("sender"),msgHash.get("username"), msgHash.get("password"));
                     break;
+                case "vote":
+                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("ndep"));
             }
         }
     }
+
+    private void verifyVote(String candidacyOption, String id_election, String cc, String ndep) {
+        try {
+            ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(Integer.parseInt(id_election));
+            if (Utilitary.hasCandidacy(Integer.parseInt(candidacyOption), candidacies)) {
+                this.rmiServer.updateCandidacyVotes(id_election, candidacyOption);
+            } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 1) {
+                this.rmiServer.updateBlankVotes(id_election);
+            } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 2) {
+                this.rmiServer.updateNullVotes(id_election);
+            }
+            this.rmiServer.insertVotingRecord(id_election, cc, ndep);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    } //Todo quando se identifica uma pessoa na mesa de voto verificar se já tem algum registo numa determinada eleição
 
     private void registerTerminal(String id, String status) {
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), id);

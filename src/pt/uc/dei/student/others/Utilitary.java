@@ -127,4 +127,11 @@ public class Utilitary {
                 return null;
         }
     }
+
+    public static boolean hasCandidacy(int candidacy, ArrayList<Candidacy> candidacies) {
+        for (Candidacy c : candidacies) {
+            if (c.getId() == candidacy) return true;
+        }
+        return false;
+    }
 }

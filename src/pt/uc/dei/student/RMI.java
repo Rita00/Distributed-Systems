@@ -1,9 +1,6 @@
 package pt.uc.dei.student;
 
-import pt.uc.dei.student.elections.Candidacy;
-import pt.uc.dei.student.elections.Department;
-import pt.uc.dei.student.elections.Election;
-import pt.uc.dei.student.elections.Person;
+import pt.uc.dei.student.elections.*;
 
 import java.rmi.*;
 import java.util.ArrayList;
@@ -80,6 +77,8 @@ public interface RMI extends Remote {
     void updateNullVotes(String id_election) throws java.rmi.RemoteException, InterruptedException;
 
     public ArrayList<Person> checkIfAlreadyVote(int cc, int election) throws java.rmi.RemoteException, InterruptedException;
+
+    ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
 
 }
 

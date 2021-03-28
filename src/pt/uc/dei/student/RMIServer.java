@@ -1,9 +1,6 @@
 package pt.uc.dei.student;
 
-import pt.uc.dei.student.elections.Candidacy;
-import pt.uc.dei.student.elections.Department;
-import pt.uc.dei.student.elections.Election;
-import pt.uc.dei.student.elections.Person;
+import pt.uc.dei.student.elections.*;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -15,6 +12,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -112,11 +111,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             return null;
         }
     }
-
-
-    /*public Person getPersonByName(String name) {
-        //return this.selectPeople("SELECT nome FROM person ");
-    }*/
 
     public ArrayList<Person> getPeople(int candidacy_id) {
         return this.selectPeople(
@@ -305,6 +299,36 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return departments;
     }
 
+    /**
+     * Seleciona departamentos na base de dados
+     *
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
+    public ArrayList<VotingRecord> selectVotingRecords(String sql) {
+        Connection conn = connectDB();
+        ArrayList<VotingRecord> votingRecords = new ArrayList();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                votingRecords.add(new VotingRecord(
+                        formatter.parse(rs.getString("date")),
+                        rs.getString("d_name"),
+                        rs.getString("p_name"),
+                        rs.getString("title")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException | ParseException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return votingRecords;
+    }
+
     public ArrayList<Department> selectPollingStation(int election_id) {
         if (election_id == -1) {
             return selectDepartments("SELECT id, name FROM department WHERE hasmulticastserver = 1");
@@ -430,6 +454,14 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public ArrayList<Person> checkIfAlreadyVote(int cc, int election) {
         return selectPeople("SELECT * FROM voting_record WHERE person_cc_number = " + cc + " AND election_id = " + election);
+    }
+
+    public ArrayList<VotingRecord> getVotingRecords() {
+        return selectVotingRecords("select vote_date as date, d.name as d_name, p.name as p_name, title FROM voting_record " +
+                "JOIN person p on voting_record.person_cc_number = p.cc_number " +
+                "JOIN election e on voting_record.election_id = e.id " +
+                "JOIN department d on d.id = voting_record.department " +
+                "ORDER BY voting_record.election_id");
     }
 
     public String saySomething() throws RemoteException {

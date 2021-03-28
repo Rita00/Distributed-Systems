@@ -1,14 +1,12 @@
 package pt.uc.dei.student;
 
-import pt.uc.dei.student.elections.Candidacy;
-import pt.uc.dei.student.elections.Department;
-import pt.uc.dei.student.elections.Election;
-import pt.uc.dei.student.elections.Person;
+import pt.uc.dei.student.elections.*;
 import pt.uc.dei.student.others.Utilitary;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.DecimalFormat;
@@ -49,7 +47,8 @@ public class AdminConsole {
                 System.out.println("\t(2)- Criar Eleição");
                 System.out.println("\t(3)- Gerir Eleição");
                 System.out.println("\t(4)- Gerir Mesas de Voto");
-                System.out.println("\t(5)- Consultar resultados detalhados de eleições passadas");
+                System.out.println("\t(5)- Local em que cada eleitor votou");
+                System.out.println("\t(6)- Consultar resultados detalhados de eleições passadas");
                 System.out.println("(0)- Sair");
                 System.out.print(OPTION_STRING);
                 command = input.nextInt();
@@ -67,6 +66,9 @@ public class AdminConsole {
                         this.listElectionToManagePollingStation();
                         break;
                     case 5:
+                        this.listVotingRecord();
+                        break;
+                    case 6:
                         this.electionsResults();
                         break;
                     default:
@@ -78,6 +80,20 @@ public class AdminConsole {
             this.admin(-1);
         }
 
+    }
+
+    public void listVotingRecord() {
+        try {
+            ArrayList<VotingRecord> votingRecords = this.rmiServer.getVotingRecords();
+            if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");
+            else {
+                for (VotingRecord vr : votingRecords) {
+                    System.out.printf("%st\t%s\t\t%s\t\t%s\n", vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date());
+                }
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void electionsResults() {

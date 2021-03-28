@@ -22,36 +22,45 @@ public class VoteTerm extends Thread {
 
     private int voteTermId;
     private int departmentId;
+    private boolean available = true;
 
-    VoteTerm(int departmentId ,String multicastAddress, int multicastPort){
-        this.voteTermId=(int)Math.round(Math.random()*Integer.MAX_VALUE)+1;
-        this.departmentId=departmentId;
-    	this.MULTICAST_ADDRESS=multicastAddress;
-    	this.MULTICAST_PORT=multicastPort;
+    VoteTerm(int departmentId, String multicastAddress, int multicastPort) {
+        this.voteTermId = (int) Math.round(Math.random() * Integer.MAX_VALUE) + 1;
+        this.departmentId = departmentId;
+        this.MULTICAST_ADDRESS = multicastAddress;
+        this.MULTICAST_PORT = multicastPort;
     }
 
     public void run() {
+        // TODO faz identifação apenas uma vez ou se der timeout à espera de resposta
         try (MulticastSocket socket = new MulticastSocket(this.MULTICAST_PORT)) {
             InetAddress group = InetAddress.getByName(this.MULTICAST_ADDRESS);
             socket.joinGroup(group);
             while (true) {
-                String sendMsg = String.format("sender | voteterm-%s-%s ; destination | %s ; message | I'm VoteTerm", this.getVoteTermId(), this.getDepartmentId(),"multicast");
+                String sendMsg;
+                if (available) {
+                    sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|available", this.getVoteTermId(), this.getDepartmentId(), "multicast");
+                } else {
+                    sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|occupied", this.getVoteTermId(), this.getDepartmentId(), "multicast");
+                }
                 byte[] buffer = sendMsg.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length,group, MULTICAST_PORT);
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
                 socket.send(packet);
                 /*
                 RECEBER E PARSE DO PACOTE
                  */
+                //sem isto o tamanho da mensagem a receber é limitada ao tamanho da mensagem antes enviada
+                byte[] bufferReceive = new byte[256];
+                packet = new DatagramPacket(bufferReceive, bufferReceive.length);
                 socket.receive(packet);
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
                 HashMap<String, String> msgHash = Utilitary.parseMessage(recvMsg);
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
-                doThings(msgHash,socket,group);
-                sleep(1000);
+                doThings(msgHash, socket, group);
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -59,16 +68,24 @@ public class VoteTerm extends Thread {
 
     private void doThings(HashMap<String, String> msgHash, MulticastSocket socket, InetAddress group) {
         //so ler as mensagens do multicast
-        if(msgHash.get("sender").startsWith("multicast")){
-            switch(msgHash.get("message")){
-                case "stop":
-                    stopTerminal();
-                    break;
+        if (msgHash.get("sender").startsWith("multicast")) {
+            if(Integer.parseInt(msgHash.get("destination").split("-")[1]) == this.voteTermId){
+                switch (msgHash.get("message")) {
+                    case "stop":
+                        stopTerminal();
+                        break;
+                    case "true":
+                        //do nothing? print something?
+                        break;
+                    case "identify":
+                        System.out.println("okokok");
+                        break;
+                }
             }
         }
     }
 
-    private void stopTerminal(){
+    private void stopTerminal() {
         this.interrupt();
     }
 
@@ -76,19 +93,19 @@ public class VoteTerm extends Thread {
         HashMap<String, String> msgHash;
         boolean isFirstAttempt = true;
         do {
-            if(!isFirstAttempt){
+            if (!isFirstAttempt) {
                 System.out.print("Wrong username or password");
             }
-            isFirstAttempt=false;
+            isFirstAttempt = false;
             /*
             GET USERNAME PASSWORD
              */
             Scanner input = new Scanner(System.in);
-            System.out.print("Username: ");
+            System.out.print("Número de cartão de cidadão: ");
             String username = input.nextLine();
             System.out.print("Password: ");
             String password = input.nextLine();
-            String sendMsg = String.format("sender | voteterm-%s-%s ; destination | %s ; message | login ; username | %s ; password | %s", this.getVoteTermId(), this.getDepartmentId(), "multicast", username, password);
+            String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", username, password);
             byte[] buffer = sendMsg.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
             /*
@@ -111,12 +128,18 @@ public class VoteTerm extends Thread {
         //TODO;
     }
 
-    public int getVoteTermId(){return this.voteTermId;}
-    public int getDepartmentId(){return this.departmentId;}
+    public int getVoteTermId() {
+        return this.voteTermId;
+    }
+
+    public int getDepartmentId() {
+        return this.departmentId;
+    }
 
     public static void main(String[] args) {
         int departmentId = 1;
-        VoteTerm client = new VoteTerm(departmentId,"224.3.2.1",MulticastServer.MULTICAST_PORT);
+        VoteTerm client = new VoteTerm(departmentId, "224.3.2.1", MulticastServer.MULTICAST_PORT);
+        System.out.printf("======== Terminal de Voto #%s ========\n", client.voteTermId);
         client.start();
     }
 }

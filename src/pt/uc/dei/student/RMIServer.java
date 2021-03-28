@@ -15,12 +15,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.sleep;
-import static java.time.LocalTime.now;
 
 public class RMIServer extends UnicastRemoteObject implements RMI {
     private final int NUM_MULTICAST_SERVERS = 11;

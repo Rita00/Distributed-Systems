@@ -4,15 +4,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import pt.uc.dei.student.elections.Candidacy;
-import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.others.Utilitary;
 
-import static pt.uc.dei.student.others.Utilitary.parseMessage;
 
 /**
  * Clientes do Multicast Server (Terminais de Voto)

@@ -21,8 +21,8 @@ public class Utilitary {
     /**
      * Permite decompor uma mensagem(string) enviada pelo protocolo Multicast de
      * modo a ficar armazenada numa HashMap.<br>
-     * O " ; " permite separar os pares valor/chave.<br>
-     * O " | " permite separar os valores das chaves.
+     * O ";" permite separar os pares valor/chave.<br>
+     * O "|" permite separar os valores das chaves.
      * Se ao separar as chaves dos valores, o tamanho do array resultante é
      * superior a dois então escreve uma mensagem de erro e nao guarda o par
      *

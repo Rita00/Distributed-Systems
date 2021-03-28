@@ -16,3 +16,5 @@ SET title='y',
 WHERE id=1;
 
 INSERT INTO candidacy(id,name,type,election_id) VALUES (NULL,'aaaa','student',1);
+
+SELECT * FROM person WHERE cc_number='55555557' AND password='estacerta';

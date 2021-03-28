@@ -211,7 +211,7 @@ public class MulticastServer extends Thread {
                     registerTerminal(msgHash.get("sender"), msgHash.get("message"), socket, group);
                     break;
                 case "login":
-                    verifyLogin(msgHash.get("username"), msgHash.get("password"), socket, group);
+                    this.verifyLogin(msgHash.get("username"), msgHash.get("password"));
                     break;
             }
         }
@@ -227,19 +227,19 @@ public class MulticastServer extends Thread {
         this.send(message);
     }
 
-    private void verifyLogin(String username, String password, MulticastSocket socket, InetAddress group) {
+    private void verifyLogin(String username, String password) {
         String message;
         try {
-            if (this.rmiServer.getPerson(username, password) != null) {
+            if (this.getRmiServer().getPerson(username, password) != null) {
                 //TODO id tem que ser específico de um terminal de voto, ver exemplo na função registerTerminal
-                message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), "voteterm");
+                message = String.format("sender|multicast-%s-%s;destination|%s;message|logged in", this.getMulticastId(), this.department.getId(), "voteterm");
             } else {
                 //TODO same here
-                message = String.format("sender|multicast-%s-%s;destination|%s;message|false", this.getMulticastId(), this.department.getId(), "voteterm");
+                message = String.format("sender|multicast-%s-%s;destination|%s;message|wrong password", this.getMulticastId(), this.department.getId(), "voteterm");
             }
         } catch (RemoteException | InterruptedException e) {
             //TODO aaaaaaand here
-            message = String.format("sender|multicast-%s-%s;destination|%s;message|false", this.getMulticastId(), this.department.getId(), "voteterm");
+            message = String.format("sender|multicast-%s-%s;destination|%s;message|wrong password", this.getMulticastId(), this.department.getId(), "voteterm");
         }
         this.send(message);
     }
@@ -271,6 +271,9 @@ public class MulticastServer extends Thread {
         }
     }
 
+    public RMI getRmiServer() {
+        return this.rmiServer;
+    }
     public int getMulticastId() {
         return this.multicastId;
     }

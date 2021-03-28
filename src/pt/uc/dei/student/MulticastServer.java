@@ -22,6 +22,9 @@ import java.util.Scanner;
 public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
     public final static int MULTICAST_PORT = 7002;
+    MulticastSocket socket;
+    InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+
     private final long SLEEP_TIME = 5000;
     private boolean isON = true;
     private final String OPTION_STRING = ">>> ";
@@ -34,8 +37,11 @@ public class MulticastServer extends Thread {
 
     private final NotifierCallBack NOTIFIER = new NotifierCallBack();
 
-    public MulticastServer(RMI rmiServer) throws RemoteException {
+    private final HashMap<String, Boolean> availableTerminals = new HashMap<>();
+
+    public MulticastServer(RMI rmiServer) throws IOException {
         this.rmiServer = rmiServer;
+        this.socket = new MulticastSocket(MULTICAST_PORT);
     }
 
     public void menuPollingStation(int dep_id) throws IOException {
@@ -117,11 +123,34 @@ public class MulticastServer extends Thread {
                 System.out.print(OPTION_STRING);
                 command2 = input.nextInt();
             }
-            if (command2 == people.size() + 1) System.out.println("Não pode votar nesta eleição!");
-            else ;
+            if (command2 == people.size() + 1) {
+                System.out.println("Não pode votar nesta eleição!");
+            } else {
+                //select voting terminal
+                selectTerminal(people.get(command2 - 1).getCc_number());
+
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private void selectTerminal(int cc_number) {
+        String id = null;
+        // choose terminal
+        while (id == null) {
+            for (String key : availableTerminals.keySet()) {
+                if (availableTerminals.get(key)) {
+                    id = key;
+                    availableTerminals.put(key, false);
+                    break;
+                }
+            }
+        }
+        //send to voting terminal the cc
+        String message = String.format("sender|multicast-%s-%s;destination|%s;message|identify;cc|%d", this.getMulticastId(), this.department.getId(), id, cc_number);
+        this.send(message);
+        System.out.println("Desbloqueado terminal " + id);
     }
 
     private void connect() {
@@ -140,34 +169,28 @@ public class MulticastServer extends Thread {
 
     public void run() {
         long counter = 0;
-        try (MulticastSocket socket = new MulticastSocket(MULTICAST_PORT)) {
+        try {
             //O servidor não recebe mensagens dos clientes (sem o Port)
-            InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
             while (isON) {
-                String message = String.format("sender | multicast-%s-%s ; destination | %s ; message | I'm Multicast", this.getMulticastId(), this.department.getId(), "voteterm");
-                DatagramPacket packet = this.send(socket, group, message);
                 /*
                 RECEBER E PARSE DO PACOTE
                  */
+                byte[] bufferReceive = new byte[256];
+                DatagramPacket packet = new DatagramPacket(bufferReceive, bufferReceive.length);
                 socket.receive(packet);
                 HashMap<String, String> msgHash = Utilitary.parseMessage(new String(packet.getData(), 0, packet.getLength()));
                 /*
                 USAR A INFORMACOES DO PACOTE
                  */
                 this.doThings(msgHash, socket, group);
-
-                try {
-                    sleep((long) (Math.random() * SLEEP_TIME));
-                } catch (InterruptedException ignored) {
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private DatagramPacket send(MulticastSocket socket, InetAddress group, String message) {
+    private void send(String message) {
         byte[] buffer = message.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
         try {
@@ -175,15 +198,15 @@ public class MulticastServer extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return packet;
     }
 
     private void doThings(HashMap<String, String> msgHash, MulticastSocket socket, InetAddress group) {
         //nao ler as suas proprias mensagens
         if (!msgHash.get("sender").startsWith("multicast")) {
             switch (msgHash.get("message")) {
-                case "I'm VoteTerm":
-
+                case "occupied":
+                case "available":
+                    registerTerminal(msgHash.get("sender"), msgHash.get("message"), socket, group);
                     break;
                 case "login":
                     verifyLogin(msgHash.get("username"), msgHash.get("password"), socket, group);
@@ -192,18 +215,31 @@ public class MulticastServer extends Thread {
         }
     }
 
+    private void registerTerminal(String id, String status, MulticastSocket socket, InetAddress group) {
+        String message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), id);
+        if (status.equals("available")) {
+            availableTerminals.put(id, true);
+        } else {
+            availableTerminals.put(id, false);
+        }
+        this.send(message);
+    }
+
     private void verifyLogin(String username, String password, MulticastSocket socket, InetAddress group) {
         String message;
         try {
             if (this.rmiServer.getPerson(username, password) != null) {
-                message = String.format("sender | multicast-%s-%s ; destination | %s ; message | true", this.getMulticastId(), this.department.getId(), "voteterm");
+                //TODO id tem que ser específico de um terminal de voto, ver exemplo na função registerTerminal
+                message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), "voteterm");
             } else {
-                message = String.format("sender | multicast-%s-%s ; destination | %s ; message | false", this.getMulticastId(), this.department.getId(), "voteterm");
+                //TODO same here
+                message = String.format("sender|multicast-%s-%s;destination|%s;message|false", this.getMulticastId(), this.department.getId(), "voteterm");
             }
         } catch (RemoteException | InterruptedException e) {
-            message = String.format("sender | multicast-%s-%s ; destination | %s ; message | false", this.getMulticastId(), this.department.getId(), "voteterm");
+            //TODO aaaaaaand here
+            message = String.format("sender|multicast-%s-%s;destination|%s;message|false", this.getMulticastId(), this.department.getId(), "voteterm");
         }
-        this.send(socket, group, message);
+        this.send(message);
     }
 
 
@@ -227,7 +263,7 @@ public class MulticastServer extends Thread {
                 RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
                 multicastServer = new MulticastServer(rmiServer);
                 break;
-            } catch (RemoteException | NotBoundException remoteException) {
+            } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace();
             }
         }
@@ -277,7 +313,7 @@ public class MulticastServer extends Thread {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
                     multicastServer = new MulticastServer(rmiServer);
                     break;
-                } catch (RemoteException | NotBoundException remoteException) {
+                } catch (NotBoundException | IOException remoteException) {
                     remoteException.printStackTrace();
                 }
             }

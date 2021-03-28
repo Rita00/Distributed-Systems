@@ -18,6 +18,7 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.SplittableRandom;
 
 public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
@@ -150,7 +151,8 @@ public class MulticastServer extends Thread {
         //send to voting terminal the cc
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|identify;cc|%d", this.getMulticastId(), this.department.getId(), id, cc_number);
         this.send(message);
-        System.out.println("Desbloqueado terminal " + id);
+        String[] getId = id.split("-");
+        System.out.println("Desbloqueado terminal " + getId[1]);
     }
 
     private void connect() {

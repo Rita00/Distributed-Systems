@@ -234,16 +234,16 @@ public class MulticastServer extends Thread {
             switch (msgHash.get("message")) {
                 case "occupied":
                 case "available":
-                    registerTerminal(msgHash.get("sender"), msgHash.get("message"), socket, group);
+                    registerTerminal(msgHash.get("sender"), msgHash.get("message"));
                     break;
                 case "login":
-                    this.verifyLogin(msgHash.get("username"), msgHash.get("password"));
+                    this.verifyLogin(msgHash.get("sender"),msgHash.get("username"), msgHash.get("password"));
                     break;
             }
         }
     }
 
-    private void registerTerminal(String id, String status, MulticastSocket socket, InetAddress group) {
+    private void registerTerminal(String id, String status) {
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), id);
         if (status.equals("available")) {
             availableTerminals.put(id, true);
@@ -253,19 +253,16 @@ public class MulticastServer extends Thread {
         //this.send(message);
     }
 
-    private void verifyLogin(String username, String password) {
+    private void verifyLogin(String id, String username, String password) {
         String message;
         try {
             if (this.getRmiServer().getPerson(username, password) != null) {
-                //TODO id tem que ser específico de um terminal de voto, ver exemplo na função registerTerminal
-                message = String.format("sender|multicast-%s-%s;destination|%s;message|logged in", this.getMulticastId(), this.department.getId(), "voteterm");
+                message = String.format("sender|multicast-%s-%s;destination|%s;message|logged in", this.getMulticastId(), this.department.getId(), id);
             } else {
-                //TODO same here
-                message = String.format("sender|multicast-%s-%s;destination|%s;message|wrong password", this.getMulticastId(), this.department.getId(), "voteterm");
+                message = String.format("sender|multicast-%s-%s;destination|%s;message|wrong password", this.getMulticastId(), this.department.getId(), id);
             }
         } catch (RemoteException | InterruptedException e) {
-            //TODO aaaaaaand here
-            message = String.format("sender|multicast-%s-%s;destination|%s;message|wrong password", this.getMulticastId(), this.department.getId(), "voteterm");
+            message = String.format("sender|multicast-%s-%s;destination|%s;message|wrong password", this.getMulticastId(), this.department.getId(), id);
         }
         this.send(message);
     }

@@ -430,7 +430,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         updateOnDB("UPDATE electio SET null_votes = null_votes + 1 WHERE id = " + id_election);
     }
 
-    public boolean getRegister(int cc) {
+    public boolean checkIfAlreadyVote(int cc) {
         return updateOnDB("SELECT * FROM voting_record WHERE person_cc_number = " + cc);
     }
 

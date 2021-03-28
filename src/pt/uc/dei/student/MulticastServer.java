@@ -19,13 +19,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+//Todo verificar se pode votar em qualquer departamento
+//Todo verificar se as eliçoes restringidas a um unico departamento nao podem ser adicionadas a mais departamentos
+
 public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
     public final static int MULTICAST_PORT = 7002;
     MulticastSocket socket;
     InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
 
-    private final long SLEEP_TIME = 5000;
     private boolean isON = true;
     private final String OPTION_STRING = ">>> ";
 
@@ -128,8 +130,9 @@ public class MulticastServer extends Thread {
             } else {
                 //select voting terminal
                 int cc_number = people.get(command2 - 1).getCc_number();
-                selectTerminal(cc_number, election);
-
+                if (!this.rmiServer.checkIfAlreadyVote(cc_number))
+                    selectTerminal(cc_number, election);
+                else System.out.println("Já votou nesta eleição!");
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -258,8 +261,7 @@ public class MulticastServer extends Thread {
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-
-    } //Todo quando se identifica uma pessoa na mesa de voto verificar se já tem algum registo numa determinada eleição
+    }
 
     private void registerTerminal(String id, String status) {
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), id);

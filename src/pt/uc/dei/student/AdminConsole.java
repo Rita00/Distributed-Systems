@@ -6,7 +6,6 @@ import pt.uc.dei.student.others.Utilitary;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.DecimalFormat;
@@ -48,7 +47,8 @@ public class AdminConsole {
                 System.out.println("\t(3)- Gerir Eleição");
                 System.out.println("\t(4)- Gerir Mesas de Voto");
                 System.out.println("\t(5)- Local em que cada eleitor votou");
-                System.out.println("\t(6)- Consultar resultados detalhados de eleições passadas");
+                System.out.println("\t(5)- Consultar resultados detalhados de eleições passadas");
+                System.out.println("\t(7)- Consultar estado das mesas de voto e respetivos terminais de voto");
                 System.out.println("(0)- Sair");
                 System.out.print(OPTION_STRING);
                 command = input.nextInt();
@@ -71,6 +71,9 @@ public class AdminConsole {
                     case 6:
                         this.electionsResults();
                         break;
+                    case 7:
+                        this.statusPollingStation();
+                        break;
                     default:
                         break;
                 }
@@ -80,6 +83,30 @@ public class AdminConsole {
             this.admin(-1);
         }
 
+    }
+
+    private void statusPollingStation(){
+        try {
+            System.out.println("Mesas de voto e respetivos terminais de voto ativos");
+            for(Department m : this.rmiServer.getActiveMulticasts()){
+                System.out.println("- "+m.getName());
+                System.out.println("\t"+m.getName());
+            }
+            System.out.println("(ENTER)-\tAtualizar");
+            System.out.println("(" + RETURN + ")-\tVoltar");
+            Scanner input = new Scanner(System.in);
+            String command = input.nextLine();
+            if (command.equals("0")) {
+                this.admin(-1);
+            } else {
+                this.statusPollingStation();
+            }
+        }catch(Exception e){
+            try{
+                wait(5000);
+            }catch(InterruptedException ignore){}
+            this.statusPollingStation();
+        }
     }
 
     public void listVotingRecord() {
@@ -123,7 +150,7 @@ public class AdminConsole {
                 listCandidacyWithVotes(election);
             }
         } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 
@@ -158,7 +185,7 @@ public class AdminConsole {
                 }//other cases if needed
             }
         } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 
@@ -185,7 +212,7 @@ public class AdminConsole {
             }
             this.managePollingStation(election);
         } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
     public void managePollingStation(int election) {
@@ -246,7 +273,7 @@ public class AdminConsole {
                 this.rmiServer.insertPollingStation(election, mesaVoto);
             }
         } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 
@@ -279,7 +306,7 @@ public class AdminConsole {
                 this.rmiServer.removePollingStation(mesaVoto);
             }
         } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 
@@ -323,7 +350,7 @@ public class AdminConsole {
                 System.out.print("\t");
                 ndep = input.nextInt();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                e.printStackTrace(); //TODO TRATAR EXCEPCAO
             }
         }
         System.out.print("Número de telemóvel: ");
@@ -357,7 +384,7 @@ public class AdminConsole {
                 System.out.println("Registo feito com sucesso! :)");
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 
@@ -399,7 +426,7 @@ public class AdminConsole {
                     ndep = input.nextInt();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                e.printStackTrace(); //TODO TRATAR EXCEPCAO
             }
         }
 
@@ -421,11 +448,11 @@ public class AdminConsole {
                     this.rmiServer.insertElectionDepartment(id, ndep);
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    e.printStackTrace(); //TODO TRATAR EXCEPCAO
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 
@@ -466,7 +493,7 @@ public class AdminConsole {
                 //volta para este menu caso o input esteja errado
                 this.listElectionsToManage();
             } catch (InterruptedException | IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); //TODO TRATAR EXCEPCAO
             }
         }
     }
@@ -526,7 +553,7 @@ public class AdminConsole {
                 //volta para este menu caso os input esteja errado
                 this.manageElection(election);
             } catch (InterruptedException | IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); //TODO TRATAR EXCEPCAO
             }
         }
     }
@@ -647,7 +674,7 @@ public class AdminConsole {
                 //volta para este menu caso o input esteja errado
                 this.manageCandidacy(candidacy);
             } catch (InterruptedException | IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); //TODO TRATAR EXCEPCAO
             }
         }
     }
@@ -661,7 +688,7 @@ public class AdminConsole {
             console.admin(-1);
         } catch (Exception e) {
             System.out.println("Exception in Admin: " + e);
-            e.printStackTrace();
+            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 }

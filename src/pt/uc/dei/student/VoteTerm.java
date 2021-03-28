@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -62,6 +63,14 @@ public class VoteTerm extends Thread {
                  */
                 doThings(msgHash);
             }
+        }catch(SocketException se){
+            try {
+                sleep(5000);
+                System.out.println("Trying to Reconnect to the network...");
+            } catch (InterruptedException e) {
+                this.run();
+            }
+            this.run();
         } catch (IOException e) {
             e.printStackTrace();
         }

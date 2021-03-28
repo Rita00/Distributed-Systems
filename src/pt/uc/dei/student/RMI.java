@@ -79,7 +79,7 @@ public interface RMI extends Remote {
 
     void updateNullVotes(String id_election) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean checkIfAlreadyVote(int cc) throws java.rmi.RemoteException, InterruptedException;
+    public ArrayList<Person> checkIfAlreadyVote(int cc, int election) throws java.rmi.RemoteException, InterruptedException;
 
 }
 

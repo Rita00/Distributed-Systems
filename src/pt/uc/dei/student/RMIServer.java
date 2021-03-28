@@ -430,8 +430,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         updateOnDB("UPDATE electio SET null_votes = null_votes + 1 WHERE id = " + id_election);
     }
 
-    public boolean checkIfAlreadyVote(int cc) {
-        return updateOnDB("SELECT * FROM voting_record WHERE person_cc_number = " + cc);
+    public ArrayList<Person> checkIfAlreadyVote(int cc, int election) {
+        return selectPeople("SELECT * FROM voting_record WHERE person_cc_number = " + cc + " AND election_id = " + election);
     }
 
     public String saySomething() throws RemoteException {

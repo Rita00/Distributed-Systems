@@ -96,16 +96,11 @@ public class VoteTerm extends Thread {
         }
     }
 
-    private int[] listInfo(String infoElectionByName, String infoElectionById) {
-        int[] candidaciesId = new int[infoElectionById.length()];
+    private void listInfo(String infoElectionByName, String infoElectionById) {
         String[] infoName = infoElectionByName.split("\\|"), infoID = infoElectionById.split("\\|");
         for (int i = 0; i < infoName.length; i++) {
             System.out.printf("\t(%s)- %s\n", infoID[i], infoName[i]);
-            candidaciesId[i] = (Integer.parseInt(infoID[i]));
         }
-        System.out.printf("(%s)- Volo em branco\n", infoName.length + 1);
-        candidaciesId[infoName.length] = infoID.length + 1;
-        return candidaciesId;
     }
 
     private void stopTerminal() {
@@ -154,7 +149,6 @@ public class VoteTerm extends Thread {
     }
 
     private void accessVotingForm(String infoByName, String infoById, String election, String cc, String ndep) {
-        //TODO;
         Scanner input = new Scanner(System.in);
         String sendMsg;
         int command = -1;

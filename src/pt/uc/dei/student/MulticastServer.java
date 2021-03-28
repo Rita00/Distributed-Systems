@@ -130,7 +130,8 @@ public class MulticastServer extends Thread {
             } else {
                 //select voting terminal
                 int cc_number = people.get(command2 - 1).getCc_number();
-                if (!this.rmiServer.checkIfAlreadyVote(cc_number))
+                ArrayList<Person> peopleVote = this.rmiServer.checkIfAlreadyVote(cc_number, election);
+                if (peopleVote.size() == 0)
                     selectTerminal(cc_number, election);
                 else System.out.println("Já votou nesta eleição!");
             }

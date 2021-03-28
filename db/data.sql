@@ -39,10 +39,17 @@ INSERT INTO election(id,title, type, description, begin_date, end_date) VALUES (
 --ELEICAO PASSADA
 INSERT INTO election(id,title, type, description, begin_date, end_date) VALUES (NULL,'BestDEECFuncionarios','Funcionário','Eleicoes dos Funcionarios do DEEC','2022-01-01 00:00:00','2023-01-01 00:00:00');
 --pessoas
-INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Nuno Markl',55555551,'2025-01-01','Rua 1° Marco',934887788,'Funcionário','1986',5);
-INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Matias Correios',55555553,'2025-01-02','Rua da AAC',934887769,'Estudante','dux',5);
-INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Cristina Ferreira',55555557,'2025-01-02','Rua da TVI',934886969,'Docente','estacerta',5);
+INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Nuno Markl',55555551,'2025-01-01','Rua 1° Marco',934555551,'Funcionário','1986',5);
+INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Matias Correios',55555553,'2025-01-02','Rua da AAC',934555553,'Estudante','dux',5);
+INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Marco Paulo',55555554,'2025-01-02','Rua das Cancoes',934555554,'Estudante','cantor',5);
+INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Joaquim Jorge',55555555,'2025-01-02','Rua da Junta',934555555,'Estudante','gajodajunta',5);
+INSERT INTO person(name, cc_number,cc_validity,address,phone,job,password,department_id) VALUES ('Cristina Ferreira',55555557,'2025-01-02','Rua da TVI',934555557,'Docente','estacerta',5);
 
-
-
+-------------------------------VOTOS REGISTADOS PARA A ELEICAO PASSADA------------------------
+-- DEVE CONTER PARA eleicao do NEEEC 1 nulos 1 branco e 2 para a lista #1
+--valido
+INSERT INTO voting_record(id, vote, vote_date, department, polling_station, person_cc_number, election_id) VALUES (1,1,'2021-03-21 00:00:00',5,5,555555553,10);
+INSERT INTO voting_record(id, vote, vote_date, department, polling_station, person_cc_number, election_id) VALUES (2,-1,'2021-03-21 00:00:00',5,5,555555554,10);
+--nulo porque antes da data
+INSERT INTO voting_record(id, vote, vote_date, department, polling_station, person_cc_number, election_id) VALUES (2,1,'2021-03-19 00:00:00',5,5,555555555,10);
 

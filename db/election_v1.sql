@@ -49,12 +49,13 @@ PRIMARY KEY(id)
 );
 
 CREATE TABLE voting_record (
-   id		 INTEGER,
-   vote_date	 DATE,
-   department	 VARCHAR(512),
-   polling_station	 INTEGER,
+   id		        INTEGER,
+   vote             INTEGER,
+   vote_date	    DATE,
+   department	    VARCHAR(512),
+   polling_station  INTEGER,
    person_cc_number INTEGER,
-   election_id	 INTEGER,
+   election_id	    INTEGER,
    PRIMARY KEY(id,person_cc_number,election_id),
    FOREIGN KEY (person_cc_number) REFERENCES person(cc_number),
    FOREIGN KEY (election_id) REFERENCES election(id)

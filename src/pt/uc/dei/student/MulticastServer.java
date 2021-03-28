@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -215,6 +216,13 @@ public class MulticastServer extends Thread {
                 USAR A INFORMACOES DO PACOTE
                  */
                 this.doThings(msgHash);
+            }
+        }catch(SocketException se){
+            try {
+                sleep(5000);
+                System.out.println("Trying to Reconnect to the network...\n"+OPTION_STRING);
+            } catch (InterruptedException e) {
+                this.run();
             }
         } catch (IOException e) {
             e.printStackTrace();

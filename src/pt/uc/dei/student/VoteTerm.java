@@ -26,6 +26,8 @@ public class VoteTerm extends Thread {
     private InetAddress group;
     private boolean available = true;
 
+    private final String OPTION_STRING = ">>> ";
+
     VoteTerm(int departmentId, String multicastAddress, int multicastPort) {
         this.voteTermId = (int) Math.round(Math.random() * Integer.MAX_VALUE) + 1;
         this.departmentId = departmentId;
@@ -93,7 +95,7 @@ public class VoteTerm extends Thread {
     private void listInfo(String infoElectionByName, String infoElectionById) {
         String[] infoName = infoElectionByName.split("\\|"), infoID = infoElectionById.split("\\|");
         for (int i = 0; i < infoName.length; i++) {
-            System.out.printf("(%s)- %s\n", infoID[i], infoName[i]);
+            System.out.printf("\t(%s)- %s\n", infoID[i], infoName[i]);
         }
     }
 
@@ -136,17 +138,17 @@ public class VoteTerm extends Thread {
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
                 msgHash = Utilitary.parseMessage(recvMsg);
                 //TODO check if message is for me
-            }while(!(msgHash.get("message").equals("logged in") || msgHash.get("message").equals("wrong password")));
-        } while (!msgHash.get("message").equals("logged in"));
+            }while(!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || (!(msgHash.get("message").equals("logged in") || msgHash.get("message").equals("wrong password"))));
+        } while (!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || !msgHash.get("message").equals("logged in"));
         System.out.println("Successfully Logged In");
         this.accessVotingForm(infoByName, infoById);
     }
 
     private void accessVotingForm(String infoByName, String infoById) {
         //TODO;
-        System.out.println("PODES VOTAR");
+        System.out.println("Escolha uma lista para votar: ");
         this.listInfo(infoByName, infoById);
-
+        System.out.print(OPTION_STRING);
     }
 
     public int getVoteTermId() { return this.voteTermId; }

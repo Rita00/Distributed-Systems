@@ -6,7 +6,6 @@ import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 import pt.uc.dei.student.others.Utilitary;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,12 +15,9 @@ import java.net.MulticastSocket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.sql.Array;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.SplittableRandom;
 
 public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
@@ -257,7 +253,7 @@ public class MulticastServer extends Thread {
         String message;
         try {
             if (this.getRmiServer().getPerson(username, password) != null) {
-                message = String.format("sender|multicast-%s-%s;destination|%s;message|logged in", this.getMulticastId(), this.department.getId(), id);
+                message = String.format("sender|multicast-%s-%s;destination|%s;message|logged in;cc|%s", this.getMulticastId(), this.department.getId(), id, username);
             } else {
                 message = String.format("sender|multicast-%s-%s;destination|%s;message|wrong password", this.getMulticastId(), this.department.getId(), id);
             }

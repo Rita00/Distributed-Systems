@@ -64,9 +64,11 @@ public class Utilitary {
     }
 
     public static void listDepart(ArrayList<Department> departments) {
-        if (departments.size() == 0) System.out.println("");
-        for (Department dep : departments) {
-            System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
+        if (departments.size() == 0) System.out.println("Sem departamentos.");
+        else {
+            for (Department dep : departments) {
+                System.out.printf("\t(%d)- %s%n", dep.getId(), dep.getName());
+            }
         }
     }
 

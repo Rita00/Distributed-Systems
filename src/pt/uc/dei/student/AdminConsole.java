@@ -412,8 +412,18 @@ public class AdminConsole {
         end_data = reader.readLine();
         System.out.print("Título da Eleição: ");
         titulo = reader.readLine();
+        while (titulo.length() == 0) {
+            System.out.println("Titulo obrigatório!");
+            System.out.print("Título da Eleição: ");
+            titulo = reader.readLine();
+        }
         System.out.print("Breve descrição: ");
         descricao = reader.readLine();
+        while (descricao.length() == 0) {
+            System.out.println("Breve descrição obrigatória!");
+            System.out.print("Breve descrição: ");
+            descricao = reader.readLine();
+        }
         while (restr != 1 && restr != 2) {
             System.out.println("Restringir Eleição?");
             System.out.println("\t(1)- Sim");

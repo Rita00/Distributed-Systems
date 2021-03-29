@@ -579,70 +579,58 @@ public class AdminConsole {
     }
 
     private void editElection(Election election) throws RemoteException, InterruptedException {
-        int command = -1;
-        while (command != RETURN) {
-            System.out.println(election.toString());
-            //opcoes
-            System.out.println("Editar:");
-            System.out.println("\t(1)- Nome");
-            System.out.println("\t(2)- Tipo");
-            System.out.println("\t(3)- Descricao");
-            System.out.println("\t(4)- Data Inicio");
-            System.out.println("\t(5)- Data Fim");
-            System.out.println("(" + RETURN + ")-  Voltar");
-            //esperar pelo input
-            Scanner input = new Scanner(System.in);
-            System.out.print(OPTION_STRING);
-            command = input.nextInt();
-            switch (command) {
-                case RETURN:
-                    //VAZIO PARA VOLTAR
-                    break;
-                case 1:
-                    System.out.println("Editar titulo:");
-                    election.setTitle(input.next());
-                    this.rmiServer.updateElections(election);
-                    break;
-                case 2:
-                    int type = -1;
-                    while (type > 3 || 0 > type) {
-                        System.out.println("Editar tipo de eleição:");
-                        System.out.println("\t(1)- Estudante");
-                        System.out.println("\t(2)- Docente");
-                        System.out.println("\t(3)- Funcionario");
-                        System.out.println("(0)-  Voltar");
-                        type = input.nextInt();
-                        if (type == RETURN) {
-                            this.editElection(election);
-                        } else {
-                            election.setType(type);
-                        }
-                    }
-                    election.setType(type - 1);
-                    this.rmiServer.updateElections(election);
-                    break;
-                case 3:
-                    System.out.println("Editar descricao:");
-                    election.setDescription(input.next());
-                    this.rmiServer.updateElections(election);
-                    break;
-                case 4:
-                    System.out.println("Editar data de inicio (YYYY-MM-DD HH:mm:SS):");
-                    while (!election.setBegin(input.next(), input.next()))
-                        System.out.println("Data invalida - formato (YYYY-MM-DD HH:mm:SS)");
-                    this.rmiServer.updateElections(election);
-                    break;
-                case 5:
-                    System.out.println("Editar data de fim (YYYY-MM-DD HH:mm:SS):");
-                    while (!election.setEnd(input.next(), input.next()))
-                        System.out.println("Data invalida - formato (YYYY-MM-DD HH:mm:SS)");
-                    this.rmiServer.updateElections(election);
-                    break;
-                default:
-                    //volta para este menu caso esteja algo errado
+        System.out.println(election.toString());
+        //opcoes
+        System.out.println("Editar:");
+        System.out.println("\t(1)- Nome");
+        System.out.println("\t(2)- Tipo");
+        System.out.println("\t(3)- Descricao");
+        System.out.println("\t(4)- Data Inicio");
+        System.out.println("\t(5)- Data Fim");
+        System.out.println("(" + RETURN + ")-  Voltar");
+        //esperar pelo input
+        Scanner input = new Scanner(System.in);
+        System.out.print(OPTION_STRING);
+        String command = input.nextLine();
+        if (command.equals(""+RETURN+"")) {
+            //VAZIO PARA VOLTAR
+        } else if (command.equals("1")) {
+            System.out.println("Editar titulo:");
+            election.setTitle(input.next());
+            this.rmiServer.updateElections(election);
+        } else if (command.equals("2")) {
+            int type = -1;
+            while (type > 3 || 0 > type) {
+                System.out.println("Editar tipo de eleição:");
+                System.out.println("\t(1)- Estudante");
+                System.out.println("\t(2)- Docente");
+                System.out.println("\t(3)- Funcionario");
+                System.out.println("(0)-  Voltar");
+                type = input.nextInt();
+                if (type == RETURN) {
                     this.editElection(election);
-                    break;
+                } else {
+                    election.setType(type);
+                }
             }
+            election.setType(type - 1);
+            this.rmiServer.updateElections(election);
+        } else if (command.equals("3")) {
+            System.out.println("Editar descricao:");
+            election.setDescription(input.next());
+            this.rmiServer.updateElections(election);
+        } else if (command.equals("4")) {
+            System.out.println("Editar data de inicio (YYYY-MM-DD HH:mm:SS):");
+            while (!election.setBegin(input.next(), input.next()))
+                System.out.println("Data invalida - formato (YYYY-MM-DD HH:mm:SS)");
+            this.rmiServer.updateElections(election);
+        } else if (command.equals("5")) {
+            System.out.println("Editar data de fim (YYYY-MM-DD HH:mm:SS):");
+            while (!election.setEnd(input.next(), input.next()))
+                System.out.println("Data invalida - formato (YYYY-MM-DD HH:mm:SS)");
+            this.rmiServer.updateElections(election);
+        } else {//volta para este menu caso esteja algo errado
+            this.editElection(election);
         }
     }
 

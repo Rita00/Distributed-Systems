@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+//Todo Não dar print em tempo real de eleições que não estejam a decorrer
 //Todo é possivel adicionar mesas de voto a uma eleição restringida, apesar de depois não serem listadas
 //Todo não deve ser possivel votar numa eleição que nao tem listas
 //Todo quando na consola de administração se adicionam novas mesas de voto a uma determinada eleição dar update em tempo real no multicast correspondente
@@ -273,7 +274,6 @@ public class MulticastServer extends Thread {
             } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 2) {
                 this.rmiServer.updateNullVotes(id_election, cc, ndep);
             }
-            this.rmiServer.insertVotingRecord(id_election, cc, ndep);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();//TODO tratar excecao
         }

@@ -547,7 +547,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 " FROM voting_record" +
                 " JOIN department d on voting_record.department = d.id" +
                 " JOIN election e on e.id = voting_record.election_id" +
-                " group by voting_record.department, voting_record.election_id";
+                " WHERE e.begin_date < date('now') AND e.end_date > date('now') GROUP BY voting_record.department, voting_record.election_id";
         ArrayList<InfoElectors> info = new ArrayList<>();
         Connection conn = connectDB();
         try {

@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 //Todo Não dar print em tempo real de eleições que não estejam a decorrer
-//Todo é possivel adicionar mesas de voto a uma eleição restringida, apesar de depois não serem listadas
-//Todo não deve ser possivel votar numa eleição que nao tem listas
 //Todo quando na consola de administração se adicionam novas mesas de voto a uma determinada eleição dar update em tempo real no multicast correspondente
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
 //Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento

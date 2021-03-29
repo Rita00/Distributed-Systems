@@ -3,6 +3,7 @@ package pt.uc.dei.student;
 import pt.uc.dei.student.elections.*;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -521,24 +522,93 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public void insertVotingRecord(String id_election, String cc, String ndep) {
-        updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(date('now'),'%s,'%s','%s')", ndep, cc, id_election));
+        updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", ndep, cc, id_election));
     }
 
-    public void updateCandidacyVotes(String id_election, String candidacyOption) {
+    public void updateCandidacyVotes(String id_election, String candidacyOption, String cc, String ndep) {
+        insertVotingRecord(id_election, cc, ndep);
         updateOnDB("UPDATE candidacy SET votes = votes + 1 WHERE election_id = " + id_election + " AND id = " + candidacyOption);
-
+        this.sendRealTimeInfo();
     }
 
-    public void updateBlankVotes(String id_election) {
+    public void updateBlankVotes(String id_election, String cc, String ndep) {
+        insertVotingRecord(id_election, cc, ndep);
         updateOnDB("UPDATE election SET blank_votes = blank_votes + 1 WHERE id = " + id_election);
+        this.sendRealTimeInfo();
     }
 
-    public void updateNullVotes(String id_election) {
+    public void updateNullVotes(String id_election, String cc, String ndep) {
+        insertVotingRecord(id_election, cc, ndep);
         updateOnDB("UPDATE electio SET null_votes = null_votes + 1 WHERE id = " + id_election);
+        this.sendRealTimeInfo();
     }
 
-    public ArrayList<Person> checkIfAlreadyVote(int cc, int election) {
-        return selectPeople("SELECT * FROM voting_record WHERE person_cc_number = " + cc + " AND election_id = " + election);
+    public void sendRealTimeInfo() {
+        String sql = "SELECT count(*), d.name as Name, e.title as Title" +
+                " FROM voting_record" +
+                " JOIN department d on voting_record.department = d.id" +
+                " JOIN election e on e.id = voting_record.election_id" +
+                " group by voting_record.department, voting_record.election_id";
+        ArrayList<InfoElectors> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoElectors(
+                        rs.getInt("count(*)"),
+                        rs.getString("Name"),
+                        rs.getString("Title")
+                ));
+            }
+            stmt.close();
+            conn.close();
+            for (Notifier notifier : notifiersAdmin) {
+                try {
+                    notifier.updateAdmin(info);
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void sendRealTimeInfo(Notifier NOTIFIER) {
+        String sql = "SELECT count(*), d.name as Name, e.title as Title" +
+                " FROM voting_record" +
+                " JOIN department d on voting_record.department = d.id" +
+                " JOIN election e on e.id = voting_record.election_id" +
+                " group by voting_record.department, voting_record.election_id";
+        ArrayList<InfoElectors> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoElectors(
+                        rs.getInt("count(*)"),
+                        rs.getString("Name"),
+                        rs.getString("Title")
+                ));
+            }
+            stmt.close();
+            conn.close();
+            try {
+                NOTIFIER.updateAdmin(info);
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+
+    public boolean checkIfAlreadyVote(int cc, int election) {
+        return countRowsBD("voting_record WHERE person_cc_number = " + cc + " AND election_id = " + election, null) > 0;
     }
 
     public ArrayList<VotingRecord> getVotingRecords() {
@@ -604,6 +674,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
         }
         return null;
+    }
+
+    public void initializeRealTimeInfo(Notifier NOTIFIER) {
+        notifiersAdmin.add(NOTIFIER);
+        sendRealTimeInfo(NOTIFIER);
+    }
+
+    public void endRealTimeInfo(Notifier NOTIFIER) {
+        notifiersAdmin.remove(NOTIFIER);
     }
 
     /**

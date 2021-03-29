@@ -39,6 +39,8 @@ public interface RMI extends Remote {
 
     String initializeMulticast(int dep_id, Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 
+    void initializeRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
     ArrayList<Department> selectPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Department> selectNoAssociatedPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
@@ -75,18 +77,20 @@ public interface RMI extends Remote {
 
     void insertVotingRecord(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
 
-    void updateCandidacyVotes(String id_election, String candidacyOption) throws java.rmi.RemoteException, InterruptedException;
+    void updateCandidacyVotes(String id_election, String candidacyOption, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
 
-    void updateBlankVotes(String id_election) throws java.rmi.RemoteException, InterruptedException;
+    void updateBlankVotes(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
 
-    void updateNullVotes(String id_election) throws java.rmi.RemoteException, InterruptedException;
+    void updateNullVotes(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
 
-    ArrayList<Person> checkIfAlreadyVote(int cc, int election) throws java.rmi.RemoteException, InterruptedException;
+    boolean checkIfAlreadyVote(int cc, int election) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
 
     void updateTerminals(int department_id, HashMap<String, Boolean> availableTerminals) throws java.rmi.RemoteException, InterruptedException;
 
     HashMap<Integer, ArrayList<Integer>> getActiveTerminals() throws java.rmi.RemoteException, InterruptedException;
+
+    void endRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 }
 

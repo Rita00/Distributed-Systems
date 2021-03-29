@@ -51,9 +51,9 @@ VALUES (1, 3);
 INSERT INTO election_department(election_id, department_id)
 VALUES (1, 5);
 INSERT INTO candidacy(id, name, type, election_id)
-VALUES (NULL, 'LISTA A', 'student', 1);
+VALUES (NULL, 'LISTA A', 'student', 4001);
 INSERT INTO candidacy(id, name, type, election_id)
-VALUES (NULL, 'LISTA B', 'student', 1);
+VALUES (NULL, 'LISTA B', 'student', 4001);
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
 VALUES ('Rita', 12131113, '2025-01-01', 'Rua dos BV', 934100200, 'Estudante', 'qwertz', 8);
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
@@ -68,7 +68,7 @@ VALUES (1, 22222222);
 -------------------------------LISTAS DE TESTE COM RESPETIVAS PESSOAS------------------------
 --ELEICAO POR INICIAR
 INSERT INTO election(id, title, type, description, begin_date, end_date)
-VALUES (NULL, 'NEEEC', 'Estudante', 'Eleicoes do NEEEC', '2021-03-20 00:00:00', '2021-03-26 23:59:59');
+VALUES (10, 'NEEEC', 'Estudante', 'Eleicoes do NEEEC', '2021-03-20 00:00:00', '2021-03-26 23:59:59');
 INSERT INTO election_department(election_id, department_id)
 VALUES (10, 5);
 --ELEICAO A DECORRER
@@ -85,6 +85,8 @@ VALUES (NULL, 'Não Restrito', 'Docente', 'Eleicoes dos Docentes da UC', '2021-0
         '2022-01-01 00:00:00');
 INSERT INTO election_department(election_id, department_id)
 VALUES (14, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES(4001, 1);
 --ELEICAO PASSADA
 INSERT INTO election(id, title, type, description, begin_date, end_date)
 VALUES (NULL, 'BestDEECFuncionarios', 'Funcionário', 'Eleicoes dos Funcionarios do DEEC', '2022-01-01 00:00:00',
@@ -119,3 +121,5 @@ VALUES ('2021-03-19 00:00:00', 5, 55555555, 10);
 
 delete
 FROM voting_record;
+
+SELECT * FROM voting_record;

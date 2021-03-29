@@ -138,8 +138,7 @@ public class MulticastServer extends Thread {
                 } else {
                     //select voting terminal
                     int cc_number = people.get(command2 - 1).getCc_number();
-                    ArrayList<Person> peopleVote = this.rmiServer.checkIfAlreadyVote(cc_number, election);
-                    if (peopleVote.size() == 0)
+                    if (!this.rmiServer.checkIfAlreadyVote(cc_number, election))
                         selectTerminal(cc_number, election);
                     else System.out.println("Já votou nesta eleição!");
                 }
@@ -259,7 +258,7 @@ public class MulticastServer extends Thread {
                     this.verifyLogin(msgHash.get("sender"), msgHash.get("username"), msgHash.get("password"));
                     break;
                 case "vote":
-                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("ndep"));
+                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("dep"));
             }
         }
     }
@@ -268,11 +267,11 @@ public class MulticastServer extends Thread {
         try {
             ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(Integer.parseInt(id_election));
             if (Utilitary.hasCandidacy(Integer.parseInt(candidacyOption), candidacies)) {
-                this.rmiServer.updateCandidacyVotes(id_election, candidacyOption);
+                this.rmiServer.updateCandidacyVotes(id_election, candidacyOption, cc, ndep);
             } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 1) {
-                this.rmiServer.updateBlankVotes(id_election);
+                this.rmiServer.updateBlankVotes(id_election, cc, ndep);
             } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 2) {
-                this.rmiServer.updateNullVotes(id_election);
+                this.rmiServer.updateNullVotes(id_election, cc, ndep);
             }
             this.rmiServer.insertVotingRecord(id_election, cc, ndep);
         } catch (RemoteException | InterruptedException e) {

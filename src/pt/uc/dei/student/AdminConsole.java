@@ -51,6 +51,7 @@ public class AdminConsole {
                 System.out.println("\t(5)- Local em que cada eleitor votou");
                 System.out.println("\t(6)- Consultar resultados detalhados de eleições passadas");
                 System.out.println("\t(7)- Consultar estado das mesas de voto e respetivos terminais de voto");
+                System.out.println("\t(8)- Consultar contagem de votos em tempo real");
                 System.out.println("(0)- Sair");
                 System.out.print(OPTION_STRING);
                 command = input.nextInt();
@@ -76,6 +77,9 @@ public class AdminConsole {
                     case 7:
                         this.statusPollingStation();
                         break;
+                    case 8:
+                        this.statusVotes();
+                        break;
                     default:
                         break;
                 }
@@ -83,6 +87,30 @@ public class AdminConsole {
         } catch (InputMismatchException ime) {
             //volta para este menu caso o input esteja errado
             this.admin(-1);
+        }
+
+    }
+
+    private void statusVotes() {
+        int command;
+        Scanner input = new Scanner(System.in);
+        try {
+            this.rmiServer.initializeRealTimeInfo(NOTIFIER);
+            System.out.println("(" + RETURN + ")-\t\tVoltar");
+            System.out.print(OPTION_STRING);
+            command = input.nextInt();
+            if (command == 0) {
+                try {
+                    this.rmiServer.endRealTimeInfo(NOTIFIER);
+                    this.admin(-1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                this.statusPollingStation();
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
         }
 
     }

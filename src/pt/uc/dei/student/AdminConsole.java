@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ public class AdminConsole {
     private final int EDIT = -1;
     private final int REMOVE = -1;
     private final int ADD = -2;
-    private static DecimalFormat df = new DecimalFormat("0.00");
 
     private RMI rmiServer;
 
@@ -89,10 +87,10 @@ public class AdminConsole {
     private void statusPollingStation() {
         try {
             System.out.println("Mesas de voto e respetivos terminais de voto ativos");
-            HashMap<Integer,ArrayList<Integer>> terminals =  this.rmiServer.getActiveTerminals();
+            HashMap<Integer, ArrayList<Integer>> terminals = this.rmiServer.getActiveTerminals();
             for (Department m : this.rmiServer.getActiveMulticasts()) {
                 System.out.println("- " + m.getName());
-                if(terminals.containsKey(m.getId())) {
+                if (terminals.containsKey(m.getId())) {
                     for (int t : terminals.get(m.getId())) {
                         System.out.println("\t#" + t);
                     }
@@ -108,16 +106,12 @@ public class AdminConsole {
             } else {
                 this.statusPollingStation();
             }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-        public void listVotingRecord() {
+    public void listVotingRecord() {
         try {
             ArrayList<VotingRecord> votingRecords = this.rmiServer.getVotingRecords();
             if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");
@@ -142,14 +136,14 @@ public class AdminConsole {
                     Utilitary.listElections(elections);
                     System.out.println("(" + RETURN + ")-  Voltar");
                     System.out.print(OPTION_STRING);
-                    try{
+                    try {
                         election = input.nextInt();
                     } catch (InputMismatchException ime) {
                         //volta para este menu caso os input esteja errado
                         this.electionsResults();
                         return;
                     }
-                    if(election==0){
+                    if (election == 0) {
                         return;
                     }
                 }
@@ -164,7 +158,7 @@ public class AdminConsole {
 
     public void listCandidacyWithVotes(int id_election) {
         Scanner input = new Scanner(System.in);
-        int command=-1;
+        int command;
         try {
             ArrayList<Candidacy> candidates = this.rmiServer.getCandidacies(id_election);
             if (candidates != null) {
@@ -177,17 +171,17 @@ public class AdminConsole {
             } else {
                 System.out.println("\tSem candidatos");
             }
-            while(command!=0){
+            while (true) {
                 System.out.println("(" + RETURN + ")-  Voltar");
                 System.out.print(OPTION_STRING);
-                try{
+                try {
                     command = input.nextInt();
                 } catch (InputMismatchException ime) {
                     //volta para este menu caso os input esteja errado
                     this.listCandidacyWithVotes(id_election);
                     return;
                 }
-                if(command==0){
+                if (command == 0) {
                     this.electionsResults();
                     return;
                 }//other cases if needed
@@ -207,7 +201,7 @@ public class AdminConsole {
                 Utilitary.listElections(elections);
                 System.out.println("(" + RETURN + ")-  Voltar");
                 System.out.print(OPTION_STRING);
-                try{
+                try {
                     election = input.nextInt();
                 } catch (InputMismatchException ime) {
                     //volta para este menu caso os input esteja errado
@@ -223,15 +217,16 @@ public class AdminConsole {
             e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
+
     public void managePollingStation(int election) {
         int option = -1;
         Scanner input = new Scanner(System.in);
-        while (option<0 || 2<option) {
+        while (option < 0 || 2 < option) {
             System.out.println("\t(1)- Adicionar Mesa de Voto");
             System.out.println("\t(2)- Remover Mesa de Voto");
             System.out.println("(" + RETURN + ")-  Voltar");
             System.out.print(OPTION_STRING);
-            try{
+            try {
                 option = input.nextInt();
             } catch (InputMismatchException ime) {
                 //volta para este menu caso os input esteja errado
@@ -253,8 +248,9 @@ public class AdminConsole {
                 break;
         }
     }
-    private void addPollingStation(int election){
-        int  mesaVoto = -1;
+
+    private void addPollingStation(int election) {
+        int mesaVoto = -1;
         Scanner input = new Scanner(System.in);
         try {
             ArrayList<Department> departments = this.rmiServer.selectNoAssociatedPollingStation(election);
@@ -266,7 +262,7 @@ public class AdminConsole {
                     Utilitary.listDepart(departments);
                     System.out.println("(" + RETURN + ")-  Voltar");
                     System.out.print(OPTION_STRING);
-                    try{
+                    try {
                         mesaVoto = input.nextInt();
                     } catch (InputMismatchException ime) {
                         //volta para este menu caso os input esteja errado
@@ -285,8 +281,8 @@ public class AdminConsole {
         }
     }
 
-    private void removePollingStation(int election){
-        int  mesaVoto = -1;
+    private void removePollingStation(int election) {
+        int mesaVoto = -1;
         Scanner input = new Scanner(System.in);
         try {
             ArrayList<Department> departments = this.rmiServer.selectPollingStation(election);
@@ -298,7 +294,7 @@ public class AdminConsole {
                     Utilitary.listDepart(departments);
                     System.out.println("(" + RETURN + ")-  Voltar");
                     System.out.print(OPTION_STRING);
-                    try{
+                    try {
                         mesaVoto = input.nextInt();
                     } catch (InputMismatchException ime) {
                         //volta para este menu caso os input esteja errado
@@ -368,7 +364,8 @@ public class AdminConsole {
                 System.out.print("Número de telemóvel inválido! Insira novamente: ");
                 num_phone = input.nextInt();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         System.out.print("Morada: ");
         address = reader.readLine();
@@ -380,9 +377,10 @@ public class AdminConsole {
                 System.out.print("Número de cartão de cidadão inválido! Insira novamente: ");
                 num_cc = input.nextInt();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         System.out.print("Validade do cartão de cidadão (YYYY-MM-DD): ");
-        while((cc_validity = Utilitary.parseDate(reader.readLine()))==null) {
+        while ((cc_validity = Utilitary.parseDate(reader.readLine())) == null) {
             System.out.print("Data de validade do CC inválida, use este formato (YYYY-MM-DD): ");
         }
         try {
@@ -535,9 +533,9 @@ public class AdminConsole {
                 switch (command) {
                     case EDIT:
                         //verificar se a data é antes da atual
-                        if(election.getBegin().isBefore(LocalDateTime.now())){
+                        if (election.getBegin().isBefore(LocalDateTime.now())) {
                             this.editElection(election);
-                        }else{
+                        } else {
                             System.out.println("⚠️ Não é possivel editar eleições a decorrer/passadas!");
                             this.manageElection(election);
                             return;
@@ -644,7 +642,7 @@ public class AdminConsole {
                 if (people.size() > 0) {
                     System.out.println("Remover Sra./Sr.:");
                     for (Person p : people) {
-                        System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1,p.getName() ,p.getCensoredCc_number(4));
+                        System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1, p.getName(), p.getCensoredCc_number(4));
                     }
                 } else {
                     System.out.println("A lista não tem pessoas\n");

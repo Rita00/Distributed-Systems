@@ -18,8 +18,8 @@ public class VoteTerm extends Thread {
     private final int MULTICAST_PORT;
     private final String MULTICAST_ADDRESS;
 
-    private int voteTermId;
-    private int departmentId;
+    private final int voteTermId;
+    private final int departmentId;
     private MulticastSocket socket;
     private InetAddress group;
     private boolean available = true;
@@ -63,7 +63,7 @@ public class VoteTerm extends Thread {
                  */
                 doThings(msgHash);
             }
-        }catch(SocketException se){
+        } catch (SocketException se) {
             try {
                 sleep(5000);
                 System.out.println("Trying to Reconnect to the network...");
@@ -125,8 +125,6 @@ public class VoteTerm extends Thread {
              */
             Scanner input = new Scanner(System.in);
             System.out.println("User: " + cc);
-            //System.out.print("Número de cartão de cidadão: ");
-            //String username = input.nextLine();
             System.out.print("Password: ");
             String password = input.nextLine();
             String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", cc, password);
@@ -156,7 +154,7 @@ public class VoteTerm extends Thread {
     private void accessVotingForm(String infoByName, String infoById, String election, String cc, String ndep) {
         Scanner input = new Scanner(System.in);
         String sendMsg;
-        int command = -1;
+        int command;
         System.out.println("Escolha uma lista para votar: ");
         this.listInfo(infoByName, infoById);
         System.out.print(OPTION_STRING);

@@ -22,6 +22,7 @@ import java.util.Scanner;
 
 //Todo verificar se pode votar em qualquer departamento
 //Todo verificar se as eliçoes restringidas a um unico departamento nao podem ser adicionadas a mais departamentos
+//Todo verificar se o terminal de voto fica livre e ocupado no multicast
 
 public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
@@ -48,8 +49,8 @@ public class MulticastServer extends Thread {
     }
 
     public void menuPollingStation(int dep_id) throws IOException {
-        int command = -1, command2 = -1, election = -1, n_dep = -1, campo_num = -1;
-        String campo = "", campo_sql = "";
+        int command = -1, command2 = -1, election = -1, campo_num = -1;
+        String campo = "", campo_sql;
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -111,7 +112,7 @@ public class MulticastServer extends Thread {
             campo_sql = "address";
             System.out.print("Introduza a sua morada: ");
             campo = reader.readLine();
-        } else if (command == 6) {
+        } else {
             campo_sql = "cc_number";
             System.out.print("Introduza o seu número de cartão de cidadão: ");
             campo_num = input.nextInt();
@@ -200,7 +201,6 @@ public class MulticastServer extends Thread {
     }
 
     public void run() {
-        long counter = 0;
         try {
             //O servidor não recebe mensagens dos clientes (sem o Port)
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
@@ -217,10 +217,10 @@ public class MulticastServer extends Thread {
                  */
                 this.doThings(msgHash);
             }
-        }catch(SocketException se){
+        } catch (SocketException se) {
             try {
                 sleep(5000);
-                System.out.println("Trying to Reconnect to the network...\n"+OPTION_STRING);
+                System.out.println("Trying to Reconnect to the network...\n" + OPTION_STRING);
             } catch (InterruptedException e) {
                 this.run();
             }
@@ -228,6 +228,7 @@ public class MulticastServer extends Thread {
             e.printStackTrace();
         }
     }
+
     private void send(String message) {
         byte[] buffer = message.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
@@ -247,7 +248,7 @@ public class MulticastServer extends Thread {
                     registerTerminal(msgHash.get("sender"), msgHash.get("message"));
                     break;
                 case "login":
-                    this.verifyLogin(msgHash.get("sender"),msgHash.get("username"), msgHash.get("password"));
+                    this.verifyLogin(msgHash.get("sender"), msgHash.get("username"), msgHash.get("password"));
                     break;
                 case "vote":
                     this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("ndep"));
@@ -271,14 +272,13 @@ public class MulticastServer extends Thread {
         }
     }
 
-    private void registerTerminal(String id, String status){
-        String message = String.format("sender|multicast-%s-%s;destination|%s;message|true", this.getMulticastId(), this.department.getId(), id);
+    private void registerTerminal(String id, String status) {
         if (status.equals("available")) {
             availableTerminals.put(id, true);
         } else {
             availableTerminals.put(id, false);
         }
-        try{
+        try {
             this.rmiServer.updateTerminals(this.getMulticastId(), availableTerminals);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();//TODO tratar excecao
@@ -299,21 +299,6 @@ public class MulticastServer extends Thread {
         this.send(message);
     }
 
-
-    void listElections(ArrayList<Election> elections) {
-        try {
-            if (this.rmiServer.numElections() > 0) {
-                for (Election e : elections) {
-                    System.out.printf("\t(%s)- %s\n", elections.indexOf(e) + 1, e.getTitle());
-                }
-            } else {
-                System.out.println("Não existem eleições\n");
-            }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void reconnectToRMI() {
         while (true) {
             try {
@@ -329,6 +314,7 @@ public class MulticastServer extends Thread {
     public RMI getRmiServer() {
         return this.rmiServer;
     }
+
     public int getMulticastId() {
         return this.multicastId;
     }

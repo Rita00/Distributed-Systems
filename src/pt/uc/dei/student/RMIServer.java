@@ -105,10 +105,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public Person getPerson(String username, String password) {
-        try{
+        try {
             ArrayList<Person> people = this.selectPeople("SELECT * FROM person WHERE cc_number='" + username + "' AND password='" + password + "';");
             return people.get(0);
-        }catch(NullPointerException e){
+        } catch (NullPointerException e) {
             return null;
         }
     }
@@ -133,11 +133,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public void updateTerminals(int department_id, HashMap<String, Boolean> availableTerminals){
+    public void updateTerminals(int department_id, HashMap<String, Boolean> availableTerminals) {
         this.updateOnDB("DELETE FROM voting_terminal WHERE department_id=" + department_id);
         for (String t : availableTerminals.keySet()) {
-            if(availableTerminals.get(t)){
-                this.updateOnDB(String.format("INSERT INTO voting_terminal(id,department_id) VALUES (%s,%s)",t.split("-")[1],department_id));
+            if (availableTerminals.get(t)) {
+                this.updateOnDB(String.format("INSERT INTO voting_terminal(id,department_id) VALUES (%s,%s)", t.split("-")[1], department_id));
             }
         }
     }
@@ -157,9 +157,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Department> getActiveMulticasts() {
         return this.selectDepartments("SELECT * FROM department WHERE hasmulticastserver=1");
     }
-    public HashMap<Integer,ArrayList<Integer>> getActiveTerminals() {
+
+    public HashMap<Integer, ArrayList<Integer>> getActiveTerminals() {
         return this.selectActiveTerminals("SELECT * FROM voting_terminal");
     }
+
     /**
      * Conexão à base de dados
      *
@@ -347,12 +349,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Seleciona os terminais de voto na base de dados
+     *
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
-    public HashMap<Integer,ArrayList<Integer>> selectActiveTerminals(String sql) {
+    public HashMap<Integer, ArrayList<Integer>> selectActiveTerminals(String sql) {
         Connection conn = connectDB();
-        HashMap<Integer,ArrayList<Integer>> depToTerm = new HashMap<>();
+        HashMap<Integer, ArrayList<Integer>> depToTerm = new HashMap<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -360,7 +363,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             while (rs.next()) {
                 int key = rs.getInt("department_id");
                 int value = rs.getInt("id");
-                if(depToTerm.containsKey(key)){
+                if (depToTerm.containsKey(key)) {
                     terminals = depToTerm.get(key);
                     terminals.add(value);
                 } else {
@@ -593,7 +596,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public void initializeUDP() {
         String s;
-        try (DatagramSocket aSocket = new DatagramSocket(this.SERVER_PORT)) {
+        try (DatagramSocket aSocket = new DatagramSocket(SERVER_PORT)) {
             System.out.println("Socket Datagram à escuta no porto 7001");
             while (true) {
                 byte[] buffer = new byte[1000];

@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+//Todo verificar se só estudantes podem votar em listas de estudantes, etc.
 //Todo verificar se pode votar em qualquer departamento
 //Todo verificar se as eliçoes restringidas a um unico departamento nao podem ser adicionadas a mais departamentos
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
+//Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento
 
 public class MulticastServer extends Thread {
     private final String MULTICAST_ADDRESS = "224.3.2.1";
@@ -120,23 +122,26 @@ public class MulticastServer extends Thread {
 
         try {
             ArrayList<Person> people = this.rmiServer.getRegisPeople(election, dep_id, campo, campo_sql, campo_num);
-            while (!(command2 >= 1 && command2 <= people.size() + 1)) {
-                System.out.println("Escolher Pessoa de acordo com o número de cartão de cidadão");
-                Utilitary.listPerson(people);
-                System.out.printf("\t(%s)- Nenhuma das anteriores\n", people.size() + 1);
-                System.out.print(OPTION_STRING);
-                command2 = input.nextInt();
-            }
-            if (command2 == people.size() + 1) {
-                System.out.println("Não pode votar nesta eleição!");
-            } else {
-                //select voting terminal
-                int cc_number = people.get(command2 - 1).getCc_number();
-                ArrayList<Person> peopleVote = this.rmiServer.checkIfAlreadyVote(cc_number, election);
-                if (peopleVote.size() == 0)
-                    selectTerminal(cc_number, election);
-                else System.out.println("Já votou nesta eleição!");
-            }
+            if (people.size() != 0) {
+                while (people.size() != 0 && !(command2 >= 1 && command2 <= people.size() + 1)) {
+                    System.out.println("Escolher Pessoa de acordo com o número de cartão de cidadão");
+                    Utilitary.listPerson(people);
+                    System.out.printf("\t(%s)- Nenhuma das anteriores\n", people.size() + 1);
+                    System.out.print(OPTION_STRING);
+                    command2 = input.nextInt();
+                }
+                if (command2 == people.size() + 1) {
+                    System.out.println("Não pode votar nesta eleição!");
+                } else {
+                    //select voting terminal
+                    int cc_number = people.get(command2 - 1).getCc_number();
+                    ArrayList<Person> peopleVote = this.rmiServer.checkIfAlreadyVote(cc_number, election);
+                    if (peopleVote.size() == 0)
+                        selectTerminal(cc_number, election);
+                    else System.out.println("Já votou nesta eleição!");
+                }
+            } else
+                System.out.println("Não existem pessoas registadas nessas condições!");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

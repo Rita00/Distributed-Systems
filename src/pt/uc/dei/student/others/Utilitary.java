@@ -97,8 +97,6 @@ public class Utilitary {
             for (Person p : people) {
                 System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1, p.getName(), p.getCensoredCc_number(4));
             }
-        } else {
-            System.out.println("Sem pessoas registadas com esse nome.");
         }
     }
 

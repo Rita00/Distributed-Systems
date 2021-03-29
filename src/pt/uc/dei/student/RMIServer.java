@@ -477,14 +477,40 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) {
-        if (campo_num == -1) {
-            return selectPeople("SELECT DISTINCT * " +
-                    "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id " +
-                    "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = '" + campo + "'");
-        } else {
-            return selectPeople("SELECT DISTINCT * " +
-                    "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id " +
-                    "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = " + campo_num + "");
+        // Verificar se a eleição está restringida a um departamento
+        int ndep = countRowsBD("election_department WHERE election_id = " + election_id, "department_id");
+        if (ndep == -1) {
+            if (campo_num == -1) {
+                if (campo_sql.equals("name") || campo_sql.equals("address")) {
+                    return selectPeople("SELECT DISTINCT * FROM person " +
+                            "JOIN election_department ed " +
+                            "JOIN election e on ed.election_id = e.id AND e.type = person.job AND ed.election_id = " + election_id +
+                            " AND person." + campo_sql + " like '%" + campo + "%' AND ed.department_id = -1");
+
+                }
+                return selectPeople("SELECT DISTINCT * " +
+                        "FROM person JOIN election_department ed JOIN election e on ed.election_id = e.id AND e.type = person.job" +
+                        " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = '" + campo + "' AND ed.department_id = -1");
+            } else {
+                return selectPeople("SELECT DISTINCT * " +
+                        "FROM person JOIN election_department ed JOIN election e on ed.election_id = e.id AND e.type = person.job" +
+                        " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = " + campo_num + " AND ed.department_id = -1");
+            }
+        } else { // Caso esteja restringido a um determinado departamento
+            if (campo_num == -1) {
+                if (campo_sql.equals("name") || campo_sql.equals("address")) {
+                    return selectPeople("SELECT DISTINCT * " +
+                            "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id AND e.type = person.job" +
+                            "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " like '%" + campo + "%'");
+                }
+                return selectPeople("SELECT DISTINCT * " +
+                        "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id AND e.type = person.job" +
+                        "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = '" + campo + "'");
+            } else {
+                return selectPeople("SELECT DISTINCT * " +
+                        "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id AND e.type = person.job" +
+                        "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = " + campo_num + "");
+            }
         }
     }
 

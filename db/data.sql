@@ -78,7 +78,13 @@ INSERT INTO election(id, title, type, description, begin_date, end_date)
 VALUES (NULL, 'BestDEECDocentes', 'Docente', 'Eleicoes dos Docentes do DEEC', '2021-03-20 00:00:00',
         '2022-01-01 00:00:00');
 INSERT INTO election_department(election_id, department_id)
-VALUES (11, 5);
+VALUES (13, 5);
+--- Elição que não está restrita a um único departamento
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (NULL, 'Não Restrito', 'Docente', 'Eleicoes dos Docentes da UC', '2021-03-20 00:00:00',
+        '2022-01-01 00:00:00');
+INSERT INTO election_department(election_id, department_id)
+VALUES (14, -1);
 --ELEICAO PASSADA
 INSERT INTO election(id, title, type, description, begin_date, end_date)
 VALUES (NULL, 'BestDEECFuncionarios', 'Funcionário', 'Eleicoes dos Funcionarios do DEEC', '2022-01-01 00:00:00',
@@ -96,6 +102,9 @@ INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, 
 VALUES ('Joaquim Jorge', 55555555, '2025-01-02', 'Rua da Junta', 934555555, 'Estudante', 'gajodajunta', 5);
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
 VALUES ('Cristina Ferreira', 55555557, '2025-01-02', 'Rua da TVI', 934555557, 'Docente', 'estacerta', 5);
+--- Pessoa para testar que pode votar numa eleição que nao esta restrita a um departamento
+INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
+VALUES ('Rita Rodrigues', 55555558, '2025-01-02', 'Rua da TVI', 934555557, 'Docente', 'estacerta', 5);
 
 -------------------------------VOTOS REGISTADOS PARA A ELEICAO PASSADA------------------------
 -- DEVE CONTER PARA eleicao do NEEEC 1 nulos 1 branco e 2 para a lista #1

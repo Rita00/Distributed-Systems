@@ -5,6 +5,7 @@ import pt.uc.dei.student.elections.*;
 import java.rmi.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface RMI extends Remote {
     String saySomething() throws java.rmi.RemoteException, InterruptedException;

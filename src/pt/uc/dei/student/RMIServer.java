@@ -729,6 +729,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast(){
         return notifiersMulticast;
     }
+
     public static void main(String[] args) throws RemoteException {
         RMIServer rmiServer = new RMIServer();
         int numPingsFailed = 0;

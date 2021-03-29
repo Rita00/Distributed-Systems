@@ -27,13 +27,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     private final String SERVER_ADDRESS = "127.0.0.1";
     public final static int SERVER_PORT = 7001;
     public final static int RMI_PORT = 7000;
-    static ConcurrentHashMap<Integer, Notifier> notifiers;
+    static ConcurrentHashMap<Integer, Notifier> notifiersMulticast;
+    static ArrayList<Notifier> notifiersAdmin;
     private StatusChecker statcheck;
 
 
     public RMIServer() throws RemoteException {
         super();
-        notifiers = new ConcurrentHashMap<>();
+        notifiersMulticast = new ConcurrentHashMap<>();
+        notifiersAdmin = new ArrayList<>();
     }
 
 
@@ -98,6 +100,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public ArrayList<Election> getElections() {
         return this.selectElections("SELECT * FROM election");
+    }
+
+    public ArrayList<Election> getElectionsNotStarted() {
+        return this.selectElections("SELECT * FROM election where begin_date > date('now') AND end_date > date('now')");
     }
 
     public ArrayList<Candidacy> getCandidacies(int election_id) {
@@ -520,6 +526,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public void updateCandidacyVotes(String id_election, String candidacyOption) {
         updateOnDB("UPDATE candidacy SET votes = votes + 1 WHERE election_id = " + id_election + " AND id = " + candidacyOption);
+
     }
 
     public void updateBlankVotes(String id_election) {
@@ -585,11 +592,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 return null;
             } else {
                 System.out.println("Mesa de voto criada com sucesso! :)");
-                synchronized (notifiers) {
-                    notifiers.put(dep_id, NOTIFIER);
+                synchronized (notifiersMulticast) {
+                    notifiersMulticast.put(dep_id, NOTIFIER);
                 }
                 try {
-                    notifiers.get(dep_id).ping();
+                    notifiersMulticast.get(dep_id).ping();
                 } catch (RemoteException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -660,6 +667,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     private void initializeStatusChecker() {
-        statcheck = new StatusChecker(notifiers, this);
+        statcheck = new StatusChecker(notifiersMulticast, this);
     }
 }

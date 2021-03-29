@@ -26,7 +26,9 @@ public class AdminConsole {
 
     private RMI rmiServer;
 
-    public AdminConsole(RMI rmiServer) {
+    private final NotifierCallBack NOTIFIER = new NotifierCallBack();
+
+    public AdminConsole(RMI rmiServer) throws RemoteException {
         this.rmiServer = rmiServer;
     }
 
@@ -209,7 +211,7 @@ public class AdminConsole {
         int election = -1;
         Scanner input = new Scanner(System.in);
         try {
-            ArrayList<Election> elections = this.rmiServer.getElections();
+            ArrayList<Election> elections = this.rmiServer.getElectionsNotStarted();
             while (!(election >= 1 && election <= this.rmiServer.numElections())) {
                 System.out.println("\tEscolha a eleição: ");
                 Utilitary.listElections(elections);

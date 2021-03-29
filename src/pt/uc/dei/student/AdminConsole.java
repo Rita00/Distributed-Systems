@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class AdminConsole {
 
@@ -28,8 +29,12 @@ public class AdminConsole {
 
     private final NotifierCallBack NOTIFIER = new NotifierCallBack();
 
+    private boolean isMonitoring;
+
+
     public AdminConsole(RMI rmiServer) throws RemoteException {
         this.rmiServer = rmiServer;
+        this.isMonitoring=false;
     }
 
     /**
@@ -87,7 +92,28 @@ public class AdminConsole {
 
     }
 
-    private void statusPollingStation() {
+    private void statusPollingStation(){
+        InputStreamReader is = new InputStreamReader(System.in);
+        BufferedReader br = new BufferedReader(is);
+        this.isMonitoring=true;
+        while(true) {
+            try {
+                //qualquer tecla para sair
+                if (br.ready()) {br.readLine();break; }
+                //TODO mostrar dados
+                ArrayList<Department> departments = this.rmiServer.getDepartments();
+                for(int ndep : this.rmiServer.getNotifiersMulticast().keySet()){
+                    System.out.println(departments.get(ndep-1).getName());
+                }
+
+
+
+                System.out.println("(ENTER)- Voltar");
+                TimeUnit.SECONDS.sleep(1);
+            }catch(IOException | InterruptedException ignore){}
+        }
+        this.isMonitoring=false;
+        /*
         try {
             System.out.println("Mesas de voto e respetivos terminais de voto ativos");
             HashMap<Integer, ArrayList<Integer>> terminals = this.rmiServer.getActiveTerminals();
@@ -111,7 +137,7 @@ public class AdminConsole {
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void listVotingRecord() {

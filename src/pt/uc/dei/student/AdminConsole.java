@@ -112,6 +112,8 @@ public class AdminConsole {
     }
 
     public void listVotingRecord() {
+        Scanner input = new Scanner(System.in);
+        String command="";
         try {
             ArrayList<VotingRecord> votingRecords = this.rmiServer.getVotingRecords();
             if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");
@@ -119,6 +121,18 @@ public class AdminConsole {
                 for (VotingRecord vr : votingRecords) {
                     System.out.printf("%s\t\t%s\t\t%s\t\t%s\n", vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date());
                 }
+            }
+            System.out.println("(" + RETURN + ")-\t\tVoltar");
+            System.out.print(OPTION_STRING);
+            try {
+                command = input.nextLine();
+                if(!command.equals("0")){
+                    this.listVotingRecord();
+                }
+            } catch (InputMismatchException ime) {
+                //volta para este menu caso os input esteja errado
+                this.listVotingRecord();
+                return;
             }
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();

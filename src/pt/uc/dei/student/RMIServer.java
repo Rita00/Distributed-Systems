@@ -642,6 +642,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public static void main(String[] args) throws RemoteException {
+        System.out.println("55555558estacerta".hashCode());
         RMIServer rmiServer = new RMIServer();
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {

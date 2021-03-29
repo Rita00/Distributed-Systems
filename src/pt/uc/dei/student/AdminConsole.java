@@ -37,6 +37,7 @@ public class AdminConsole {
      * @throws IOException exceção de I/O
      */
     public void admin(int command) throws IOException {
+        System.out.println("========CONSOLA ADMINISTRADORA========".hashCode());
         try {
             Scanner input = new Scanner(System.in);
             while (command != 0) {
@@ -410,7 +411,7 @@ public class AdminConsole {
             System.out.print("Data de validade do CC inválida, use este formato (YYYY-MM-DD): ");
         }
         try {
-            if (!this.rmiServer.insertPerson(nome, Utilitary.decideCargo(Integer.parseInt(cargo)), pass, Integer.parseInt(ndep), num_phone, address, num_cc, cc_validity.toString())) {
+            if (!this.rmiServer.insertPerson(nome, Utilitary.decideCargo(Integer.parseInt(cargo)), String.format("%s",(num_cc+pass).hashCode()), Integer.parseInt(ndep), num_phone, address, num_cc, cc_validity.toString())) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");

@@ -126,7 +126,7 @@ public class VoteTerm extends Thread {
             Scanner input = new Scanner(System.in);
             System.out.println("User: " + cc);
             System.out.print("Password: ");
-            String password = input.nextLine();
+            String password = String.format("%s",(cc+input.nextLine()).hashCode());
             String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", cc, password);
             byte[] buffer = sendMsg.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);

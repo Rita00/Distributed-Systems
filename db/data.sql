@@ -75,10 +75,10 @@ INSERT INTO election_department(election_id, department_id)
 VALUES (10, 5);
 --ELEICAO A DECORRER
 INSERT INTO election(id, title, type, description, begin_date, end_date)
-VALUES (NULL, 'BestDEECDocentes', 'Docente', 'Eleicoes dos Docentes do DEEC', '2021-03-20 00:00:00',
+VALUES (4000, 'BestDEECDocentes', 'Docente', 'Eleicoes dos Docentes do DEEC', '2021-03-20 00:00:00',
         '2022-01-01 00:00:00');
 INSERT INTO election_department(election_id, department_id)
-VALUES (13, 5);
+VALUES (4000, 5);
 --- Elição que não está restrita a um único departamento
 INSERT INTO election(id, title, type, description, begin_date, end_date)
 VALUES (NULL, 'Não Restrito', 'Docente', 'Eleicoes dos Docentes da UC', '2021-03-20 00:00:00',
@@ -93,18 +93,18 @@ INSERT INTO election_department(election_id, department_id)
 VALUES (12, 5);
 --pessoas
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
-VALUES ('Nuno Markl', 55555551, '2025-01-01', 'Rua 1° Marco', 934555551, 'Funcionário', '1986', 5);
+VALUES ('Nuno Markl', 55555551, '2025-01-01', 'Rua 1° Marco', 934555551, 'Funcionário', '-2096975966', 5);--password: 1986
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
-VALUES ('Matias Correios', 55555553, '2025-01-02', 'Rua da AAC', 934555553, 'Estudante', 'dux', 5);
+VALUES ('Matias Correios', 55555553, '2025-01-02', 'Rua da AAC', 934555553, 'Estudante', '-344628535', 5);--password: dux
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
-VALUES ('Marco Paulo', 55555554, '2025-01-02', 'Rua das Cancoes', 934555554, 'Estudante', 'cantor', 5);
+VALUES ('Marco Paulo', 55555554, '2025-01-02', 'Rua das Cancoes', 934555554, 'Estudante', '-1016627514', 5);--password: cantor
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
-VALUES ('Joaquim Jorge', 55555555, '2025-01-02', 'Rua da Junta', 934555555, 'Estudante', 'gajodajunta', 5);
+VALUES ('Joaquim Jorge', 55555555, '2025-01-02', 'Rua da Junta', 934555555, 'Estudante', '1063864532', 5);--password: gajodajunta
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
-VALUES ('Cristina Ferreira', 55555557, '2025-01-02', 'Rua da TVI', 934555557, 'Docente', 'estacerta', 5);
+VALUES ('Cristina Ferreira', 55555557, '2025-01-02', 'Rua da TVI', 934555557, 'Docente', '-664788032', 5); --password: estacerta
 --- Pessoa para testar que pode votar numa eleição que nao esta restrita a um departamento
 INSERT INTO person(name, cc_number, cc_validity, address, phone, job, password, department_id)
-VALUES ('Rita Rodrigues', 55555558, '2025-01-02', 'Rua da TVI', 934555557, 'Docente', 'estacerta', 5);
+VALUES ('Rita Rodrigues', 55555558, '2025-01-02', 'Rua da TVI', 934555557, 'Docente', '-861301537', 5); --password: estacerta
 
 -------------------------------VOTOS REGISTADOS PARA A ELEICAO PASSADA------------------------
 -- DEVE CONTER PARA eleicao do NEEEC 1 nulos 1 branco e 2 para a lista #1

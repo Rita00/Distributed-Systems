@@ -355,31 +355,33 @@ public class AdminConsole {
     public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
-        String pass, address, nome;
+        String pass, address, nome, cargo="0", ndep="0";
         LocalDate cc_validity;
-        int cargo = 0, ndep = 0, num_phone, num_cc;
+        int num_phone, num_cc;
         System.out.print("Nome: ");
         nome = reader.readLine();
-        while (cargo != 1 && cargo != 2 && cargo != 3) {
+        while (!(cargo.equals("1")||cargo.equals("2")||cargo.equals("3"))) {
             System.out.println("Cargo: ");
             System.out.println("\t1 - Estudante");
             System.out.println("\t2 - Docente");
             System.out.println("\t3 - Funcionário");
-            System.out.print("\t");
-            cargo = input.nextInt();
+            System.out.print(OPTION_STRING);
+            cargo = input.nextLine();
         }
         System.out.print("Password: ");
         pass = reader.readLine();
-        while (!(ndep >= 1 && ndep <= 11)) {
-            try {
-                ArrayList<Department> departments = this.rmiServer.getDepartments();
-                System.out.println("Departamento que frequenta: ");
-                Utilitary.listDepart(departments);
-                System.out.print("\t");
-                ndep = input.nextInt();
-            } catch (InterruptedException e) {
-                e.printStackTrace(); //TODO TRATAR EXCEPCAO
-            }
+        while (!(1 <= Integer.parseInt(ndep) && Integer.parseInt(ndep) <= 11)) {
+            do{
+                try {
+                    ArrayList<Department> departments = this.rmiServer.getDepartments();
+                    System.out.println("Departamento que frequenta: ");
+                    Utilitary.listDepart(departments);
+                    System.out.print(OPTION_STRING);
+                    ndep = input.nextLine();
+                } catch (InterruptedException e) {
+                    e.printStackTrace(); //TODO TRATAR EXCEPCAO
+                }
+            }while((!Utilitary.isNumber(ndep)));
         }
         System.out.print("Número de telemóvel: ");
         num_phone = input.nextInt();
@@ -408,7 +410,7 @@ public class AdminConsole {
             System.out.print("Data de validade do CC inválida, use este formato (YYYY-MM-DD): ");
         }
         try {
-            if (!this.rmiServer.insertPerson(nome, Utilitary.decideCargo(cargo), pass, ndep, num_phone, address, num_cc, cc_validity.toString())) {
+            if (!this.rmiServer.insertPerson(nome, Utilitary.decideCargo(Integer.parseInt(cargo)), pass, Integer.parseInt(ndep), num_phone, address, num_cc, cc_validity.toString())) {
                 System.out.println("Impossível inserir registo :(");
             } else {
                 System.out.println("Registo feito com sucesso! :)");
@@ -426,7 +428,7 @@ public class AdminConsole {
      * @throws IOException exceção de I/O
      */
     public void createElection() throws IOException {
-        String titulo, descricao, begin_data, end_data,restr="",ndep = "-1",type_ele="";
+        String titulo, descricao, begin_data, end_data,restr="",type_ele="",ndep = "-1";
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Início da Eleição (YYYY-MM-DD HH:mm): ");

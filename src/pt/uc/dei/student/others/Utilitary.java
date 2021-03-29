@@ -132,4 +132,13 @@ public class Utilitary {
         }
         return false;
     }
+
+    public static boolean isNumber(String n){
+        try{
+            Integer.parseInt(n);
+        }catch(NumberFormatException e){
+            return false;
+        }
+        return true;
+    }
 }

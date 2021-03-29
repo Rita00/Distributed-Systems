@@ -501,15 +501,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 if (campo_sql.equals("name") || campo_sql.equals("address")) {
                     return selectPeople("SELECT DISTINCT * " +
                             "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id AND e.type = person.job" +
-                            "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " like '%" + campo + "%'");
+                            " AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " like '%" + campo + "%'");
                 }
                 return selectPeople("SELECT DISTINCT * " +
                         "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id AND e.type = person.job" +
-                        "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = '" + campo + "'");
+                        " AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = '" + campo + "'");
             } else {
                 return selectPeople("SELECT DISTINCT * " +
                         "FROM person JOIN election_department ed on person.department_id = ed.department_id JOIN election e on ed.election_id = e.id AND e.type = person.job" +
-                        "AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = " + campo_num + "");
+                        " AND ed.department_id = " + department_id + " AND ed.election_id = " + election_id + " AND person." + campo_sql + " = " + campo_num + "");
             }
         }
     }

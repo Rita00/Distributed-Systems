@@ -59,7 +59,7 @@ public class VoteTerm extends Thread {
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
                 HashMap<String, String> msgHash = Utilitary.parseMessage(recvMsg);
                 /*
-                USAR A INFORMACOES DO PACOTE
+                USAR AS INFORMACOES DO PACOTE
                  */
                 doThings(msgHash);
             }

@@ -1,6 +1,4 @@
-DELETE
-FROM election
-WHERE 1 = 1;
+DELETE FROM election WHERE 1 = 1;
 DELETE
 FROM election_department
 WHERE 1 = 1;
@@ -79,6 +77,8 @@ VALUES (4000, 'BestDEECDocentes', 'Docente', 'Eleicoes dos Docentes do DEEC', '2
         '2022-01-01 00:00:00');
 INSERT INTO election_department(election_id, department_id)
 VALUES (4000, 5);
+INSERT INTO election_department(election_id, department_id)
+VALUES(3, 5);
 --- Elição que não está restrita a um único departamento
 INSERT INTO election(id, title, type, description, begin_date, end_date)
 VALUES (NULL, 'Não Restrito', 'Docente', 'Eleicoes dos Docentes da UC', '2021-03-20 00:00:00',
@@ -117,4 +117,5 @@ VALUES ('2021-03-21 00:00:00', 5, 55555554, 10);
 INSERT INTO voting_record(vote_date, department, person_cc_number, election_id)
 VALUES ('2021-03-19 00:00:00', 5, 55555555, 10);
 
-delete FROM voting_record;
+delete
+FROM voting_record;

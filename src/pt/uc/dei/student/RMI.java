@@ -21,6 +21,8 @@ public interface RMI extends Remote {
 
     ArrayList<Election> getElections() throws java.rmi.RemoteException, InterruptedException;
 
+    ArrayList<Election> getElectionsNotStarted() throws java.rmi.RemoteException, InterruptedException;
+
     ArrayList<Candidacy> getCandidacies(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
     Person getPerson(String username, String password) throws java.rmi.RemoteException, InterruptedException;

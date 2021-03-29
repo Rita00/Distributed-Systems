@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+//Todo é possivel adicionar mesas de voto a uma eleição restringida, apesar de depois não serem listadas
+//Todo não deve ser possivel votar numa eleição que nao tem listas
+//Todo quando na consola de administração se adicionam novas mesas de voto a uma determinada eleição dar update em tempo real no multicast correspondente
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
 //Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento
 
@@ -54,11 +57,14 @@ public class MulticastServer extends Thread {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
             ArrayList<Election> currentElections = this.rmiServer.getCurrentElections(dep_id);
-            while (!rmiServer.hasElection(election, currentElections)) {
+            ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(election);
+            while (candidacies.size() == 0 || !rmiServer.hasElection(election, currentElections)) {
                 System.out.println("Eleições a decorrer: ");
                 Utilitary.listElections(currentElections);
                 System.out.print(OPTION_STRING);
                 election = input.nextInt();
+                candidacies = this.rmiServer.getCandidacies(election);
+                if (candidacies.size() == 0) System.out.println("Eleição sem listas, impossível votar!");
             }
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();

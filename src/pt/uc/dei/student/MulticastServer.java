@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-//Todo verificar se só estudantes podem votar em listas de estudantes, etc.
-//Todo verificar se pode votar em qualquer departamento
 //Todo verificar se as eliçoes restringidas a um unico departamento nao podem ser adicionadas a mais departamentos
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
 //Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento

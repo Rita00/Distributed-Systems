@@ -327,6 +327,16 @@ public class AdminConsole {
             e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
+    /*
+    MESMO METoDO QUE O DE BAIXO MAS PARA STRING EM INPUT, E VERIFICA SE A STRING é UM NUMERO
+     */
+    public boolean hasDep(String dep, ArrayList<Department> departments) {
+        try{
+            return this.hasDep(Integer.parseInt(dep), departments);
+        }catch(NumberFormatException e){
+            return false;
+        }
+    }
 
     public boolean hasDep(int dep, ArrayList<Department> departments) {
         for (Department department : departments) {
@@ -416,8 +426,7 @@ public class AdminConsole {
      * @throws IOException exceção de I/O
      */
     public void createElection() throws IOException {
-        int type_ele = 0, restr = -1, ndep = -1;
-        String titulo, descricao, begin_data, end_data;
+        String titulo, descricao, begin_data, end_data,restr="",ndep = "-1",type_ele="";
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Início da Eleição (YYYY-MM-DD HH:mm): ");
@@ -428,44 +437,44 @@ public class AdminConsole {
         titulo = reader.readLine();
         System.out.print("Breve descrição: ");
         descricao = reader.readLine();
-        while (restr != 1 && restr != 2) {
+        while (!(restr.equals("1") || restr.equals("2"))) {
             System.out.println("Restringir Eleição?");
             System.out.println("\t(1)- Sim");
             System.out.println("\t(2)- Não");
-            System.out.print("\t");
-            restr = input.nextInt();
+            System.out.print(OPTION_STRING);
+            restr = input.nextLine();
         }
 
-        if (restr == 1) {
+        if (restr.equals("1")) {
             try {
                 ArrayList<Department> departments = this.rmiServer.selectPollingStation(-1);
                 while (!hasDep(ndep, departments)) {
-                    System.out.println("\tDepartamento: ");
+                    System.out.println("Departamento: ");
                     Utilitary.listDepart(departments);
-                    System.out.print("\t");
-                    ndep = input.nextInt();
+                    System.out.print(OPTION_STRING);
+                    ndep = input.nextLine();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace(); //TODO TRATAR EXCEPCAO
             }
         }
 
-        while (type_ele != 1 && type_ele != 2 && type_ele != 3) {
+        while (!(type_ele.equals("1")||type_ele.equals("2")||type_ele.equals("3"))) {
             System.out.println("Tipo de eleição: ");
             System.out.println("\t1 - Estudante");
             System.out.println("\t2 - Docente");
             System.out.println("\t3 - Funcionário");
-            System.out.print("\t");
-            type_ele = input.nextInt();
+            System.out.print(OPTION_STRING);
+            type_ele = input.nextLine();
         }
         try {
-            int id = this.rmiServer.insertElection(begin_data, end_data, titulo, descricao, Utilitary.decideCargo(type_ele));
+            int id = this.rmiServer.insertElection(begin_data, end_data, titulo, descricao, Utilitary.decideCargo(Integer.parseInt(type_ele)));
             if (id == -1) {
                 System.out.println("Impossível inserir eleição :(");
             } else {
                 System.out.println("Eleição criada com sucesso! :)");
                 try {
-                    this.rmiServer.insertElectionDepartment(id, ndep);
+                    this.rmiServer.insertElectionDepartment(id, Integer.parseInt(ndep));
 
                 } catch (Exception e) {
                     e.printStackTrace(); //TODO TRATAR EXCEPCAO

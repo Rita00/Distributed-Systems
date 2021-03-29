@@ -92,5 +92,7 @@ public interface RMI extends Remote {
     HashMap<Integer, ArrayList<Integer>> getActiveTerminals() throws java.rmi.RemoteException, InterruptedException;
 
     void endRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast() throws java.rmi.RemoteException, InterruptedException;
 }
 

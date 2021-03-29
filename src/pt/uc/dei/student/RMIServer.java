@@ -30,8 +30,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public final static int RMI_PORT = 7000;
     static ConcurrentHashMap<Integer, Notifier> notifiersMulticast;
     static ArrayList<Notifier> notifiersAdmin;
-    private StatusChecker statcheck;
-
+    public StatusChecker statcheck;
 
     public RMIServer() throws RemoteException {
         super();
@@ -727,8 +726,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    public ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast(){
+        return notifiersMulticast;
+    }
     public static void main(String[] args) throws RemoteException {
-        System.out.println("55555558estacerta".hashCode());
         RMIServer rmiServer = new RMIServer();
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {

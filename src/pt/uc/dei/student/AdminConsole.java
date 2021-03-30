@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.rmi.NotBoundException;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.time.LocalDate;
@@ -137,6 +138,7 @@ public class AdminConsole {
                 reconnectToRMI();
             }
         }
+
     }
 
     private void statusPollingStation() {
@@ -151,6 +153,7 @@ public class AdminConsole {
                     break;
                 }
                 //TODO mostrar dados
+                System.out.println("==========ESTADO DAS MESAS DE VOTO E TERMINAIS DE VOTO==========");
                 ArrayList<Department> departments;
                 while (true) {
                     try {
@@ -173,6 +176,12 @@ public class AdminConsole {
                 }
                 for (int ndep : dep) {
                     System.out.println(departments.get(ndep - 1).getName());
+                    ConcurrentHashMap<Integer,ArrayList<Integer>> activeTerminals = this.rmiServer.getActiveTerminals();
+                    try {
+                        for (int id : activeTerminals.get(ndep)) {
+                            System.out.println("\tTerminal de Voto #" + id);
+                        }
+                    }catch(NullPointerException ignore){}
                 }
 
                 System.out.println("(ENTER)- Voltar");
@@ -183,33 +192,7 @@ public class AdminConsole {
 
             }
         }
-
-        this.isMonitoring = false;
-        /*
-        try {
-            System.out.println("Mesas de voto e respetivos terminais de voto ativos");
-            HashMap<Integer, ArrayList<Integer>> terminals = this.rmiServer.getActiveTerminals();
-            for (Department m : this.rmiServer.getActiveMulticasts()) {
-                System.out.println("- " + m.getName());
-                if (terminals.containsKey(m.getId())) {
-                    for (int t : terminals.get(m.getId())) {
-                        System.out.println("\t#" + t);
-                    }
-                }
-            }
-            System.out.println("(ENTER)-\tAtualizar");
-            System.out.println("(" + RETURN + ")-\t\tVoltar");
-            System.out.print(OPTION_STRING);
-            Scanner input = new Scanner(System.in);
-            String command = input.nextLine();
-            if (command.equals("0")) {
-                this.admin(-1);
-            } else {
-                this.statusPollingStation();
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }*/
+        this.isMonitoring=false;
     }
 
     public void listVotingRecord() {
@@ -1045,7 +1028,7 @@ public class AdminConsole {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         try {
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
             String message = rmiServer.saySomething();
@@ -1071,6 +1054,8 @@ public class AdminConsole {
                     break;
                 } catch (NotBoundException | IOException remoteException) {
                     //remoteException.printStackTrace();
+                    try{TimeUnit.SECONDS.sleep(5);}catch(Exception ignored){}
+                    main(args);
                 }
             }
         }

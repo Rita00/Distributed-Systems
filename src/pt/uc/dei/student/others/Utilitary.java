@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 /**
  * Classe de Metodos Utilitarios
@@ -168,5 +169,10 @@ public class Utilitary {
     public static boolean checkCorrectCCNumber(int cc_number) {
         int length = (int) (Math.log10(cc_number) + 1);
         return length == 8;
+    }
+
+    public static boolean isIPv4(String ip) {
+        Pattern IPv4_PATTERN = Pattern.compile("^([0-9]?[0-9]?[0-9][.]){3}([0-9]?[0-9]?[0-9])$");
+        return IPv4_PATTERN.matcher(ip).matches();
     }
 }

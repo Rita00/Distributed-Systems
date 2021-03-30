@@ -3,6 +3,7 @@ package pt.uc.dei.student;
 import pt.uc.dei.student.elections.*;
 import pt.uc.dei.student.others.Utilitary;
 
+import javax.swing.text.AttributeSet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -174,14 +175,25 @@ public class AdminConsole {
                         reconnectToRMI();
                     }
                 }
+                HashMap<Integer, ArrayList<Integer>> activeTerminals;
                 for (int ndep : dep) {
                     System.out.println(departments.get(ndep - 1).getName());
-                    ConcurrentHashMap<Integer,ArrayList<Integer>> activeTerminals = this.rmiServer.getActiveTerminals();
+                    while (true) {
+                        try {
+                            activeTerminals = this.rmiServer.getActiveTerminals();
+                            break;
+
+                        } catch (RemoteException | InterruptedException e) {
+                            //e.printStackTrace();
+                            reconnectToRMI();
+                        }
+                    }
                     try {
                         for (int id : activeTerminals.get(ndep)) {
                             System.out.println("\tTerminal de Voto #" + id);
                         }
-                    }catch(NullPointerException ignore){}
+                    } catch (NullPointerException ignore) {
+                    }
                 }
 
                 System.out.println("(ENTER)- Voltar");
@@ -192,7 +204,7 @@ public class AdminConsole {
 
             }
         }
-        this.isMonitoring=false;
+        this.isMonitoring = false;
     }
 
     public void listVotingRecord() {
@@ -1028,7 +1040,7 @@ public class AdminConsole {
         }
     }
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         try {
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
             String message = rmiServer.saySomething();
@@ -1054,7 +1066,10 @@ public class AdminConsole {
                     break;
                 } catch (NotBoundException | IOException remoteException) {
                     //remoteException.printStackTrace();
-                    try{TimeUnit.SECONDS.sleep(5);}catch(Exception ignored){}
+                    try {
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (Exception ignored) {
+                    }
                     main(args);
                 }
             }

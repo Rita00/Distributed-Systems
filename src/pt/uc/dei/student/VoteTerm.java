@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import pt.uc.dei.student.others.Utilitary;
@@ -20,15 +19,16 @@ public class VoteTerm extends Thread {
     private final String MULTICAST_ADDRESS;
 
     private final int voteTermId;
-    private int departmentId;
+    private final int departmentId;
     private MulticastSocket socket;
     private InetAddress group;
     private boolean available = true;
 
     private final String OPTION_STRING = ">>> ";
 
-    VoteTerm(String multicastAddress, int multicastPort) {
+    VoteTerm(int departmentId, String multicastAddress, int multicastPort) {
         this.voteTermId = (int) Math.round(Math.random() * Integer.MAX_VALUE) + 1;
+        this.departmentId = departmentId;
         this.MULTICAST_ADDRESS = multicastAddress;
         this.MULTICAST_PORT = multicastPort;
     }
@@ -81,7 +81,6 @@ public class VoteTerm extends Thread {
         //so ler as mensagens do multicast
         if (msgHash.get("sender").startsWith("multicast")) {
             String[] ndep = msgHash.get("sender").split("-");
-            this.setDepartmentId(Integer.parseInt(ndep[2]));
             try {
                 if (Integer.parseInt(msgHash.get("destination").split("-")[1]) == this.voteTermId) {
                     switch (msgHash.get("message")) {
@@ -190,9 +189,7 @@ public class VoteTerm extends Thread {
     public InetAddress getGroup() {
         return this.group;
     }
-    public void setDepartmentId(int departmentId) {
-        this.departmentId=departmentId;
-    }
+
     public void setSocket(MulticastSocket socket) {
         this.socket = socket;
     }
@@ -202,30 +199,8 @@ public class VoteTerm extends Thread {
     }
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        String network;
-        switch (args.length){
-            case 0:
-                do {
-                    System.out.println("Endereço Multicast (ex:224.3.2.1)");
-                    System.out.print(">>> ");
-                    network = input.nextLine();
-                }while(!Utilitary.isIPv4(network));
-                break;
-            case 1:
-                if(!Utilitary.isIPv4(args[0])){
-                    System.out.println("arg1: Endereço invalido");
-                    return;
-                }
-                network=args[0];
-                break;
-            default:
-                System.out.println("Numeros de argumentos inválido");
-                System.out.println("arg1: Endereço multicast");
-                return;
-
-        }
-        VoteTerm client = new VoteTerm(network, MulticastServer.MULTICAST_PORT);
+        int departmentId = 1;
+        VoteTerm client = new VoteTerm(departmentId, "224.3.2.1", MulticastServer.MULTICAST_PORT);
         System.out.printf("======== Terminal de Voto #%s ========\n", client.voteTermId);
         client.start();
     }

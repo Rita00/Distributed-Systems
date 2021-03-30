@@ -19,40 +19,33 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
 
 //Todo permitir apenas criar eleições depois da data atual
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
 //Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento
 
 public class MulticastServer extends Thread {
-
+    private final String MULTICAST_ADDRESS = "224.3.2.1";
     public final static int MULTICAST_PORT = 7002;
+    MulticastSocket socket;
+    InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+
+    private boolean isON = true;
     private final String OPTION_STRING = ">>> ";
 
-
+    private int multicastId = 0;
     private RMI rmiServer;
-    private String multicastAddress;
-    MulticastSocket socket;
-    InetAddress group;
-
-    private int multicastId=0;
-    private boolean isON = true;
-
     private Department department;
 
     static MulticastServer multicastServer;
 
     private final NotifierCallBack NOTIFIER = new NotifierCallBack();
 
-    private ConcurrentHashMap<String, Boolean> availableTerminals;
+    private final HashMap<String, Boolean> availableTerminals = new HashMap<>();
 
-    public MulticastServer(RMI rmiServer,String multicastAddress) throws IOException {
+    public MulticastServer(RMI rmiServer) throws IOException {
         this.rmiServer = rmiServer;
-        this.multicastAddress = multicastAddress;
         this.socket = new MulticastSocket(MULTICAST_PORT);
-        this.group=InetAddress.getByName(multicastAddress);
-        this.availableTerminals = new ConcurrentHashMap<>();
     }
 
     public void menuPollingStation(int dep_id) throws IOException {
@@ -294,13 +287,6 @@ public class MulticastServer extends Thread {
     }
 
     public void run() {
-        var sigHandler = new Thread(() -> {
-            try {
-                System.out.println("SET hasmulticastServer to null in DB");//TODO comentar isto
-                rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
-            } catch (InterruptedException | RemoteException ignore) {}
-        });
-        Runtime.getRuntime().addShutdownHook(sigHandler);
         try {
             //O servidor não recebe mensagens dos clientes (sem o Port)
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
@@ -340,7 +326,7 @@ public class MulticastServer extends Thread {
     }
 
     private void doThings(HashMap<String, String> msgHash) {
-        //nao ler as suas proprias mensagens e de terminais de outros departamentos
+        //nao ler as suas proprias mensagens
         if (!msgHash.get("sender").startsWith("multicast")) {
             switch (msgHash.get("message")) {
                 case "occupied":
@@ -457,7 +443,7 @@ public class MulticastServer extends Thread {
         while (true) {
             try {
                 RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                multicastServer = new MulticastServer(rmiServer,this.multicastAddress);
+                multicastServer.rmiServer = rmiServer;
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace();
@@ -472,9 +458,7 @@ public class MulticastServer extends Thread {
     public int getMulticastId() {
         return this.multicastId;
     }
-    public ConcurrentHashMap<String,Boolean> getAvailableTerminals() {
-        return this.availableTerminals;
-    }
+
     public void setMulticastId(int multicastId) {
         this.multicastId = multicastId;
     }
@@ -484,33 +468,11 @@ public class MulticastServer extends Thread {
     }
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        String network;
-        switch (args.length){
-            case 0:
-                do {
-                    System.out.println("Endereço Multicast (ex:224.3.2.1)");
-                    System.out.print(">>> ");
-                    network = input.nextLine();
-                }while(!Utilitary.isIPv4(network));
-                break;
-            case 1:
-                if(!Utilitary.isIPv4(args[0])){
-                    System.out.println("arg1: Endereço invalido");
-                    return;
-                }
-                network=args[0];
-                break;
-            default:
-                System.out.println("Numeros de argumentos inválido");
-                System.out.println("arg1: Endereço multicast");
-                return;
-
-        }
         try {
             int dep = -1;
+            Scanner input = new Scanner(System.in);
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-            multicastServer = new MulticastServer(rmiServer,network);
+            multicastServer = new MulticastServer(rmiServer);
             /*
             SETUP
              */
@@ -527,23 +489,40 @@ public class MulticastServer extends Thread {
             /*
             LIGAR
              */
-                var sigHandler = new Thread(() -> {
-                    try {
-                        System.out.println("SET hasmulticastServer to null in DB");//TODO comentar isto
-                        rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
-                    } catch (InterruptedException | RemoteException ignore) {}
-                });
-                Runtime.getRuntime().addShutdownHook(sigHandler);
                 multicastServer.start();
                 multicastServer.connect();
             } else
                 System.exit(0);
         } catch (Exception e) {
+            int dep = -1;
+            Scanner input = new Scanner(System.in);
             while (true) {
                 try {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                    multicastServer = new MulticastServer(rmiServer,network);
-                    break;
+                    multicastServer = new MulticastServer(rmiServer);
+                    ArrayList<Department> departments = null;
+                    try {
+                        departments = multicastServer.rmiServer.getDepartments();
+                        while (!(dep >= 1 && dep <= 11)) {
+                            System.out.println("Departamento onde se localiza: ");
+                            Utilitary.listDepart(departments);
+                            System.out.print(">>> ");
+                            dep = input.nextInt();
+                        }
+                        if (rmiServer.initializeMulticast(dep, multicastServer.NOTIFIER) != null) {
+                            multicastServer.setMulticastId(dep);
+                            multicastServer.setDepartment(departments.get(dep - 1));
+                        /*
+                        LIGAR
+                        */
+                            multicastServer.start();
+                            multicastServer.connect();
+                        } else
+                            System.exit(0);
+                        break;
+                    } catch (InterruptedException interruptedException) {
+                        //interruptedException.printStackTrace();
+                    }
                 } catch (NotBoundException | IOException remoteException) {
                     //remoteException.printStackTrace();
                 }

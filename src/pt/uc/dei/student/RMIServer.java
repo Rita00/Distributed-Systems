@@ -438,17 +438,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return updateOnDB("UPDATE department SET hasMulticastServer = null WHERE id = " + department_id);
     }
 
-    public boolean checkCorrectPhone(int num_phone) {
-        int length = (int) (Math.log10(num_phone) + 1);
-        int secondNum = num_phone / 10000000;
-        return length == 9 && ((secondNum % 10) == 2 || (secondNum % 10) == 3 || (secondNum % 10) == 6 || (secondNum % 10) == 1) && secondNum / 10 == 9;
-    }
-
-    public boolean checkCorrectCCNumber(int cc_number) {
-        int length = (int) (Math.log10(cc_number) + 1);
-        return length == 8;
-    }
-
     public ArrayList<Election> getEndedElections() {
         return selectElections("SELECT * FROM election WHERE end_date < date('now')");
     }

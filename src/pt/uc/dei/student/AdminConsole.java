@@ -6,6 +6,8 @@ import pt.uc.dei.student.others.Utilitary;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class AdminConsole {
@@ -31,10 +34,11 @@ public class AdminConsole {
 
     private boolean isMonitoring;
 
+    static AdminConsole admin;
 
     public AdminConsole(RMI rmiServer) throws RemoteException {
         this.rmiServer = rmiServer;
-        this.isMonitoring=false;
+        this.isMonitoring = false;
     }
 
     /**
@@ -99,48 +103,87 @@ public class AdminConsole {
     private void statusVotes() {
         int command;
         Scanner input = new Scanner(System.in);
-        try {
-            this.rmiServer.initializeRealTimeInfo(NOTIFIER);
-            System.out.println("(" + RETURN + ")-\t\tVoltar");
-            System.out.print(OPTION_STRING);
-            command = input.nextInt();
-            if (command == 0) {
-                try {
-                    this.rmiServer.endRealTimeInfo(NOTIFIER);
-                    this.admin(-1);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        while (true) {
+            try {
+                while (true) {
+                    try {
+                        this.rmiServer.initializeRealTimeInfo(NOTIFIER);
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
                 }
-            } else {
-                this.statusPollingStation();
+                System.out.println("(" + RETURN + ")-\t\tVoltar");
+                System.out.print(OPTION_STRING);
+                command = input.nextInt();
+                if (command == 0) {
+                    while (true) {
+                        try {
+                            this.rmiServer.endRealTimeInfo(NOTIFIER);
+                            this.admin(-1);
+                            break;
+                        } catch (IOException e) {
+                            //e.printStackTrace();
+                            reconnectToRMI();
+                        }
+                    }
+                } else {
+                    this.statusPollingStation();
+                }
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
         }
-
     }
 
-    private void statusPollingStation(){
+    private void statusPollingStation() {
         InputStreamReader is = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(is);
-        this.isMonitoring=true;
-        while(true) {
+        this.isMonitoring = true;
+        while (true) {
             try {
                 //qualquer tecla para sair
-                if (br.ready()) {br.readLine();break; }
-                //TODO mostrar dados
-                ArrayList<Department> departments = this.rmiServer.getDepartments();
-                for(int ndep : this.rmiServer.getNotifiersMulticast().keySet()){
-                    System.out.println(departments.get(ndep-1).getName());
+                if (br.ready()) {
+                    br.readLine();
+                    break;
                 }
-
-
+                //TODO mostrar dados
+                ArrayList<Department> departments;
+                while (true) {
+                    try {
+                        departments = this.rmiServer.getDepartments();
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
+                ConcurrentHashMap.KeySetView<Integer, Notifier> dep;
+                while (true) {
+                    try {
+                        dep = this.rmiServer.getNotifiersMulticast().keySet();
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
+                for (int ndep : dep) {
+                    System.out.println(departments.get(ndep - 1).getName());
+                }
 
                 System.out.println("(ENTER)- Voltar");
                 TimeUnit.SECONDS.sleep(1);
-            }catch(IOException | InterruptedException ignore){}
+            } catch (IOException | InterruptedException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
+            }
         }
-        this.isMonitoring=false;
+
+        this.isMonitoring = false;
         /*
         try {
             System.out.println("Mesas de voto e respetivos terminais de voto ativos");
@@ -167,40 +210,155 @@ public class AdminConsole {
             e.printStackTrace();
         }*/
     }
+
     public void listVotingRecord() {
         Scanner input = new Scanner(System.in);
-        String command="";
-        try {
-            ArrayList<VotingRecord> votingRecords = this.rmiServer.getVotingRecords();
-            if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");
-            else {
-                for (VotingRecord vr : votingRecords) {
-                    System.out.printf("%s\t\t%s\t\t%s\t\t%s\n", vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date());
-                }
-            }
-            System.out.println("(" + RETURN + ")-\t\tVoltar");
-            System.out.print(OPTION_STRING);
+        String command;
+
+        while (true) {
             try {
-                command = input.nextLine();
-                if(!command.equals("0")){
-                    this.listVotingRecord();
+                ArrayList<VotingRecord> votingRecords;
+                while (true) {
+                    try {
+                        votingRecords = this.rmiServer.getVotingRecords();
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
                 }
-            } catch (InputMismatchException ime) {
-                //volta para este menu caso os input esteja errado
-                this.listVotingRecord();
-                return;
+                if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");
+                else {
+                    for (VotingRecord vr : votingRecords) {
+                        System.out.printf("%s\t\t%s\t\t%s\t\t%s\n", vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date());
+                    }
+                }
+                System.out.println("(" + RETURN + ")-\t\tVoltar");
+                System.out.print(OPTION_STRING);
+                try {
+                    command = input.nextLine();
+                    if (!command.equals("0")) {
+                        this.listVotingRecord();
+                    }
+                } catch (InputMismatchException ime) {
+                    //volta para este menu caso os input esteja errado
+                    this.listVotingRecord();
+                    return;
+                }
+                break;
+            } catch (RemoteException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
     public void electionsResults() {
         int election = 0;
         Scanner input = new Scanner(System.in);
-        try {
-            ArrayList<Election> elections = this.rmiServer.getEndedElections();
-            if (elections.size() != 0) {
+        while (true) {
+            try {
+                ArrayList<Election> elections;
+                while (true) {
+                    try {
+                        elections = this.rmiServer.getEndedElections();
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
+                if (elections.size() != 0) {
+                    while (!Utilitary.hasElection(election, elections)) {
+                        System.out.println("\tEscolha a eleição: ");
+                        Utilitary.listElections(elections);
+                        System.out.println("(" + RETURN + ")-  Voltar");
+                        System.out.print(OPTION_STRING);
+                        try {
+                            election = input.nextInt();
+                        } catch (InputMismatchException ime) {
+                            //volta para este menu caso os input esteja errado
+                            this.electionsResults();
+                            return;
+                        }
+                        if (election == 0) {
+                            return;
+                        }
+                    }
+                    System.out.printf("\tVotos em branco: %d  (%.2f%%)\n", this.rmiServer.getBlackVotes(election), this.rmiServer.getPercentVotesCandidacy(election, -1));
+                    System.out.println("\tVotos nulos: " + this.rmiServer.getNullVotes(election));
+                    listCandidacyWithVotes(election);
+                }
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                //e.printStackTrace(); //TODO TRATAR EXCEPCAO
+                reconnectToRMI();
+            }
+        }
+    }
+
+    public void listCandidacyWithVotes(int id_election) {
+        Scanner input = new Scanner(System.in);
+        int command;
+        while (true) {
+            try {
+                ArrayList<Candidacy> candidates;
+                while (true) {
+                    try {
+                        candidates = this.rmiServer.getCandidacies(id_election);
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
+                if (candidates != null) {
+                    for (Candidacy cand : candidates) {
+                        System.out.println("\tLista " + cand.getName());
+                        System.out.println("\t\tNúmero total de votos: " + this.rmiServer.getVotesCandidacy(id_election, cand.getId()));
+                        System.out.printf("\t\tPercentagem de votos: %.2f%%", this.rmiServer.getPercentVotesCandidacy(id_election, cand.getId()));
+                        System.out.println("\n");
+                    }
+                } else {
+                    System.out.println("\tSem candidatos");
+                }
+                while (true) {
+                    System.out.println("(" + RETURN + ")-  Voltar");
+                    System.out.print(OPTION_STRING);
+                    try {
+                        command = input.nextInt();
+                    } catch (InputMismatchException ime) {
+                        //volta para este menu caso os input esteja errado
+                        this.listCandidacyWithVotes(id_election);
+                        return;
+                    }
+                    if (command == 0) {
+                        this.electionsResults();
+                        return;
+                    }//other cases if needed
+                }
+            } catch (RemoteException | InterruptedException e) {
+                //e.printStackTrace(); //TODO TRATAR EXCEPCAO
+                reconnectToRMI();
+            }
+        }
+    }
+
+    public void listElectionToManagePollingStation() {
+        int election = -1;
+        Scanner input = new Scanner(System.in);
+        while (true) {
+            try {
+                ArrayList<Election> elections;
+                while (true) {
+                    try {
+                        elections = this.rmiServer.getElectionsNotStarted();
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
                 while (!Utilitary.hasElection(election, elections)) {
                     System.out.println("\tEscolha a eleição: ");
                     Utilitary.listElections(elections);
@@ -210,81 +368,18 @@ public class AdminConsole {
                         election = input.nextInt();
                     } catch (InputMismatchException ime) {
                         //volta para este menu caso os input esteja errado
-                        this.electionsResults();
+                        this.listElectionToManagePollingStation();
                         return;
                     }
                     if (election == 0) {
                         return;
                     }
                 }
-                System.out.printf("\tVotos em branco: %d  (%.2f%%)\n", this.rmiServer.getBlackVotes(election), this.rmiServer.getPercentVotesCandidacy(election, -1));
-                System.out.println("\tVotos nulos: " + this.rmiServer.getNullVotes(election));
-                listCandidacyWithVotes(election);
+                this.managePollingStation(election);
+            } catch (RemoteException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
-        }
-    }
-
-    public void listCandidacyWithVotes(int id_election) {
-        Scanner input = new Scanner(System.in);
-        int command;
-        try {
-            ArrayList<Candidacy> candidates = this.rmiServer.getCandidacies(id_election);
-            if (candidates != null) {
-                for (Candidacy cand : candidates) {
-                    System.out.println("\tLista " + cand.getName());
-                    System.out.println("\t\tNúmero total de votos: " + this.rmiServer.getVotesCandidacy(id_election, cand.getId()));
-                    System.out.printf("\t\tPercentagem de votos: %.2f%%", this.rmiServer.getPercentVotesCandidacy(id_election, cand.getId()));
-                    System.out.println("\n");
-                }
-            } else {
-                System.out.println("\tSem candidatos");
-            }
-            while (true) {
-                System.out.println("(" + RETURN + ")-  Voltar");
-                System.out.print(OPTION_STRING);
-                try {
-                    command = input.nextInt();
-                } catch (InputMismatchException ime) {
-                    //volta para este menu caso os input esteja errado
-                    this.listCandidacyWithVotes(id_election);
-                    return;
-                }
-                if (command == 0) {
-                    this.electionsResults();
-                    return;
-                }//other cases if needed
-            }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
-        }
-    }
-
-    public void listElectionToManagePollingStation() {
-        int election = -1;
-        Scanner input = new Scanner(System.in);
-        try {
-            ArrayList<Election> elections = this.rmiServer.getElectionsNotStarted();
-            while (!(election >= 1 && election <= this.rmiServer.numElections())) {
-                System.out.println("\tEscolha a eleição: ");
-                Utilitary.listElections(elections);
-                System.out.println("(" + RETURN + ")-  Voltar");
-                System.out.print(OPTION_STRING);
-                try {
-                    election = input.nextInt();
-                } catch (InputMismatchException ime) {
-                    //volta para este menu caso os input esteja errado
-                    this.listElectionToManagePollingStation();
-                    return;
-                }
-                if (election == 0) {
-                    return;
-                }
-            }
-            this.managePollingStation(election);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 
@@ -322,74 +417,115 @@ public class AdminConsole {
     private void addPollingStation(int election) {
         int mesaVoto = -1;
         Scanner input = new Scanner(System.in);
-        try {
-            ArrayList<Department> departments = this.rmiServer.selectNoAssociatedPollingStation(election);
-            if (departments.size() == 0) {
-                System.out.println("Não existem mesas de voto para associar a esta eleição!");
-            } else {
-                while (!hasDep(mesaVoto, departments)) {
-                    System.out.println("Escolha a mesa de voto a adicionar");
-                    Utilitary.listDepart(departments);
-                    System.out.println("(" + RETURN + ")-  Voltar");
-                    System.out.print(OPTION_STRING);
+        while (true)
+            try {
+                ArrayList<Department> departments;
+                while (true) {
                     try {
-                        mesaVoto = input.nextInt();
-                    } catch (InputMismatchException ime) {
-                        //volta para este menu caso os input esteja errado
-                        this.addPollingStation(election);
-                        return;
-                    }
-                    if (mesaVoto == 0) {
-                        this.managePollingStation(election);
-                        return;
+                        departments = this.rmiServer.selectNoAssociatedPollingStation(election);
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
                     }
                 }
-                this.rmiServer.insertPollingStation(election, mesaVoto);
+
+                if (departments.size() == 0) {
+                    System.out.println("Não existem mesas de voto para associar a esta eleição!");
+                } else {
+                    while (!hasDep(mesaVoto, departments)) {
+                        System.out.println("Escolha a mesa de voto a adicionar");
+                        Utilitary.listDepart(departments);
+                        System.out.println("(" + RETURN + ")-  Voltar");
+                        System.out.print(OPTION_STRING);
+                        try {
+                            mesaVoto = input.nextInt();
+                        } catch (InputMismatchException ime) {
+                            //volta para este menu caso os input esteja errado
+                            this.addPollingStation(election);
+                            return;
+                        }
+                        if (mesaVoto == 0) {
+                            this.managePollingStation(election);
+                            return;
+                        }
+                    }
+                    while (true) {
+                        try {
+                            this.rmiServer.insertPollingStation(election, mesaVoto);
+                            break;
+                        } catch (InterruptedException e) {
+                            //e.printStackTrace();
+                            reconnectToRMI();
+                        }
+                    }
+                }
+                break;
+            } catch (RemoteException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
-        }
     }
 
     private void removePollingStation(int election) {
         int mesaVoto = -1;
         Scanner input = new Scanner(System.in);
-        try {
-            ArrayList<Department> departments = this.rmiServer.selectPollingStation(election);
-            if (departments.size() == 0) {
-                System.out.println("Não existem mesas de voto associadas a esta eleição!");
-            } else {
-                while (!hasDep(mesaVoto, departments)) {
-                    System.out.println("Escolha a mesa de voto a remover: ");
-                    Utilitary.listDepart(departments);
-                    System.out.println("(" + RETURN + ")-  Voltar");
-                    System.out.print(OPTION_STRING);
+        while (true) {
+            ArrayList<Department> departments;
+            try {
+                while (true) {
                     try {
-                        mesaVoto = input.nextInt();
-                    } catch (InputMismatchException ime) {
-                        //volta para este menu caso os input esteja errado
-                        this.removePollingStation(election);
-                        return;
+                        departments = this.rmiServer.selectPollingStation(election);
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
                     }
-                    if (mesaVoto == 0) {
-                        this.managePollingStation(election);
-                        return;
-                    }
-
                 }
-                this.rmiServer.removePollingStation(mesaVoto);
+                if (departments.size() == 0) {
+                    System.out.println("Não existem mesas de voto associadas a esta eleição!");
+                } else {
+                    while (!hasDep(mesaVoto, departments)) {
+                        System.out.println("Escolha a mesa de voto a remover: ");
+                        Utilitary.listDepart(departments);
+                        System.out.println("(" + RETURN + ")-  Voltar");
+                        System.out.print(OPTION_STRING);
+                        try {
+                            mesaVoto = input.nextInt();
+                        } catch (InputMismatchException ime) {
+                            //volta para este menu caso os input esteja errado
+                            this.removePollingStation(election);
+                            return;
+                        }
+                        if (mesaVoto == 0) {
+                            this.managePollingStation(election);
+                            return;
+                        }
+                    }
+                    while (true) {
+                        try {
+                            this.rmiServer.removePollingStation(mesaVoto);
+                            break;
+                        } catch (InterruptedException e) {
+                            //e.printStackTrace();
+                            reconnectToRMI();
+                        }
+                    }
+                }
+            } catch (RemoteException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
+
     /*
     MESMO METoDO QUE O DE BAIXO MAS PARA STRING EM INPUT, E VERIFICA SE A STRING é UM NUMERO
      */
     public boolean hasDep(String dep, ArrayList<Department> departments) {
-        try{
+        try {
             return this.hasDep(Integer.parseInt(dep), departments);
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -411,71 +547,87 @@ public class AdminConsole {
     public void register() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner input = new Scanner(System.in);
-        String pass, address, nome, cargo="0", ndep="0";
+        String pass, address, nome, cargo = "0", ndep = "0";
         LocalDate cc_validity;
         int num_phone, num_cc;
-        System.out.print("Nome: ");
-        nome = reader.readLine();
-        while (!(cargo.equals("1")||cargo.equals("2")||cargo.equals("3"))) {
-            System.out.println("Cargo: ");
-            System.out.println("\t1 - Estudante");
-            System.out.println("\t2 - Docente");
-            System.out.println("\t3 - Funcionário");
-            System.out.print(OPTION_STRING);
-            cargo = input.nextLine();
-        }
-        System.out.print("Password: ");
-        pass = reader.readLine();
-        while (!(1 <= Integer.parseInt(ndep) && Integer.parseInt(ndep) <= 11)) {
-            do{
-                try {
-                    ArrayList<Department> departments = this.rmiServer.getDepartments();
-                    System.out.println("Departamento que frequenta: ");
-                    Utilitary.listDepart(departments);
+        while (true) {
+            try {
+                System.out.print("Nome: ");
+                nome = reader.readLine();
+                while (!(cargo.equals("1") || cargo.equals("2") || cargo.equals("3"))) {
+                    System.out.println("Cargo: ");
+                    System.out.println("\t1 - Estudante");
+                    System.out.println("\t2 - Docente");
+                    System.out.println("\t3 - Funcionário");
                     System.out.print(OPTION_STRING);
-                    ndep = input.nextLine();
-                } catch (InterruptedException e) {
-                    e.printStackTrace(); //TODO TRATAR EXCEPCAO
+                    cargo = input.nextLine();
                 }
-            }while((!Utilitary.isNumber(ndep)));
-        }
-        System.out.print("Número de telemóvel: ");
-        num_phone = input.nextInt();
-        try {
-            while (!rmiServer.checkCorrectPhone(num_phone)) {
-                System.out.print("Número de telemóvel inválido! Insira novamente: ");
+                System.out.print("Password: ");
+                pass = reader.readLine();
+                while (!(1 <= Integer.parseInt(ndep) && Integer.parseInt(ndep) <= 11)) {
+                    do {
+                        ArrayList<Department> departments = null;
+                        while (true) {
+                            try {
+                                departments = this.rmiServer.getDepartments();
+                                break;
+                            } catch (InterruptedException e) {
+                                //e.printStackTrace();
+                                reconnectToRMI();
+                            }
+                            System.out.println("Departamento que frequenta: ");
+                            Utilitary.listDepart(departments);
+                            System.out.print(OPTION_STRING);
+                            ndep = input.nextLine();
+                        }
+                    } while ((!Utilitary.isNumber(ndep)));
+                }
+
+                System.out.print("Número de telemóvel: ");
                 num_phone = input.nextInt();
-            }
-        } catch (Exception ignored) {
-        }
+                while (!Utilitary.checkCorrectPhone(num_phone)) {
+                    System.out.print("Número de telemóvel inválido! Insira novamente: ");
+                    num_phone = input.nextInt();
+                }
 
-        System.out.print("Morada: ");
-        address = reader.readLine();
+                System.out.print("Morada: ");
+                address = reader.readLine();
 
-        System.out.print("Número do cartão de cidadão: ");
-        num_cc = input.nextInt();
-        try {
-            while (!rmiServer.checkCorrectCCNumber(num_cc)) {
-                System.out.print("Número de cartão de cidadão inválido! Insira novamente: ");
+                System.out.print("Número do cartão de cidadão: ");
                 num_cc = input.nextInt();
+
+                while (!Utilitary.checkCorrectCCNumber(num_cc)) {
+                    System.out.print("Número de cartão de cidadão inválido! Insira novamente: ");
+                    num_cc = input.nextInt();
+                }
+
+                System.out.print("Validade do cartão de cidadão (YYYY-MM-DD): ");
+                while ((cc_validity = Utilitary.parseDate(reader.readLine())) == null) {
+                    System.out.print("Data de validade do CC inválida, use este formato (YYYY-MM-DD): ");
+                }
+
+                boolean insertPers;
+                while (true) {
+                    try {
+                        insertPers = this.rmiServer.insertPerson(nome, Utilitary.decideCargo(Integer.parseInt(cargo)), String.format("%s", (num_cc + pass).hashCode()), Integer.parseInt(ndep), num_phone, address, num_cc, cc_validity.toString());
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace(); //TODO TRATAR EXCEPCAO
+                        reconnectToRMI();
+                    }
+                }
+                if (!insertPers) {
+                    System.out.println("Impossível inserir registo :(");
+                } else {
+                    System.out.println("Registo feito com sucesso! :)");
+                }
+                break;
+            } catch (RemoteException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
             }
-        } catch (Exception ignored) {
-        }
-        System.out.print("Validade do cartão de cidadão (YYYY-MM-DD): ");
-        while ((cc_validity = Utilitary.parseDate(reader.readLine())) == null) {
-            System.out.print("Data de validade do CC inválida, use este formato (YYYY-MM-DD): ");
-        }
-        try {
-            if (!this.rmiServer.insertPerson(nome, Utilitary.decideCargo(Integer.parseInt(cargo)), String.format("%s",(num_cc+pass).hashCode()), Integer.parseInt(ndep), num_phone, address, num_cc, cc_validity.toString())) {
-                System.out.println("Impossível inserir registo :(");
-            } else {
-                System.out.println("Registo feito com sucesso! :)");
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
-
 
     /**
      * Lê da consola a informação necessária para criar uma eleição
@@ -484,7 +636,7 @@ public class AdminConsole {
      * @throws IOException exceção de I/O
      */
     public void createElection() throws IOException {
-        String titulo, descricao, begin_data, end_data,restr="",type_ele="",ndep = "-1";
+        String titulo, descricao, begin_data, end_data, restr = "", type_ele = "", ndep = "-1";
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Início da Eleição (YYYY-MM-DD HH:mm): ");
@@ -504,20 +656,25 @@ public class AdminConsole {
         }
 
         if (restr.equals("1")) {
-            try {
-                ArrayList<Department> departments = this.rmiServer.selectPollingStation(-1);
-                while (!hasDep(ndep, departments)) {
-                    System.out.println("Departamento: ");
-                    Utilitary.listDepart(departments);
-                    System.out.print(OPTION_STRING);
-                    ndep = input.nextLine();
+            ArrayList<Department> departments;
+            while (true) {
+                try {
+                    departments = this.rmiServer.selectPollingStation(-1);
+                    break;
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace(); //TODO TRATAR EXCEPCAO
+            }
+            while (!hasDep(ndep, departments)) {
+                System.out.println("Departamento: ");
+                Utilitary.listDepart(departments);
+                System.out.print(OPTION_STRING);
+                ndep = input.nextLine();
             }
         }
 
-        while (!(type_ele.equals("1")||type_ele.equals("2")||type_ele.equals("3"))) {
+        while (!(type_ele.equals("1") || type_ele.equals("2") || type_ele.equals("3"))) {
             System.out.println("Tipo de eleição: ");
             System.out.println("\t1 - Estudante");
             System.out.println("\t2 - Docente");
@@ -525,29 +682,46 @@ public class AdminConsole {
             System.out.print(OPTION_STRING);
             type_ele = input.nextLine();
         }
-        try {
-            int id = this.rmiServer.insertElection(begin_data, end_data, titulo, descricao, Utilitary.decideCargo(Integer.parseInt(type_ele)));
-            if (id == -1) {
-                System.out.println("Impossível inserir eleição :(");
-            } else {
-                System.out.println("Eleição criada com sucesso! :)");
+        int id;
+        while (true) {
+            try {
+                id = this.rmiServer.insertElection(begin_data, end_data, titulo, descricao, Utilitary.decideCargo(Integer.parseInt(type_ele)));
+                break;
+            } catch (InterruptedException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
+            }
+        }
+
+        if (id == -1) {
+            System.out.println("Impossível inserir eleição :(");
+        } else {
+            System.out.println("Eleição criada com sucesso! :)");
+            while (true) {
                 try {
                     this.rmiServer.insertElectionDepartment(id, Integer.parseInt(ndep));
-
+                    break;
                 } catch (Exception e) {
-                    e.printStackTrace(); //TODO TRATAR EXCEPCAO
+                    //e.printStackTrace();
+                    reconnectToRMI();
                 }
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
         }
     }
 
-    private void addCandidacy(Election election) throws RemoteException, InterruptedException {
+    private void addCandidacy(Election election) {
         Scanner input = new Scanner(System.in);
         System.out.println("========ADICIONAR LISTA=======");
         System.out.print("Nome: ");
-        this.rmiServer.insertCandidacyIntoElection(input.nextLine(), election.getType(), election.getId());
+        while (true) {
+            try {
+                this.rmiServer.insertCandidacyIntoElection(input.nextLine(), election.getType(), election.getId());
+                break;
+            } catch (InterruptedException | RemoteException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
+            }
+        }
     }
 
     private void listElectionsToManage() {
@@ -558,8 +732,16 @@ public class AdminConsole {
                  * LISTAR ELEICOES
                  */
                 System.out.println("==========GERIR ELEICOES==========");
-
-                ArrayList<Election> elections = this.rmiServer.getElections();
+                ArrayList<Election> elections;
+                while (true) {
+                    try {
+                        elections = this.rmiServer.getElections();
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
                 Utilitary.listElectionsByIndex(elections);
                 System.out.println("(" + RETURN + ")-  Voltar");
                 /*
@@ -579,8 +761,9 @@ public class AdminConsole {
             } catch (InputMismatchException ime) {
                 //volta para este menu caso o input esteja errado
                 this.listElectionsToManage();
-            } catch (InterruptedException | IOException e) {
-                e.printStackTrace(); //TODO TRATAR EXCEPCAO
+            } catch (IOException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
             }
         }
     }
@@ -593,7 +776,16 @@ public class AdminConsole {
                  * LISTAR LISTAS CANDIDATAS
                  */
                 System.out.println(election.toString());
-                ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(election.getId());
+                ArrayList<Candidacy> candidacies;
+                while (true) {
+                    try {
+                        candidacies = this.rmiServer.getCandidacies(election.getId());
+                        break;
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
                 if (candidacies.size() > 0) {
                     System.out.println("Ver lista:");
                     for (Candidacy c : candidacies) {
@@ -639,13 +831,14 @@ public class AdminConsole {
             } catch (InputMismatchException ime) {
                 //volta para este menu caso os input esteja errado
                 this.manageElection(election);
-            } catch (InterruptedException | IOException e) {
-                e.printStackTrace(); //TODO TRATAR EXCEPCAO
+            } catch (IOException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
             }
         }
     }
 
-    private void editElection(Election election) throws RemoteException, InterruptedException {
+    private void editElection(Election election) {
         System.out.println(election.toString());
         //opcoes
         System.out.println("Editar:");
@@ -659,12 +852,20 @@ public class AdminConsole {
         Scanner input = new Scanner(System.in);
         System.out.print(OPTION_STRING);
         String command = input.nextLine();
-        if (command.equals(""+RETURN+"")) {
+        if (command.equals("" + RETURN + "")) {
             //VAZIO PARA VOLTAR
         } else if (command.equals("1")) {
             System.out.println("Editar titulo:");
             election.setTitle(input.next());
-            this.rmiServer.updateElections(election);
+            while (true) {
+                try {
+                    this.rmiServer.updateElections(election);
+                    break;
+                } catch (InterruptedException | RemoteException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
         } else if (command.equals("2")) {
             int type = -1;
             while (type > 3 || 0 > type) {
@@ -681,21 +882,53 @@ public class AdminConsole {
                 }
             }
             election.setType(type - 1);
-            this.rmiServer.updateElections(election);
+            while (true) {
+                try {
+                    this.rmiServer.updateElections(election);
+                    break;
+                } catch (InterruptedException | RemoteException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
         } else if (command.equals("3")) {
             System.out.println("Editar descricao:");
             election.setDescription(input.next());
-            this.rmiServer.updateElections(election);
+            while (true) {
+                try {
+                    this.rmiServer.updateElections(election);
+                    break;
+                } catch (InterruptedException | RemoteException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
         } else if (command.equals("4")) {
             System.out.println("Editar data de inicio (YYYY-MM-DD HH:mm:SS):");
             while (!election.setBegin(input.next(), input.next()))
                 System.out.println("Data invalida - formato (YYYY-MM-DD HH:mm:SS)");
-            this.rmiServer.updateElections(election);
+            while (true) {
+                try {
+                    this.rmiServer.updateElections(election);
+                    break;
+                } catch (InterruptedException | RemoteException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
         } else if (command.equals("5")) {
             System.out.println("Editar data de fim (YYYY-MM-DD HH:mm:SS):");
             while (!election.setEnd(input.next(), input.next()))
                 System.out.println("Data invalida - formato (YYYY-MM-DD HH:mm:SS)");
-            this.rmiServer.updateElections(election);
+            while (true) {
+                try {
+                    this.rmiServer.updateElections(election);
+                    break;
+                } catch (InterruptedException | RemoteException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
         } else {//volta para este menu caso esteja algo errado
             this.editElection(election);
         }
@@ -705,51 +938,110 @@ public class AdminConsole {
         int command = -1;
         while (command != RETURN) {
             System.out.println(candidacy.toString());
-            try {
-                ArrayList<Person> people = this.rmiServer.getPeople(candidacy.getId());
-                //listar pessoas
-                if (people.size() > 0) {
-                    System.out.println("Remover Sra./Sr.:");
-                    for (Person p : people) {
-                        System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1, p.getName(), p.getCensoredCc_number(4));
-                    }
-                } else {
-                    System.out.println("A lista não tem pessoas\n");
-                }
-                System.out.println("(" + REMOVE + ")- Remover lista");
-                System.out.println("(" + ADD + ")- Adicionar pessoa");
-                System.out.println("(" + RETURN + ")-  Voltar");
-                //esperar pelo input
-                Scanner input = new Scanner(System.in);
-                System.out.print(OPTION_STRING);
-                command = input.nextInt();
-                switch (command) {
-                    case ADD:
-                        System.out.println("Numero do Cartao de Cidadao da pessoa:");
-                        this.rmiServer.insertPersonIntoCandidacy(candidacy.getId(), input.nextInt());
-                        break;
-                    case REMOVE:
-                        this.rmiServer.removeOnDB("candidacy", "id", candidacy.getId());
-                        this.rmiServer.removeOnDB("candidacy_person", "candidacy_id", candidacy.getId());
-                        command = RETURN;//para voltar ao menu das eleicoes
-                        break;
-                    case RETURN:
-                        //VAZIO PARA VOLTAR
-                        break;
-                    default:
-                        if (0 < command && command <= people.size()) {
-                            this.rmiServer.removeOnDB("candidacy_person", "person_cc_number", people.get(command - 1).getCc_number());
-                        } else {
-                            //volta para este menu caso esteja algo errado
-                            this.manageCandidacy(candidacy);
+            while (true) {
+                try {
+                    ArrayList<Person> people;
+                    while (true) {
+                        try {
+                            people = this.rmiServer.getPeople(candidacy.getId());
+                            break;
+                        } catch (InterruptedException | RemoteException e) {
+                            //e.printStackTrace();
+                            reconnectToRMI();
                         }
-                        break;
+                    }
+                    try {
+                        //listar pessoas
+                        if (people.size() > 0) {
+                            System.out.println("Remover Sra./Sr.:");
+                            for (Person p : people) {
+                                System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1, p.getName(), p.getCensoredCc_number(4));
+                            }
+                        } else {
+                            System.out.println("A lista não tem pessoas\n");
+                        }
+                        System.out.println("(" + REMOVE + ")- Remover lista");
+                        System.out.println("(" + ADD + ")- Adicionar pessoa");
+                        System.out.println("(" + RETURN + ")-  Voltar");
+                        //esperar pelo input
+                        Scanner input = new Scanner(System.in);
+                        System.out.print(OPTION_STRING);
+                        command = input.nextInt();
+                        switch (command) {
+                            case ADD:
+                                System.out.println("Numero do Cartao de Cidadao da pessoa:");
+                                while (true) {
+                                    try {
+                                        this.rmiServer.insertPersonIntoCandidacy(candidacy.getId(), input.nextInt());
+                                        break;
+                                    } catch (InterruptedException e) {
+                                        //e.printStackTrace();
+                                        reconnectToRMI();
+                                    }
+                                }
+                                break;
+                            case REMOVE:
+                                while (true) {
+                                    try {
+                                        this.rmiServer.removeOnDB("candidacy", "id", candidacy.getId());
+                                        break;
+                                    } catch (InterruptedException e) {
+                                        //e.printStackTrace();
+                                        reconnectToRMI();
+                                    }
+                                }
+                                while (true) {
+                                    try {
+                                        this.rmiServer.removeOnDB("candidacy_person", "candidacy_id", candidacy.getId());
+                                        break;
+                                    } catch (InterruptedException e) {
+                                        //e.printStackTrace();
+                                        reconnectToRMI();
+                                    }
+                                }
+                                command = RETURN;//para voltar ao menu das eleicoes
+                                break;
+                            case RETURN:
+                                //VAZIO PARA VOLTAR
+                                break;
+                            default:
+                                if (0 < command && command <= people.size()) {
+                                    while (true) {
+                                        try {
+                                            this.rmiServer.removeOnDB("candidacy_person", "person_cc_number", people.get(command - 1).getCc_number());
+                                            break;
+                                        } catch (InterruptedException e) {
+                                            //e.printStackTrace();
+                                            reconnectToRMI();
+                                        }
+                                    }
+                                } else {
+                                    //volta para este menu caso esteja algo errado
+                                    this.manageCandidacy(candidacy);
+                                }
+                                break;
+                        }
+                    } catch (InputMismatchException ime) {
+                        //volta para este menu caso o input esteja errado
+                        this.manageCandidacy(candidacy);
+                    }
+                    break;
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
                 }
-            } catch (InputMismatchException ime) {
-                //volta para este menu caso o input esteja errado
-                this.manageCandidacy(candidacy);
-            } catch (InterruptedException | IOException e) {
-                e.printStackTrace(); //TODO TRATAR EXCEPCAO
+            }
+        }
+    }
+
+    public void reconnectToRMI() {
+        while (true) {
+            try {
+                RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("admin");
+                admin.rmiServer = rmiServer;
+                break;
+            } catch (NotBoundException | IOException remoteException) {
+                remoteException.printStackTrace();
             }
         }
     }
@@ -762,8 +1054,26 @@ public class AdminConsole {
             AdminConsole console = new AdminConsole(rmiServer);
             console.admin(-1);
         } catch (Exception e) {
-            System.out.println("Exception in Admin: " + e);
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
+            String message;
+            while (true) {
+                try {
+                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
+                    while (true) {
+                        try {
+                            message = rmiServer.saySomething();
+                            break;
+                        } catch (InterruptedException interruptedException) {
+                            //interruptedException.printStackTrace();
+                        }
+                    }
+                    System.out.println("Hello Admin: " + message);
+                    AdminConsole console = new AdminConsole(rmiServer);
+                    console.admin(-1);
+                    break;
+                } catch (NotBoundException | IOException remoteException) {
+                    //remoteException.printStackTrace();
+                }
+            }
         }
     }
 }

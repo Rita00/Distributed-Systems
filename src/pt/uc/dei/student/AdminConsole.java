@@ -156,7 +156,7 @@ public class AdminConsole {
                     try {
                         departments = this.rmiServer.getDepartments();
                         break;
-                    } catch (InterruptedException e) {
+                    } catch (RemoteException | InterruptedException e) {
                         //e.printStackTrace();
                         reconnectToRMI();
                     }
@@ -166,7 +166,7 @@ public class AdminConsole {
                     try {
                         dep = this.rmiServer.getNotifiersMulticast().keySet();
                         break;
-                    } catch (InterruptedException e) {
+                    } catch (RemoteException | InterruptedException e) {
                         //e.printStackTrace();
                         reconnectToRMI();
                     }
@@ -180,6 +180,7 @@ public class AdminConsole {
             } catch (IOException | InterruptedException e) {
                 //e.printStackTrace();
                 reconnectToRMI();
+
             }
         }
 
@@ -215,85 +216,100 @@ public class AdminConsole {
         Scanner input = new Scanner(System.in);
         String command;
 
+        ArrayList<VotingRecord> votingRecords;
         while (true) {
             try {
-                ArrayList<VotingRecord> votingRecords;
-                while (true) {
-                    try {
-                        votingRecords = this.rmiServer.getVotingRecords();
-                        break;
-                    } catch (InterruptedException e) {
-                        //e.printStackTrace();
-                        reconnectToRMI();
-                    }
-                }
-                if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");
-                else {
-                    for (VotingRecord vr : votingRecords) {
-                        System.out.printf("%s\t\t%s\t\t%s\t\t%s\n", vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date());
-                    }
-                }
-                System.out.println("(" + RETURN + ")-\t\tVoltar");
-                System.out.print(OPTION_STRING);
-                try {
-                    command = input.nextLine();
-                    if (!command.equals("0")) {
-                        this.listVotingRecord();
-                    }
-                } catch (InputMismatchException ime) {
-                    //volta para este menu caso os input esteja errado
-                    this.listVotingRecord();
-                    return;
-                }
+                votingRecords = this.rmiServer.getVotingRecords();
                 break;
-            } catch (RemoteException e) {
+            } catch (RemoteException | InterruptedException e) {
                 //e.printStackTrace();
                 reconnectToRMI();
             }
+        }
+        if (votingRecords.size() == 0) System.out.println("Sem registo de votos!");
+        else {
+            for (VotingRecord vr : votingRecords) {
+                System.out.printf("%s\t\t%s\t\t%s\t\t%s\n", vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date());
+            }
+        }
+        System.out.println("(" + RETURN + ")-\t\tVoltar");
+        System.out.print(OPTION_STRING);
+        try {
+            command = input.nextLine();
+            if (!command.equals("0")) {
+                this.listVotingRecord();
+            }
+        } catch (InputMismatchException ime) {
+            //volta para este menu caso os input esteja errado
+            this.listVotingRecord();
+            return;
         }
     }
 
     public void electionsResults() {
         int election = 0;
         Scanner input = new Scanner(System.in);
+
+        ArrayList<Election> elections;
         while (true) {
             try {
-                ArrayList<Election> elections;
-                while (true) {
-                    try {
-                        elections = this.rmiServer.getEndedElections();
-                        break;
-                    } catch (InterruptedException e) {
-                        //e.printStackTrace();
-                        reconnectToRMI();
-                    }
-                }
-                if (elections.size() != 0) {
-                    while (!Utilitary.hasElection(election, elections)) {
-                        System.out.println("\tEscolha a eleição: ");
-                        Utilitary.listElections(elections);
-                        System.out.println("(" + RETURN + ")-  Voltar");
-                        System.out.print(OPTION_STRING);
-                        try {
-                            election = input.nextInt();
-                        } catch (InputMismatchException ime) {
-                            //volta para este menu caso os input esteja errado
-                            this.electionsResults();
-                            return;
-                        }
-                        if (election == 0) {
-                            return;
-                        }
-                    }
-                    System.out.printf("\tVotos em branco: %d  (%.2f%%)\n", this.rmiServer.getBlackVotes(election), this.rmiServer.getPercentVotesCandidacy(election, -1));
-                    System.out.println("\tVotos nulos: " + this.rmiServer.getNullVotes(election));
-                    listCandidacyWithVotes(election);
-                }
+                elections = this.rmiServer.getEndedElections();
                 break;
             } catch (RemoteException | InterruptedException e) {
-                //e.printStackTrace(); //TODO TRATAR EXCEPCAO
+                //e.printStackTrace();
                 reconnectToRMI();
             }
+        }
+        if (elections.size() != 0) {
+            while (!Utilitary.hasElection(election, elections)) {
+                System.out.println("\tEscolha a eleição: ");
+                Utilitary.listElections(elections);
+                System.out.println("(" + RETURN + ")-  Voltar");
+                System.out.print(OPTION_STRING);
+                try {
+                    election = input.nextInt();
+                } catch (InputMismatchException ime) {
+                    //volta para este menu caso os input esteja errado
+                    this.electionsResults();
+                    return;
+                }
+                if (election == 0) {
+                    return;
+                }
+            }
+            int blankVotes;
+            while (true) {
+                try {
+                    blankVotes = this.rmiServer.getBlackVotes(election);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
+            float PercBlankVotes;
+            while (true) {
+                try {
+                    PercBlankVotes = this.rmiServer.getPercentVotesCandidacy(election, -1);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
+            int NullVotes;
+            while (true) {
+                try {
+                    NullVotes = this.rmiServer.getNullVotes(election);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
+            System.out.printf("\tVotos em branco: %d  (%.2f%%)\n", blankVotes, PercBlankVotes);
+            System.out.println("\tVotos nulos: " + NullVotes);
+            listCandidacyWithVotes(election);
         }
     }
 

@@ -53,13 +53,6 @@ public class MulticastServer extends Thread {
         this.multicastAddress = multicastAddress;
         this.socket = new MulticastSocket(MULTICAST_PORT);
         this.group=InetAddress.getByName(multicastAddress);
-        var sigHandler = new Thread(() -> {
-            System.out.println("SET hasmulticastServer to null in DB");
-            try {
-                rmiServer.updateDepartmentMulticast(department.getId());
-            } catch (InterruptedException | RemoteException ignore) {}
-        });
-        Runtime.getRuntime().addShutdownHook(sigHandler);
     }
 
     public void menuPollingStation(int dep_id) throws IOException {
@@ -527,6 +520,13 @@ public class MulticastServer extends Thread {
             /*
             LIGAR
              */
+                var sigHandler = new Thread(() -> {
+                    System.out.println("SET hasmulticastServer to null in DB");
+                    try {
+                        rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
+                    } catch (InterruptedException | RemoteException ignore) {}
+                });
+                Runtime.getRuntime().addShutdownHook(sigHandler);
                 multicastServer.start();
                 multicastServer.connect();
             } else

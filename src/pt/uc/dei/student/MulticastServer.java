@@ -297,7 +297,7 @@ public class MulticastServer extends Thread {
     public void run() {
         var sigHandler = new Thread(() -> {
             try {
-                //System.out.println("SET hasmulticastServer to null in DB");
+                System.out.println("SET hasmulticastServer to null in DB");//TODO comentar isto
                 rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
             } catch (InterruptedException | RemoteException ignore) {}
         });
@@ -528,6 +528,13 @@ public class MulticastServer extends Thread {
             /*
             LIGAR
              */
+                var sigHandler = new Thread(() -> {
+                    try {
+                        System.out.println("SET hasmulticastServer to null in DB");//TODO comentar isto
+                        rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
+                    } catch (InterruptedException | RemoteException ignore) {}
+                });
+                Runtime.getRuntime().addShutdownHook(sigHandler);
                 multicastServer.start();
                 multicastServer.connect();
             } else

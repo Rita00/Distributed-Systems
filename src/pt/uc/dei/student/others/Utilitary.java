@@ -5,6 +5,7 @@ import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,8 +43,7 @@ public class Utilitary {
                 hash.put(keyVal[0], keyVal[1]);
             } else if (keyVal.length == 0) {
                 System.out.println("Wrong token.");
-            }
-            else {
+            } else {
                 StringBuilder list = new StringBuilder();
                 for (int i = 1; i < keyVal.length; i++) {
                     list.append(keyVal[i]);
@@ -133,10 +133,10 @@ public class Utilitary {
         return false;
     }
 
-    public static boolean isNumber(String n){
-        try{
+    public static boolean isNumber(String n) {
+        try {
             Integer.parseInt(n);
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
         return true;

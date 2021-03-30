@@ -454,7 +454,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public ArrayList<Election> getCurrentElections(int department_id) {
-        return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND department_id = " + department_id);
+        return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND (department_id = " + department_id + " OR department_id = -1)");
     }
 
     public int getBlackVotes(int id_election) {
@@ -579,7 +579,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 " FROM voting_record" +
                 " JOIN department d on voting_record.department = d.id" +
                 " JOIN election e on e.id = voting_record.election_id" +
-                " group by voting_record.department, voting_record.election_id";
+                " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by voting_record.department, voting_record.election_id";
         ArrayList<InfoElectors> info = new ArrayList<>();
         Connection conn = connectDB();
         try {

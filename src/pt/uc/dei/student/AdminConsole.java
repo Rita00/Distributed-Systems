@@ -755,16 +755,17 @@ public class AdminConsole {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
         try {
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
             String message = rmiServer.saySomething();
             System.out.println("Hello Admin: " + message);
             AdminConsole console = new AdminConsole(rmiServer);
             console.admin(-1);
-        } catch (Exception e) {
-            System.out.println("Exception in Admin: " + e);
-            e.printStackTrace(); //TODO TRATAR EXCEPCAO
+        } catch ( Exception e) {
+            System.out.println("Waiting for RMI Server...");
+            try{TimeUnit.SECONDS.sleep(5);}catch(Exception ignored){}
+            main(args);
         }
     }
 }

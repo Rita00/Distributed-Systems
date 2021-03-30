@@ -132,12 +132,13 @@ public class AdminConsole {
                 ArrayList<Department> departments = this.rmiServer.getDepartments();
                 for(int ndep : this.rmiServer.getNotifiersMulticast().keySet()){
                     System.out.println(departments.get(ndep-1).getName());
+                    System.out.println("\t"+this.rmiServer.getActiveTerminals().toString());
                 }
 
 
 
                 System.out.println("(ENTER)- Voltar");
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(5);
             }catch(IOException | InterruptedException ignore){}
         }
         this.isMonitoring=false;

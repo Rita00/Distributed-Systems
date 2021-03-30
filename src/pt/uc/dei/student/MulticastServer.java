@@ -26,27 +26,32 @@ import java.util.Scanner;
 //Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento
 
 public class MulticastServer extends Thread {
-    private final String MULTICAST_ADDRESS = "224.3.2.1";
-    public final static int MULTICAST_PORT = 7002;
-    MulticastSocket socket;
-    InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
 
-    private boolean isON = true;
+    public final static int MULTICAST_PORT = 7002;
     private final String OPTION_STRING = ">>> ";
 
-    private int multicastId;
+
     private RMI rmiServer;
+    private String multicastAddress;
+    MulticastSocket socket;
+    InetAddress group;
+
+    private int multicastId;
+    private boolean isON = true;
+
     private Department department;
 
     static MulticastServer multicastServer;
 
     private final NotifierCallBack NOTIFIER = new NotifierCallBack();
 
-    private final HashMap<String, Boolean> availableTerminals = new HashMap<>();
+    private HashMap<String, Boolean> availableTerminals = new HashMap<>();
 
-    public MulticastServer(RMI rmiServer) throws IOException {
+    public MulticastServer(RMI rmiServer,String multicastAddress) throws IOException {
         this.rmiServer = rmiServer;
+        this.multicastAddress = multicastAddress;
         this.socket = new MulticastSocket(MULTICAST_PORT);
+        this.group=InetAddress.getByName(multicastAddress);
     }
 
     public void menuPollingStation(int dep_id) throws IOException {
@@ -246,7 +251,7 @@ public class MulticastServer extends Thread {
     }
 
     private void doThings(HashMap<String, String> msgHash) {
-        //nao ler as suas proprias mensagens
+        //nao ler as suas proprias mensagens e de terminais de outros departamentos
         if (!msgHash.get("sender").startsWith("multicast")) {
             switch (msgHash.get("message")) {
                 case "occupied":
@@ -308,7 +313,7 @@ public class MulticastServer extends Thread {
         while (true) {
             try {
                 RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                multicastServer = new MulticastServer(rmiServer);
+                multicastServer = new MulticastServer(rmiServer,this.multicastAddress);
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace();
@@ -323,7 +328,9 @@ public class MulticastServer extends Thread {
     public int getMulticastId() {
         return this.multicastId;
     }
-
+    public HashMap<String,Boolean> getAvailableTerminals() {
+        return this.availableTerminals;
+    }
     public void setMulticastId(int multicastId) {
         this.multicastId = multicastId;
     }
@@ -333,11 +340,33 @@ public class MulticastServer extends Thread {
     }
 
     public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        String network;
+        switch (args.length){
+            case 0:
+                do {
+                    System.out.println("Endereço Multicast (ex:224.3.2.1)");
+                    System.out.print(">>> ");
+                    network = input.nextLine();
+                }while(!Utilitary.isIPv4(network));
+                break;
+            case 1:
+                if(!Utilitary.isIPv4(args[0])){
+                    System.out.println("arg1: Endereço invalido");
+                    return;
+                }
+                network=args[0];
+                break;
+            default:
+                System.out.println("Numeros de argumentos inválido");
+                System.out.println("arg1: Endereço multicast");
+                return;
+
+        }
         try {
             int dep = -1;
-            Scanner input = new Scanner(System.in);
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-            multicastServer = new MulticastServer(rmiServer);
+            multicastServer = new MulticastServer(rmiServer,network);
             /*
             SETUP
              */
@@ -362,7 +391,7 @@ public class MulticastServer extends Thread {
             while (true) {
                 try {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                    multicastServer = new MulticastServer(rmiServer);
+                    multicastServer = new MulticastServer(rmiServer,network);
                     break;
                 } catch (NotBoundException | IOException remoteException) {
                     remoteException.printStackTrace();

@@ -1,4 +1,4 @@
-package pt.uc.dei.student;
+package pt.uc.dei.student.others;
 
 import java.io.Serializable;
 

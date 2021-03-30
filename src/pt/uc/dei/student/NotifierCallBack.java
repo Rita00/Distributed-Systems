@@ -1,5 +1,7 @@
 package pt.uc.dei.student;
 
+import pt.uc.dei.student.others.InfoElectors;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.*;
+import pt.uc.dei.student.others.InfoElectors;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;

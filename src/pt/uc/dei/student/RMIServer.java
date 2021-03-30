@@ -32,10 +32,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     static ArrayList<Notifier> notifiersAdmin;
     public StatusChecker statcheck;
 
+    private Boolean terminalsUpdated;
+
     public RMIServer() throws RemoteException {
         super();
         notifiersMulticast = new ConcurrentHashMap<>();
         notifiersAdmin = new ArrayList<>();
+        this.terminalsUpdated=false;
     }
 
 
@@ -146,13 +149,21 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public void updateTerminals(int department_id, ConcurrentHashMap<String, Boolean> availableTerminals) {
-        this.updateOnDB("DELETE FROM voting_terminal WHERE department_id=" + department_id);
+    synchronized public void updateTerminals(int department_id, ConcurrentHashMap<String, Boolean> availableTerminals) {
+        while(this.terminalsUpdated){
+            try{
+                wait();
+            }catch(InterruptedException ignore){}
+        }
+        this.updateOnDB("DELETE FROM voting_terminal WHERE department_id="+department_id);
         for (String t : availableTerminals.keySet()) {
             if (availableTerminals.get(t)) {
                 this.updateOnDB(String.format("INSERT INTO voting_terminal(id,department_id) VALUES (%s,%s)", t.split("-")[1], department_id));
             }
         }
+        this.terminalsUpdated=true;
+        notify();
+
     }
 
     public void removeOnDB(String table, String idName, int id) {
@@ -171,8 +182,17 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectDepartments("SELECT * FROM department WHERE hasmulticastserver=1");
     }
 
-    public ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() {
-        return this.selectActiveTerminals("SELECT * FROM voting_terminal");
+    synchronized public ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() {
+        while(!this.terminalsUpdated){
+            try{
+                wait();
+            }catch(InterruptedException ignore){}
+        }
+        ConcurrentHashMap<Integer, ArrayList<Integer>> hashMap = this.selectActiveTerminals("SELECT * FROM voting_terminal");
+        this.terminalsUpdated=false;
+        notify();
+        return hashMap;
+
     }
 
     /**

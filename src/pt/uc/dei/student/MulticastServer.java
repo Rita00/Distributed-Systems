@@ -46,13 +46,14 @@ public class MulticastServer extends Thread {
 
     private final NotifierCallBack NOTIFIER = new NotifierCallBack();
 
-    private ConcurrentHashMap<String, Boolean> availableTerminals = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Boolean> availableTerminals;
 
     public MulticastServer(RMI rmiServer,String multicastAddress) throws IOException {
         this.rmiServer = rmiServer;
         this.multicastAddress = multicastAddress;
         this.socket = new MulticastSocket(MULTICAST_PORT);
         this.group=InetAddress.getByName(multicastAddress);
+        this.availableTerminals = new ConcurrentHashMap<>();
     }
 
     public void menuPollingStation(int dep_id) throws IOException {

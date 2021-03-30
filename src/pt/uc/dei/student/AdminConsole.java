@@ -6,6 +6,7 @@ import pt.uc.dei.student.others.Utilitary;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class AdminConsole {
@@ -129,44 +131,22 @@ public class AdminConsole {
                 //qualquer tecla para sair
                 if (br.ready()) {br.readLine();break; }
                 //TODO mostrar dados
+                System.out.println("==========ESTADO DAS MESAS DE VOTO E TERMINAIS DE VOTO==========");
                 ArrayList<Department> departments = this.rmiServer.getDepartments();
                 for(int ndep : this.rmiServer.getNotifiersMulticast().keySet()){
                     System.out.println(departments.get(ndep-1).getName());
-                    System.out.println("\t"+this.rmiServer.getActiveTerminals().toString());
+                    ConcurrentHashMap<Integer,ArrayList<Integer>> activeTerminals = this.rmiServer.getActiveTerminals();
+                    try {
+                        for (int id : activeTerminals.get(ndep)) {
+                            System.out.println("\tTerminal de Voto #" + id);
+                        }
+                    }catch(NullPointerException ignore){}
                 }
-
-
-
                 System.out.println("(ENTER)- Voltar");
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(3);
             }catch(IOException | InterruptedException ignore){}
         }
         this.isMonitoring=false;
-        /*
-        try {
-            System.out.println("Mesas de voto e respetivos terminais de voto ativos");
-            HashMap<Integer, ArrayList<Integer>> terminals = this.rmiServer.getActiveTerminals();
-            for (Department m : this.rmiServer.getActiveMulticasts()) {
-                System.out.println("- " + m.getName());
-                if (terminals.containsKey(m.getId())) {
-                    for (int t : terminals.get(m.getId())) {
-                        System.out.println("\t#" + t);
-                    }
-                }
-            }
-            System.out.println("(ENTER)-\tAtualizar");
-            System.out.println("(" + RETURN + ")-\t\tVoltar");
-            System.out.print(OPTION_STRING);
-            Scanner input = new Scanner(System.in);
-            String command = input.nextLine();
-            if (command.equals("0")) {
-                this.admin(-1);
-            } else {
-                this.statusPollingStation();
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }*/
     }
     public void listVotingRecord() {
         Scanner input = new Scanner(System.in);
@@ -755,18 +735,18 @@ public class AdminConsole {
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args)  {
         try {
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
             String message = rmiServer.saySomething();
             System.out.println("Hello Admin: " + message);
             AdminConsole console = new AdminConsole(rmiServer);
             console.admin(-1);
-        } catch ( Exception e) {
+        } catch (ConnectException e) {
             System.out.println("Waiting for RMI Server...");
             try{TimeUnit.SECONDS.sleep(5);}catch(Exception ignored){}
             main(args);
-        }
+        } catch (Exception e) {e.printStackTrace();}
     }
 }
 

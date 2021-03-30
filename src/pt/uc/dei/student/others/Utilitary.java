@@ -92,6 +92,16 @@ public class Utilitary {
         }
     }
 
+    public static void listElectionsByIndex(ArrayList<Election> elections) {
+        if (elections.size() != 0) {
+            for (Election e : elections) {
+                System.out.printf("\t(%d)- %s\n", elections.indexOf(e)+1, e.getTitle());
+            }
+        } else {
+            System.out.println("Não existem eleições\n");
+        }
+    }
+
     public static void listPerson(ArrayList<Person> people) {
         if (people.size() != 0) {
             for (Person p : people) {

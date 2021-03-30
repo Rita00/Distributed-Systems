@@ -560,7 +560,7 @@ public class AdminConsole {
                 System.out.println("==========GERIR ELEICOES==========");
 
                 ArrayList<Election> elections = this.rmiServer.getElections();
-                Utilitary.listElections(elections);
+                Utilitary.listElectionsByIndex(elections);
                 System.out.println("(" + RETURN + ")-  Voltar");
                 /*
                  * ESPERAR PELA ESCOLHA DO UTILIZADOR

@@ -19,6 +19,7 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 //Todo Não dar print em tempo real de eleições que não estejam a decorrer
 //Todo quando na consola de administração se adicionam novas mesas de voto a uma determinada eleição dar update em tempo real no multicast correspondente
@@ -45,13 +46,20 @@ public class MulticastServer extends Thread {
 
     private final NotifierCallBack NOTIFIER = new NotifierCallBack();
 
-    private HashMap<String, Boolean> availableTerminals = new HashMap<>();
+    private ConcurrentHashMap<String, Boolean> availableTerminals = new ConcurrentHashMap<>();
 
     public MulticastServer(RMI rmiServer,String multicastAddress) throws IOException {
         this.rmiServer = rmiServer;
         this.multicastAddress = multicastAddress;
         this.socket = new MulticastSocket(MULTICAST_PORT);
         this.group=InetAddress.getByName(multicastAddress);
+        var sigHandler = new Thread(() -> {
+            System.out.println("SET hasmulticastServer to null in DB");
+            try {
+                rmiServer.updateDepartmentMulticast(department.getId());
+            } catch (InterruptedException | RemoteException ignore) {}
+        });
+        Runtime.getRuntime().addShutdownHook(sigHandler);
     }
 
     public void menuPollingStation(int dep_id) throws IOException {
@@ -464,7 +472,7 @@ public class MulticastServer extends Thread {
     public int getMulticastId() {
         return this.multicastId;
     }
-    public HashMap<String,Boolean> getAvailableTerminals() {
+    public ConcurrentHashMap<String,Boolean> getAvailableTerminals() {
         return this.availableTerminals;
     }
     public void setMulticastId(int multicastId) {

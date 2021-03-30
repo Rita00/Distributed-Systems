@@ -138,8 +138,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             System.out.println("Problem updating election");
         }
     }
+    public void updateDepartmentMulticast(int id) {
+        if (this.updateOnDB(String.format("UPDATE department SET hasmulticastserver=null WHERE id=%s", id))) {
+            System.out.println("Successfully updated department");
+        } else {
+            System.out.println("Problem updating department");
+        }
+    }
 
-    public void updateTerminals(int department_id, HashMap<String, Boolean> availableTerminals) {
+    public void updateTerminals(int department_id, ConcurrentHashMap<String, Boolean> availableTerminals) {
         this.updateOnDB("DELETE FROM voting_terminal WHERE department_id=" + department_id);
         for (String t : availableTerminals.keySet()) {
             if (availableTerminals.get(t)) {
@@ -164,7 +171,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectDepartments("SELECT * FROM department WHERE hasmulticastserver=1");
     }
 
-    public HashMap<Integer, ArrayList<Integer>> getActiveTerminals() {
+    public ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() {
         return this.selectActiveTerminals("SELECT * FROM voting_terminal");
     }
 
@@ -359,9 +366,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
-    public HashMap<Integer, ArrayList<Integer>> selectActiveTerminals(String sql) {
+    public ConcurrentHashMap<Integer, ArrayList<Integer>> selectActiveTerminals(String sql) {
         Connection conn = connectDB();
-        HashMap<Integer, ArrayList<Integer>> depToTerm = new HashMap<>();
+        ConcurrentHashMap<Integer, ArrayList<Integer>> depToTerm = new ConcurrentHashMap<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);

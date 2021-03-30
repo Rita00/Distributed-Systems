@@ -202,7 +202,7 @@ public class AdminConsole {
         try {
             ArrayList<Election> elections = this.rmiServer.getEndedElections();
             if (elections.size() != 0) {
-                while (!this.rmiServer.hasElection(election, elections)) {
+                while (!Utilitary.hasElection(election, elections)) {
                     System.out.println("\tEscolha a eleição: ");
                     Utilitary.listElections(elections);
                     System.out.println("(" + RETURN + ")-  Voltar");

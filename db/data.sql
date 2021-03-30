@@ -86,7 +86,7 @@ VALUES (NULL, 'Não Restrito', 'Docente', 'Eleicoes dos Docentes da UC', '2021-0
 INSERT INTO election_department(election_id, department_id)
 VALUES (14, -1);
 INSERT INTO election_department(election_id, department_id)
-VALUES(4001, 1);
+VALUES(4001, 2);
 --ELEICAO PASSADA
 INSERT INTO election(id, title, type, description, begin_date, end_date)
 VALUES (NULL, 'BestDEECFuncionarios', 'Funcionário', 'Eleicoes dos Funcionarios do DEEC', '2022-01-01 00:00:00',

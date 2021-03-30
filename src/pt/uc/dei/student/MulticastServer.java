@@ -294,6 +294,13 @@ public class MulticastServer extends Thread {
     }
 
     public void run() {
+        var sigHandler = new Thread(() -> {
+            try {
+                //System.out.println("SET hasmulticastServer to null in DB");
+                rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
+            } catch (InterruptedException | RemoteException ignore) {}
+        });
+        Runtime.getRuntime().addShutdownHook(sigHandler);
         try {
             //O servidor não recebe mensagens dos clientes (sem o Port)
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
@@ -520,13 +527,6 @@ public class MulticastServer extends Thread {
             /*
             LIGAR
              */
-                var sigHandler = new Thread(() -> {
-                    System.out.println("SET hasmulticastServer to null in DB");
-                    try {
-                        rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
-                    } catch (InterruptedException | RemoteException ignore) {}
-                });
-                Runtime.getRuntime().addShutdownHook(sigHandler);
                 multicastServer.start();
                 multicastServer.connect();
             } else

@@ -72,8 +72,6 @@ public interface RMI extends Remote {
 
     float getPercentVotesCandidacy(int id_election, int id_candidacy) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean hasElection(int election, ArrayList<Election> elections) throws java.rmi.RemoteException, InterruptedException;
-
     ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) throws java.rmi.RemoteException, InterruptedException;
 
     void insertVotingRecord(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;

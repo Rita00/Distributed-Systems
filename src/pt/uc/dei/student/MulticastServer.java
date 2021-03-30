@@ -34,7 +34,7 @@ public class MulticastServer extends Thread {
     private boolean isON = true;
     private final String OPTION_STRING = ">>> ";
 
-    private int multicastId;
+    private int multicastId = 0;
     private RMI rmiServer;
     private Department department;
 
@@ -54,19 +54,49 @@ public class MulticastServer extends Thread {
         String campo = "", campo_sql;
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            ArrayList<Election> currentElections = this.rmiServer.getCurrentElections(dep_id);
-            ArrayList<Candidacy> candidacies = this.rmiServer.getCandidacies(election);
-            while (candidacies.size() == 0 || !rmiServer.hasElection(election, currentElections)) {
-                System.out.println("Eleições a decorrer: ");
-                Utilitary.listElections(currentElections);
-                System.out.print(OPTION_STRING);
-                election = input.nextInt();
-                candidacies = this.rmiServer.getCandidacies(election);
-                if (candidacies.size() == 0) System.out.println("Eleição sem listas, impossível votar!");
+        while (true) {
+            ArrayList<Election> currentElections;
+            ArrayList<Candidacy> candidacies;
+            try {
+                while (true) {
+                    try {
+                        currentElections = this.rmiServer.getCurrentElections(dep_id);
+                        break;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
+                while (true) {
+                    try {
+                        candidacies = this.rmiServer.getCandidacies(election);
+                        break;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        reconnectToRMI();
+                    }
+                }
+                while (candidacies.size() == 0 || !Utilitary.hasElection(election, currentElections)) {
+                    System.out.println("Eleições a decorrer: ");
+                    Utilitary.listElections(currentElections);
+                    System.out.print(OPTION_STRING);
+                    election = input.nextInt();
+                    while (true) {
+                        try {
+                            candidacies = this.rmiServer.getCandidacies(election);
+                            break;
+                        } catch (RemoteException e) {
+                            reconnectToRMI();
+                            e.printStackTrace();
+                        }
+                    }
+                    if (candidacies.size() == 0) System.out.println("Eleição sem listas, impossível votar!");
+                }
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                reconnectToRMI();
+                e.printStackTrace();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
         }
 
         while (!(command >= 1 && command <= 6)) {
@@ -122,31 +152,58 @@ public class MulticastServer extends Thread {
             campo_num = input.nextInt();
         }
 
-        try {
-            ArrayList<Person> people = this.rmiServer.getRegisPeople(election, dep_id, campo, campo_sql, campo_num);
-            if (people.size() != 0) {
-                while (people.size() != 0 && !(command2 >= 1 && command2 <= people.size() + 1)) {
-                    System.out.println("Escolher Pessoa de acordo com o número de cartão de cidadão");
-                    Utilitary.listPerson(people);
-                    System.out.printf("\t(%s)- Nenhuma das anteriores\n", people.size() + 1);
-                    System.out.print(OPTION_STRING);
-                    command2 = input.nextInt();
+
+        ArrayList<Person> people;
+        while (true) {
+            try {
+                while (true) {
+                    try {
+                        people = this.rmiServer.getRegisPeople(election, dep_id, campo, campo_sql, campo_num);
+                        break;
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        reconnectToRMI();
+                    }
                 }
-                if (command2 == people.size() + 1) {
-                    System.out.println("Não pode votar nesta eleição!");
-                } else {
-                    //select voting terminal
-                    int cc_number = people.get(command2 - 1).getCc_number();
-                    if (!this.rmiServer.checkIfAlreadyVote(cc_number, election))
-                        selectTerminal(cc_number, election);
-                    else System.out.println("Já votou nesta eleição!");
-                }
-            } else
-                System.out.println("Não existem pessoas registadas nessas condições!");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+                if (people.size() != 0) {
+                    while (people.size() != 0 && !(command2 >= 1 && command2 <= people.size() + 1)) {
+                        System.out.println("Escolher Pessoa de acordo com o número de cartão de cidadão");
+                        Utilitary.listPerson(people);
+                        System.out.printf("\t(%s)- Nenhuma das anteriores\n", people.size() + 1);
+                        System.out.print(OPTION_STRING);
+                        command2 = input.nextInt();
+                    }
+                    if (command2 == people.size() + 1) {
+                        System.out.println("Não pode votar nesta eleição!");
+                    } else {
+                        //select voting terminal
+                        int cc_number = people.get(command2 - 1).getCc_number();
+                        boolean alreadyVote;
+                        while (true) {
+                            // Caso a ligação falhe tentar reconectar-se
+                            try {
+                                alreadyVote = this.rmiServer.checkIfAlreadyVote(cc_number, election);
+                                break;
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                reconnectToRMI();
+                            }
+                        }
+                        if (!alreadyVote)
+                            selectTerminal(cc_number, election);
+                        else System.out.println("Já votou nesta eleição!");
+                    }
+                } else
+                    System.out.println("Não existem pessoas registadas nessas condições!");
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+                reconnectToRMI();
+            }
         }
+
     }
+
 
     private void selectTerminal(int cc_number, int election) {
         String id = null;
@@ -287,6 +344,8 @@ public class MulticastServer extends Thread {
             this.rmiServer.updateTerminals(this.getMulticastId(), availableTerminals);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();//TODO tratar excecao
+            reconnectToRMI();
+            registerTerminal(id, status);
         }
     }
 
@@ -308,7 +367,7 @@ public class MulticastServer extends Thread {
         while (true) {
             try {
                 RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                multicastServer = new MulticastServer(rmiServer);
+                multicastServer.rmiServer = rmiServer;
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace();
@@ -359,11 +418,35 @@ public class MulticastServer extends Thread {
             } else
                 System.exit(0);
         } catch (Exception e) {
+            int dep = -1;
+            Scanner input = new Scanner(System.in);
             while (true) {
                 try {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
                     multicastServer = new MulticastServer(rmiServer);
-                    break;
+                    ArrayList<Department> departments = null;
+                    try {
+                        departments = multicastServer.rmiServer.getDepartments();
+                        while (!(dep >= 1 && dep <= 11)) {
+                            System.out.println("Departamento onde se localiza: ");
+                            Utilitary.listDepart(departments);
+                            System.out.print(">>> ");
+                            dep = input.nextInt();
+                        }
+                        if (rmiServer.initializeMulticast(dep, multicastServer.NOTIFIER) != null) {
+                            multicastServer.setMulticastId(dep);
+                            multicastServer.setDepartment(departments.get(dep - 1));
+                        /*
+                        LIGAR
+                        */
+                            multicastServer.start();
+                            multicastServer.connect();
+                        } else
+                            System.exit(0);
+                        break;
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
                 } catch (NotBoundException | IOException remoteException) {
                     remoteException.printStackTrace();
                 }

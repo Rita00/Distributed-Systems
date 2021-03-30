@@ -133,6 +133,13 @@ public class Utilitary {
         return false;
     }
 
+    public static boolean hasElection(int election, ArrayList<Election> elections) {
+        for (Election ele : elections) {
+            if (ele.getId() == election) return true;
+        }
+        return false;
+    }
+
     public static boolean isNumber(String n) {
         try {
             Integer.parseInt(n);

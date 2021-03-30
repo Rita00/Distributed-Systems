@@ -475,13 +475,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         else return ((float) getVotesCandidacy(id_election, id_candidacy) / (float) totalVotes) * 100;
     }
 
-    public boolean hasElection(int election, ArrayList<Election> elections) {
-        for (Election ele : elections) {
-            if (ele.getId() == election) return true;
-        }
-        return false;
-    }
-
     public ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) {
         // Verificar se a eleição está restringida a um departamento
         int ndep = countRowsBD("election_department WHERE election_id = " + election_id, "department_id");

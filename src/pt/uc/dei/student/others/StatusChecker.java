@@ -1,9 +1,9 @@
-package pt.uc.dei.student;
+package pt.uc.dei.student.others;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 
-class StatusChecker extends Thread {
+public class StatusChecker extends Thread {
     public ConcurrentHashMap<Integer, Notifier> notifiers;
 
     private RMI rmi;

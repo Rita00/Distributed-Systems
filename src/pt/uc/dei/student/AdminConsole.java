@@ -1,15 +1,15 @@
 package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.*;
+import pt.uc.dei.student.others.Notifier;
+import pt.uc.dei.student.others.NotifierCallBack;
+import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 
-import javax.swing.text.AttributeSet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.rmi.NotBoundException;
-import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.time.LocalDate;

@@ -4,6 +4,8 @@ import pt.uc.dei.student.elections.Candidacy;
 import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
+import pt.uc.dei.student.others.NotifierCallBack;
+import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 
 import java.io.BufferedReader;

@@ -1,4 +1,4 @@
-package pt.uc.dei.student;
+package pt.uc.dei.student.others;
 
 import pt.uc.dei.student.others.InfoElectors;
 

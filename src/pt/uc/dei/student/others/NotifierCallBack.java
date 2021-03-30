@@ -1,6 +1,4 @@
-package pt.uc.dei.student;
-
-import pt.uc.dei.student.others.InfoElectors;
+package pt.uc.dei.student.others;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

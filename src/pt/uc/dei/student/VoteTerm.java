@@ -52,8 +52,9 @@ public class VoteTerm extends Thread {
      */
     private final String OPTION_STRING = ">>> ";
     /**
-     * Construtor do Terminal de Voto
-     * Gera um id aleatorio para o terminal
+     * Construtor do Terminal de Voto,
+     * gera um id aleatorio para o terminal
+     *
      * @param multicastAddress endereço IPv4 do servidor multicast
      * @param multicastPort porte do servidor multicast
      */
@@ -112,8 +113,10 @@ public class VoteTerm extends Thread {
     }
 
     /**
+     * Permite atribuir o departamento proveniente do multicast,
+     * trata a mensagem através da HashMap recebida
      *
-     * @param msgHash
+     * @param msgHash mensagem recebida
      */
     private void doThings(HashMap<String, String> msgHash) {
         //so ler as mensagens do multicast
@@ -139,18 +142,37 @@ public class VoteTerm extends Thread {
             }
         }
     }
-
+    /**
+     * Efetua a listagem na consola do Terminal de Voto listas em que o eleitor pode votar
+     *
+     * @param infoElectionByName String com os nomes das eleições
+     * @param infoElectionById String com os IDs das eleições
+     */
     private void listInfo(String infoElectionByName, String infoElectionById) {
         String[] infoName = infoElectionByName.split("\\|"), infoID = infoElectionById.split("\\|");
         for (int i = 0; i < infoName.length; i++) {
             System.out.printf("\t(%s)- %s\n", infoID[i], infoName[i]);
         }
     }
-
+    /**
+     * Permite parar a Thread
+     */
     private void stopTerminal() {
         this.interrupt();
     }
 
+    /**
+     * Recolhe os dados de login do eleitor,
+     * cria uma hashCode coma a concatenação do numero de cartão de cidadão e palavra passe,
+     * envia essa informação com o protocolo multicast para verificar se o login é valido,
+     * aguarda resposta do servidor multicast se o login é valido
+     *
+     * @param cc numero do cartão de cidadão
+     * @param infoByName String com o nome das listas
+     * @param infoById String com o id das listas
+     * @param election nome da eleição
+     * @param ndep numero do departamento
+     */
     private void login(String cc, String infoByName, String infoById, String election, String ndep) {
         HashMap<String, String> msgHash;
         boolean isFirstAttempt = true;
@@ -190,6 +212,18 @@ public class VoteTerm extends Thread {
         this.accessVotingForm(infoByName, infoById, election, cc, ndep);
     }
 
+    /**
+     * Lista as opções em que o eleitor pode votar,
+     * espera pelo input do eleitor,
+     * envia por multicast ao Servidor a escolha,
+     * muda o estado do terminal de voto para "disponivel"
+     *
+     * @param infoByName String com o nome das listas
+     * @param infoById String com o id das listas
+     * @param election nome da eleição
+     * @param cc numero do cartão de cidadão
+     * @param ndep numero do departamento
+     */
     private void accessVotingForm(String infoByName, String infoById, String election, String cc, String ndep) {
         Scanner input = new Scanner(System.in);
         String sendMsg;
@@ -203,6 +237,11 @@ public class VoteTerm extends Thread {
         this.available = true;
     }
 
+    /**
+     * Transforma a mensagem em datagramma e envia-o por multicast
+     *
+     * @param message
+     */
     public void sendMessage(String message) {
         byte[] buffer = message.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
@@ -212,34 +251,55 @@ public class VoteTerm extends Thread {
             e.printStackTrace();
         }
     }
-
-    public int getVoteTermId() {
-        return this.voteTermId;
-    }
-
-    public int getDepartmentId() {
-        return this.departmentId;
-    }
-
-    public MulticastSocket getSocket() {
-        return this.socket;
-    }
-
-    public InetAddress getGroup() {
-        return this.group;
-    }
-
-    public void setDepartmentId(int departmentId) {
-        this.departmentId=departmentId;
-    }
-    public void setSocket(MulticastSocket socket) {
-        this.socket = socket;
-    }
-
-    public void setGroup(InetAddress group) {
-        this.group = group;
-    }
-
+    /**
+     * Getter do ID do terminal de voto
+     *
+     * @return ID do terminal de voto
+     */
+    public int getVoteTermId() { return this.voteTermId; }
+    /**
+     * Getter do ID do departamento do terminal de voto
+     *
+     * @return ID do departamento do terminal de voto
+     */
+    public int getDepartmentId() { return this.departmentId; }
+    /**
+     * Getter do socket do terminal de voto
+     *
+     * @return socket do terminal de voto
+     */
+    public MulticastSocket getSocket() { return this.socket; }
+    /**
+     * Getter do grupo de multicast do terminal de voto
+     *
+     * @return grupo de multicast do terminal de voto
+     */
+    public InetAddress getGroup() { return this.group; }
+    /**
+     * Setter do ID do departamento do terminal de voto
+     *
+     * @param departmentId ID do departamento do terminal de voto
+     */
+    public void setDepartmentId(int departmentId) { this.departmentId=departmentId; }
+    /**
+     * Setter do socket do terminal de voto
+     *
+     * @param socket socket do terminal de voto
+     */
+    public void setSocket(MulticastSocket socket) { this.socket = socket; }
+    /**
+     * Setter do grupo de multicast do terminal de voto
+     *
+     * @param group grupo de multicast do terminal de voto
+     */
+    public void setGroup(InetAddress group) { this.group = group; }
+    /**
+     * Verifica o numero de argumentos ao iniciar o programa,
+     * pede o endereço IPv4 caso nao seja passado em argumento,
+     * inicializa a mesa de voto
+     * 
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         String network;

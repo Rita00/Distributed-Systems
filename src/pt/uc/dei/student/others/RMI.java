@@ -1,16 +1,45 @@
 package pt.uc.dei.student.others;
 
 import pt.uc.dei.student.elections.*;
-import pt.uc.dei.student.others.Notifier;
 
 import java.rmi.*;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-
+//TODO ===================================
+//TODO CHECK COMENTARIOS
+//TODO ===================================
+/**
+ * Interface do RMI
+ *
+ * @author Dylan Gonçãoves Perdigão
+ * @author Ana Rita Rodrigues
+ * @see Remote
+ */
 public interface RMI extends Remote {
+    /**
+     * Manda mensagem para dizer que está a funcionar
+     *
+     * @return "I'm alive!"
+     * @throws java.rmi.RemoteException
+     * @throws InterruptedException
+     */
     String saySomething() throws java.rmi.RemoteException, InterruptedException;
-
+    /**
+     *
+     *
+     * @param name nome da pessoa
+     * @param cargo
+     * @param pass
+     * @param dep
+     * @param num_phone
+     * @param address
+     * @param num_cc
+     * @param cc_validity
+     * @return
+     * @throws java.rmi.RemoteException
+     * @throws InterruptedException
+     */
     boolean insertPerson(String name, String cargo, String pass, int dep, int num_phone, String address, int num_cc, String cc_validity) throws java.rmi.RemoteException, InterruptedException;
 
     int insertElection(String begin_data, String end_data, String titulo, String descricao, String type_ele) throws java.rmi.RemoteException, InterruptedException;

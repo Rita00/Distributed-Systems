@@ -10,28 +10,64 @@ import java.util.Scanner;
 
 import pt.uc.dei.student.others.Utilitary;
 
-
 /**
- * Clientes do Multicast Server (Terminais de Voto)
+ * Terminal de Voto (Cliente do Servidor Multicast)
+ *
+ * @author Dylan Gonçãoves Perdigão
+ * @author Ana Rita Rodrigues
+ * @see MulticastServer
+ * @see Thread
  */
 public class VoteTerm extends Thread {
+    /**
+     * Porte do Servidor Multicast
+     */
     private final int MULTICAST_PORT;
+    /**
+     * Endereço IPv4 do Servidor Multicast
+     */
     private final String MULTICAST_ADDRESS;
-
+    /**
+     * ID do terminal de voto
+     */
     private final int voteTermId;
+    /**
+     * ID do departamento do terminal de voto
+     */
     private int departmentId;
+    /**
+     * Socket entre o terminal de voto e o servidor multicast
+     */
     private MulticastSocket socket;
+    /**
+     * Grupo de multicast do terminal de voto
+     */
     private InetAddress group;
+    /**
+     * Estado do terminal de voto
+     */
     private boolean available = true;
-
+    /**
+     * String que permite identificar quando a consola está a espera de uma opção
+     */
     private final String OPTION_STRING = ">>> ";
-
+    /**
+     * Construtor do Terminal de Voto
+     * Gera um id aleatorio para o terminal
+     * @param multicastAddress endereço IPv4 do servidor multicast
+     * @param multicastPort porte do servidor multicast
+     */
     VoteTerm(String multicastAddress, int multicastPort) {
         this.voteTermId = (int) Math.round(Math.random() * Integer.MAX_VALUE) + 1;
         this.MULTICAST_ADDRESS = multicastAddress;
         this.MULTICAST_PORT = multicastPort;
     }
-
+    /**
+     * Thread que se liga ao socket e grupo do multicast,
+     * envia mensagens para o grupo de multicast,
+     * recebe as mensagens provenientes do grupo de multicast
+     * e descompõe as mensagens em HashMap para serem tratadas.
+     */
     public void run() {
         // TODO faz identifação apenas uma vez ou se der timeout à espera de resposta
         try {
@@ -75,7 +111,10 @@ public class VoteTerm extends Thread {
         }
     }
 
-
+    /**
+     *
+     * @param msgHash
+     */
     private void doThings(HashMap<String, String> msgHash) {
         //so ler as mensagens do multicast
         if (msgHash.get("sender").startsWith("multicast")) {

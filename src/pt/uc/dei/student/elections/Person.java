@@ -11,13 +11,37 @@ import java.time.format.DateTimeFormatter;
  * @author Ana Rita Rodrigues
  */
 public class Person implements Serializable {
+    /**
+     * Nome da pessoa
+     */
     private String name;
+    /**
+     * Número do cartão de cidadão da pessoa (serve de identificador)
+     */
     private final int cc_number;
+    /**
+     * Validade do Cartão de Cidadão
+     */
     private LocalDate cc_validity;
+    /**
+     * Palavra-Passe da pessoa
+     */
     private String password;
+    /**
+     * Endereço da Pessoa
+     */
     private String address;
+    /**
+     * Numero de Telemovel da pessoa
+     */
     private int phone;
+    /**
+     * Trabalho/Cargo da pessoa (Estudante, Docente, Funcionario)
+     */
     private String job;
+    /**
+     * ID do departamento onde trabalha a pessoa
+     */
     private int department_id;
 
     /**
@@ -41,9 +65,7 @@ public class Person implements Serializable {
         this.phone = phone;
         this.department_id = department_id;
         this.job = job;
-
     }
-
     /**
      * Getter para o nome da pessoa
      *
@@ -52,7 +74,6 @@ public class Person implements Serializable {
     public String getName() {
         return name;
     }
-
     /**
      * Getter para o numero de cartao de cidadao da pessoa
      *

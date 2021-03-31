@@ -9,10 +9,17 @@ import java.io.Serializable;
  * @author Ana Rita Rodrigues
  */
 public class Department implements Serializable {
+    /**
+     * ID do departamento
+     */
     private final int id;
-    private String name;
+    /**
+     * Nome do departamento
+     */
+    private final String name;
     /**
      * Construtor do Objeto Departamento
+     *
      * @param id identificador da departamento
      * @param name nome do departamento
      */
@@ -22,13 +29,13 @@ public class Department implements Serializable {
     }
     /**
      * Getter do id do departamento
+     *
      * @return id do departamento
      */
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
     /**
      * Getter do nome do departamento
+     *
      * @return nome do departamento
      */
     public String getName() {

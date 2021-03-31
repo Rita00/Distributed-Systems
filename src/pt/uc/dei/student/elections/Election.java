@@ -15,19 +15,32 @@ import java.util.ArrayList;
  */
 public class Election implements Serializable {
     /**
-     * id da eleição
+     * ID da eleição
      */
     private final int id;
     /**
-     * titulo da eleição
+     * Titulo da eleição
      */
     private String title;
+    /**
+     * Tipo da eleição (Estudantes, Docentes, Funcionarios)
+     */
     private String type;
+    /**
+     * Descrição da eleição
+     */
     private String description;
+    /**
+     * Data e hora de início da eleição
+     */
     private LocalDateTime begin;
+    /**
+     * Data e hora de fim da eleição
+     */
     private LocalDateTime end;
     /**
-     * Construtor do Objeto Eleicao
+     * Construtor do Objeto Eleição
+     *
      * @param id identificador da eleicao
      * @param title nome da eleicao
      * @param type tipo que permite identificar para que grupo de pessoa a eleicao decorre (Estudantes, Docentes, Funcionarios)
@@ -45,10 +58,10 @@ public class Election implements Serializable {
     }
     /**
      * Converte duas strings contendo a data e a hora num objeto do tipo LocalDateTime
+     *
      * @param date data (ano-mes-dia)
      * @param time hora (hora:minutos:segundos)
      * @return objeto LocalDateTime com parse da string efetuado ou null se erro
-     * @throws DateTimeParseException caso uma das strings nao esteja valida
      */
 	private LocalDateTime parseDateTime(String date, String time) {
 		LocalDateTime dateTime;
@@ -61,6 +74,7 @@ public class Election implements Serializable {
 	}
     /**
      * Devolve uma string com informacoes relativas a uma eleicao
+     *
      * @return string com informacoes relativas à eleicao
      */
     public String toString() {
@@ -73,6 +87,7 @@ public class Election implements Serializable {
     }
     /**
      * Getter do id da eleicao
+     *
      * @return id da eleicao
      */
     public int getId() {
@@ -80,6 +95,7 @@ public class Election implements Serializable {
     }
     /**
      * Getter do nome da eleicao
+     *
      * @return nome da eleicao
      */
     public String getTitle() {
@@ -87,6 +103,7 @@ public class Election implements Serializable {
     }
     /**
      * Getter do tipo da eleicao
+     *
      * @return tipo da eleicao
      */
     public String getType() {
@@ -94,6 +111,7 @@ public class Election implements Serializable {
     }
     /**
      * Getter da descricao da eleicao
+     *
      * @return descricao da eleicao
      */
     public String getDescription() {
@@ -101,6 +119,7 @@ public class Election implements Serializable {
     }
     /**
      * Getter da data de inicio da eleicao
+     *
      * @return data de inicio da eleicao
      */
     public LocalDateTime getBegin() {
@@ -108,6 +127,7 @@ public class Election implements Serializable {
     }
     /**
      * Getter da data de fim da eleicao
+     *
      * @return data de fim da eleicao
      */
     public LocalDateTime getEnd() {
@@ -115,6 +135,7 @@ public class Election implements Serializable {
     }
     /**
      * Setter do nome da eleicao
+     *
      * @param title nome da eleicao
      */
     public void setTitle(String title) {
@@ -125,6 +146,7 @@ public class Election implements Serializable {
      *  Se 1: Estudante
      *  Se 2: Docente
      *  Se 3: Funcionario
+     *
      * @param type tipo da eleicao
      */
     public void setType(int type) {
@@ -142,6 +164,7 @@ public class Election implements Serializable {
     }
     /**
      * Setter da descricao da eleicao
+     *
      * @param description descricao da eleicao
      */
     public void setDescription(String description) {
@@ -149,6 +172,7 @@ public class Election implements Serializable {
     }
     /**
      * Setter da data e hora de inicio da eleicao
+     *
      * @param date data de inicio da eleicao
      * @param time hora de inicio da eleicao
      * @return true se nao houve problemas ou false caso um problema ocorra
@@ -163,6 +187,7 @@ public class Election implements Serializable {
 	}
     /**
      * Setter da data e hora de fim da eleicao
+     *
      * @param date data de fim da eleicao
      * @param time hora de fim da eleicao
      * @return true se nao houve problemas ou false caso um problema ocorra

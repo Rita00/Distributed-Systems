@@ -175,7 +175,7 @@ public class AdminConsole {
                         reconnectToRMI();
                     }
                 }
-                HashMap<Integer, ArrayList<Integer>> activeTerminals;
+                ConcurrentHashMap<Integer, ArrayList<Integer>> activeTerminals;
                 for (int ndep : dep) {
                     System.out.println(departments.get(ndep - 1).getName());
                     while (true) {

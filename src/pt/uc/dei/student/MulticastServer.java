@@ -21,6 +21,7 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 //Todo permitir apenas criar eleições depois da data atual
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
@@ -43,7 +44,7 @@ public class MulticastServer extends Thread {
 
     private final NotifierCallBack NOTIFIER = new NotifierCallBack();
 
-    private final HashMap<String, Boolean> availableTerminals = new HashMap<>();
+    private final ConcurrentHashMap<String, Boolean> availableTerminals = new ConcurrentHashMap<>();
 
     public MulticastServer(RMI rmiServer) throws IOException {
         this.rmiServer = rmiServer;
@@ -276,6 +277,18 @@ public class MulticastServer extends Thread {
 
     private void connect() {
         String depName = this.department.getName();
+
+
+        //Reset da mesa de voto na DB caso mandamos a mesa abaixo
+        var sigHandler = new Thread(() -> {
+            try {
+                System.out.println("SET hasmulticastServer to null in DB");//TODO comentar isto
+                rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
+            } catch (InterruptedException | RemoteException ignore) {}
+        });
+        Runtime.getRuntime().addShutdownHook(sigHandler);
+
+
         if (depName != null) {
             System.out.printf("======== Mesa de Voto #%s (%s) ========%n", this.getMulticastId(), depName);
             while (true) {

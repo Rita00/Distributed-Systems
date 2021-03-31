@@ -8,14 +8,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 /**
- * Classe do Objeto Eleicao
+ * Classe do Objeto Eleição
  *
  * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
  */
 public class Election implements Serializable {
-
+    /**
+     * id da eleição
+     */
     private final int id;
+    /**
+     * titulo da eleição
+     */
     private String title;
     private String type;
     private String description;

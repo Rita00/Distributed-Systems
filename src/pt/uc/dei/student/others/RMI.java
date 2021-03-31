@@ -83,9 +83,10 @@ public interface RMI extends Remote {
 
     ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
 
-    void updateTerminals(int department_id, HashMap<String, Boolean> availableTerminals) throws java.rmi.RemoteException, InterruptedException;
+    void updateTerminals(int department_id, ConcurrentHashMap<String, Boolean> availableTerminals) throws java.rmi.RemoteException, InterruptedException;
 
-    HashMap<Integer, ArrayList<Integer>> getActiveTerminals() throws java.rmi.RemoteException, InterruptedException;
+    void updateDepartmentMulticast(int id) throws java.rmi.RemoteException, InterruptedException;
+    ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() throws java.rmi.RemoteException, InterruptedException;
 
     void endRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 

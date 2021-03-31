@@ -5,8 +5,8 @@ import java.io.Serializable;
 /**
  * Classe do Objeto Lista(Candidatura)
  *
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
  */
 public class Candidacy implements Serializable {
     /**

@@ -7,8 +7,8 @@ import java.io.Serializable;
 /**
  * Classe do Objeto contendo Infomações sobre as Eleições
  *
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
  */
 public class InfoElectors implements Serializable {
     /**

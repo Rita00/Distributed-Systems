@@ -10,8 +10,8 @@ import java.util.ArrayList;
 /**
  * Classe do Objeto Eleição
  *
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
  */
 public class Election implements Serializable {
     /**

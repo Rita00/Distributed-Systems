@@ -7,8 +7,8 @@ import java.time.format.DateTimeFormatter;
 /**
  * Classe do Objeto Pessoa
  *
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
  */
 public class Person implements Serializable {
     /**

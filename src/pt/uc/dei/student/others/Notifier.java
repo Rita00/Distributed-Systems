@@ -9,9 +9,9 @@ import java.util.ArrayList;
 /**
  * Classe da Interface do Notificador
  *
- * @see Remote
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
+ * @see Remote
  */
 public interface Notifier extends Remote {
     /**

@@ -259,7 +259,7 @@ public class VoteTerm extends Thread {
                 network=args[0];
                 break;
             default:
-                System.out.println("Numeros de argumentos inválido");
+                System.out.println("Numero de argumentos inválido");
                 System.out.println("arg1: Endereço multicast");
                 return;
 

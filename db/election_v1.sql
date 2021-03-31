@@ -9,7 +9,8 @@ drop table if exists voting_terminal;
 
 CREATE TABLE voting_terminal (
     id		        INTEGER,
-    department_id   INTERGER,
+    department_id   INTEGER,
+    status          INTEGER,
     FOREIGN KEY (department_id) REFERENCES department(id),
     PRIMARY KEY(id)
 );

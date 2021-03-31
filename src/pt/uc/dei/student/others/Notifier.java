@@ -31,6 +31,6 @@ public interface Notifier extends Remote {
      * @see InfoElectors
      */
     void updateAdmin(ArrayList<InfoElectors> info) throws RemoteException, InterruptedException;
-
-}
+    void updatePollsAdmin(ArrayList<InfoPolls> info) throws RemoteException, InterruptedException;
+    }
 

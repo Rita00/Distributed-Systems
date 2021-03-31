@@ -1,10 +1,7 @@
 package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.*;
-import pt.uc.dei.student.others.InfoElectors;
-import pt.uc.dei.student.others.Notifier;
-import pt.uc.dei.student.others.RMI;
-import pt.uc.dei.student.others.StatusChecker;
+import pt.uc.dei.student.others.*;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -19,7 +16,6 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.sleep;
@@ -32,14 +28,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public final static int SERVER_PORT = 7001;
     public final static int RMI_PORT = 7000;
     static ConcurrentHashMap<Integer, Notifier> notifiersMulticast;
-    static ArrayList<Notifier> notifiersAdmin;
+    static ArrayList<Notifier> notifiersVotesAdmin, notifiersPollsAdmin;
     public StatusChecker statcheck;
     private Boolean terminalsUpdated;
 
     public RMIServer() throws RemoteException {
         super();
         notifiersMulticast = new ConcurrentHashMap<>();
-        notifiersAdmin = new ArrayList<>();
+        notifiersVotesAdmin = new ArrayList<>();
+        notifiersPollsAdmin = new ArrayList<>();
         this.terminalsUpdated=false;
     }
 
@@ -147,6 +144,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public void updateDepartmentMulticast(int id) {
         if (this.updateOnDB(String.format("UPDATE department SET hasmulticastserver=null WHERE id=%s", id))) {
             System.out.println("Successfully updated department");
+            //TODO
         } else {
             System.out.println("Problem updating department");
         }
@@ -161,7 +159,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         for (String t : availableTerminals.keySet()) {
             if (availableTerminals.get(t)) {
                 this.updateOnDB(String.format("INSERT INTO voting_terminal(id,department_id) VALUES (%s,%s)", t.split("-")[1], department_id));
-            }
+            } //todo
         }
         this.terminalsUpdated=true;
         notify();
@@ -462,7 +460,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public boolean turnOffPollingStation(int department_id) {
+        sendRealTimePolls();
         return updateOnDB("UPDATE department SET hasMulticastServer = null WHERE id = " + department_id);
+        //TODO
     }
 
     public ArrayList<Election> getEndedElections() {
@@ -536,22 +536,22 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public void updateCandidacyVotes(String id_election, String candidacyOption, String cc, String ndep) {
         insertVotingRecord(id_election, cc, ndep);
         updateOnDB("UPDATE candidacy SET votes = votes + 1 WHERE election_id = " + id_election + " AND id = " + candidacyOption);
-        this.sendRealTimeInfo();
+        this.sendRealTimeVotes();
     }
 
     public void updateBlankVotes(String id_election, String cc, String ndep) {
         insertVotingRecord(id_election, cc, ndep);
         updateOnDB("UPDATE election SET blank_votes = blank_votes + 1 WHERE id = " + id_election);
-        this.sendRealTimeInfo();
+        this.sendRealTimeVotes();
     }
 
     public void updateNullVotes(String id_election, String cc, String ndep) {
         insertVotingRecord(id_election, cc, ndep);
         updateOnDB("UPDATE electio SET null_votes = null_votes + 1 WHERE id = " + id_election);
-        this.sendRealTimeInfo();
+        this.sendRealTimeVotes();
     }
 
-    public void sendRealTimeInfo() {
+    public void sendRealTimeVotes() {
         String sql = "SELECT count(*), d.name as Name, e.title as Title" +
                 " FROM voting_record" +
                 " JOIN department d on voting_record.department = d.id" +
@@ -571,7 +571,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
             stmt.close();
             conn.close();
-            for (Notifier notifier : notifiersAdmin) {
+            for (Notifier notifier : notifiersVotesAdmin) {
                 try {
                     notifier.updateAdmin(info);
                 } catch (RemoteException | InterruptedException e) {
@@ -583,7 +583,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public void sendRealTimeInfo(Notifier NOTIFIER) {
+    public void sendRealTimeVotes(Notifier NOTIFIER) {
         String sql = "SELECT count(*), d.name as Name, e.title as Title" +
                 " FROM voting_record" +
                 " JOIN department d on voting_record.department = d.id" +
@@ -614,6 +614,67 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    public void sendRealTimePolls() {
+        String sql = "SELECT d.name as depname, d.hasmulticastserver as statusPoll, voting_terminal.id as terminalId, status as statusTerminal " +
+                "FROM department, voting_terminal " +
+                "JOIN department d on voting_terminal.department_id = d.id GROUP BY department_id";
+        ArrayList<InfoPolls> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoPolls(
+                        rs.getString("depname"),
+                        rs.getInt("statusPoll"),
+                        rs.getInt("terminalId"),
+                        rs.getInt("statusTerminal")
+                ));
+            }
+            stmt.close();
+            conn.close();
+            for (Notifier notifier : notifiersPollsAdmin) {
+                try {
+                    notifier.updatePollsAdmin(info);
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void sendRealTimePolls(Notifier NOTIFIER) {
+        String sql = "SELECT d.name as depname, d.hasmulticastserver as statusPoll, voting_terminal.id as terminalId, status as statusTerminal " +
+                "FROM department, voting_terminal " +
+                "JOIN department d on voting_terminal.department_id = d.id GROUP BY department_id";
+        ArrayList<InfoPolls> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoPolls(
+                        rs.getString("depname"),
+                        rs.getInt("statusPoll"),
+                        rs.getInt("terminalId"),
+                        rs.getInt("statusTerminal")
+                ));
+            }
+            stmt.close();
+            conn.close();
+            for (Notifier notifier : notifiersVotesAdmin) {
+                try {
+                    notifier.updatePollsAdmin(info);
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 
     public boolean checkIfAlreadyVote(int cc, int election) {
         return countRowsBD("voting_record WHERE person_cc_number = " + cc + " AND election_id = " + election, null) > 0;
@@ -673,6 +734,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 System.out.println("Impossível adicionar mesa de voto! :(");
                 return null;
             } else {
+                //TODO
+                sendRealTimePolls();
                 System.out.println("Mesa de voto criada com sucesso! :)");
                 synchronized (notifiersMulticast) {
                     notifiersMulticast.put(dep_id, NOTIFIER);
@@ -688,13 +751,22 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return null;
     }
 
-    public void initializeRealTimeInfo(Notifier NOTIFIER) {
-        notifiersAdmin.add(NOTIFIER);
-        sendRealTimeInfo(NOTIFIER);
+    public void initializeRealTimeVotes(Notifier NOTIFIER) {
+        notifiersVotesAdmin.add(NOTIFIER);
+        sendRealTimeVotes(NOTIFIER);
     }
 
     public void endRealTimeInfo(Notifier NOTIFIER) {
-        notifiersAdmin.remove(NOTIFIER);
+        notifiersVotesAdmin.remove(NOTIFIER);
+    }
+
+    public void initializeRealTimePolls(Notifier NOTIFIER) {
+        notifiersPollsAdmin.add(NOTIFIER);
+        sendRealTimePolls(NOTIFIER);
+    }
+
+    public void endRealTimePolls(Notifier NOTIFIER) {
+        notifiersPollsAdmin.remove(NOTIFIER);
     }
 
     /**

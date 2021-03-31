@@ -281,14 +281,14 @@ public class MulticastServer extends Thread {
         String depName = this.department.getName();
 
 
-        //Reset da mesa de voto na DB caso mandamos a mesa abaixo
+        /*//Reset da mesa de voto na DB caso mandamos a mesa abaixo
         var sigHandler = new Thread(() -> {
             try {
                 System.out.println("SET hasmulticastServer to null in DB");//TODO comentar isto
                 rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
             } catch (InterruptedException | RemoteException ignore) {}
         });
-        Runtime.getRuntime().addShutdownHook(sigHandler);
+        Runtime.getRuntime().addShutdownHook(sigHandler);*/
 
 
         if (depName != null) {
@@ -424,7 +424,6 @@ public class MulticastServer extends Thread {
             } catch (RemoteException | InterruptedException e) {
                 //e.printStackTrace();
                 reconnectToRMI();
-                registerTerminal(id, status);
             }
         }
     }

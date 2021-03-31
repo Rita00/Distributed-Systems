@@ -41,7 +41,11 @@ public interface RMI extends Remote {
 
     String initializeMulticast(int dep_id, Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 
-    void initializeRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+    void initializeRealTimeVotes(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    void initializeRealTimePolls(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    void endRealTimePolls(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Department> selectPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
@@ -86,6 +90,7 @@ public interface RMI extends Remote {
     void updateTerminals(int department_id, ConcurrentHashMap<String, Boolean> availableTerminals) throws java.rmi.RemoteException, InterruptedException;
 
     void updateDepartmentMulticast(int id) throws java.rmi.RemoteException, InterruptedException;
+
     ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() throws java.rmi.RemoteException, InterruptedException;
 
     void endRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;

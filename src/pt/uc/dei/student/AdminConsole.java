@@ -15,7 +15,6 @@ import java.rmi.registry.LocateRegistry;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
@@ -109,7 +108,7 @@ public class AdminConsole {
             try {
                 while (true) {
                     try {
-                        this.rmiServer.initializeRealTimeInfo(NOTIFIER);
+                        this.rmiServer.initializeRealTimeVotes(NOTIFIER);
                         break;
                     } catch (RemoteException | InterruptedException e) {
                         //e.printStackTrace();
@@ -130,8 +129,6 @@ public class AdminConsole {
                             reconnectToRMI();
                         }
                     }
-                } else {
-                    this.statusPollingStation();
                 }
                 break;
             } catch (InterruptedException e) {
@@ -143,67 +140,44 @@ public class AdminConsole {
     }
 
     private void statusPollingStation() {
-        InputStreamReader is = new InputStreamReader(System.in);
-        BufferedReader br = new BufferedReader(is);
         this.isMonitoring = true;
+        int command;
+        Scanner input = new Scanner(System.in);
+        //TODO mostrar dados
+        System.out.println("==========ESTADO DAS MESAS DE VOTO E TERMINAIS DE VOTO==========");
         while (true) {
             try {
-                //qualquer tecla para sair
-                if (br.ready()) {
-                    br.readLine();
-                    break;
-                }
-                //TODO mostrar dados
-                System.out.println("==========ESTADO DAS MESAS DE VOTO E TERMINAIS DE VOTO==========");
-                ArrayList<Department> departments;
                 while (true) {
                     try {
-                        departments = this.rmiServer.getDepartments();
+                        this.rmiServer.initializeRealTimePolls(NOTIFIER);
                         break;
                     } catch (RemoteException | InterruptedException e) {
                         //e.printStackTrace();
                         reconnectToRMI();
                     }
                 }
-                ConcurrentHashMap.KeySetView<Integer, Notifier> dep;
-                while (true) {
-                    try {
-                        dep = this.rmiServer.getNotifiersMulticast().keySet();
-                        break;
-                    } catch (RemoteException | InterruptedException e) {
-                        //e.printStackTrace();
-                        reconnectToRMI();
-                    }
-                }
-                ConcurrentHashMap<Integer, ArrayList<Integer>> activeTerminals;
-                for (int ndep : dep) {
-                    System.out.println(departments.get(ndep - 1).getName());
+                System.out.println("(" + RETURN + ")-\t\tVoltar");
+                System.out.print(OPTION_STRING);
+                command = input.nextInt();
+                if (command == 0) {
                     while (true) {
                         try {
-                            activeTerminals = this.rmiServer.getActiveTerminals();
+                            this.rmiServer.endRealTimePolls(NOTIFIER);
+                            this.admin(-1);
                             break;
-
-                        } catch (RemoteException | InterruptedException e) {
+                        } catch (IOException e) {
                             //e.printStackTrace();
                             reconnectToRMI();
                         }
                     }
-                    try {
-                        for (int id : activeTerminals.get(ndep)) {
-                            System.out.println("\tTerminal de Voto #" + id);
-                        }
-                    } catch (NullPointerException ignore) {
-                    }
                 }
-
-                System.out.println("(ENTER)- Voltar");
-                TimeUnit.SECONDS.sleep(1);
-            } catch (IOException | InterruptedException e) {
+                break;
+            } catch (InterruptedException e) {
                 //e.printStackTrace();
                 reconnectToRMI();
-
             }
         }
+
         this.isMonitoring = false;
     }
 

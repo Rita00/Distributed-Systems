@@ -26,34 +26,81 @@ import java.util.concurrent.ConcurrentHashMap;
 //Todo permitir apenas criar eleições depois da data atual
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
 //Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento
-
+/**
+ * Mesa de Voto (Servidor dos Terminais de voto)
+ *
+ * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
+ * @see RMIServer
+ * @see Thread
+ */
 public class MulticastServer extends Thread {
-    private final String MULTICAST_ADDRESS;
+    /**
+     * Porte do Servidor Multicast
+     */
     public final static int MULTICAST_PORT = 7002;
-    MulticastSocket socket;
-    InetAddress group;
-
+    /**
+     * Endereço IPv4 do Servidor Multicast
+     */
+    private final String MULTICAST_ADDRESS;
+    /**
+     * Socket do Servidor Multicast
+     */
+    private MulticastSocket socket;
+    /**
+     * Grupo de multicast do Servidor Multicast
+     */
+    private InetAddress group;
+    /**
+     * Estado ON/OFF do Servidor Multicast
+     */
     private boolean isON = true;
+    /**
+     * String que permite identificar quando a consola está a espera de uma opção
+     */
     private final String OPTION_STRING = ">>> ";
-
-    private int multicastId = 0;
+    /**
+     * ID do Servidor Multicast
+     */
+    private int multicastId;
+    /**
+     * Servidor RMI ao qual está ligado o Servidor Multicast
+     */
     private RMI rmiServer;
+    /**
+     * Departamento pelo qual o Servidor Multicast é responsavel
+     */
     private Department department;
-
+    /**
+     * TODO nao sei o que é istoooooo
+     */
     static MulticastServer multicastServer;
-
-    private final NotifierCallBack NOTIFIER = new NotifierCallBack();
-
-    private final ConcurrentHashMap<String, Boolean> availableTerminals = new ConcurrentHashMap<>();
-
-    public MulticastServer(String multicastAddress,RMI rmiServer) throws IOException {
+    /**
+     * TODO idk
+     */
+    private final NotifierCallBack NOTIFIER;
+    /**
+     * HashMap com o estado dos terminais de voto
+     */
+    private final ConcurrentHashMap<String, Boolean> availableTerminals;
+    /**
+     * Construtor do Servidor Multicast (Mesa de Voto)
+     *
+     * @param multicastAddress endereço IPv4 do Servidor Multicast
+     * @param rmiServer servidor RMI
+     * @throws IOException
+     */
+    public MulticastServer(String multicastAddress,RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
         this.rmiServer = rmiServer;
         this.MULTICAST_ADDRESS = multicastAddress;
         this.socket = new MulticastSocket(MULTICAST_PORT);
         this.group=InetAddress.getByName(multicastAddress);
+        this.multicastId=0;
+        this.NOTIFIER = new NotifierCallBack();
+        this.availableTerminals = new ConcurrentHashMap<>();
     }
 
-    public void menuPollingStation(int dep_id) throws IOException {
+    public void menuPollingStation(int dep_id){
         int command = -1, command2 = -1, election = -1, campo_num = -1;
         String campo = "", campo_sql;
         Scanner input = new Scanner(System.in);
@@ -118,7 +165,11 @@ public class MulticastServer extends Thread {
         if (command == 1) {
             campo_sql = "name";
             System.out.print("Introduza o seu nome: ");
-            campo = reader.readLine();
+            try {
+                campo = reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();//TODO tratar exceção
+            }
         } else if (command == 2) {
             campo_sql = "job";
             int cargo = -1;
@@ -161,7 +212,11 @@ public class MulticastServer extends Thread {
         } else if (command == 5) {
             campo_sql = "address";
             System.out.print("Introduza a sua morada: ");
-            campo = reader.readLine();
+            try {
+                campo = reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();//TODO tratar exceção
+            }
         } else {
             campo_sql = "cc_number";
             System.out.print("Introduza o seu número de cartão de cidadão: ");
@@ -294,11 +349,7 @@ public class MulticastServer extends Thread {
         if (depName != null) {
             System.out.printf("======== Mesa de Voto #%s (%s) ========%n", this.getMulticastId(), depName);
             while (true) {
-                try {
-                    this.menuPollingStation(this.department.getId());
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                }
+                this.menuPollingStation(this.department.getId());
             }
         }
     }
@@ -331,7 +382,11 @@ public class MulticastServer extends Thread {
             //e.printStackTrace();
         }
     }
-
+    /**
+     * Transforma a mensagem em datagramma e envia-o por multicast
+     *
+     * @param message
+     */
     private void send(String message) {
         byte[] buffer = message.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
@@ -341,7 +396,11 @@ public class MulticastServer extends Thread {
             //e.printStackTrace();
         }
     }
-
+    /**
+     * Trata a mensagem recebida
+     *
+     * @param msgHash mensagem recebida
+     */
     private void doThings(HashMap<String, String> msgHash) {
         //nao ler as suas proprias mensagens
         if (!msgHash.get("sender").startsWith("multicast")) {
@@ -358,7 +417,13 @@ public class MulticastServer extends Thread {
             }
         }
     }
-
+    /**
+     *
+     * @param candidacyOption
+     * @param id_election
+     * @param cc
+     * @param ndep
+     */
     private void verifyVote(String candidacyOption, String id_election, String cc, String ndep) {
         while (true) {
             try {
@@ -410,7 +475,12 @@ public class MulticastServer extends Thread {
             }
         }
     }
-
+    /**
+     * Regista o estado de disponibilidade do terminal de voto
+     *
+     * @param id ID do terminal de voto
+     * @param status estado de disponibilidade do terminal de voto
+     */
     private void registerTerminal(String id, String status) {
         if (status.equals("available")) {
             availableTerminals.put(id, true);
@@ -427,7 +497,14 @@ public class MulticastServer extends Thread {
             }
         }
     }
-
+    /**
+     * Verifica se a autenticação do eleitor no terminal de voto está valida,
+     * envia por multicast a mensagem de sucesso ou falha no login do eleitor
+     *
+     * @param id ID do terminal de voto
+     * @param username numero de cartão de cidadão do eleitor
+     * @param password hashCode da concatenação do numero de CC do eleitor com a password introduzida pelo eleitor
+     */
     private void verifyLogin(String id, String username, String password) {
         String message;
         Person p;
@@ -454,7 +531,9 @@ public class MulticastServer extends Thread {
             break;
         }
     }
-
+    /**
+     * Tenta efetuar a ligação ao Servidor RMI
+     */
     public void reconnectToRMI() {
         while (true) {
             try {
@@ -462,27 +541,52 @@ public class MulticastServer extends Thread {
                 multicastServer.rmiServer = rmiServer;
                 break;
             } catch (NotBoundException | IOException remoteException) {
-                remoteException.printStackTrace();
+                remoteException.printStackTrace(); //TODO caso o porte ou o lookup estejam errados, mais vale parar o programa
             }
         }
     }
-
+    /**
+     * Getter do Servidor RMI
+     *
+     * @return servidor RMI
+     */
     public RMI getRmiServer() {
         return this.rmiServer;
     }
-
+    /**
+     * Getter do ID do Servidor Multicast
+     *
+     * @return ID do Servidor Multicast
+     */
     public int getMulticastId() {
         return this.multicastId;
     }
-
+    /**
+     * Setter do ID do Servidor Multicast
+     *
+     * @param multicastId ID do Servidor Multicast
+     */
     public void setMulticastId(int multicastId) {
         this.multicastId = multicastId;
     }
-
+    /**
+     * Setter do Departamento do Servidor Multicast
+     *
+     * @param department Departamento do Servidor Multicast
+     */
     public void setDepartment(Department department) {
         this.department = department;
     }
-
+    /**
+     * Verifica o numero de argumentos ao iniciar o programa,
+     * pede o endereço IPv4 caso nao seja passado em argumento,
+     * pede o departamento onde se localiza a mesa de voto,
+     * efetua a ligação com o Servidor RMI e
+     * inicializa a mesa de voto.
+     * Caso nao consiga tenta até conseguir
+     *
+     * @param args argumentos de entrada do programa
+     */
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         String network;
@@ -524,9 +628,9 @@ public class MulticastServer extends Thread {
             if (rmiServer.initializeMulticast(dep, multicastServer.NOTIFIER) != null) {
                 multicastServer.setMulticastId(dep);
                 multicastServer.setDepartment(departments.get(dep - 1));
-            /*
-            LIGAR
-             */
+                /*
+                LIGAR
+                 */
                 multicastServer.start();
                 multicastServer.connect();
             } else
@@ -549,9 +653,9 @@ public class MulticastServer extends Thread {
                         if (rmiServer.initializeMulticast(dep, multicastServer.NOTIFIER) != null) {
                             multicastServer.setMulticastId(dep);
                             multicastServer.setDepartment(departments.get(dep - 1));
-                        /*
-                        LIGAR
-                        */
+                            /*
+                            LIGAR
+                            */
                             multicastServer.start();
                             multicastServer.connect();
                         } else

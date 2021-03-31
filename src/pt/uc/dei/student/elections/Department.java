@@ -5,8 +5,8 @@ import java.io.Serializable;
 /**
  * Classe do Objeto Departamento
  *
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
  */
 public class Department implements Serializable {
     /**

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 /**
  * Classe do Callback
  *
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
  * @see Notifier
  * @see UnicastRemoteObject
  */

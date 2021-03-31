@@ -13,8 +13,8 @@ import pt.uc.dei.student.others.Utilitary;
 /**
  * Terminal de Voto (Cliente do Servidor Multicast)
  *
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
  * @see MulticastServer
  * @see Thread
  */
@@ -111,10 +111,9 @@ public class VoteTerm extends Thread {
             e.printStackTrace();
         }
     }
-
     /**
      * Permite atribuir o departamento proveniente do multicast,
-     * trata a mensagem através da HashMap recebida
+     * Trata a mensagem recebida
      *
      * @param msgHash mensagem recebida
      */
@@ -236,7 +235,6 @@ public class VoteTerm extends Thread {
         sendMessage(sendMsg);
         this.available = true;
     }
-
     /**
      * Transforma a mensagem em datagramma e envia-o por multicast
      *
@@ -296,9 +294,9 @@ public class VoteTerm extends Thread {
     /**
      * Verifica o numero de argumentos ao iniciar o programa,
      * pede o endereço IPv4 caso nao seja passado em argumento,
-     * inicializa a mesa de voto
-     * 
-     * @param args
+     * inicializa o terminal de voto
+     *
+     * @param args argumentos de entrada do programa
      */
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);

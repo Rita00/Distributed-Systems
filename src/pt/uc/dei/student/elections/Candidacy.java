@@ -9,11 +9,21 @@ import java.io.Serializable;
  * @author Ana Rita Rodrigues
  */
 public class Candidacy implements Serializable {
+    /**
+     * ID da lista
+     */
     private final int id;
+    /**
+     * Nome da lista
+     */
     private String name;
+    /**
+     * Tipo de lista (Estudante, Docente, Funcionario)
+     */
     private String type;
     /**
      * Construtor do Objeto Lista(Candidatura)
+     *
      * @param id identificador da lista
      * @param name nome da lista
      * @param type tipo de lista (Estudante, Docente, Funcionario)
@@ -25,6 +35,7 @@ public class Candidacy implements Serializable {
     }
     /**
      * Devolve uma string com informacoes relativas a uma lista
+     *
      * @return string com informacoes relativas à lista
      */
     public String toString() {
@@ -34,6 +45,7 @@ public class Candidacy implements Serializable {
     }
     /**
      * Getter do id da lista
+     *
      * @return id da lista
      */
     public int getId() {
@@ -41,6 +53,7 @@ public class Candidacy implements Serializable {
     }
     /**
      * Getter do nome da lista
+     *
      * @return nome da lista
      */
     public String getName() {
@@ -48,6 +61,7 @@ public class Candidacy implements Serializable {
     }
     /**
      * Getter do tipo da lista
+     *
      * @return tipo da lista
      */
     public String getType() {
@@ -55,6 +69,7 @@ public class Candidacy implements Serializable {
     }
     /**
      * Setter do nome da lista
+     *
      * @param name nome da lista
      */
     public void setName(String name) {
@@ -62,6 +77,7 @@ public class Candidacy implements Serializable {
     }
     /**
      * Setter do tipo da lista
+     *
      * @param type tipo da lista
      */
     public void setType(String type) {

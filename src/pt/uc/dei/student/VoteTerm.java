@@ -1,12 +1,14 @@
 package pt.uc.dei.student;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -212,8 +214,23 @@ public class VoteTerm extends Thread {
              */
             Scanner input = new Scanner(System.in);
             System.out.println("User: " + cc);
+
+            //--------------
+            /*
+            Console console = System.console();
+            String enteredPassword;
+            if(console!=null){
+                 enteredPassword = new String(console.readPassword("Password (secure): "));
+            }else {
+                System.out.print("Password: ");
+                enteredPassword= input.nextLine();
+            }
+            */
+            //--------------
             System.out.print("Password: ");
-            String password = String.format("%s", (cc + input.nextLine()).hashCode());
+            String enteredPassword= input.nextLine();
+            //--------------
+            String password = String.format("%s", (cc + enteredPassword).hashCode());
             String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", cc, password);
             byte[] buffer = sendMsg.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
@@ -394,6 +411,7 @@ public class VoteTerm extends Thread {
      * @param args argumentos de entrada do programa
      */
     public static void main(String[] args) {
+        Console console = System.console();
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String network;

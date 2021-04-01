@@ -40,6 +40,7 @@ public class AdminConsole {
     public AdminConsole(RMI rmiServer) throws RemoteException {
         this.rmiServer = rmiServer;
         this.isMonitoring = false;
+        this.pingRMI();
     }
 
     /**
@@ -1012,6 +1013,20 @@ public class AdminConsole {
                 remoteException.printStackTrace();
             }
         }
+    }
+
+    public void pingRMI() {
+        new Thread(
+                () -> {
+                    while (true) {
+                        try {
+                            this.rmiServer.saySomething();
+                        } catch (RemoteException | InterruptedException e) {
+                            System.out.println("RMI MORREU....");
+                        }
+                    }
+                }
+        ).start();
     }
 
     public static void main(String[] args) {

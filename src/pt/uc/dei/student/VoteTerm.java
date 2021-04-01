@@ -132,7 +132,7 @@ public class VoteTerm extends Thread {
             String[] ndep = msgHash.get("sender").split("-");
             this.setDepartmentId(Integer.parseInt(ndep[2]));
             try {
-                if (Integer.parseInt(msgHash.get("destination").split("-")[1]) == this.voteTermId) {
+                if (Integer.parseInt(msgHash.get("destination")) == this.voteTermId) {
                     switch (msgHash.get("message")) {
                         case "stop":
                             stopTerminal();
@@ -328,6 +328,7 @@ public class VoteTerm extends Thread {
         this.group = group;
     }
 
+    //TODO ENVIAR NDEP PARA O MULTICAST
     public void initializeTerminal(String required_id) {
         String sendMsg;
         sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|request_id;required_id|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", required_id);
@@ -368,7 +369,7 @@ public class VoteTerm extends Thread {
             }
         }
 
-
+        System.out.printf("======== Terminal de Voto #%s ========\n", this.voteTermId);
         this.start();
     }
 
@@ -411,7 +412,6 @@ public class VoteTerm extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.printf("======== Terminal de Voto #%s ========\n", client.voteTermId);
         //client.start();
     }
 }

@@ -277,7 +277,6 @@ public class MulticastServer extends Thread {
 
     }
 
-
     private void selectTerminal(int cc_number, int election) {
         String id = null;
         // choose terminal
@@ -295,7 +294,7 @@ public class MulticastServer extends Thread {
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|identify;cc|%d;%s", this.getMulticastId(), this.department.getId(), id, cc_number, info);
         this.send(message);
         String[] getId = id.split("-");
-        System.out.println("Desbloqueado terminal " + getId[1]);
+        System.out.println("Desbloqueado terminal " + id);
     }
 
     private String getElectionInfo(int election) {
@@ -413,7 +412,7 @@ public class MulticastServer extends Thread {
                     this.verifyLogin(msgHash.get("sender"), msgHash.get("username"), msgHash.get("password"));
                     break;
                 case "vote":
-                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("dep"));
+                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("dep"), msgHash.get("sender").split("-")[1]);
                 case "request_id":
                     registerTerminal(msgHash.get("sender"), msgHash.get("required_id"));
                     break;
@@ -427,54 +426,47 @@ public class MulticastServer extends Thread {
      * @param cc
      * @param ndep
      */
-    private void verifyVote(String candidacyOption, String id_election, String cc, String ndep) {
+    private void verifyVote(String candidacyOption, String id_election, String cc, String ndep, String terminalId) {
+
+        ArrayList<Candidacy> candidacies;
         while (true) {
             try {
-                ArrayList<Candidacy> candidacies;
-                while (true) {
-                    try {
-                        candidacies = this.rmiServer.getCandidacies(Integer.parseInt(id_election));
-                        break;
-                    } catch (RemoteException e) {
-                        //e.printStackTrace();
-                        reconnectToRMI();
-                    }
-                }
-                if (Utilitary.hasCandidacy(Integer.parseInt(candidacyOption), candidacies)) {
-                    while (true) {
-                        try {
-                            this.rmiServer.updateCandidacyVotes(id_election, candidacyOption, cc, ndep);
-                            break;
-                        } catch (RemoteException e) {
-                            //e.printStackTrace();
-                            reconnectToRMI();
-                        }
-                    }
-                } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 1) {
-                    while (true) {
-                        try {
-                            this.rmiServer.updateBlankVotes(id_election, cc, ndep);
-                            break;
-                        } catch (RemoteException e) {
-                            //e.printStackTrace();
-                            reconnectToRMI();
-                        }
-                    }
-                } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 2) {
-                    while (true) {
-                        try {
-                            this.rmiServer.updateNullVotes(id_election, cc, ndep);
-                            break;
-                        } catch (RemoteException e) {
-                            //e.printStackTrace();
-                            reconnectToRMI();
-                        }
-                    }
-                }
+                candidacies = this.rmiServer.getCandidacies(Integer.parseInt(id_election));
                 break;
-            } catch (InterruptedException e) {
-                e.printStackTrace();//TODO tratar excecao
+            } catch (RemoteException | InterruptedException e) {
+                //e.printStackTrace();
                 reconnectToRMI();
+            }
+        }
+        if (Utilitary.hasCandidacy(Integer.parseInt(candidacyOption), candidacies)) {
+            while (true) {
+                try {
+                    this.rmiServer.updateCandidacyVotes(id_election, candidacyOption, cc, ndep);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
+        } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 1) {
+            while (true) {
+                try {
+                    this.rmiServer.updateBlankVotes(id_election, cc, ndep);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
+        } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 2) {
+            while (true) {
+                try {
+                    this.rmiServer.updateNullVotes(id_election, cc, ndep);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    //e.printStackTrace();
+                    reconnectToRMI();
+                }
             }
         }
     }
@@ -483,7 +475,7 @@ public class MulticastServer extends Thread {
     /**
      * Regista o estado de disponibilidade do terminal de voto
      *
-     * @param id     ID do terminal de voto
+     * @param id ID do terminal de voto
      */
     //todo
     private void registerTerminal(String id, String required_id) {
@@ -501,6 +493,16 @@ public class MulticastServer extends Thread {
         }
         //se nenhum, aceitar id
         if (status == -1) {
+            while (true) {
+                try {
+                    this.rmiServer.insertTerminal(required_id, this.getMulticastId());
+                    this.availableTerminals.put(required_id, true);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
             message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|%s", this.getMulticastId(), this.department.getId(), id, required_id);
         } else if (status == 0) { // se um, mas morto, aceitar id e enviar info adicional
             int cc_number_info;
@@ -524,6 +526,7 @@ public class MulticastServer extends Thread {
                     reconnectToRMI();
                 }
             }
+            if (cc_number_info != 0) this.availableTerminals.put(required_id, false);
             message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|%s;infoPerson|%s;infoElection|%s", this.getMulticastId(), this.department.getId(), id, required_id, cc_number_info, infoElection);
         } else { // se um e vivo rejeitar id.
             message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|not_available", this.getMulticastId(), this.department.getId(), id);

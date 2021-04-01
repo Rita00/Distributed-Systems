@@ -118,7 +118,7 @@ public interface RMI extends Remote {
 
     void updateTerminalStatus(String id, String status) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean insertTerminal(String id, String dep_id, String status) throws java.rmi.RemoteException, InterruptedException;
+    boolean insertTerminal(String id, int dep_id) throws java.rmi.RemoteException, InterruptedException;
 
     int getTerminal(String required_id) throws java.rmi.RemoteException, InterruptedException;
 

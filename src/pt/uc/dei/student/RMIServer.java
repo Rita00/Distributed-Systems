@@ -150,8 +150,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public boolean insertTerminal(String id, String dep_id, String status) {
-        return updateOnDB(String.format("INSERT INTO voting_terminal (id, department_id, status, info) VALUES(%s,%s,1,0)", id, dep_id));
+    public boolean insertTerminal(String id, int dep_id) {
+        return updateOnDB(String.format("INSERT INTO voting_terminal (id, department_id, status, infoPerson) VALUES(%s,%s,1,0)", id, dep_id));
     }
 
     public void updateTerminalStatus(String id, String status) {

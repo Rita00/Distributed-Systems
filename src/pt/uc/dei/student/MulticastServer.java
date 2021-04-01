@@ -84,6 +84,7 @@ public class MulticastServer extends Thread {
      * HashMap com o estado dos terminais de voto
      */
     private final ConcurrentHashMap<String, Boolean> availableTerminals;
+    private final ConcurrentHashMap<String, Integer> terminalPingCounter;
 
     /**
      * Construtor do Servidor Multicast (Mesa de Voto)
@@ -100,6 +101,7 @@ public class MulticastServer extends Thread {
         this.multicastId = 0;
         this.NOTIFIER = new NotifierCallBack();
         this.availableTerminals = new ConcurrentHashMap<>();
+        this.terminalPingCounter = new ConcurrentHashMap<>();
     }
 
     public void menuPollingStation(int dep_id) {
@@ -292,8 +294,18 @@ public class MulticastServer extends Thread {
         //send to voting terminal the cc
         String info = getElectionInfo(election);
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|identify;cc|%d;%s", this.getMulticastId(), this.department.getId(), id, cc_number, info);
+        //Dar update na db de quem está no terminal
+        while (true) {
+            try {
+                this.rmiServer.updateTerminalInfoPerson(cc_number, id);
+                        break;
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+                reconnectToRMI();
+            }
+        }
+
         this.send(message);
-        String[] getId = id.split("-");
         System.out.println("Desbloqueado terminal " + id);
     }
 
@@ -412,10 +424,13 @@ public class MulticastServer extends Thread {
                     this.verifyLogin(msgHash.get("sender"), msgHash.get("username"), msgHash.get("password"));
                     break;
                 case "vote":
-                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("dep"), msgHash.get("sender").split("-")[1]);
+                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("dep"), msgHash.get("sender"));
                 case "request_id":
                     registerTerminal(msgHash.get("sender"), msgHash.get("required_id"));
                     break;
+                case "ping":
+                    String id = msgHash.get("sender");
+                    this.terminalPingCounter.put(id.split("-")[1], 5);
             }
         }
     }
@@ -469,6 +484,16 @@ public class MulticastServer extends Thread {
                 }
             }
         }
+        this.availableTerminals.put(terminalId, true);
+        while (true) {
+            try {
+                this.rmiServer.updateTerminalInfoPerson(0, terminalId);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+                reconnectToRMI();
+            }
+        }
     }
 
 
@@ -497,6 +522,7 @@ public class MulticastServer extends Thread {
                 try {
                     this.rmiServer.insertTerminal(required_id, this.getMulticastId());
                     this.availableTerminals.put(required_id, true);
+                    this.terminalPingCounter.put(required_id, 5);
                     break;
                 } catch (RemoteException | InterruptedException e) {
                     e.printStackTrace();
@@ -509,7 +535,7 @@ public class MulticastServer extends Thread {
             int id_election;
             while (true) {
                 try {
-                    id_election = this.rmiServer.getElectionIdFromTerminal(id);
+                    id_election = this.rmiServer.getElectionIdFromTerminal(required_id);
                     break;
                 } catch (RemoteException | InterruptedException e) {
                     e.printStackTrace();
@@ -519,14 +545,17 @@ public class MulticastServer extends Thread {
             String infoElection = getElectionInfo(id_election);
             while (true) {
                 try {
-                    cc_number_info = this.rmiServer.getElectorInfo(id);
+                    cc_number_info = this.rmiServer.getElectorInfo(required_id);
                     break;
                 } catch (RemoteException | InterruptedException e) {
                     e.printStackTrace();
                     reconnectToRMI();
                 }
             }
-            if (cc_number_info != 0) this.availableTerminals.put(required_id, false);
+            if (cc_number_info != 0) {
+                this.availableTerminals.put(required_id, false);
+            }
+            this.terminalPingCounter.put(required_id, 5);
             message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|%s;infoPerson|%s;infoElection|%s", this.getMulticastId(), this.department.getId(), id, required_id, cc_number_info, infoElection);
         } else { // se um e vivo rejeitar id.
             message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|not_available", this.getMulticastId(), this.department.getId(), id);
@@ -620,6 +649,38 @@ public class MulticastServer extends Thread {
         this.department = department;
     }
 
+    public void initializeTerminalChecker() {
+        new Thread(
+                () -> {
+                    while (true) {
+                        for (String terminal_id : this.terminalPingCounter.keySet()) {
+                            String message = String.format("sender|multicast-%s-%s;destination|%s;message|ping", this.getMulticastId(), this.department.getId(), terminal_id);
+                            this.send(message);
+                            this.terminalPingCounter.put(terminal_id, this.terminalPingCounter.get(terminal_id) - 1);
+                            if (this.terminalPingCounter.get(terminal_id) < 0) {
+                                //TODO update db
+                                while (true) {
+                                    try {
+                                        //0 siginifica que morreu
+                                        this.rmiServer.updateTerminalStatus(terminal_id, "0");
+                                        break;
+                                    } catch (InterruptedException | RemoteException e) {
+                                        e.printStackTrace();
+                                        reconnectToRMI();
+                                    }
+                                }
+                            }
+                        }
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        ).start();
+    }
+
     /**
      * Verifica o numero de argumentos ao iniciar o programa,
      * pede o endereço IPv4 caso nao seja passado em argumento,
@@ -675,6 +736,7 @@ public class MulticastServer extends Thread {
                 LIGAR
                  */
                 multicastServer.start();
+                multicastServer.initializeTerminalChecker();
                 multicastServer.connect();
             } else
                 System.exit(0);
@@ -700,6 +762,7 @@ public class MulticastServer extends Thread {
                             LIGAR
                             */
                             multicastServer.start();
+                            multicastServer.initializeTerminalChecker();
                             multicastServer.connect();
                         } else
                             System.exit(0);

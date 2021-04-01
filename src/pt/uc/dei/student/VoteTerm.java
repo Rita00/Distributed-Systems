@@ -145,12 +145,25 @@ public class VoteTerm extends Thread {
                             this.login(msgHash.get("cc"), msgHash.get("arrayList"), msgHash.get("arrayIds"), msgHash.get("election"), ndep[2]);
                             break;
                         case "ping":
+                            this.checkAlive();
                             //TODO
                             break;
                     }
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
+            } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+                //e.printStackTrace();
             }
+        }
+    }
+
+    public void checkAlive() {
+        String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|ping", this.getVoteTermId(), this.getDepartmentId(), "multicast");
+        byte[] buffer = sendMsg.getBytes();
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
+        try {
+            this.getSocket().send(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

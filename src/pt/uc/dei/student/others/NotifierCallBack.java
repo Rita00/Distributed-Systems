@@ -55,10 +55,12 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
                 }
             }
             last = i.getDep_name();
-            if (i.getStatusTerminal() == 0) {
-                System.out.printf("\tTerminal %s\tDesligado\n", i.getTerminal_id());
-            } else {
-                System.out.printf("\tTerminal %s\tLigado\n", i.getTerminal_id());
+            if (i.getTerminal_id() != 0) {
+                if (i.getStatusTerminal() == 0) {
+                    System.out.printf("\tTerminal %s\tDesligado\n", i.getTerminal_id());
+                } else {
+                    System.out.printf("\tTerminal %s\tLigado\n", i.getTerminal_id());
+                }
             }
         }
     }

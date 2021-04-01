@@ -682,13 +682,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
             stmt.close();
             conn.close();
-            for (Notifier notifier : notifiersVotesAdmin) {
-                try {
-                    notifier.updatePollsAdmin(info);
-                } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                NOTIFIER.updatePollsAdmin(info);
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
             }
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

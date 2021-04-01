@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
+//TODO verificar se nas eleiçoes que nao sao restritas a um unico departamento as pessoas so podem votar apenas 1 vez (ter cuidado se pode votar em mais que um departamento)
 //Todo permitir apenas criar eleições depois da data atual
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
 //Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento
@@ -298,7 +299,8 @@ public class MulticastServer extends Thread {
         while (true) {
             try {
                 this.rmiServer.updateTerminalInfoPerson(cc_number, id);
-                        break;
+                this.rmiServer.updateTerminalInfoElection(election, id);
+                break;
             } catch (RemoteException | InterruptedException e) {
                 e.printStackTrace();
                 reconnectToRMI();
@@ -424,13 +426,15 @@ public class MulticastServer extends Thread {
                     this.verifyLogin(msgHash.get("sender"), msgHash.get("username"), msgHash.get("password"));
                     break;
                 case "vote":
-                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("dep"), msgHash.get("sender"));
+                    this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("dep"), msgHash.get("sender").split("-")[1]);
+                    break;
                 case "request_id":
                     registerTerminal(msgHash.get("sender"), msgHash.get("required_id"));
                     break;
                 case "ping":
                     String id = msgHash.get("sender");
                     this.terminalPingCounter.put(id.split("-")[1], 5);
+                    break;
             }
         }
     }
@@ -521,7 +525,11 @@ public class MulticastServer extends Thread {
             while (true) {
                 try {
                     this.rmiServer.insertTerminal(required_id, this.getMulticastId());
-                    this.availableTerminals.put(required_id, true);
+                    try {
+                        this.availableTerminals.put(required_id, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     this.terminalPingCounter.put(required_id, 5);
                     break;
                 } catch (RemoteException | InterruptedException e) {
@@ -556,7 +564,8 @@ public class MulticastServer extends Thread {
                 this.availableTerminals.put(required_id, false);
             }
             this.terminalPingCounter.put(required_id, 5);
-            message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|%s;infoPerson|%s;infoElection|%s", this.getMulticastId(), this.department.getId(), id, required_id, cc_number_info, infoElection);
+            String info = getElectionInfo(id_election);
+            message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|%s;infoPerson|%s;%s", this.getMulticastId(), this.department.getId(), id, required_id, cc_number_info, info);
         } else { // se um e vivo rejeitar id.
             message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|not_available", this.getMulticastId(), this.department.getId(), id);
         }

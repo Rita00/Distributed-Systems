@@ -124,6 +124,8 @@ public interface RMI extends Remote {
 
     void updateTerminalInfoPerson(int cc_number, String idTerminal) throws java.rmi.RemoteException, InterruptedException;
 
+    void updateTerminalInfoElection(int election_id, String idTerminal) throws java.rmi.RemoteException, InterruptedException;
+
     int getElectionIdFromTerminal(String id) throws java.rmi.RemoteException, InterruptedException;
 
     int getElectorInfo(String id) throws java.rmi.RemoteException, InterruptedException;

@@ -162,6 +162,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         updateOnDB("UPDATE voting_terminal SET infoPerson = " + cc_number + " WHERE id = " + idTerminal);
     }
 
+    public void updateTerminalInfoElection(int election_id, String idTerminal) {
+        updateOnDB("UPDATE voting_terminal SET infoElection = " + election_id + " WHERE id = " + idTerminal);
+    }
+
     public int getTerminal(String required_id) {
         if (countRowsBD("voting_terminal WHERE id = " + required_id, null) == 0) {
             return -1;

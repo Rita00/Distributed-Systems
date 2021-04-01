@@ -369,7 +369,7 @@ public class VoteTerm extends Thread {
                     this.voteTermId = Integer.parseInt(required_id);
                     if (msgHash.get("infoPerson") != null && !msgHash.get("infoPerson").equals("0")) {
                         String[] ndep = msgHash.get("sender").split("-");
-                        this.login(msgHash.get("cc"), msgHash.get("arrayList"), msgHash.get("arrayIds"), msgHash.get("election"), ndep[2]);
+                        this.login(msgHash.get("infoPerson"), msgHash.get("arrayList"), msgHash.get("arrayIds"), msgHash.get("election"), ndep[2]);
                     }
                     // TODO recuperar info do terminal se disponivel
                 } else {

@@ -28,6 +28,7 @@ public class AdminConsole {
     private final int EDIT = -1;
     private final int REMOVE = -1;
     private final int ADD = -2;
+    private int isGettingRealTime = 0;
 
     private RMI rmiServer;
 
@@ -103,6 +104,7 @@ public class AdminConsole {
     }
 
     private void statusVotes() {
+        isGettingRealTime = 2;
         int command;
         Scanner input = new Scanner(System.in);
         while (true) {
@@ -142,6 +144,7 @@ public class AdminConsole {
 
     private void statusPollingStation() {
         this.isMonitoring = true;
+        this.isGettingRealTime = 1;
         int command;
         Scanner input = new Scanner(System.in);
         //TODO mostrar dados
@@ -1021,12 +1024,16 @@ public class AdminConsole {
                     while (true) {
                         try {
                             this.rmiServer.saySomething();
-                            break;
                         } catch (RemoteException | InterruptedException e) {
+                            reconnectToRMI();
                             try {
-                                NOTIFIER = new NotifierCallBack();
-                            } catch (RemoteException remoteException) {
-                                remoteException.printStackTrace();
+                                if (isGettingRealTime == 2) {
+                                    this.rmiServer.initializeRealTimeVotes(NOTIFIER);
+                                } else if (isGettingRealTime == 1) {
+                                    this.rmiServer.initializeRealTimePolls(NOTIFIER);
+                                }
+                            } catch (RemoteException | InterruptedException ex) {
+                                ex.printStackTrace();
                             }
                             System.out.println("RMI MORREU....");
                         }

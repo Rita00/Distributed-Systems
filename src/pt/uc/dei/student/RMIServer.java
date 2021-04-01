@@ -37,7 +37,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         notifiersMulticast = new ConcurrentHashMap<>();
         notifiersVotesAdmin = new ArrayList<>();
         notifiersPollsAdmin = new ArrayList<>();
-        this.terminalsUpdated=false;
+        this.terminalsUpdated = false;
     }
 
 
@@ -149,20 +149,29 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             System.out.println("Problem updating department");
         }
     }
-    synchronized public void updateTerminals(int department_id, ConcurrentHashMap<String, Boolean> availableTerminals) {
-        while(this.terminalsUpdated){
-            try{
-                wait();
-            }catch(InterruptedException ignore){}
+
+    public boolean insertTerminal(String id, String dep_id, String status) {
+        return updateOnDB(String.format("INSERT INTO voting_terminal (id, department_id, status, info) VALUES(%s,%s,1,0)", id, dep_id));
+    }
+
+    public void updateTerminalStatus(String id, String status) {
+        updateOnDB("UPDATE voting_record SET status = " + status + " WHERE id = " + id);
+    }
+
+    public int getTerminal(String required_id) {
+        if (countRowsBD("voting_terminal WHERE id = " + required_id, null) == 0) {
+            return -1;
+        } else {
+            return countRowsBD("voting_terminal WHERE id = " + required_id, "status");
         }
-        this.updateOnDB("DELETE FROM voting_terminal WHERE department_id="+department_id);
-        for (String t : availableTerminals.keySet()) {
-            if (availableTerminals.get(t)) {
-                this.updateOnDB(String.format("INSERT INTO voting_terminal(id,department_id) VALUES (%s,%s)", t.split("-")[1], department_id));
-            } //todo
-        }
-        this.terminalsUpdated=true;
-        notify();
+    }
+
+    public int getElectionIdFromTerminal(String id) {
+        return countRowsBD("voting_terminal WHERE id = " + id, "infoElection");
+    }
+
+    public int getElectorInfo(String id) {
+        return countRowsBD("voting_terminal WHERE id = " + id, "infoPerson");
     }
 
     public void removeOnDB(String table, String idName, int id) {
@@ -182,13 +191,14 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     synchronized public ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() {
-        while(!this.terminalsUpdated){
-            try{
+        while (!this.terminalsUpdated) {
+            try {
                 wait();
-            }catch(InterruptedException ignore){}
+            } catch (InterruptedException ignore) {
+            }
         }
         ConcurrentHashMap<Integer, ArrayList<Integer>> hashMap = this.selectActiveTerminals("SELECT * FROM voting_terminal");
-        this.terminalsUpdated=false;
+        this.terminalsUpdated = false;
         notify();
         return hashMap;
     }
@@ -687,12 +697,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 "JOIN department d on d.id = voting_record.department " +
                 "ORDER BY voting_record.election_id, p.name");
     }
+
     /**
      * Manda mensagem para dizer que está a funcionar
      *
      * @return "I'm alive!"
      */
-    public String saySomething(){
+    public String saySomething() {
         return "I'm alive!";
     }
 
@@ -811,7 +822,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast(){
+    public ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast() {
         return notifiersMulticast;
     }
 

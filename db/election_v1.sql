@@ -11,6 +11,8 @@ CREATE TABLE voting_terminal (
     id		        INTEGER,
     department_id   INTEGER,
     status          INTEGER,
+    infoPerson      INTEGER,
+    infoElection    INTEGER,
     FOREIGN KEY (department_id) REFERENCES department(id),
     PRIMARY KEY(id)
 );

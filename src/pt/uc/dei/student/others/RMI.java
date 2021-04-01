@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 //TODO ===================================
 //TODO CHECK COMENTARIOS
 //TODO ===================================
+
 /**
  * Interface do RMI
  *
@@ -25,10 +26,9 @@ public interface RMI extends Remote {
      * @throws InterruptedException
      */
     String saySomething() throws java.rmi.RemoteException, InterruptedException;
+
     /**
-     *
-     *
-     * @param name nome da pessoa
+     * @param name        nome da pessoa
      * @param cargo
      * @param pass
      * @param dep
@@ -116,7 +116,15 @@ public interface RMI extends Remote {
 
     ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
 
-    void updateTerminals(int department_id, ConcurrentHashMap<String, Boolean> availableTerminals) throws java.rmi.RemoteException, InterruptedException;
+    void updateTerminalStatus(String id, String status) throws java.rmi.RemoteException, InterruptedException;
+
+    boolean insertTerminal(String id, String dep_id, String status) throws java.rmi.RemoteException, InterruptedException;
+
+    int getTerminal(String required_id) throws java.rmi.RemoteException, InterruptedException;
+
+    int getElectionIdFromTerminal(String id) throws java.rmi.RemoteException, InterruptedException;
+
+    int getElectorInfo(String id) throws java.rmi.RemoteException, InterruptedException;
 
     void updateDepartmentMulticast(int id) throws java.rmi.RemoteException, InterruptedException;
 

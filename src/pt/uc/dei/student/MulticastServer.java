@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 //Todo permitir apenas criar eleições depois da data atual
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
 //Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento
+
 /**
  * Mesa de Voto (Servidor dos Terminais de voto)
  *
@@ -83,24 +84,25 @@ public class MulticastServer extends Thread {
      * HashMap com o estado dos terminais de voto
      */
     private final ConcurrentHashMap<String, Boolean> availableTerminals;
+
     /**
      * Construtor do Servidor Multicast (Mesa de Voto)
      *
      * @param multicastAddress endereço IPv4 do Servidor Multicast
-     * @param rmiServer servidor RMI
+     * @param rmiServer        servidor RMI
      * @throws IOException
      */
-    public MulticastServer(String multicastAddress,RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
+    public MulticastServer(String multicastAddress, RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
         this.rmiServer = rmiServer;
         this.MULTICAST_ADDRESS = multicastAddress;
         this.socket = new MulticastSocket(MULTICAST_PORT);
-        this.group=InetAddress.getByName(multicastAddress);
-        this.multicastId=0;
+        this.group = InetAddress.getByName(multicastAddress);
+        this.multicastId = 0;
         this.NOTIFIER = new NotifierCallBack();
         this.availableTerminals = new ConcurrentHashMap<>();
     }
 
-    public void menuPollingStation(int dep_id){
+    public void menuPollingStation(int dep_id) {
         int command = -1, command2 = -1, election = -1, campo_num = -1;
         String campo = "", campo_sql;
         Scanner input = new Scanner(System.in);
@@ -322,7 +324,7 @@ public class MulticastServer extends Thread {
                     res.append(c.getId());
                 }
                 int size = candidacies.size();
-                res.append(String.format("|%d|%d", size, size + 1));
+                res.append(String.format("|%d|%d", size + 1, size + 2));
                 break;
             } catch (InterruptedException e) {
                 //e.printStackTrace();
@@ -382,6 +384,7 @@ public class MulticastServer extends Thread {
             //e.printStackTrace();
         }
     }
+
     /**
      * Transforma a mensagem em datagramma e envia-o por multicast
      *
@@ -396,6 +399,7 @@ public class MulticastServer extends Thread {
             //e.printStackTrace();
         }
     }
+
     /**
      * Trata a mensagem recebida
      *
@@ -405,20 +409,19 @@ public class MulticastServer extends Thread {
         //nao ler as suas proprias mensagens
         if (!msgHash.get("sender").startsWith("multicast")) {
             switch (msgHash.get("message")) {
-                case "occupied":
-                case "available":
-                    registerTerminal(msgHash.get("sender"), msgHash.get("message"));
-                    break;
                 case "login":
                     this.verifyLogin(msgHash.get("sender"), msgHash.get("username"), msgHash.get("password"));
                     break;
                 case "vote":
                     this.verifyVote(msgHash.get("id_candidacy"), msgHash.get("id_election"), msgHash.get("cc"), msgHash.get("dep"));
+                case "request_id":
+                    registerTerminal(msgHash.get("sender"), msgHash.get("required_id"));
+                    break;
             }
         }
     }
+
     /**
-     *
      * @param candidacyOption
      * @param id_election
      * @param cc
@@ -475,33 +478,64 @@ public class MulticastServer extends Thread {
             }
         }
     }
+
+
     /**
      * Regista o estado de disponibilidade do terminal de voto
      *
-     * @param id ID do terminal de voto
-     * @param status estado de disponibilidade do terminal de voto
+     * @param id     ID do terminal de voto
      */
-    private void registerTerminal(String id, String status) {
-        if (status.equals("available")) {
-            availableTerminals.put(id, true);
-        } else {
-            availableTerminals.put(id, false);
-        }
+    //todo
+    private void registerTerminal(String id, String required_id) {
+        //procurar terminais na base de dados com este id.
+        int status;
+        String message = "";
         while (true) {
             try {
-                this.rmiServer.updateTerminals(this.getMulticastId(), availableTerminals);
+                status = this.rmiServer.getTerminal(required_id);
                 break;
             } catch (RemoteException | InterruptedException e) {
-                //e.printStackTrace();
+                e.printStackTrace();
                 reconnectToRMI();
             }
         }
+        //se nenhum, aceitar id
+        if (status == -1) {
+            message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|%s", this.getMulticastId(), this.department.getId(), id, required_id);
+        } else if (status == 0) { // se um, mas morto, aceitar id e enviar info adicional
+            int cc_number_info;
+            int id_election;
+            while (true) {
+                try {
+                    id_election = this.rmiServer.getElectionIdFromTerminal(id);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
+            String infoElection = getElectionInfo(id_election);
+            while (true) {
+                try {
+                    cc_number_info = this.rmiServer.getElectorInfo(id);
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
+            message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|%s;infoPerson|%s;infoElection|%s", this.getMulticastId(), this.department.getId(), id, required_id, cc_number_info, infoElection);
+        } else { // se um e vivo rejeitar id.
+            message = String.format("sender|multicast-%s-%s;destination|%s;message|request_id;allowed_id|not_available", this.getMulticastId(), this.department.getId(), id);
+        }
+        this.send(message);
     }
+
     /**
      * Verifica se a autenticação do eleitor no terminal de voto está valida,
      * envia por multicast a mensagem de sucesso ou falha no login do eleitor
      *
-     * @param id ID do terminal de voto
+     * @param id       ID do terminal de voto
      * @param username numero de cartão de cidadão do eleitor
      * @param password hashCode da concatenação do numero de CC do eleitor com a password introduzida pelo eleitor
      */
@@ -531,6 +565,7 @@ public class MulticastServer extends Thread {
             break;
         }
     }
+
     /**
      * Tenta efetuar a ligação ao Servidor RMI
      */
@@ -545,6 +580,7 @@ public class MulticastServer extends Thread {
             }
         }
     }
+
     /**
      * Getter do Servidor RMI
      *
@@ -553,6 +589,7 @@ public class MulticastServer extends Thread {
     public RMI getRmiServer() {
         return this.rmiServer;
     }
+
     /**
      * Getter do ID do Servidor Multicast
      *
@@ -561,6 +598,7 @@ public class MulticastServer extends Thread {
     public int getMulticastId() {
         return this.multicastId;
     }
+
     /**
      * Setter do ID do Servidor Multicast
      *
@@ -569,6 +607,7 @@ public class MulticastServer extends Thread {
     public void setMulticastId(int multicastId) {
         this.multicastId = multicastId;
     }
+
     /**
      * Setter do Departamento do Servidor Multicast
      *
@@ -577,6 +616,7 @@ public class MulticastServer extends Thread {
     public void setDepartment(Department department) {
         this.department = department;
     }
+
     /**
      * Verifica o numero de argumentos ao iniciar o programa,
      * pede o endereço IPv4 caso nao seja passado em argumento,
@@ -590,20 +630,20 @@ public class MulticastServer extends Thread {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         String network;
-        switch (args.length){
+        switch (args.length) {
             case 0:
                 do {
                     System.out.println("Endereço Multicast (ex:224.3.2.1)");
                     System.out.print(">>> ");
                     network = input.nextLine();
-                }while(!Utilitary.isIPv4(network));
+                } while (!Utilitary.isIPv4(network));
                 break;
             case 1:
-                if(!Utilitary.isIPv4(args[0])){
+                if (!Utilitary.isIPv4(args[0])) {
                     System.out.println("arg1: Endereço invalido");
                     return;
                 }
-                network=args[0];
+                network = args[0];
                 break;
             default:
                 System.out.println("Numeros de argumentos inválido");
@@ -614,7 +654,7 @@ public class MulticastServer extends Thread {
         try {
             int dep = -1;
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-            multicastServer = new MulticastServer(network,rmiServer);
+            multicastServer = new MulticastServer(network, rmiServer);
             /*
             SETUP
              */
@@ -640,7 +680,7 @@ public class MulticastServer extends Thread {
             while (true) {
                 try {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                    multicastServer = new MulticastServer(network,rmiServer);
+                    multicastServer = new MulticastServer(network, rmiServer);
                     ArrayList<Department> departments = null;
                     try {
                         departments = multicastServer.rmiServer.getDepartments();

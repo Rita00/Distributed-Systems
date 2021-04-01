@@ -137,10 +137,10 @@ public class VoteTerm extends Thread {
                 if (Integer.parseInt(msgHash.get("destination")) == this.voteTermId) {
                     switch (msgHash.get("message")) {
                         case "stop":
-                            stopTerminal();
+                            stopTerminal();//TODO unused?
                             break;
                         case "true":
-                            //do nothing? print something?
+                            //do nothing? print something?//TODO unused?
                             break;
                         case "identify":
                             this.available = false;

@@ -311,6 +311,11 @@ public class MulticastServer extends Thread {
         System.out.println("Desbloqueado terminal " + id);
     }
 
+    /**
+     * 
+     * @param election
+     * @return
+     */
     private String getElectionInfo(int election) {
         StringBuilder res = new StringBuilder();
         ArrayList<Candidacy> candidacies;
@@ -346,7 +351,9 @@ public class MulticastServer extends Thread {
         }
         return res.toString();
     }
-
+    /**
+     * Inicia a interface da consola do terminal de voto com o seu menu principal
+     */
     private void connect() {
         String depName = this.department.getName();
 
@@ -368,7 +375,12 @@ public class MulticastServer extends Thread {
             }
         }
     }
-
+    /**
+     * Liga o Servidor ao grupo de multicast,
+     * recebe as mensagens enviadas no grupo,
+     * efetua o parse da mensagem para uma HashMap e
+     * a HashMap é enviada para tratamento
+     */
     public void run() {
         try {
             //O servidor não recebe mensagens dos clientes (sem o Port)
@@ -394,7 +406,7 @@ public class MulticastServer extends Thread {
                 this.run();
             }
         } catch (IOException e) {
-            //e.printStackTrace();
+            //e.printStackTrace(); //TODO tratar ou ignorar
         }
     }
 
@@ -440,13 +452,14 @@ public class MulticastServer extends Thread {
     }
 
     /**
-     * @param candidacyOption
-     * @param id_election
-     * @param cc
-     * @param ndep
+     * Vota na lista escolhida pelo eleitor ou vota em branco ou vota nulo
+     *
+     * @param candidacyOption opção escolhida pelo eleitor no terminal de voto
+     * @param id_election ID da eleição em que o eleitor votou
+     * @param cc numero de cartão de cidadão do eleitor
+     * @param ndep numero do departamento onde o voto foi realizado
      */
     private void verifyVote(String candidacyOption, String id_election, String cc, String ndep, String terminalId) {
-
         ArrayList<Candidacy> candidacies;
         while (true) {
             try {
@@ -627,36 +640,26 @@ public class MulticastServer extends Thread {
      *
      * @return servidor RMI
      */
-    public RMI getRmiServer() {
-        return this.rmiServer;
-    }
-
+    public RMI getRmiServer() { return this.rmiServer; }
     /**
      * Getter do ID do Servidor Multicast
      *
      * @return ID do Servidor Multicast
      */
-    public int getMulticastId() {
-        return this.multicastId;
-    }
-
+    public int getMulticastId() { return this.multicastId; }
     /**
      * Setter do ID do Servidor Multicast
      *
      * @param multicastId ID do Servidor Multicast
      */
-    public void setMulticastId(int multicastId) {
-        this.multicastId = multicastId;
-    }
-
+    public void setMulticastId(int multicastId) { this.multicastId = multicastId; }
     /**
      * Setter do Departamento do Servidor Multicast
      *
      * @param department Departamento do Servidor Multicast
      */
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
+
+    public void setDepartment(Department department) { this.department = department; }
 
     public void initializeTerminalChecker() {
         new Thread(

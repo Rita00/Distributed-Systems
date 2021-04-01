@@ -88,7 +88,7 @@ public interface RMI extends Remote {
 
     void insertPollingStation(int election_id, int department_id) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean turnOffPollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
+    void turnOffPollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Election> getEndedElections() throws java.rmi.RemoteException, InterruptedException;
 
@@ -118,7 +118,7 @@ public interface RMI extends Remote {
 
     void updateTerminalStatus(String id, String status) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean insertTerminal(String id, int dep_id) throws java.rmi.RemoteException, InterruptedException;
+    void insertTerminal(String id, int dep_id) throws java.rmi.RemoteException, InterruptedException;
 
     int getTerminal(String required_id) throws java.rmi.RemoteException, InterruptedException;
 

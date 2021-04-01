@@ -150,12 +150,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
-    public boolean insertTerminal(String id, int dep_id) {
-        return updateOnDB(String.format("INSERT INTO voting_terminal (id, department_id, status, infoPerson) VALUES(%s,%s,1,0)", id, dep_id));
+    public void insertTerminal(String id, int dep_id) {
+        updateOnDB(String.format("INSERT INTO voting_terminal (id, department_id, status, infoPerson) VALUES(%s,%s,1,0)", id, dep_id));
+        this.sendRealTimePolls();
+
     }
 
     public void updateTerminalStatus(String id, String status) {
         updateOnDB("UPDATE voting_terminal SET status = " + status + " WHERE id = '" + id + "'");
+        this.sendRealTimePolls();
     }
 
     public void updateTerminalInfoPerson(int cc_number, String idTerminal) {
@@ -477,10 +480,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         insertElectionDepartment(election_id, department_id);
     }
 
-    public boolean turnOffPollingStation(int department_id) {
+    public void turnOffPollingStation(int department_id) {
+        updateOnDB("UPDATE department SET hasMulticastServer = 0 WHERE id = " + department_id);
         sendRealTimePolls();
-        return updateOnDB("UPDATE department SET hasMulticastServer = null WHERE id = " + department_id);
-        //TODO
     }
 
     public ArrayList<Election> getEndedElections() {
@@ -633,9 +635,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public void sendRealTimePolls() {
-        String sql = "SELECT d.name as depname, d.hasmulticastserver as statusPoll, voting_terminal.id as terminalId, status as statusTerminal " +
-                "FROM department, voting_terminal " +
-                "JOIN department d on voting_terminal.department_id = d.id GROUP BY department_id";
+        String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
+                "LEFT JOIN voting_terminal vt on department.id = vt.department_id WHERE hasmulticastserver not null";
         ArrayList<InfoPolls> info = new ArrayList<>();
         Connection conn = connectDB();
         try {
@@ -664,9 +665,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public void sendRealTimePolls(Notifier NOTIFIER) {
-        String sql = "SELECT d.name as depname, d.hasmulticastserver as statusPoll, voting_terminal.id as terminalId, status as statusTerminal " +
-                "FROM department, voting_terminal " +
-                "JOIN department d on voting_terminal.department_id = d.id GROUP BY department_id";
+        String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
+                "LEFT JOIN voting_terminal vt on department.id = vt.department_id WHERE hasmulticastserver not null";
         ArrayList<InfoPolls> info = new ArrayList<>();
         Connection conn = connectDB();
         try {

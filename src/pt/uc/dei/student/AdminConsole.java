@@ -31,7 +31,7 @@ public class AdminConsole {
 
     private RMI rmiServer;
 
-    private final NotifierCallBack NOTIFIER = new NotifierCallBack();
+    private NotifierCallBack NOTIFIER = new NotifierCallBack();
 
     private boolean isMonitoring;
 
@@ -1021,7 +1021,13 @@ public class AdminConsole {
                     while (true) {
                         try {
                             this.rmiServer.saySomething();
+                            break;
                         } catch (RemoteException | InterruptedException e) {
+                            try {
+                                NOTIFIER = new NotifierCallBack();
+                            } catch (RemoteException remoteException) {
+                                remoteException.printStackTrace();
+                            }
                             System.out.println("RMI MORREU....");
                         }
                     }

@@ -45,6 +45,7 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
 
     public void updatePollsAdmin(ArrayList<InfoPolls> info) {
         String last = "";
+        System.out.println("==============================");
         for (InfoPolls i : info) {
             if (!i.getDep_name().equals(last)) {
                 if (i.getStatusPoll() == 1) {
@@ -54,10 +55,10 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
                 }
             }
             last = i.getDep_name();
-            if (i.getStatusTerminal() == 1) {
-                System.out.printf("\tTerminal %s\tLigado\n", i.getTerminal_id());
-            } else {
+            if (i.getStatusTerminal() == 0) {
                 System.out.printf("\tTerminal %s\tDesligado\n", i.getTerminal_id());
+            } else {
+                System.out.printf("\tTerminal %s\tLigado\n", i.getTerminal_id());
             }
         }
     }

@@ -556,6 +556,15 @@ public class MulticastServer extends Thread {
             int id_election;
             while (true) {
                 try {
+                    this.rmiServer.updateTerminalStatus(required_id, "1");
+                    break;
+                } catch (RemoteException | InterruptedException e) {
+                    e.printStackTrace();
+                    reconnectToRMI();
+                }
+            }
+            while (true) {
+                try {
                     id_election = this.rmiServer.getElectionIdFromTerminal(required_id);
                     break;
                 } catch (RemoteException | InterruptedException e) {
@@ -563,7 +572,6 @@ public class MulticastServer extends Thread {
                     reconnectToRMI();
                 }
             }
-            String infoElection = getElectionInfo(id_election);
             while (true) {
                 try {
                     cc_number_info = this.rmiServer.getElectorInfo(required_id);
@@ -669,8 +677,7 @@ public class MulticastServer extends Thread {
                             String message = String.format("sender|multicast-%s-%s;destination|%s;message|ping", this.getMulticastId(), this.department.getId(), terminal_id);
                             this.send(message);
                             this.terminalPingCounter.put(terminal_id, this.terminalPingCounter.get(terminal_id) - 1);
-                            if (this.terminalPingCounter.get(terminal_id) < 0) {
-                                //TODO update db
+                            if (this.terminalPingCounter.get(terminal_id) == 0) {
                                 while (true) {
                                     try {
                                         //0 siginifica que morreu

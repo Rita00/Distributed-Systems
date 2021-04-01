@@ -388,7 +388,6 @@ public class VoteTerm extends Thread {
                         String[] ndep = msgHash.get("sender").split("-");
                         this.login(msgHash.get("infoPerson"), msgHash.get("arrayList"), msgHash.get("arrayIds"), msgHash.get("election"), ndep[2]);
                     }
-                    // TODO recuperar info do terminal se disponivel
                 } else {
                     System.out.println("ID não disponível, a morrer...");
                     return;

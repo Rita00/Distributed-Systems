@@ -24,7 +24,7 @@ title	 VARCHAR(512) NOT NULL,
 type	 VARCHAR(512) NOT NULL,
 description VARCHAR(512),
 begin_date	 VARCHAR(32) NOT NULL CONSTRAINT begin_date CHECK (begin_date is datetime(begin_date)),
-end_date	 VARCHAR(32) NOT NULL CONSTRAINT end_date CHECK (end_date is datetime(end_date) and end_date > election.begin_date and begin_date > date('now') and end_date > date('now')),
+end_date	 VARCHAR(32) NOT NULL CONSTRAINT end_date CHECK (end_date is datetime(end_date) and end_date > election.begin_date),
 blank_votes BIGINT NOT NULL DEFAULT 0,
 null_votes	 BIGINT NOT NULL DEFAULT 0,
 PRIMARY KEY(id)
@@ -71,7 +71,7 @@ CREATE TABLE voting_record (
 );
 
 CREATE TABLE election_department (
-         election_id	 INTEGER,
+         election_id	 INTEGER UNIQUE,
          department_id INTEGER,
          PRIMARY KEY(election_id,department_id),
          FOREIGN KEY (election_id) REFERENCES election(id),

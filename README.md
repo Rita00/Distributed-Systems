@@ -36,5 +36,8 @@ java -jar terminal.jar
 2. Com Endereço em argumento
 Por exemplo para o endereço 224.3.2.1
 ```bash
-java -jar zerminal.jar 224.3.2.1
+java -jar terminal.jar 224.3.2.1
 ```
+
+## Documentação
+A Javadoc do projeto está acessível na diretoria ***javadoc/index.html***

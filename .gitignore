@@ -25,6 +25,7 @@ hs_err_pid*
 # others
 Icon?
 *.DS_Store
-*.idea
 *.project
 *.classpath
+.idea/dataSources.xml
+.idea/sqldialects.xml

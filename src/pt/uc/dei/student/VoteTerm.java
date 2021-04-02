@@ -171,10 +171,13 @@ public class VoteTerm extends Thread {
         String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|ping", this.getVoteTermId(), this.getDepartmentId(), "multicast");
         byte[] buffer = sendMsg.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
-        try {
-            this.getSocket().send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                this.getSocket().send(packet);
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -237,7 +240,7 @@ public class VoteTerm extends Thread {
             */
             //--------------
             System.out.print("Password: ");
-            String enteredPassword= input.nextLine();
+            String enteredPassword = input.nextLine();
             //--------------
             String password = String.format("%s", (cc + enteredPassword).hashCode());
             String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", cc, password);
@@ -292,9 +295,9 @@ public class VoteTerm extends Thread {
             try {
                 sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
-            if(!this.available){
+            if (!this.available) {
                 break;
             }
         }
@@ -308,10 +311,12 @@ public class VoteTerm extends Thread {
     public void sendMessage(String message) {
         byte[] buffer = message.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
-        try {
-            this.getSocket().send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                this.getSocket().send(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

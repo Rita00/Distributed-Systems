@@ -24,10 +24,8 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 //TODO se pedir novo terminal de voto enquanto alguem está num terminal bloqueia para sempre
-//TODO contagem de votos em tempo real em loop cortar no if
 //Todo listagem de registo nao aparece eleição 4001, idk why yet
 //TODO verificar se nas eleiçoes que nao sao restritas a um unico departamento as pessoas so podem votar apenas 1 vez (ter cuidado se pode votar em mais que um departamento)
-//Todo verificar se o terminal de voto fica livre e ocupado no multicast
 
 /**
  * Mesa de Voto (Servidor dos Terminais de voto)
@@ -174,7 +172,7 @@ public class MulticastServer extends Thread {
             try {
                 campo = reader.readLine();
             } catch (IOException e) {
-                e.printStackTrace();//TODO tratar exceção
+                //e.printStackTrace();//TODO tratar exceção
             }
         } else if (command == 2) {
             campo_sql = "job";
@@ -221,7 +219,7 @@ public class MulticastServer extends Thread {
             try {
                 campo = reader.readLine();
             } catch (IOException e) {
-                e.printStackTrace();//TODO tratar exceção
+                //e.printStackTrace();//TODO tratar exceção
             }
         } else {
             campo_sql = "cc_number";
@@ -303,7 +301,7 @@ public class MulticastServer extends Thread {
                 this.rmiServer.updateTerminalInfoElection(election, id);
                 break;
             } catch (RemoteException | InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 reconnectToRMI();
             }
         }
@@ -420,11 +418,15 @@ public class MulticastServer extends Thread {
     private void send(String message) {
         byte[] buffer = message.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
-        try {
-            socket.send(packet);
-        } catch (IOException e) {
-            //e.printStackTrace();
+        while(true) {
+            try {
+                socket.send(packet);
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     /**
@@ -508,7 +510,7 @@ public class MulticastServer extends Thread {
                 this.rmiServer.updateTerminalInfoPerson(0, terminalId);
                 break;
             } catch (RemoteException | InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 reconnectToRMI();
             }
         }
@@ -533,7 +535,7 @@ public class MulticastServer extends Thread {
                 status = this.rmiServer.getTerminal(required_id);
                 break;
             } catch (RemoteException | InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 reconnectToRMI();
             }
         }
@@ -542,15 +544,11 @@ public class MulticastServer extends Thread {
             while (true) {
                 try {
                     this.rmiServer.insertTerminal(required_id, this.getMulticastId());
-                    try {
-                        this.availableTerminals.put(required_id, true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    this.availableTerminals.put(required_id, true);
                     this.terminalPingCounter.put(required_id, 5);
                     break;
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     reconnectToRMI();
                 }
             }
@@ -563,7 +561,7 @@ public class MulticastServer extends Thread {
                     this.rmiServer.updateTerminalStatus(required_id, "1");
                     break;
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     reconnectToRMI();
                 }
             }
@@ -572,7 +570,7 @@ public class MulticastServer extends Thread {
                     id_election = this.rmiServer.getElectionIdFromTerminal(required_id);
                     break;
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     reconnectToRMI();
                 }
             }
@@ -581,7 +579,7 @@ public class MulticastServer extends Thread {
                     cc_number_info = this.rmiServer.getElectorInfo(required_id);
                     break;
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     reconnectToRMI();
                 }
             }
@@ -688,7 +686,7 @@ public class MulticastServer extends Thread {
                                         this.rmiServer.updateTerminalStatus(terminal_id, "0");
                                         break;
                                     } catch (InterruptedException | RemoteException e) {
-                                        e.printStackTrace();
+                                        //e.printStackTrace();
                                         reconnectToRMI();
                                     }
                                 }
@@ -697,7 +695,7 @@ public class MulticastServer extends Thread {
                         try {
                             sleep(1000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            //e.printStackTrace();
                         }
                     }
                 }

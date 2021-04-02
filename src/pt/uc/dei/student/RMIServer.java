@@ -115,7 +115,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public Person getPerson(String username, String password) {
         try {
             ArrayList<Person> people = this.selectPeople("SELECT * FROM person WHERE cc_number='" + username + "' AND password='" + password + "';");
-            return people.get(0);
+            if (people.size() != 0)
+                return people.get(0);
+            else return null;
         } catch (NullPointerException e) {
             return null;
         }

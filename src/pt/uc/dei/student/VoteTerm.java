@@ -8,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -295,7 +294,7 @@ public class VoteTerm extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(this.available){
+            if(!this.available){
                 break;
             }
         }

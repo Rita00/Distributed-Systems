@@ -436,7 +436,7 @@ public class VoteTerm extends Thread {
 
         }
         VoteTerm client = new VoteTerm(network, MulticastServer.MULTICAST_PORT);
-        System.out.println("required id:");
+        System.out.println("Required id:");
         try {
             client.initializeTerminal(reader.readLine()); // todo fix this
         } catch (IOException e) {

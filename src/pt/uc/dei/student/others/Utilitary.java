@@ -175,4 +175,10 @@ public class Utilitary {
         Pattern IPv4_PATTERN = Pattern.compile("^([0-9]?[0-9]?[0-9][.]){3}([0-9]?[0-9]?[0-9])$");
         return IPv4_PATTERN.matcher(ip).matches();
     }
+
+    public static String prepareForMulticast(String original){
+        String prepared = original.replace(";"," ");
+        prepared = prepared.replace("|", " ");
+        return prepared;
+    }
 }

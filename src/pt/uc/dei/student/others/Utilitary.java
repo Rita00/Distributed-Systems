@@ -178,7 +178,6 @@ public class Utilitary {
 
     public static String prepareForMulticast(String original){
         String prepared = original.replace(";"," ");
-        prepared = prepared.replace("|", " ");
-        return prepared;
+        return prepared.replace("|", " ");
     }
 }

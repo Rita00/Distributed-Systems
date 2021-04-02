@@ -697,9 +697,10 @@ public class AdminConsole {
         Scanner input = new Scanner(System.in);
         System.out.println("========ADICIONAR LISTA=======");
         System.out.print("Nome: ");
+        String candidacyName = Utilitary.prepareForMulticast(input.nextLine());//TODO Adicionei isto para nao ter problemas no multicast
         while (true) {
             try {
-                this.rmiServer.insertCandidacyIntoElection(input.nextLine(), election.getType(), election.getId());
+                this.rmiServer.insertCandidacyIntoElection(candidacyName, election.getType(), election.getId());
                 break;
             } catch (InterruptedException | RemoteException e) {
                 //e.printStackTrace();

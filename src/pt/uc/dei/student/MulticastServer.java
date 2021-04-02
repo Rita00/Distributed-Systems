@@ -23,10 +23,9 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
+//Todo listagem de registo nao aparece eleição 4001, idk why yet
 //TODO verificar se nas eleiçoes que nao sao restritas a um unico departamento as pessoas so podem votar apenas 1 vez (ter cuidado se pode votar em mais que um departamento)
-//Todo permitir apenas criar eleições depois da data atual
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
-//Todo verificar que os multicast estão em redes diferentes --- passar endereço por argumento
 
 /**
  * Mesa de Voto (Servidor dos Terminais de voto)

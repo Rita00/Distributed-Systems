@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
+//TODO uma eleição restrita a um unico departamento nao pode ser adicionada a mais
+//TODO uma eleição não restrita não pode ser adicionada
 //Todo listagem de registo nao aparece eleição 4001, idk why yet
 //TODO verificar se nas eleiçoes que nao sao restritas a um unico departamento as pessoas so podem votar apenas 1 vez (ter cuidado se pode votar em mais que um departamento)
 //Todo verificar se o terminal de voto fica livre e ocupado no multicast
@@ -500,7 +502,6 @@ public class MulticastServer extends Thread {
                 }
             }
         }
-        this.availableTerminals.put(terminalId, true);
         while (true) {
             try {
                 this.rmiServer.updateTerminalInfoPerson(0, terminalId);
@@ -510,6 +511,9 @@ public class MulticastServer extends Thread {
                 reconnectToRMI();
             }
         }
+        this.availableTerminals.put(terminalId, true);
+        String message = String.format("sender|multicast-%s-%s;destination|%s;message|voteOk;cc|%s;election|%s", this.getMulticastId(), this.department.getId(), terminalId, cc, id_election);
+        this.send(message);
     }
 
 

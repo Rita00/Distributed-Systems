@@ -23,6 +23,8 @@ import pt.uc.dei.student.others.Utilitary;
  * @see Thread
  */
 public class VoteTerm extends Thread {
+
+    private String electionBlocked, ccBlocked;
     /**
      * Porte do Servidor Multicast
      */
@@ -148,7 +150,9 @@ public class VoteTerm extends Thread {
                             break;
                         case "ping":
                             this.checkAlive();
-                            //TODO
+                            break;
+                        case "voteOk":
+                            this.terminateVote(msgHash.get("election"), msgHash.get("cc"));
                             break;
                     }
                 }
@@ -156,6 +160,12 @@ public class VoteTerm extends Thread {
                 //e.printStackTrace();
             }
         }
+    }
+
+    public void terminateVote(String election, String cc) {
+        //verificar que é sobre o voto da pessoa para quem o terminal está desbloqueado
+        if (electionBlocked.equals(election) && ccBlocked.equals(cc))
+            this.available = true;
     }
 
     public void checkAlive() {
@@ -268,6 +278,8 @@ public class VoteTerm extends Thread {
      * @param ndep       numero do departamento
      */
     private void accessVotingForm(String infoByName, String infoById, String election, String cc, String ndep) {
+        electionBlocked = election;
+        ccBlocked = cc;
         Scanner input = new Scanner(System.in);
         String sendMsg;
         int command;
@@ -276,8 +288,17 @@ public class VoteTerm extends Thread {
         System.out.print(OPTION_STRING);
         command = input.nextInt();
         sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|vote;id_candidacy|%s;id_election|%s;cc|%s;dep|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", command, election, cc, ndep);
-        sendMessage(sendMsg);
-        this.available = true;
+        while (true) {
+            sendMessage(sendMsg);
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(this.available){
+                break;
+            }
+        }
     }
 
     /**

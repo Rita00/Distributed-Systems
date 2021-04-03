@@ -27,6 +27,23 @@ public interface RMI extends Remote {
      */
     String saySomething() throws java.rmi.RemoteException, InterruptedException;
 
+    String initializeMulticast(int dep_id, Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    void initializeRealTimeVotes(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    void initializeRealTimePolls(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    void endRealTimePolls(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    int countRowsBD(String sql, String returnCount) throws java.rmi.RemoteException, InterruptedException;
+
+    int numElections() throws java.rmi.RemoteException, InterruptedException;
+
+    void turnOffPollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
+
+    boolean checkIfAlreadyVote(int cc, int election) throws java.rmi.RemoteException, InterruptedException;
+
+    void endRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
     /**
      * @param name        nome da pessoa
      * @param cargo
@@ -50,6 +67,36 @@ public interface RMI extends Remote {
 
     boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
+    void insertPollingStation(int election_id, int department_id) throws java.rmi.RemoteException, InterruptedException;
+
+    void insertVotingRecord(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
+
+    void insertTerminal(String id, int dep_id) throws java.rmi.RemoteException, InterruptedException;
+
+    void removeOnDB(String table, String idName, int id) throws java.rmi.RemoteException, InterruptedException;
+
+    void removePollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateElections(Election e) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateTerminalInfoPerson(int cc_number, String idTerminal) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateTerminalInfoElection(int election_id, String idTerminal) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateDepartmentMulticast(int id) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateCandidacyVotes(String id_election, String candidacyOption, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateBlankVotes(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateNullVotes(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateTerminalStatus(String id, String status) throws java.rmi.RemoteException, InterruptedException;
+
+    ArrayList<Department> selectPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
+    ArrayList<Department> selectNoAssociatedPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
     ArrayList<Election> getElections() throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Election> getElectionsNotStarted() throws java.rmi.RemoteException, InterruptedException;
@@ -60,35 +107,13 @@ public interface RMI extends Remote {
 
     ArrayList<Person> getPeople(int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
 
-    void updateElections(Election e) throws java.rmi.RemoteException, InterruptedException;
-
-    void removeOnDB(String table, String idName, int id) throws java.rmi.RemoteException, InterruptedException;
-
     ArrayList<Department> getDepartments() throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Department> getActiveMulticasts() throws java.rmi.RemoteException, InterruptedException;
 
-    String initializeMulticast(int dep_id, Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+    int getElectionIdFromTerminal(String id) throws java.rmi.RemoteException, InterruptedException;
 
-    void initializeRealTimeVotes(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
-
-    void initializeRealTimePolls(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
-
-    void endRealTimePolls(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
-
-    ArrayList<Department> selectPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
-
-    ArrayList<Department> selectNoAssociatedPollingStation(int election_id) throws java.rmi.RemoteException, InterruptedException;
-
-    int countRowsBD(String sql, String returnCount) throws java.rmi.RemoteException, InterruptedException;
-
-    int numElections() throws java.rmi.RemoteException, InterruptedException;
-
-    void removePollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
-
-    void insertPollingStation(int election_id, int department_id) throws java.rmi.RemoteException, InterruptedException;
-
-    void turnOffPollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
+    int getElectorInfo(String id) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Election> getEndedElections() throws java.rmi.RemoteException, InterruptedException;
 
@@ -104,37 +129,11 @@ public interface RMI extends Remote {
 
     ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) throws java.rmi.RemoteException, InterruptedException;
 
-    void insertVotingRecord(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
-
-    void updateCandidacyVotes(String id_election, String candidacyOption, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
-
-    void updateBlankVotes(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
-
-    void updateNullVotes(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
-
-    boolean checkIfAlreadyVote(int cc, int election) throws java.rmi.RemoteException, InterruptedException;
+    int getTerminal(String required_id) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
 
-    void updateTerminalStatus(String id, String status) throws java.rmi.RemoteException, InterruptedException;
-
-    void insertTerminal(String id, int dep_id) throws java.rmi.RemoteException, InterruptedException;
-
-    int getTerminal(String required_id) throws java.rmi.RemoteException, InterruptedException;
-
-    void updateTerminalInfoPerson(int cc_number, String idTerminal) throws java.rmi.RemoteException, InterruptedException;
-
-    void updateTerminalInfoElection(int election_id, String idTerminal) throws java.rmi.RemoteException, InterruptedException;
-
-    int getElectionIdFromTerminal(String id) throws java.rmi.RemoteException, InterruptedException;
-
-    int getElectorInfo(String id) throws java.rmi.RemoteException, InterruptedException;
-
-    void updateDepartmentMulticast(int id) throws java.rmi.RemoteException, InterruptedException;
-
     ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() throws java.rmi.RemoteException, InterruptedException;
-
-    void endRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 
     ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast() throws java.rmi.RemoteException, InterruptedException;
 }

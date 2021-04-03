@@ -831,6 +831,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    private void initializeStatusChecker() {
+        statcheck = new StatusChecker(notifiersMulticast, this);
+    }
+
     public ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast() {
         return notifiersMulticast;
     }
@@ -851,9 +855,5 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         rmiServer.initializeRMI();
         rmiServer.initializeStatusChecker();
         rmiServer.initializeUDP();
-    }
-
-    private void initializeStatusChecker() {
-        statcheck = new StatusChecker(notifiersMulticast, this);
     }
 }

@@ -1071,7 +1071,7 @@ public class AdminConsole {
      * (-2) - Adicionar pessoa <br>
      * (0)  - Voltar <br>
      *
-     * @param candidacy
+     * @param candidacy lista candidata para ser gerida
      * @see Candidacy
      */
     private void manageCandidacy(Candidacy candidacy) {

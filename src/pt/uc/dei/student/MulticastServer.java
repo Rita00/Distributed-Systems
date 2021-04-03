@@ -91,7 +91,7 @@ public class MulticastServer extends Thread {
      *
      * @param multicastAddress endereço IPv4 do Servidor Multicast
      * @param rmiServer        servidor RMI
-     * @throws IOException
+     * @throws IOException exceção de I/O
      */
     public MulticastServer(String multicastAddress, RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
         this.rmiServer = rmiServer;
@@ -104,6 +104,21 @@ public class MulticastServer extends Thread {
         this.terminalPingCounter = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Menu da mesa de voto onde o eleitor pode proceder à sua identificação. <br>
+     * São apresentadas as eleições a decorrerem no departamento <br>
+     * Depois é possivel identificar o eleitor por: <br>
+     * - Nome <br>
+     * - Cargo <br>
+     * - Departamento <br>
+     * - Número de telemóvel <br>
+     * - Morada <br>
+     * - Número de cartão de cidadão <br>
+     * Depois de introduzir a informação pessoal, são apresentados os eleitores correspondentes.<br>
+     * Caso possa votar, é desbloquado o terminal de voto em que o eleitor pode votar.
+     *
+     * @param dep_id ID do departamento
+     */
     public void menuPollingStation(int dep_id) {
         int command = -1, command2 = -1, election = -1, campo_num = -1;
         String campo = "", campo_sql;
@@ -279,6 +294,11 @@ public class MulticastServer extends Thread {
 
     }
 
+    /**
+     * Seleciona e desbloqueia um terminal disponivel em que o eleitor pode votar.
+     * @param cc_number número de cartão de cidadão
+     * @param election ID da eleição
+     */
     private void selectTerminal(int cc_number, int election) {
         String id = null;
         // choose terminal
@@ -311,9 +331,11 @@ public class MulticastServer extends Thread {
     }
 
     /**
-     * 
-     * @param election
-     * @return
+     * Tranforma o nome das listas da eleição com os respetivos IDs numa string
+     * que possa ser enviada pelo protocolo multicast ao terminal de voto.
+     *
+     * @param election ID da eleição
+     * @return string com as listas para serem enviadas por multicast
      */
     private String getElectionInfo(int election) {
         StringBuilder res = new StringBuilder();
@@ -413,7 +435,7 @@ public class MulticastServer extends Thread {
     /**
      * Transforma a mensagem em datagramma e envia-o por multicast
      *
-     * @param message
+     * @param message mensagem para ser enviada
      */
     private void send(String message) {
         byte[] buffer = message.getBytes();
@@ -462,6 +484,7 @@ public class MulticastServer extends Thread {
      * @param id_election ID da eleição em que o eleitor votou
      * @param cc numero de cartão de cidadão do eleitor
      * @param ndep numero do departamento onde o voto foi realizado
+     * @param terminalId ID do terminal de voto
      */
     private void verifyVote(String candidacyOption, String id_election, String cc, String ndep, String terminalId) {
         ArrayList<Candidacy> candidacies;
@@ -518,14 +541,19 @@ public class MulticastServer extends Thread {
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|voteOk;cc|%s;election|%s", this.getMulticastId(), this.department.getId(), terminalId, cc, id_election);
         this.send(message);
     }
-
-
     /**
-     * Regista o estado de disponibilidade do terminal de voto
+     * Verifica se o ID requerido pelo o terminal de voto está
+     * disponivel. <br>
+     * Caso o ID esteja disponivel, aceita. <br>
+     * Caso o ID foi utilizado por um terminal que deixou de funcionar, aceita. <br>
+     * Caso o ID não esteja disponivel, rejeita. <br>
+     * As mensagens trocadas de aceitação/ rejeição são enviadas por multicast
+     * ao terminal de voto. <br>
+     * Quando aceito, o terminal de voto é registado na base de dados através do RMI
      *
-     * @param id ID do terminal de voto
+     * @param id ID random do terminal de voto que enviou a mensagem
+     * @param required_id ID requerido pelo terminal de voto
      */
-    //todo
     private void registerTerminal(String id, String required_id) {
         //procurar terminais na base de dados com este id.
         int status;
@@ -646,31 +674,11 @@ public class MulticastServer extends Thread {
     }
 
     /**
-     * Getter do Servidor RMI
-     *
-     * @return servidor RMI
+     * Cria e inicializa uma thread que vai trocar pings com o terminal de voto pelo
+     * protocolo multicast para atualizar a hashMap dos seus terminais de voto. <br>
+     * Caso não tenha pings no contador isto significa que o terminal de voto
+     * deixou de funcionar.
      */
-    public RMI getRmiServer() { return this.rmiServer; }
-    /**
-     * Getter do ID do Servidor Multicast
-     *
-     * @return ID do Servidor Multicast
-     */
-    public int getMulticastId() { return this.multicastId; }
-    /**
-     * Setter do ID do Servidor Multicast
-     *
-     * @param multicastId ID do Servidor Multicast
-     */
-    public void setMulticastId(int multicastId) { this.multicastId = multicastId; }
-    /**
-     * Setter do Departamento do Servidor Multicast
-     *
-     * @param department Departamento do Servidor Multicast
-     */
-
-    public void setDepartment(Department department) { this.department = department; }
-
     public void initializeTerminalChecker() {
         new Thread(
                 () -> {
@@ -701,13 +709,36 @@ public class MulticastServer extends Thread {
                 }
         ).start();
     }
-
+    /**
+     * Getter do Servidor RMI
+     *
+     * @return servidor RMI
+     */
+    public RMI getRmiServer() { return this.rmiServer; }
+    /**
+     * Getter do ID do Servidor Multicast
+     *
+     * @return ID do Servidor Multicast
+     */
+    public int getMulticastId() { return this.multicastId; }
+    /**
+     * Setter do ID do Servidor Multicast
+     *
+     * @param multicastId ID do Servidor Multicast
+     */
+    public void setMulticastId(int multicastId) { this.multicastId = multicastId; }
+    /**
+     * Setter do Departamento do Servidor Multicast
+     *
+     * @param department Departamento do Servidor Multicast
+     */
+    public void setDepartment(Department department) { this.department = department; }
     /**
      * Verifica o numero de argumentos ao iniciar o programa,
      * pede o endereço IPv4 caso nao seja passado em argumento,
      * pede o departamento onde se localiza a mesa de voto,
      * efetua a ligação com o Servidor RMI e
-     * inicializa a mesa de voto.
+     * inicializa a mesa de voto. <br>
      * Caso nao consiga tenta até conseguir
      *
      * @param args argumentos de entrada do programa

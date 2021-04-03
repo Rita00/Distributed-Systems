@@ -306,7 +306,7 @@ public class VoteTerm extends Thread {
     /**
      * Transforma a mensagem em datagramma e envia-o por multicast
      *
-     * @param message
+     * @param message mensagem para ser enviada
      */
     public void sendMessage(String message) {
         byte[] buffer = message.getBytes();

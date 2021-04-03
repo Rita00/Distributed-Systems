@@ -1,7 +1,6 @@
 package pt.uc.dei.student;
 
 import pt.uc.dei.student.elections.*;
-import pt.uc.dei.student.others.Notifier;
 import pt.uc.dei.student.others.NotifierCallBack;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
@@ -17,41 +16,78 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Classe da Consola de Administração
+ *
+ * @author Ana Rita Rodrigues
+ * @author Dylan Gonçãoves Perdigão
+ */
 public class AdminConsole {
-
-
+    /**
+     * String que permite identificar quando a consola está a espera de uma opção
+     */
     private final String OPTION_STRING = ">>> ";
+    /**
+     * ID da opção voltar
+     */
     private final int RETURN = 0;
+    /**
+     * ID da opção editar
+     */
     private final int EDIT = -1;
+    /**
+     * ID da opção remover
+     */
     private final int REMOVE = -1;
+    /**
+     * ID da opção adicionar
+     */
     private final int ADD = -2;
+    /**
+     * Identificador para determinar se está a obter informações em tempo real
+     */
     private int isGettingRealTime = 0;
-
+    /**
+     * Servidor RMI
+     */
     private RMI rmiServer;
-
+    /**
+     * TODO
+     */
     private NotifierCallBack NOTIFIER = new NotifierCallBack();
-
-    private boolean isMonitoring;
-
+    /**
+     * TODO
+     */
     static AdminConsole admin;
-
+    /**
+     * Construtor do Objeto Consola de administração
+     *
+     * @param rmiServer servidor RMI
+     * @throws RemoteException falha no RMI
+     */
     public AdminConsole(RMI rmiServer) throws RemoteException {
         this.rmiServer = rmiServer;
-        this.isMonitoring = false;
         this.pingRMI();
     }
-
     /**
-     * Menu que apresenta as opções que os administradores podem realizar
+     * Menu que apresenta as opções que os administradores podem realizar: <br>
+     * (1)- Registar Pessoas <br>
+     * (2)- Criar Eleição <br>
+     * (3)- Gerir Eleição <br>
+     * (4)- Gerir Mesas de Voto <br>
+     * (5)- Local em que cada eleitor votou <br>
+     * (6)- Consultar resultados detalhados de eleições passadas <br>
+     * (7)- Consultar estado das mesas de voto e respetivos terminais de voto <br>
+     * (8)- Consultar contagem de votos em tempo real <br>
+     * (0)- Sair <br>
+     * Caso a opção esteja errada volta para este menu.
      *
      * @param command valor da instrução a realizar
      * @throws IOException exceção de I/O
      */
     public void admin(int command) throws IOException {
-        System.out.println("========CONSOLA ADMINISTRADORA========".hashCode());
         try {
             Scanner input = new Scanner(System.in);
             while (command != 0) {
@@ -102,7 +138,10 @@ public class AdminConsole {
         }
 
     }
-
+    /**
+     * Menu que mostra o numero de eleitores que votaram em
+     * cada mesa de voto
+     */
     private void statusVotes() {
         isGettingRealTime = 2;
         int command;
@@ -141,13 +180,14 @@ public class AdminConsole {
         }
 
     }
-
+    /**
+     * Menu que mostra o estado de atividade das mesas de voto e
+     * dos respetivos terminais de voto.
+     */
     private void statusPollingStation() {
-        this.isMonitoring = true;
         this.isGettingRealTime = 1;
         int command;
         Scanner input = new Scanner(System.in);
-        //TODO mostrar dados
         System.out.println("==========ESTADO DAS MESAS DE VOTO E TERMINAIS DE VOTO==========");
         while (true) {
             try {
@@ -181,10 +221,14 @@ public class AdminConsole {
                 reconnectToRMI();
             }
         }
-
-        this.isMonitoring = false;
     }
-
+    /**
+     * Efetua a listagem dos registos de votos com: <br>
+     * - titulo da eleição <br>
+     * - nome da pessoa que votou <br>
+     * - departamento em que votou <br>
+     * - data em que votou <br>
+     */
     public void listVotingRecord() {
         Scanner input = new Scanner(System.in);
         String command;
@@ -218,7 +262,12 @@ public class AdminConsole {
             return;
         }
     }
-
+    /**
+     * Menu com os resultados das eleições passadas,
+     * pede ao utilizador para escolher uma eleição e
+     * são apresentados os votos nulos, brancos e votos para
+     * cada lista da eleição.
+     */
     public void electionsResults() {
         int election = 0;
         Scanner input = new Scanner(System.in);
@@ -286,6 +335,10 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Lista as listas candidatas que tenham votos numa determinada eleição
+     * @param id_election ID da eleição
+     */
     public void listCandidacyWithVotes(int id_election) {
         Scanner input = new Scanner(System.in);
         int command;
@@ -333,6 +386,11 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Menu que lista as eleições para gerir as mesas de voto: <br>
+     * Listagem das eleições <br>
+     * (0)- Voltar <br>
+     */
     public void listElectionToManagePollingStation() {
         int election = -1;
         Scanner input = new Scanner(System.in);
@@ -367,6 +425,15 @@ public class AdminConsole {
         } else System.out.println("Sem eleições por começar!");
     }
 
+    /**
+     * Menu de gestão das mesas de voto: <br>
+     * (1)- Adicionar Mesa de Voto <br>
+     * (2)- Remover Mesa de Voto <br>
+     * (0)- Voltar <br>
+     * O utilizador escolhe a opção pretendida
+     *
+     * @param election ID da eleição
+     */
     public void managePollingStation(int election) {
         int option = -1;
         Scanner input = new Scanner(System.in);
@@ -398,6 +465,13 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Menu para adicionar mesas de voto numa eleição: <br>
+     * Lista as mesas de voto (departamentos) que o utilizador pode escolher para serem adicionadas <br>
+     * (0) - Voltar <br>
+     *
+     * @param election ID da eleição
+     */
     private void addPollingStation(int election) {
         int mesaVoto = -1;
         Scanner input = new Scanner(System.in);
@@ -451,6 +525,13 @@ public class AdminConsole {
             }
     }
 
+    /**
+     * Menu para remover mesas de voto numa eleição: <br>
+     * Lista as mesas de voto (departamentos) que o utilizador pode escolher para serem removidas <br>
+     * (0) - Voltar <br>
+     *
+     * @param election ID da eleição
+     */
     private void removePollingStation(int election) {
         int mesaVoto = -1;
         Scanner input = new Scanner(System.in);
@@ -503,8 +584,13 @@ public class AdminConsole {
         }
     }
 
-    /*
-    MESMO METoDO QUE O DE BAIXO MAS PARA STRING EM INPUT, E VERIFICA SE A STRING é UM NUMERO
+    /**
+     * Verifica se o ID de um departamento se encontra num ArrayList de departamentos
+     * e se o ID é um número
+     * @param dep string com ID do departamento
+     * @param departments ArrayList dos departamentos
+     * @return true se encontrar, false caso contrário ou se não for um número
+     * @see Department
      */
     public boolean hasDep(String dep, ArrayList<Department> departments) {
         try {
@@ -514,6 +600,13 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Verifica se o ID de um departamento se encontra num ArrayList de departamentos
+     * @param dep ID do departamento
+     * @param departments ArrayList dos departamentos
+     * @return true se encontrar, false caso contrário
+     * @see Department
+     */
     public boolean hasDep(int dep, ArrayList<Department> departments) {
         for (Department department : departments) {
             if (department.getId() == dep) return true;
@@ -521,10 +614,21 @@ public class AdminConsole {
         return false;
     }
 
-
     /**
      * Lê da consola a informação pessoal de uma determinada pessoa.
-     * As pessoas serão introduzidas na base de dados no servidor RMI, por questões de segurança
+     * As pessoas serão introduzidas na base de dados no servidor RMI,
+     * por questões de segurança <br>
+     * É pedido ao utilizador: <br>
+     * - o nome <br>
+     * - o cargo (estudante, docente ou funcionário) <br>
+     * - a palavra passe <br>
+     * - o departamento onde trabalha <br>
+     * - o número de telemóvel <br>
+     * - a morada <br>
+     * - o número de cartão de cidadão (que serve de username)<br>
+     * - a validade do cartão de cidadão <br>
+     * Caso o servidor RMI consiga registar a pessoa devolve mensagem de sucesso,
+     * caso constrario envia mensagem de erro.
      *
      * @throws IOException exceção de I/O
      */
@@ -615,7 +719,18 @@ public class AdminConsole {
 
     /**
      * Lê da consola a informação necessária para criar uma eleição
-     * As eleições serão introduzidas na base de dados no servidor RMI, por questões de segurança
+     * As eleições serão introduzidas na base de dados no servidor RMI,
+     * por questões de segurança. <br>
+     * É pedido ao utilizador: <br>
+     * - a data de início da Eleição <br>
+     * - a data de fim da Eleição <br>
+     * - o título da Eleição <br>
+     * - uma reve descrição <br>
+     * - se pretende restringir a eleição <br>
+     * - caso pretenda restringir, o departamento <br>
+     * - o tipo de eleição (para estudantes, docentes ou funcionários)<br>
+     * Caso o servidor RMI consiga criar a eleição devolve mensagem de sucesso,
+     * caso constrario envia mensagem de erro.
      *
      * @throws IOException exceção de I/O
      */
@@ -693,11 +808,21 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Menu para adicionar uma lista à eleição,
+     * pede-se o nome da lista e o servidor RMI adiciona a lista
+     * com o tipo da eleição.<br>
+     * O nome pode sofrer alterações para poder ser enviado sem problemas
+     * do servidor multicast ao terminal de voto pelo protocolo multicast
+     *
+     * @param election eleição onde é pretendida a inserção da lista
+     * @see Election
+     */
     private void addCandidacy(Election election) {
         Scanner input = new Scanner(System.in);
         System.out.println("========ADICIONAR LISTA=======");
         System.out.print("Nome: ");
-        String candidacyName = Utilitary.prepareForMulticast(input.nextLine());//TODO Adicionei isto para nao ter problemas no multicast
+        String candidacyName = Utilitary.prepareForMulticast(input.nextLine());
         while (true) {
             try {
                 this.rmiServer.insertCandidacyIntoElection(candidacyName, election.getType(), election.getId());
@@ -708,7 +833,11 @@ public class AdminConsole {
             }
         }
     }
-
+    /**
+     * Menu para escolher uma eleição pata gerir: <br>
+     * Lista as eleições que o utilizador pode escolher <br>
+     * (0)  - Voltar <br>
+     */
     private void listElectionsToManage() {
         int command = -1;
         while (command != RETURN) {
@@ -749,7 +878,16 @@ public class AdminConsole {
             }
         }
     }
-
+    /**
+     * Menu para gerir uma eleição: <br>
+     * Lista as listas candidatas que pertencem à eleição para poderem serem consultadas <br>
+     * (-1) - Editar eleição <br>
+     * (-2) - Adicionar lista <br>
+     * (0)  - Voltar <br>
+     *
+     * @param election eleição para gerir
+     * @see Election
+     */
     private void manageElection(Election election) {
         int command = -1;
         while (command != RETURN) {
@@ -817,6 +955,19 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Menu para editar informações da eleição:
+     * (1)- Nome <br>
+     * (2)- Tipo <br>
+     * (3)- Descricao <br>
+     * (4)- Data Inicio <br>
+     * (5)- Data Fim <br>
+     * (0)- Voltar <br>
+     * Pede a informação pretendida e pede ao RMI para atualizar na base de dados
+     *
+     * @param election eleição para editar
+     * @see Election
+     */
     private void editElection(Election election) {
         System.out.println(election.toString());
         //opcoes
@@ -913,11 +1064,20 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Menu para gerir as listas: <br>
+     * Lista as pessoas que pertencem à lista para poderem ser removidas <br>
+     * (-1) - Remover lista <br>
+     * (-2) - Adicionar pessoa <br>
+     * (0)  - Voltar <br>
+     *
+     * @param candidacy
+     * @see Candidacy
+     */
     private void manageCandidacy(Candidacy candidacy) {
         int command = -1;
         while (command != RETURN) {
             System.out.println(candidacy.toString());
-
             ArrayList<Person> people;
             while (true) {
                 try {
@@ -1006,7 +1166,10 @@ public class AdminConsole {
             break;
         }
     }
-
+    /**
+     * Liga-se de novo ao registo do RMI e
+     * faz o set do atributo rmiserver com um novo
+     */
     public void reconnectToRMI() {
         while (true) {
             try {
@@ -1018,7 +1181,10 @@ public class AdminConsole {
             }
         }
     }
-
+    /**
+     * Cria e inicia uma thread que dá pings ao RMI,
+     * em caso de problema tenta restabelecer a ligação
+     */
     public void pingRMI() {
         new Thread(
                 () -> {
@@ -1042,7 +1208,10 @@ public class AdminConsole {
                 }
         ).start();
     }
-
+    /**
+     * Liga-se ao servidor RMI e inicializa a consola de administração
+     * @param args argumentos de entrada do programa
+     */
     public static void main(String[] args) {
         try {
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
@@ -1079,16 +1248,3 @@ public class AdminConsole {
         }
     }
 }
-
-/*
-1
-estudante
-123
-dei
-123456789
-Rua de Coimbra
-12345678
-23
-5
-2028
- */

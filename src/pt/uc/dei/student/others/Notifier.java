@@ -25,12 +25,20 @@ public interface Notifier extends Remote {
     /**
      * Print das informações do votos nas eleições
      *
-     * @param info ArrayList com informações dobre as eleições
+     * @param info ArrayList com informações sobre as eleições
      * @throws RemoteException Falha do Servidor
      * @throws InterruptedException Interrupção da thread
      * @see InfoElectors
      */
     void updateAdmin(ArrayList<InfoElectors> info) throws RemoteException, InterruptedException;
+    /**
+     * Print das informações das mesas de voto e respetivos terminais de voto
+     *
+     * @param info ArrayList com informações sobre as mesas de voto e respetivos terminais de voto
+     * @throws RemoteException Falha do Servidor
+     * @throws InterruptedException Interrupção da thread
+     * @see InfoPolls
+     */
     void updatePollsAdmin(ArrayList<InfoPolls> info) throws RemoteException, InterruptedException;
     }
 

@@ -34,7 +34,7 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
     /**
      * Print das informações do votos nas eleições
      *
-     * @param info ArrayList com informações dobre as eleições
+     * @param info ArrayList com informações sobre as eleições
      * @see InfoElectors
      */
     public void updateAdmin(ArrayList<InfoElectors> info) {
@@ -42,7 +42,14 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
             System.out.printf("%s\t%s\t%s\n", i.getElection_title(), i.getDep_name(), i.getCount());
         }
     }
-
+    /**
+     * Print das informações das mesas de voto e respetivos terminais de voto
+     *
+     * @param info ArrayList com informações sobre as mesas de voto e respetivos terminais de voto
+     * @throws RemoteException Falha do Servidor
+     * @throws InterruptedException Interrupção da thread
+     * @see InfoPolls
+     */
     public void updatePollsAdmin(ArrayList<InfoPolls> info) {
         String last = "";
         System.out.println("==============================");

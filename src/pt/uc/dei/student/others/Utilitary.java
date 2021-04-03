@@ -5,9 +5,7 @@ import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ public class Utilitary {
      * @see pt.uc.dei.student.VoteTerm Terminal de Voto
      */
     public static HashMap<String, String> parseMessage(String msg) {
-        HashMap<String, String> hash = new HashMap<String, String>();
+        HashMap<String, String> hash = new HashMap<>();
         String[] dividedMessage = msg.split(";");
         for (String token : dividedMessage) {
             String[] keyVal = token.split("\\|");
@@ -62,7 +60,6 @@ public class Utilitary {
      *
      * @param date data que necessita ser verificada
      * @return data que foi verificada ou null em caso de erro
-     * @throws DateTimeParseException excecao caso a data seja invalida
      */
     public static LocalDate parseDate(String date) {
         LocalDate d;
@@ -73,7 +70,12 @@ public class Utilitary {
         }
         return d;
     }
-
+    /**
+     * Efetua a listagem dos departamentos pelo seu ID
+     *
+     * @param departments ArrayList dos departamentos
+     * @see Department
+     */
     public static void listDepart(ArrayList<Department> departments) {
         if (departments.size() == 0) System.out.println("Sem departamentos.");
         else {
@@ -82,7 +84,12 @@ public class Utilitary {
             }
         }
     }
-
+    /**
+     * Efetua a listagem das eleições pelo seu ID
+     *
+     * @param elections ArrayList das Eleições
+     * @see Election
+     */
     public static void listElections(ArrayList<Election> elections) {
         if (elections.size() != 0) {
             for (Election e : elections) {
@@ -92,7 +99,12 @@ public class Utilitary {
             System.out.println("Não existem eleições\n");
         }
     }
-
+    /**
+     * Efetua a listagem das eleições pelo indice do ArrayList
+     *
+     * @param elections ArrayList das Eleições
+     * @see Election
+     */
     public static void listElectionsByIndex(ArrayList<Election> elections) {
         if (elections.size() != 0) {
             for (Election e : elections) {
@@ -102,7 +114,11 @@ public class Utilitary {
             System.out.println("Não existem eleições\n");
         }
     }
-
+    /**
+     * Efetua listagem das pessoas pelo seu indice do ArrayList
+     * @param people ArrayList com as pessoas
+     * @see Person
+     */
     public static void listPerson(ArrayList<Person> people) {
         if (people.size() != 0) {
             for (Person p : people) {
@@ -110,13 +126,16 @@ public class Utilitary {
             }
         }
     }
-
+    /**
+     * Efetua listagem das listas pelo seu ID
+     * @param candidacies ArrayList com as listas
+     * @see Candidacy
+     */
     public static void listCandidacy(ArrayList<Candidacy> candidacies) {
         for (Candidacy c : candidacies) {
             System.out.printf("\t(%s)- %s%n", c.getId(), c.getName());
         }
     }
-
     /**
      * Função para decidir em formato String o cargo da pessoa
      * Usado para proteção de dados
@@ -136,21 +155,42 @@ public class Utilitary {
                 return null;
         }
     }
-
+    /**
+     * Percorre o ArrayList das listas para verificar
+     * se o ID de entrada pertence a alguma das listas
+     *
+     * @param candidacy ID da lista
+     * @param candidacies ArrayList com as listas
+     * @return true se pertencer, false caso contrário
+     * @see Candidacy
+     */
     public static boolean hasCandidacy(int candidacy, ArrayList<Candidacy> candidacies) {
         for (Candidacy c : candidacies) {
             if (c.getId() == candidacy) return true;
         }
         return false;
     }
-
+    /**
+     * Percorre o ArrayList das eleições para verificar
+     * se o ID de entrada pertence a alguma das eleições
+     *
+     * @param election ID da eleição
+     * @param elections ArrayList com as eleições
+     * @return true se pertencer, false caso contrário
+     * @see Election
+     */
     public static boolean hasElection(int election, ArrayList<Election> elections) {
         for (Election ele : elections) {
             if (ele.getId() == election) return true;
         }
         return false;
     }
-
+    /**
+     * Verifica se uma string é um número
+     *
+     * @param n string com o numero
+     * @return true se é um número, false caso contário
+     */
     public static boolean isNumber(String n) {
         try {
             Integer.parseInt(n);
@@ -159,23 +199,47 @@ public class Utilitary {
         }
         return true;
     }
-
+    /**
+     * Verifica se o numero de telemóvel tem a formatação correta:
+     * 9 digitos;
+     * primeiro numero tem de ser 9;
+     * segundo numero tem de ser 1, 2, 3, 6;
+     *
+     * @param num_phone numero de telemóvel
+     * @return true se tem a formatação correta, false caso contrário
+     */
     public static boolean checkCorrectPhone(int num_phone) {
         int length = (int) (Math.log10(num_phone) + 1);
         int secondNum = num_phone / 10000000;
         return length == 9 && ((secondNum % 10) == 2 || (secondNum % 10) == 3 || (secondNum % 10) == 6 || (secondNum % 10) == 1) && secondNum / 10 == 9;
     }
-
+    /**
+     * Verifica se o numero de cartão de cidadão tem 8 dígitos
+     *
+     * @param cc_number numero de cartão de cidadão
+     * @return true se tiver 8 digitos, false caso contrário
+     */
     public static boolean checkCorrectCCNumber(int cc_number) {
         int length = (int) (Math.log10(cc_number) + 1);
         return length == 8;
     }
-
+    /**
+     * Verifica se uma string tem o format de IPv4
+     *
+     * @param ip string IPv4
+     * @return true se é um IPv4, false caso contrário
+     */
     public static boolean isIPv4(String ip) {
         Pattern IPv4_PATTERN = Pattern.compile("^([0-9]?[0-9]?[0-9][.]){3}([0-9]?[0-9]?[0-9])$");
         return IPv4_PATTERN.matcher(ip).matches();
     }
-
+    /**
+     * Prepara uma string para poder ser enviada por multicast,
+     * são retirados todos os caracteres pipe ("|") e ponto-virgula (";")
+     *
+     * @param original string original
+     * @return string tratada
+     */
     public static String prepareForMulticast(String original){
         String prepared = original.replace(";"," ");
         return prepared.replace("|", " ");

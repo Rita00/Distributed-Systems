@@ -419,7 +419,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public ArrayList<Election> selectElections(String sql) {
         Connection conn = connectDB();
-        ArrayList<Election> elections = new ArrayList();
+        ArrayList<Election> elections = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -450,7 +450,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public ArrayList<Candidacy> selectCandidacies(String sql) {
         Connection conn = connectDB();
-        ArrayList<Candidacy> candidacies = new ArrayList();
+        ArrayList<Candidacy> candidacies = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -478,7 +478,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public ArrayList<Person> selectPeople(String sql) {
         Connection conn = connectDB();
-        ArrayList<Person> people = new ArrayList();
+        ArrayList<Person> people = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -511,7 +511,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public ArrayList<Department> selectDepartments(String sql) {
         Connection conn = connectDB();
-        ArrayList<Department> departments = new ArrayList();
+        ArrayList<Department> departments = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -538,7 +538,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public ArrayList<VotingRecord> selectVotingRecords(String sql) {
         Connection conn = connectDB();
-        ArrayList<VotingRecord> votingRecords = new ArrayList();
+        ArrayList<VotingRecord> votingRecords = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -580,7 +580,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                     terminals = depToTerm.get(key);
                     terminals.add(value);
                 } else {
-                    terminals = new ArrayList<Integer>();
+                    terminals = new ArrayList<>();
                     terminals.add(value);
                     depToTerm.put(key, terminals);
                 }
@@ -594,6 +594,14 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return depToTerm;
     }
 
+    //TODO nao tenho a certeza
+    /**
+     * Selectiona os departamentos com mesa de voto ativa ou
+     * selectiona os departamentos com uma determinada eleição
+     *
+     * @param election_id ID da eleição
+     * @return departamentos
+     */
     public ArrayList<Department> selectPollingStation(int election_id) {
         if (election_id == -1) {
             return selectDepartments("SELECT id, name FROM department WHERE hasmulticastserver = 1");
@@ -603,6 +611,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    //TODO whaaaaaaaaaaaaaat
+    /**
+     * Selectiona
+     *
+     * @param election_id ID da eleição
+     * @return departamentos
+     */
     public ArrayList<Department> selectNoAssociatedPollingStation(int election_id) {
         return selectDepartments("SELECT id, name FROM department WHERE department.hasmulticastserver = 1 " +
                 "EXCEPT " +
@@ -610,6 +625,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
     }
 
+    /**
+     * Conta as linhas na base de dados consoante o comando e o atributo
+     *
+     * @param sql comando sql
+     * @param returnCount atributo para contar
+     * @return quantidade contada
+     */
     public int countRowsBD(String sql, String returnCount) {
         Connection conn = connectDB();
         try {
@@ -628,50 +650,120 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return 0;
     }
-
+    /**
+     * Conta o numero de eleições na base de dados
+     *
+     * @return numero de eleições
+     */
     public int numElections() {
         return countRowsBD("election", null);
     }
-
+    /**
+     * Remove um departamento de uma eleição na base de dados
+     *
+     * @param department_id ID do departamento
+     */
     public void removePollingStation(int department_id) {
         removeOnDB("election_department", "department_id", department_id);
     }
 
+    /**
+     * Associa uma eleição a um departamento na base de dados
+     *
+     * @param election_id ID da eleição
+     * @param department_id ID do departamento
+     */
     public void insertPollingStation(int election_id, int department_id) {
         insertElectionDepartment(election_id, department_id);
     }
 
+    /**
+     * Altera o para "desligado" o estado de uma mesa de voto
+     * para um determinado departamento na base de dados
+     *
+     * @param department_id ID do departamento
+     */
     public void turnOffPollingStation(int department_id) {
         updateOnDB("UPDATE department SET hasMulticastServer = 0 WHERE id = " + department_id);
         sendRealTimePolls();
     }
 
+    /**
+     * Procura as eleições passadas na base de dados
+     *
+     * @return eleições passadas
+     */
     public ArrayList<Election> getEndedElections() {
         return selectElections("SELECT * FROM election WHERE end_date < date('now')");
     }
 
+    /**
+     * Procura as eleições a decorrerem para um
+     * determinado departamento na base de dados
+     *
+     * @param department_id ID do departamento
+     * @return eleições a decorrerem no departamento
+     */
     public ArrayList<Election> getCurrentElections(int department_id) {
         return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND (department_id = " + department_id + " OR department_id = -1)");
     }
 
+    /**
+     * Devolve o numero de votos em branco para uma
+     * determinada eleição na base de dados
+     *
+     * @param id_election ID da eleição
+     * @return numero de votos em branco da eleição
+     */
     public int getBlackVotes(int id_election) {
         return countRowsBD("election WHERE id = " + id_election, "blank_votes");
     }
 
+    /**
+     * Devolve o numero de votos nulos para uma
+     * determinada eleição na base de dados
+     *
+     * @param id_election ID da eleição
+     * @return numero de votos nulos da eleição
+     */
     public int getNullVotes(int id_election) {
         return countRowsBD("election WHERE id = " + id_election, "null_votes");
     }
 
+    /**
+     * Devolve o numero de votos para uma lista numa eleição na base de dados
+     *
+     * @param id_election ID da eleição
+     * @param id_candidacy ID da lista
+     * @return numero de votos
+     */
     public int getVotesCandidacy(int id_election, int id_candidacy) {
         return countRowsBD("candidacy WHERE id = " + id_candidacy + " and election_id = " + id_election, "votes");
     }
 
+    /**
+     * Calcula a percentagem de votos para uma lista ou
+     * calcula a percentagem de votos em branco caso o ID da lista é -1
+     *
+     * @param id_election ID da eleição
+     * @param id_candidacy ID da lista
+     * @return percentagem de votos
+     */
     public float getPercentVotesCandidacy(int id_election, int id_candidacy) {
         int totalVotes = countRowsBD("candidacy", "SUM(votes)") + getBlackVotes(id_election) + getNullVotes(id_election);
         if (id_candidacy == -1) return ((float) getBlackVotes(id_election) / (float) totalVotes) * 100;
         else return ((float) getVotesCandidacy(id_election, id_candidacy) / (float) totalVotes) * 100;
     }
 
+    /**
+     * 
+     * @param election_id
+     * @param department_id
+     * @param campo
+     * @param campo_sql
+     * @param campo_num
+     * @return
+     */
     public ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) {
         // Verificar se a eleição está restringida a um departamento
         int ndep = countRowsBD("election_department WHERE election_id = " + election_id, "department_id");

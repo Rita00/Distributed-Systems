@@ -5,6 +5,9 @@ import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -243,5 +246,15 @@ public class Utilitary {
     public static String prepareForMulticast(String original){
         String prepared = original.replace(";"," ");
         return prepared.replace("|", " ");
+    }
+
+    public static String getPasswordHash(String username, String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            password = new String(digest.digest((username + password).getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException e) {
+//                e.printStackTrace();
+        }
+        return password;
     }
 }

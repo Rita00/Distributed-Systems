@@ -13,9 +13,12 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -667,6 +670,7 @@ public class MulticastServer extends Thread {
         }
         this.send(message);
     }
+
 
     /**
      * Verifica se a autenticação do eleitor no terminal de voto está valida,

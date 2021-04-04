@@ -5,6 +5,9 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Timer;
@@ -92,23 +95,23 @@ public class VoteTerm extends Thread {
     public void run() {
         // TODO faz identifação apenas uma vez ou se der timeout à espera de resposta
         while (true) {
-                try {
+            try {
                     /*
                 RECEBER E PARSE DO PACOTE
                  */
-                    //sem isto o tamanho da mensagem a receber é limitada ao tamanho da mensagem antes enviada
-                    byte[] bufferReceive = new byte[256];
-                    DatagramPacket packet = new DatagramPacket(bufferReceive, bufferReceive.length);
-                    this.getSocket().receive(packet);
-                    String recvMsg = new String(packet.getData(), 0, packet.getLength());
-                    HashMap<String, String> msgHash = Utilitary.parseMessage(recvMsg);
+                //sem isto o tamanho da mensagem a receber é limitada ao tamanho da mensagem antes enviada
+                byte[] bufferReceive = new byte[256];
+                DatagramPacket packet = new DatagramPacket(bufferReceive, bufferReceive.length);
+                this.getSocket().receive(packet);
+                String recvMsg = new String(packet.getData(), 0, packet.getLength());
+                HashMap<String, String> msgHash = Utilitary.parseMessage(recvMsg);
                 /*
                 USAR AS INFORMACOES DO PACOTE
                  */
-                    doThings(msgHash);
-                } catch (Exception e) {
-                    //e.printStackTrace();
-                }
+                doThings(msgHash);
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
 
         }
     }
@@ -212,7 +215,7 @@ public class VoteTerm extends Thread {
         String timeout_message = String.format("sender|voteterm-%s-%s;destination|%s;message|timeout", this.getVoteTermId(), this.getDepartmentId(), "multicast");
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         Closeable reader = input;
-        String enteredPassword = "";
+        String password = "";
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -237,7 +240,7 @@ public class VoteTerm extends Thread {
             System.out.println("User: " + cc);
             System.out.print("Password: ");
             try {
-                enteredPassword = input.readLine();
+                password = input.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -245,34 +248,34 @@ public class VoteTerm extends Thread {
                 return;
             }
             //--------------
-            String password = String.format("%s", (cc + enteredPassword).hashCode());
+
             String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", cc, password);
             byte[] buffer = sendMsg.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
             /*
             SEND TO MULTICAST FOR VERIFICATION
             */
-            while(true){
+            while (true) {
                 try {
                     this.getSocket().send(packet);
                     byte[] buffer2 = new byte[256];
                     packet = new DatagramPacket(buffer2, buffer2.length, this.getGroup(), MULTICAST_PORT);
                     this.getSocket().receive(packet);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                String recvMsg = new String(packet.getData(), 0, packet.getLength());
-                msgHash = Utilitary.parseMessage(recvMsg);
-                if( msgHash.get("message").equals("wrong password") ){
-                    break;
-                }
-                if( msgHash.get("message").equals("logged in") ){
-                    if( msgHash.get("cc").equals(cc) ){
+                    String recvMsg = new String(packet.getData(), 0, packet.getLength());
+                    msgHash = Utilitary.parseMessage(recvMsg);
+                    if (msgHash.get("message").equals("wrong password")) {
                         break;
                     }
+                    if (msgHash.get("message").equals("logged in")) {
+                        if (msgHash.get("cc").equals(cc)) {
+                            break;
+                        }
+                    }
+                } catch (IOException e) {
+//                    e.printStackTrace();
                 }
             }
-            if(msgHash.get("message").equals("logged in")){
+            if (msgHash.get("message").equals("logged in")) {
                 break;
             }
         } while (msgHash.get("message").equals("wrong password"));
@@ -488,10 +491,10 @@ public class VoteTerm extends Thread {
         }
         System.out.println("Required id:");
         String reqID;
-        do{
+        do {
             System.out.print(">>> ");
             reqID = reader.readLine();
-        }while(!Utilitary.isNumber(reqID));
+        } while (!Utilitary.isNumber(reqID));
 
         VoteTerm client = new VoteTerm(network, MulticastServer.MULTICAST_PORT);
         client.initializeTerminal(reqID);

@@ -718,7 +718,7 @@ public class AdminConsole {
                 boolean insertPers;
                 while (true) {
                     try {
-                        insertPers = this.rmiServer.insertPerson(nome, Utilitary.decideCargo(Integer.parseInt(cargo)), String.format("%s", (num_cc + pass).hashCode()), Integer.parseInt(ndep), num_phone, address, num_cc, cc_validity.toString());
+                        insertPers = this.rmiServer.insertPerson(nome, Utilitary.decideCargo(Integer.parseInt(cargo)), pass, Integer.parseInt(ndep), num_phone, address, num_cc, cc_validity.toString());
                         break;
                     } catch (RemoteException | InterruptedException e) {
                         //e.printStackTrace(); //TODO TRATAR EXCEPCAO

@@ -89,9 +89,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
     public boolean insertPerson(String name, String cargo, String pass, int dep, int num_phone, String address, int num_cc, String cc_validity) {
-        String sql = String.format("INSERT INTO person(name,job,password,department_id,phone,address,cc_number,cc_validity) VALUES('%s','%s','%s',%s,%s,'%s',%s,'%s')", name, cargo, pass, dep, num_phone, address, num_cc, cc_validity);
+        pass = Utilitary.getPasswordHash(Integer.toString(num_cc), pass);
+        String sql = String.format("INSERT INTO person(name,job,password,department_id,phone,address,cc_number,cc_validity) VALUES('%s','%s',?,%s,%s,'%s',%s,'%s')", name, cargo, dep, num_phone, address, num_cc, cc_validity);
         if (sql == null) return false;
-        return updateOnDB(sql);
+        return updateOnDB(sql, pass);
     }
 
     /**
@@ -199,7 +200,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public Person getPerson(String username, String password) {
         try {
-            ArrayList<Person> people = this.selectPeople("SELECT * FROM person WHERE cc_number='" + username + "' AND password='" + password + "';");
+            password = Utilitary.getPasswordHash(username, password);
+            ArrayList<Person> people = this.selectPeople("SELECT * FROM person WHERE cc_number='" + username + "' AND password=?;", password);
             if (people.size() != 0)
                 return people.get(0);
             else return null;
@@ -380,6 +382,21 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return true;
     }
 
+    public boolean updateOnDB(String sql, String argument1) {
+        Connection conn = connectDB();
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, argument1);
+            stmt.executeUpdate();
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Seleciona eleições na base de dados
      *
@@ -451,6 +468,34 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                people.add(new Person(
+                        rs.getString("name"),
+                        rs.getInt("cc_number"),
+                        rs.getString("cc_validity"),
+                        rs.getString("password"),
+                        rs.getString("address"),
+                        rs.getInt("phone"),
+                        rs.getString("job"),
+                        rs.getInt("department_id")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return people;
+    }
+
+    public ArrayList<Person> selectPeople(String sql, String password) {
+        Connection conn = connectDB();
+        ArrayList<Person> people = new ArrayList<>();
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, password);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 people.add(new Person(
                         rs.getString("name"),

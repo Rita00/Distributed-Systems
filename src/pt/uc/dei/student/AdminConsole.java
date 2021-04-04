@@ -64,12 +64,11 @@ public class AdminConsole {
      */
     private RMI rmiServer;
     /**
-     * TODO
+     * Callback usado para o servidor RMI enviar informação em tempo real acerca dos votos realizados
+     * e do estado das mesas de votos e respetivos terminais de voto
      */
     private NotifierCallBack NOTIFIER = new NotifierCallBack();
-    /**
-     * TODO
-     */
+
     static AdminConsole admin;
 
     /**
@@ -579,7 +578,7 @@ public class AdminConsole {
                         try {
                             mesaVoto = input.nextInt();
                         } catch (InputMismatchException ime) {
-                            //volta para este menu caso os input esteja errado
+                            //volta para este menu caso o input esteja errado
                             this.removePollingStation(election);
                             return;
                         }

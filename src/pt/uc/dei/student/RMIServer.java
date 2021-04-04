@@ -48,25 +48,22 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     private final int REGISTRY_PORT;
     /**
-     * TODO
+     * HashMap que contém callbacks para todas as mesas de voto que foram inicialmente ligadas
      */
     static ConcurrentHashMap<Integer, Notifier> notifiersMulticast;
     /**
-     * TODO
+     * Array que contém callbacks para todas as consolas de administração que estão a receber o estado dos votos em tempo real
      */
     static ArrayList<Notifier> notifiersVotesAdmin;
     /**
-     * TODO
+     * Array que contém callbacks para todas as consolas de administração que estão a receber o estado dasa mesas de voto e respetivos terminais de voto
      */
     static ArrayList<Notifier> notifiersPollsAdmin;
-    /**
-     * TODO
-     */
-    public StatusChecker statcheck;
     /**
      * Permide identificar quando o servidor acabou de atualizar a lista de terminais ativos
      */
     private Boolean terminalsUpdated;
+
     /**
      * Construtor do objeto Servidor RMI
      *
@@ -75,23 +72,24 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public RMIServer(String SERVER_ADDRESS, int SERVER_PORT, int REGISTRY_PORT) throws RemoteException {
         super();
         this.SERVER_ADDRESS = SERVER_ADDRESS;
-        this.SERVER_PORT=SERVER_PORT;
+        this.SERVER_PORT = SERVER_PORT;
         this.REGISTRY_PORT = REGISTRY_PORT;
         notifiersMulticast = new ConcurrentHashMap<>();
         notifiersVotesAdmin = new ArrayList<>();
         notifiersPollsAdmin = new ArrayList<>();
         this.terminalsUpdated = false;
     }
+
     /**
      * Insere uma determinada pessoa na base de dados
      *
-     * @param name nome
-     * @param cargo cargo (Estudante, Docente ou Funcionário)
-     * @param pass código de acesso para aceder a uma determinada eleição
-     * @param dep departamento a que a pessoa pertence
-     * @param num_phone número de telemóvel
-     * @param address morada
-     * @param num_cc número de cartão de cidadão
+     * @param name        nome
+     * @param cargo       cargo (Estudante, Docente ou Funcionário)
+     * @param pass        código de acesso para aceder a uma determinada eleição
+     * @param dep         departamento a que a pessoa pertence
+     * @param num_phone   número de telemóvel
+     * @param address     morada
+     * @param num_cc      número de cartão de cidadão
      * @param cc_validity formato da data (ano, mes, dia)
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
@@ -100,14 +98,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         if (sql == null) return false;
         return updateOnDB(sql);
     }
+
     /**
      * Insere uma determinada eleição na base de dados
      *
      * @param begin_data data de inicio da eleição
-     * @param end_data data de fim da eleição
-     * @param titulo título da eleição
-     * @param descricao descrição da eleição
-     * @param type_ele tipo da eleição (Estudante, Docente ou Funcionário)
+     * @param end_data   data de fim da eleição
+     * @param titulo     título da eleição
+     * @param descricao  descrição da eleição
+     * @param type_ele   tipo da eleição (Estudante, Docente ou Funcionário)
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
     public int insertElection(String begin_data, String end_data, String titulo, String descricao, String type_ele) {
@@ -132,11 +131,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             return -1;
         }
     }
+
     /**
      * Atribui uma eleição a um departamento na entidade election_department da base de dados
      *
      * @param id_election ID da eleição
-     * @param id_dep ID do departamento
+     * @param id_dep      ID do departamento
      * @return true em caso de sucesso na inserção, false caso contrário
      */
     public boolean insertElectionDepartment(int id_election, int id_dep) {
@@ -147,8 +147,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Insere uma lista na entidade candidacy da base de dados
      *
-     * @param name nome da lista
-     * @param type tipo da lista
+     * @param name        nome da lista
+     * @param type        tipo da lista
      * @param election_id ID da eleição
      * @return true em caso de sucesso na inserção, false caso contrário
      */
@@ -160,12 +160,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Atribui uma pessoa a uma lista na entidade candidacy_person da base de dados
      *
      * @param candidacy_id ID da lista
-     * @param cc_number número de cartão de cidadão da pessoa
+     * @param cc_number    número de cartão de cidadão da pessoa
      * @return true em caso de sucesso na inserção, false caso contrário
      */
     public boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) {
         return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);", candidacy_id, cc_number));
     }
+
     /**
      * Procura todas as eleições na base de dados
      *
@@ -174,6 +175,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Election> getElections() {
         return this.selectElections("SELECT * FROM election");
     }
+
     /**
      * Procura todas as eleições que não começaram na base de dados
      *
@@ -182,6 +184,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Election> getElectionsNotStarted() {
         return this.selectElections("SELECT * FROM election where begin_date > date('now') AND end_date > date('now')");
     }
+
     /**
      * Procura todas as listas de uma determinada eleição na base de dados
      *
@@ -191,6 +194,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Candidacy> getCandidacies(int election_id) {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = " + election_id);
     }
+
     /**
      * Procura uma pessoa pelas suas cardenciais na base de dados
      *
@@ -208,6 +212,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             return null;
         }
     }
+
     /**
      * Pesquisa todas as pessoas atribuidas a uma determinada lista
      *
@@ -225,6 +230,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                         "); "
         );
     }
+
     /**
      * Atualiza dados de uma eleição,
      * devolve mensagem de sucesso caso a atualização seja bem sucedida
@@ -255,10 +261,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             System.out.println("Problem updating department");
         }
     }
+
     /**
      * Insere dados sobre um terminal de voto na base de dados
      *
-     * @param id ID do terminal de voto
+     * @param id     ID do terminal de voto
      * @param dep_id ID do departamento
      */
     public void insertTerminal(String id, int dep_id) {
@@ -269,27 +276,29 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Atualiza estado de um terminal de voto na base de dados
      *
-     * @param id ID do terminal de voto
+     * @param id     ID do terminal de voto
      * @param status estado do terminal de voto
      */
     public void updateTerminalStatus(String id, String status) {
         updateOnDB("UPDATE voting_terminal SET status = " + status + " WHERE id = '" + id + "'");
         this.sendRealTimePolls();
     }
+
     /**
      * Atualiza a informação sobre a pessoa no terminal de voto
      *
-     * @param cc_number número de cartão de cidadão
+     * @param cc_number  número de cartão de cidadão
      * @param idTerminal ID do terminal de voto
      */
     public void updateTerminalInfoPerson(int cc_number, String idTerminal) {
         updateOnDB("UPDATE voting_terminal SET infoPerson = " + cc_number + " WHERE id = " + idTerminal);
     }
+
     /**
      * Atualiza a informação sobre a eleição atribuida ao terminal de voto para votar
      *
      * @param election_id ID da eleição
-     * @param idTerminal ID do terminal de voto
+     * @param idTerminal  ID do terminal de voto
      */
     public void updateTerminalInfoElection(int election_id, String idTerminal) {
         updateOnDB("UPDATE voting_terminal SET infoElection = " + election_id + " WHERE id = " + idTerminal);
@@ -311,6 +320,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Procura o ID da eleição a ser votada num determinado terminal de voto
+     *
      * @param id ID do terminal de voto
      * @return ID da eleição
      */
@@ -334,9 +344,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * devolve mensagem de sucesso caso a remoção seja bem sucedida
      * ou de erro caso contrário
      *
-     * @param table entidade onde é feita a remoção
+     * @param table  entidade onde é feita a remoção
      * @param idName nome da chave primária
-     * @param id valor da chave a remover
+     * @param id     valor da chave a remover
      */
     public void removeOnDB(String table, String idName, int id) {
         if (this.updateOnDB("DELETE FROM " + table + " WHERE " + idName + " = " + id)) {
@@ -345,6 +355,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             System.out.println("Problem removing id #" + id + " from database");
         }
     }
+
     /**
      * Procura todos os departamentos na base de dados
      *
@@ -380,6 +391,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         notify();
         return hashMap;
     }
+
     /**
      * Efetua a ligação à base de dados
      *
@@ -599,27 +611,24 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return depToTerm;
     }
 
-    //TODO nao tenho a certeza
     /**
-     * Selectiona os departamentos com mesa de voto ativa ou
-     * selectiona os departamentos com uma determinada eleição
+     * seleciona os departamentos associados a uma determinada eleição
      *
      * @param election_id ID da eleição
      * @return departamentos
      */
     public ArrayList<Department> selectPollingStation(int election_id) {
-        if (election_id == -1) {
+        /*if (election_id == -1) {
             return selectDepartments("SELECT id, name FROM department WHERE hasmulticastserver = 1");
-        } else {
-            return selectDepartments("SELECT id, name FROM department, election_department " +
-                    "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
-        }
+        } else {*/
+        return selectDepartments("SELECT id, name FROM department, election_department " +
+                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
+
     }
 
-    //TODO whaaaaaaaaaaaaaat
+
     /**
-     * Selectiona
-     *
+     * Seleciona as mesas de voto que não estejam associadas a uma determinada eleição
      * @param election_id ID da eleição
      * @return departamentos
      */
@@ -633,7 +642,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Conta as linhas na base de dados consoante o comando e o atributo
      *
-     * @param sql comando sql
+     * @param sql         comando sql
      * @param returnCount atributo para contar
      * @return quantidade contada
      */
@@ -655,6 +664,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return 0;
     }
+
     /**
      * Conta o numero de eleições na base de dados
      *
@@ -663,6 +673,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public int numElections() {
         return countRowsBD("election", null);
     }
+
     /**
      * Remove um departamento de uma eleição na base de dados
      *
@@ -675,7 +686,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Associa uma eleição a um departamento na base de dados
      *
-     * @param election_id ID da eleição
+     * @param election_id   ID da eleição
      * @param department_id ID do departamento
      */
     public void insertPollingStation(int election_id, int department_id) {
@@ -738,7 +749,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Devolve o numero de votos para uma lista numa eleição na base de dados
      *
-     * @param id_election ID da eleição
+     * @param id_election  ID da eleição
      * @param id_candidacy ID da lista
      * @return numero de votos
      */
@@ -750,7 +761,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Calcula a percentagem de votos para uma lista ou
      * calcula a percentagem de votos em branco caso o ID da lista é -1
      *
-     * @param id_election ID da eleição
+     * @param id_election  ID da eleição
      * @param id_candidacy ID da lista
      * @return percentagem de votos
      */
@@ -763,11 +774,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Procura pessoas na base de dados cujo os dados correpondam
      *
-     * @param election_id ID da eleição
+     * @param election_id   ID da eleição
      * @param department_id ID do departamento
-     * @param campo nome do que está a ser pesquisado (i.e. nome da pessoa, nome da rua,...)
-     * @param campo_sql nome do atributo da pessoa a ser pesquisado (i.e. nome, rua, ...)
-     * @param campo_num nome do que está a ser pesquisado (i.e. numero de cc, numero de telemovel, ...)
+     * @param campo         nome do que está a ser pesquisado (i.e. nome da pessoa, nome da rua,...)
+     * @param campo_sql     nome do atributo da pessoa a ser pesquisado (i.e. nome, rua, ...)
+     * @param campo_num     nome do que está a ser pesquisado (i.e. numero de cc, numero de telemovel, ...)
      * @return lista de pessoas
      */
     public ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) {
@@ -812,8 +823,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Inserir um registo de voto na base de dados
      *
      * @param id_election ID da eleição
-     * @param cc numero de cartão de cidadão
-     * @param ndep ID do departamento
+     * @param cc          numero de cartão de cidadão
+     * @param ndep        ID do departamento
      */
     public void insertVotingRecord(String id_election, String cc, String ndep) {
         updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", ndep, cc, id_election));
@@ -823,10 +834,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Atualiza o numero de votos de uma lista na base de dados
      * e regista o voto do eleitor
      *
-     * @param id_election ID da eleição
+     * @param id_election     ID da eleição
      * @param candidacyOption ID da lista
-     * @param cc numero de cartão de cidadão
-     * @param ndep ID do departamento
+     * @param cc              numero de cartão de cidadão
+     * @param ndep            ID do departamento
      */
     public void updateCandidacyVotes(String id_election, String candidacyOption, String cc, String ndep) {
         insertVotingRecord(id_election, cc, ndep);
@@ -839,8 +850,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * e regista o voto do eleitor
      *
      * @param id_election ID da eleição
-     * @param cc numero de cartão de cidadão
-     * @param ndep ID do departamento
+     * @param cc          numero de cartão de cidadão
+     * @param ndep        ID do departamento
      */
     public void updateBlankVotes(String id_election, String cc, String ndep) {
         insertVotingRecord(id_election, cc, ndep);
@@ -853,17 +864,17 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * e regista o voto do eleitor
      *
      * @param id_election ID da eleição
-     * @param cc numero de cartão de cidadão
-     * @param ndep ID do departamento
+     * @param cc          numero de cartão de cidadão
+     * @param ndep        ID do departamento
      */
     public void updateNullVotes(String id_election, String cc, String ndep) {
         insertVotingRecord(id_election, cc, ndep);
         updateOnDB("UPDATE electio SET null_votes = null_votes + 1 WHERE id = " + id_election);
         this.sendRealTimeVotes();
     }
-    //TODO helllpppppp
+
     /**
-     * Atualiza o notifier para o admin receber em tempo real os votos
+     * Envia informação sobre os votos via callback para todos os admins que estão a receber informação em tempo real
      */
     public void sendRealTimeVotes() {
         String sql = "SELECT count(*), d.name as Name, e.title as Title" +
@@ -896,9 +907,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             throwables.printStackTrace();
         }
     }
-    //TODO helllpppppp
+
     /**
-     * Atualiza o notifier para o admin receber em tempo real os votos
+     * Envia informação sobre os votos via callback para o admin
      */
     public void sendRealTimeVotes(Notifier NOTIFIER) {
         String sql = "SELECT count(*), d.name as Name, e.title as Title" +
@@ -930,9 +941,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             throwables.printStackTrace();
         }
     }
-    //TODO helpppppp
+
     /**
-     * Atualiza o notifier para o admin receber em tempo real o estado das mesas de voto
+     * Envia informação sobre as mesas de votos e respetivos terminais de voto via callback
+     * para todos os admins que estão a receber informação em tempo real
      */
     public void sendRealTimePolls() {
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
@@ -963,9 +975,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             throwables.printStackTrace();
         }
     }
-    //TODO helpppppp
+
     /**
-     * Atualiza o notifier para o admin receber em tempo real o estado das mesas de voto
+     * Envia informação sobre as mesas de votos e respetivos terminais de voto via callback para o admin
      */
     public void sendRealTimePolls(Notifier NOTIFIER) {
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
@@ -999,7 +1011,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Verifica se uma determinada pessoa já votou para uma eleição
      *
-     * @param cc numero de cartão de cidadão
+     * @param cc       numero de cartão de cidadão
      * @param election ID da eleição
      * @return true se já votou, false caso contrário
      */
@@ -1062,10 +1074,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return ok;
     }
-    //TODO help
+
     /**
-     *
-     * @param dep_id ID do departamento
+     * Verifica se uma determinada mesa de voto se pode ligar
+     * Pode-se ligar, caso o máximo de mesas de voto ativas ainda não tenha sido atingido
+     * e o departamento escolhido ainda não tenha uma mesa de voto ativa
+     * @param dep_id   ID do departamento
      * @param NOTIFIER
      * @return
      */
@@ -1092,10 +1106,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return null;
     }
-    //TODO help
+
     /**
-     * Inicializa os notifiers dos votos e
-     * envia os dados em tempo real para o terminal de voto
+     * Adiciona callback de admin à lista de callbacks para envio de informação de tempo real sobre os votos
+     * e envia de imediato a informação mais recente disponível
      *
      * @param NOTIFIER notifier
      */
@@ -1103,19 +1117,19 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         notifiersVotesAdmin.add(NOTIFIER);
         sendRealTimeVotes(NOTIFIER);
     }
-    //TODO help
+
     /**
-     * Remove notifier dos votos
+     * Remove callback de admin da lista de callbacks para envio de informação de tempo real sobre os votos
      *
      * @param NOTIFIER notifier
      */
     public void endRealTimeInfo(Notifier NOTIFIER) {
         notifiersVotesAdmin.remove(NOTIFIER);
     }
-    //TODO help
+
     /**
-     * Inicializa os notifiers das mesas de voto e
-     * envia os dados em tempo real para o terminal de voto
+     * Adiciona callback de admin à lista de callbacks para envio de informação de tempo real sobre as mesas de voto
+     * e envia de imediato a informação mais recente disponível
      *
      * @param NOTIFIER notifier
      */
@@ -1123,9 +1137,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         notifiersPollsAdmin.add(NOTIFIER);
         sendRealTimePolls(NOTIFIER);
     }
-    //TODO help
+
     /**
-     * Remove notifier das mesas de voto
+     * Remove callback de admin da lista de callbacks para envio de informação de tempo real sobre as mesas de voto
      *
      * @param NOTIFIER notifier
      */
@@ -1139,7 +1153,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public void initializeRMI() {
         System.out.println("Becoming Primary Server!");
         try {
-            RMIServer obj = new RMIServer(this.SERVER_ADDRESS,this.SERVER_PORT,this.REGISTRY_PORT);
+            RMIServer obj = new RMIServer(this.SERVER_ADDRESS, this.SERVER_PORT, this.REGISTRY_PORT);
             Registry r = LocateRegistry.createRegistry(this.REGISTRY_PORT);
             r.rebind("clientMulticast", obj);
             r.rebind("admin", obj);
@@ -1179,7 +1193,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Inicializa o verfificador de estado
      */
     private void initializeStatusChecker() {
-        statcheck = new StatusChecker(notifiersMulticast, this);
+        new StatusChecker(notifiersMulticast, this);
     }
 
     /**
@@ -1190,30 +1204,40 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast() {
         return notifiersMulticast;
     }
+
     /**
      * Getter do endereço IP do servidor RMI
      *
      * @return endereço IP do servidor RMI
      */
-    public String getSERVER_ADDRESS(){return this.SERVER_ADDRESS;}
+    public String getSERVER_ADDRESS() {
+        return this.SERVER_ADDRESS;
+    }
+
     /**
      * Getter do porte do registo  do RMI
      *
      * @return porte do registo do RMI
      */
-    public int getREGISTRY_PORT(){return this.REGISTRY_PORT;}
+    public int getREGISTRY_PORT() {
+        return this.REGISTRY_PORT;
+    }
+
     /**
      * Getter do porte do servidor RMI
      *
      * @return porte do servidor RMI
      */
-    public int getSERVER_PORT(){return this.SERVER_PORT;}
+    public int getSERVER_PORT() {
+        return this.SERVER_PORT;
+    }
+
     /**
      * Leitura dos dados no property file,
      * envia 5 pings para decidir se vai ser servidor primário,
      * inicializa o servidor RMI e as ligações UDP
      *
-     * @param args  argumentos de entrada do programa
+     * @param args argumentos de entrada do programa
      * @throws IOException problema na leitura do property file
      */
     public static void main(String[] args) throws IOException {
@@ -1224,22 +1248,22 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         try {
             //PARA OS JAR
             reader = new FileReader("config.properties");
-        } catch (IOException e){
+        } catch (IOException e) {
             //PARA CORRER NO IDE
             reader = new FileReader("src/pt/uc/dei/student/config.properties");
         }
         Properties p = new Properties();
         p.load(reader);
         int REGISTRY_PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
-        System.out.println("REGISTRY_PORT: "+REGISTRY_PORT);
+        System.out.println("REGISTRY_PORT: " + REGISTRY_PORT);
         int SERVER_PORT = Integer.parseInt(p.getProperty("rmiServerPort"));
-        System.out.println("SERVER_PORT: "+SERVER_PORT);
+        System.out.println("SERVER_PORT: " + SERVER_PORT);
         String SERVER_ADDRESS = p.getProperty("rmiServerAddress");
-        System.out.println("SERVER_ADDRESS: "+SERVER_ADDRESS);
+        System.out.println("SERVER_ADDRESS: " + SERVER_ADDRESS);
         /*
          * RMI
          */
-        RMIServer rmiServer = new RMIServer(SERVER_ADDRESS,SERVER_PORT,REGISTRY_PORT);
+        RMIServer rmiServer = new RMIServer(SERVER_ADDRESS, SERVER_PORT, REGISTRY_PORT);
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {
             try {

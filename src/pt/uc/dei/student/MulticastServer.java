@@ -80,12 +80,10 @@ public class MulticastServer extends Thread {
      * Departamento pelo qual o Servidor Multicast é responsavel
      */
     private Department department;
-    /**
-     * TODO nao sei o que é istoooooo
-     */
+
     static MulticastServer multicastServer;
     /**
-     * TODO idk
+     * Callbaack usado para o servidor RMI verificar a conectividade com o multicast
      */
     private final NotifierCallBack NOTIFIER;
     /**

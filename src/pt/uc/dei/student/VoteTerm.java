@@ -5,12 +5,10 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
-import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Callable;
 
 import pt.uc.dei.student.others.Utilitary;
 
@@ -24,11 +22,11 @@ import pt.uc.dei.student.others.Utilitary;
  */
 public class VoteTerm extends Thread {
     /**
-     * TODO
+     * Guarda a eleição em que um determinado eleitor está a votar
      */
     private String electionBlocked;
     /**
-     * TODO
+     * Guarda o número de cartãoo de cidadão de um determinado eleitor que está a votar
      */
     private String ccBlocked;
     /**
@@ -144,12 +142,6 @@ public class VoteTerm extends Thread {
             try {
                 if (Integer.parseInt(msgHash.get("destination")) == this.voteTermId) {
                     switch (msgHash.get("message")) {
-                        case "stop":
-                            stopTerminal();//TODO unused?
-                            break;
-                        case "true":
-                            //do nothing? print something?//TODO unused?
-                            break;
                         case "identify":
                             this.available = false;
                             this.login(msgHash.get("cc"), msgHash.get("arrayList"), msgHash.get("arrayIds"), msgHash.get("election"), ndep[2]);
@@ -167,16 +159,22 @@ public class VoteTerm extends Thread {
             }
         }
     }
+
     /**
-     * TODO
+     * Recebe uma mensagem da mesa de voto a confirmar que recebeu o voto efetuado
+     * Só desbloqueia o terminal de voto se a eleição e o número de cartão de cidadão corresponderem ao eleitor mais recente
+     *
+     * @param election id da eleição recebido na mensagem da mesa de voto
+     * @param cc número de cartão de cidadão recebido na mensagem da mesa de voto
      */
     public void terminateVote(String election, String cc) {
         //verificar que é sobre o voto da pessoa para quem o terminal está desbloqueado
         if (electionBlocked.equals(election) && ccBlocked.equals(cc))
             this.available = true;
     }
+
     /**
-     * TODO
+     * Envia para a mesa de voto mensagens a confirmar que ainda está a funcionar
      */
     public void checkAlive() {
         String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|ping", this.getVoteTermId(), this.getDepartmentId(), "multicast");
@@ -496,7 +494,7 @@ public class VoteTerm extends Thread {
         VoteTerm client = new VoteTerm(network, MulticastServer.MULTICAST_PORT);
         System.out.println("Required id:");
         try {
-            client.initializeTerminal(reader.readLine()); // todo fix this
+            client.initializeTerminal(reader.readLine());
         } catch (IOException e) {
             e.printStackTrace();
         }

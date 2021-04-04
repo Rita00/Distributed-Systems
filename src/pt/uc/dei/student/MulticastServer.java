@@ -89,6 +89,9 @@ public class MulticastServer extends Thread {
      * HashMap com o estado dos terminais de voto
      */
     private final ConcurrentHashMap<String, Boolean> availableTerminals;
+    /**
+     * TODO
+     */
     private final ConcurrentHashMap<String, Integer> terminalPingCounter;
 
     /**
@@ -396,19 +399,6 @@ public class MulticastServer extends Thread {
      */
     private void connect() {
         String depName = this.department.getName();
-
-
-        /*//Reset da mesa de voto na DB caso mandamos a mesa abaixo
-        var sigHandler = new Thread(() -> {
-            try {
-                System.out.println("SET hasmulticastServer to null in DB");//TODO comentar isto
-                rmiServer.updateDepartmentMulticast(multicastServer.getMulticastId());
-            } catch (InterruptedException | RemoteException ignore) {}
-        });
-
-        Runtime.getRuntime().addShutdownHook(sigHandler);*/
-
-
         if (depName != null) {
             System.out.printf("======== Mesa de Voto #%s (%s) ========%n", this.getMulticastId(), depName);
             while (true) {
@@ -447,9 +437,7 @@ public class MulticastServer extends Thread {
             } catch (InterruptedException e) {
                 this.run();
             }
-        } catch (IOException e) {
-            //e.printStackTrace(); //TODO tratar ou ignorar
-        }
+        } catch (IOException ignore) {}
     }
 
     /**

@@ -3,9 +3,7 @@ package pt.uc.dei.student.others;
 import pt.uc.dei.student.elections.*;
 
 import java.rmi.*;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 //TODO ===================================
 //TODO CHECK COMENTARIOS
 //TODO ===================================
@@ -36,8 +34,6 @@ public interface RMI extends Remote {
     void endRealTimePolls(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 
     int countRowsBD(String sql, String returnCount) throws java.rmi.RemoteException, InterruptedException;
-
-    int numElections() throws java.rmi.RemoteException, InterruptedException;
 
     void turnOffPollingStation(int department_id) throws java.rmi.RemoteException, InterruptedException;
 
@@ -83,8 +79,6 @@ public interface RMI extends Remote {
 
     void updateTerminalInfoElection(int election_id, String idTerminal) throws java.rmi.RemoteException, InterruptedException;
 
-    void updateDepartmentMulticast(int id) throws java.rmi.RemoteException, InterruptedException;
-
     void updateCandidacyVotes(String id_election, String candidacyOption, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
 
     void updateBlankVotes(String id_election, String cc, String ndep) throws java.rmi.RemoteException, InterruptedException;
@@ -109,8 +103,6 @@ public interface RMI extends Remote {
 
     ArrayList<Department> getDepartments() throws java.rmi.RemoteException, InterruptedException;
 
-    ArrayList<Department> getActiveMulticasts() throws java.rmi.RemoteException, InterruptedException;
-
     int getElectionIdFromTerminal(String id) throws java.rmi.RemoteException, InterruptedException;
 
     int getElectorInfo(String id) throws java.rmi.RemoteException, InterruptedException;
@@ -132,9 +124,5 @@ public interface RMI extends Remote {
     int getTerminal(String required_id) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
-
-    ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() throws java.rmi.RemoteException, InterruptedException;
-
-    ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast() throws java.rmi.RemoteException, InterruptedException;
 }
 

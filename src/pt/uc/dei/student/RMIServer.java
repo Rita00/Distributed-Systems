@@ -59,10 +59,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Array que contém callbacks para todas as consolas de administração que estão a receber o estado dasa mesas de voto e respetivos terminais de voto
      */
     static ArrayList<Notifier> notifiersPollsAdmin;
-    /**
-     * Permide identificar quando o servidor acabou de atualizar a lista de terminais ativos
-     */
-    private Boolean terminalsUpdated;
 
     /**
      * Construtor do objeto Servidor RMI
@@ -77,7 +73,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         notifiersMulticast = new ConcurrentHashMap<>();
         notifiersVotesAdmin = new ArrayList<>();
         notifiersPollsAdmin = new ArrayList<>();
-        this.terminalsUpdated = false;
     }
 
     /**
@@ -247,22 +242,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
-     * Atualiza o estado da mesa de voto num determinado departamento,
-     * devolve mensagem de sucesso caso a atualização seja bem sucedida
-     * ou de erro caso contrário
-     *
-     * @param id ID do departamento
-     */
-    public void updateDepartmentMulticast(int id) {
-        if (this.updateOnDB(String.format("UPDATE department SET hasmulticastserver=null WHERE id=%s", id))) {
-            System.out.println("Successfully updated department");
-            //TODO
-        } else {
-            System.out.println("Problem updating department");
-        }
-    }
-
-    /**
      * Insere dados sobre um terminal de voto na base de dados
      *
      * @param id     ID do terminal de voto
@@ -363,33 +342,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public ArrayList<Department> getDepartments() {
         return this.selectDepartments("SELECT * FROM department");
-    }
-
-    /**
-     * Procura todos os departamentos que tenham a mesa de voto ativa
-     *
-     * @return departamentos com a mesa de voto ativa
-     */
-    public ArrayList<Department> getActiveMulticasts() {
-        return this.selectDepartments("SELECT * FROM department WHERE hasmulticastserver=1");
-    }
-
-    /**
-     * Procura os terminais de voto ativos na base de dados
-     *
-     * @return terminais de voto ativos
-     */
-    synchronized public ConcurrentHashMap<Integer, ArrayList<Integer>> getActiveTerminals() {
-        while (!this.terminalsUpdated) {
-            try {
-                wait();
-            } catch (InterruptedException ignore) {
-            }
-        }
-        ConcurrentHashMap<Integer, ArrayList<Integer>> hashMap = this.selectActiveTerminals("SELECT * FROM voting_terminal");
-        this.terminalsUpdated = false;
-        notify();
-        return hashMap;
     }
 
     /**
@@ -663,15 +615,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             e.printStackTrace();
         }
         return 0;
-    }
-
-    /**
-     * Conta o numero de eleições na base de dados
-     *
-     * @return numero de eleições
-     */
-    public int numElections() {
-        return countRowsBD("election", null);
     }
 
     /**
@@ -1090,7 +1033,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 System.out.println("Impossível adicionar mesa de voto! :(");
                 return null;
             } else {
-                //TODO
                 sendRealTimePolls();
                 System.out.println("Mesa de voto criada com sucesso! :)");
                 synchronized (notifiersMulticast) {
@@ -1194,42 +1136,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     private void initializeStatusChecker() {
         new StatusChecker(notifiersMulticast, this);
-    }
-
-    /**
-     * Getter dos notifiers do multicast
-     *
-     * @return notifiers do multicast
-     */
-    public ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast() {
-        return notifiersMulticast;
-    }
-
-    /**
-     * Getter do endereço IP do servidor RMI
-     *
-     * @return endereço IP do servidor RMI
-     */
-    public String getSERVER_ADDRESS() {
-        return this.SERVER_ADDRESS;
-    }
-
-    /**
-     * Getter do porte do registo  do RMI
-     *
-     * @return porte do registo do RMI
-     */
-    public int getREGISTRY_PORT() {
-        return this.REGISTRY_PORT;
-    }
-
-    /**
-     * Getter do porte do servidor RMI
-     *
-     * @return porte do servidor RMI
-     */
-    public int getSERVER_PORT() {
-        return this.SERVER_PORT;
     }
 
     /**

@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Classe do Verificador de estado
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  * @see Thread
  */
 public class StatusChecker extends Thread {

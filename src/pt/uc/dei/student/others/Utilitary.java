@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * Classe de Metodos Utilitarios
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  */
 public class Utilitary {
     /**

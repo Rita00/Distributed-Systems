@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * Classe da Consola de Administração
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  */
 public class AdminConsole {
     /**

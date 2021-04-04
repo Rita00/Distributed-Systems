@@ -26,7 +26,7 @@ import static java.lang.Thread.sleep;
  * Servidor RMI
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  * @see RMI
  * @see UnicastRemoteObject
  */
@@ -66,6 +66,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param SERVER_ADDRESS endereço IPv4 do servidor
      * @param SERVER_PORT porte do servidor
      * @param REGISTRY_PORT porte do registo RMI
+     * @param NUM_MULTICAST_SERVERS numero maximo de servidores multicast
      * @throws RemoteException falha do RMI
      */
     public RMIServer(String SERVER_ADDRESS, int SERVER_PORT, int REGISTRY_PORT, int NUM_MULTICAST_SERVERS) throws RemoteException {
@@ -858,6 +859,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Envia informação sobre os votos via callback para o admin
+     *
+     * @param NOTIFIER notifier
      */
     public void sendRealTimeVotes(Notifier NOTIFIER) {
         String sql = "SELECT count(*), d.name as Name, e.title as Title" +
@@ -926,6 +929,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Envia informação sobre as mesas de votos e respetivos terminais de voto via callback para o admin
+     *
+     * @param NOTIFIER notifier
      */
     public void sendRealTimePolls(Notifier NOTIFIER) {
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +

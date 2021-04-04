@@ -6,7 +6,7 @@ import java.util.Date;
  * Classe do Objeto Registo de Votos
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  */
 public class VotingRecord implements Serializable {
     /**

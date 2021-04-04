@@ -1,14 +1,12 @@
 package pt.uc.dei.student.others;
 
 import java.io.Serializable;
-//TODO ===================================
-//TODO CHECK COMENTARIOS
-//TODO ===================================
+
 /**
  * Classe do Objeto contendo Infomações sobre as Eleições
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  */
 public class InfoElectors implements Serializable {
     /**

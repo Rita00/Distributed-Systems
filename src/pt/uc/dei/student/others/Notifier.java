@@ -3,14 +3,11 @@ package pt.uc.dei.student.others;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-//TODO ===================================
-//TODO CHECK COMENTARIOS
-//TODO ===================================
 /**
  * Classe da Interface do Notificador
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  * @see Remote
  */
 public interface Notifier extends Remote {

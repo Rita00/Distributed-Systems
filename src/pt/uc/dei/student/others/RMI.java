@@ -4,15 +4,12 @@ import pt.uc.dei.student.elections.*;
 
 import java.rmi.*;
 import java.util.ArrayList;
-//TODO ===================================
-//TODO CHECK COMENTARIOS
-//TODO ===================================
 
 /**
  * Interface do RMI
  *
- * @author Dylan Gonçãoves Perdigão
  * @author Ana Rita Rodrigues
+ * @author Dylan Gonçalves Perdigão
  * @see Remote
  */
 public interface RMI extends Remote {

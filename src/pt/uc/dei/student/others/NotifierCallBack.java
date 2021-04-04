@@ -3,14 +3,11 @@ package pt.uc.dei.student.others;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-//TODO ===================================
-//TODO CHECK COMENTARIOS
-//TODO ===================================
 /**
  * Classe do Callback
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  * @see Notifier
  * @see UnicastRemoteObject
  */
@@ -46,8 +43,6 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
      * Print das informações das mesas de voto e respetivos terminais de voto
      *
      * @param info ArrayList com informações sobre as mesas de voto e respetivos terminais de voto
-     * @throws RemoteException Falha do Servidor
-     * @throws InterruptedException Interrupção da thread
      * @see InfoPolls
      */
     public void updatePollsAdmin(ArrayList<InfoPolls> info) {

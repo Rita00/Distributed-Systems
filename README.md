@@ -1,11 +1,8 @@
 # eVoting: Voto Eletrónico na UC
 ## Instalação
-1.  Abrir um terminal para cada maquina
-2.  Assegurar-se de estar na diretoria certa para cada maquina:
-- ***rmiserver_jar/*** para o servidor RMI
-- ***console_jar/*** para a consola de administração
-- ***server_jar/*** para os servidores multicast
-- ***terminal_jar/*** para os terminais de voto
+1.  Os JAR files estão na diretoria " ***out/artifacts/*** "
+2.  Certificar-se de ter na mesma diretoria a base de dados " ***Election.db*** " e o property file " ***config.properties*** "
+3.  Abrir um terminal para cada maquina
 
 ## Configuração
 ### Servidor RMI
@@ -40,4 +37,5 @@ java -jar terminal.jar 224.3.2.1
 ```
 
 ## Documentação
-A Javadoc do projeto está acessível na diretoria ***javadoc/index.html***
+- A Javadoc do projeto está acessível na diretoria " ***javadoc/index.html*** "
+- O codigo fonte está acessível na diretoria " ***src/pt/uc/dei/student/*** "

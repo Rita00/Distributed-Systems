@@ -22,8 +22,8 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
+//TODO terminal dee voto nao se reconecta ao multicast caso seja ligado primeiro
 //TODO CONSULTAR RESULTADOS DETALHADOS (FAIL)
-//TODO se pedir novo terminal de voto enquanto alguem está num terminal bloqueia para sempre
 //Todo listagem de registo nao aparece eleição 4001, idk why yet
 //TODO verificar se nas eleiçoes que nao sao restritas a um unico departamento as pessoas so podem votar apenas 1 vez (ter cuidado se pode votar em mais que um departamento)
 

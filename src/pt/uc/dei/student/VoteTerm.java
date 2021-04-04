@@ -75,10 +75,11 @@ public class VoteTerm extends Thread {
         this.MULTICAST_PORT = multicastPort;
         try {
             this.setSocket(new MulticastSocket(this.MULTICAST_PORT));
+            this.getSocket().setSoTimeout(1000);
             this.setGroup(InetAddress.getByName(this.MULTICAST_ADDRESS));
             this.getSocket().joinGroup(this.getGroup());
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -90,41 +91,25 @@ public class VoteTerm extends Thread {
      */
     public void run() {
         // TODO faz identifação apenas uma vez ou se der timeout à espera de resposta
-        try {
-            while (true) {
-                /*String sendMsg;
-                if (available) {
-                    sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|available", this.getVoteTermId(), this.getDepartmentId(), "multicast");
-                } else {
-                    sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|occupied", this.getVoteTermId(), this.getDepartmentId(), "multicast");
-                }
-                byte[] buffer = sendMsg.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
-                this.getSocket().send(packet);*/
-                /*
+        while (true) {
+                try {
+                    /*
                 RECEBER E PARSE DO PACOTE
                  */
-                //sem isto o tamanho da mensagem a receber é limitada ao tamanho da mensagem antes enviada
-                byte[] bufferReceive = new byte[256];
-                DatagramPacket packet = new DatagramPacket(bufferReceive, bufferReceive.length);
-                this.getSocket().receive(packet);
-                String recvMsg = new String(packet.getData(), 0, packet.getLength());
-                HashMap<String, String> msgHash = Utilitary.parseMessage(recvMsg);
+                    //sem isto o tamanho da mensagem a receber é limitada ao tamanho da mensagem antes enviada
+                    byte[] bufferReceive = new byte[256];
+                    DatagramPacket packet = new DatagramPacket(bufferReceive, bufferReceive.length);
+                    this.getSocket().receive(packet);
+                    String recvMsg = new String(packet.getData(), 0, packet.getLength());
+                    HashMap<String, String> msgHash = Utilitary.parseMessage(recvMsg);
                 /*
                 USAR AS INFORMACOES DO PACOTE
                  */
-                doThings(msgHash);
-            }
-        } catch (SocketException se) {
-            try {
-                sleep(5000);
-                System.out.println("Trying to Reconnect to the network...");
-            } catch (InterruptedException e) {
-                this.run();
-            }
-            this.run();
-        } catch (IOException e) {
-            e.printStackTrace();
+                    doThings(msgHash);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                }
+
         }
     }
 
@@ -165,7 +150,7 @@ public class VoteTerm extends Thread {
      * Só desbloqueia o terminal de voto se a eleição e o número de cartão de cidadão corresponderem ao eleitor mais recente
      *
      * @param election id da eleição recebido na mensagem da mesa de voto
-     * @param cc número de cartão de cidadão recebido na mensagem da mesa de voto
+     * @param cc       número de cartão de cidadão recebido na mensagem da mesa de voto
      */
     public void terminateVote(String election, String cc) {
         //verificar que é sobre o voto da pessoa para quem o terminal está desbloqueado
@@ -185,7 +170,7 @@ public class VoteTerm extends Thread {
                 this.getSocket().send(packet);
                 break;
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
@@ -259,8 +244,6 @@ public class VoteTerm extends Thread {
             if (timeout[0]) {
                 return;
             }
-
-            System.out.println("blablabla");
             //--------------
             String password = String.format("%s", (cc + enteredPassword).hashCode());
             String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", cc, password);
@@ -347,7 +330,7 @@ public class VoteTerm extends Thread {
                 this.getSocket().send(packet);
                 break;
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
@@ -420,9 +403,10 @@ public class VoteTerm extends Thread {
         String sendMsg;
         sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|request_id;required_id|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", required_id);
         byte[] buffer = sendMsg.getBytes();
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
+
         while (true) {
             try {
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.getGroup(), MULTICAST_PORT);
                 this.getSocket().send(packet);
                 byte[] bufferReceive = new byte[256];
                 packet = new DatagramPacket(bufferReceive, bufferReceive.length);
@@ -451,7 +435,7 @@ public class VoteTerm extends Thread {
                 }
                 break;
             } catch (IOException | RuntimeException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
 

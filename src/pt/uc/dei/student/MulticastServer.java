@@ -22,7 +22,6 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
-//TODO terminal dee voto nao se reconecta ao multicast caso seja ligado primeiro
 //TODO CONSULTAR RESULTADOS DETALHADOS (FAIL)
 //Todo listagem de registo nao aparece eleição 4001, idk why yet
 //TODO verificar se nas eleiçoes que nao sao restritas a um unico departamento as pessoas so podem votar apenas 1 vez (ter cuidado se pode votar em mais que um departamento)
@@ -381,8 +380,8 @@ public class MulticastServer extends Thread {
                     res.append("|");
                     res.append(c.getId());
                 }
-                int size = candidacies.size();
-                res.append(String.format("|%d|%d", size + 1, size + 2));
+                int nextOption = candidacies.get(candidacies.size() - 1).getId() + 1;
+                res.append(String.format("|%d|%d", nextOption, nextOption + 1));
                 break;
             } catch (InterruptedException e) {
                 //e.printStackTrace();

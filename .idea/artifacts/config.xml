@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact name="config">
+    <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
+    <root id="root">
+      <element id="file-copy" path="$PROJECT_DIR$/src/pt/uc/dei/student/config.properties" />
+    </root>
+  </artifact>
+</component>

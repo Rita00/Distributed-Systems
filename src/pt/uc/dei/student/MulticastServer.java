@@ -8,9 +8,7 @@ import pt.uc.dei.student.others.NotifierCallBack;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -20,6 +18,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,6 +65,14 @@ public class MulticastServer extends Thread {
      */
     private int multicastId;
     /**
+     * Servidor porte do registo RMI
+     */
+    private final int REGISTRY_PORT;
+    /**
+     * Servidor nome do lookup
+     */
+    private final String LOOKUP_NAME;
+    /**
      * Servidor RMI ao qual está ligado o Servidor Multicast
      */
     private RMI rmiServer;
@@ -91,12 +98,16 @@ public class MulticastServer extends Thread {
      * Construtor do Servidor Multicast (Mesa de Voto)
      *
      * @param multicastAddress endereço IPv4 do Servidor Multicast
+     * @param REGISTRY_PORT    porte do registo do rmi
+     * @param LOOKUP_NAME      nome do lookup
      * @param rmiServer        servidor RMI
      * @throws IOException exceção de I/O
      */
-    public MulticastServer(String multicastAddress, RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
+    public MulticastServer(String multicastAddress, int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
         this.rmiServer = rmiServer;
         this.MULTICAST_ADDRESS = multicastAddress;
+        this.REGISTRY_PORT = REGISTRY_PORT;
+        this.LOOKUP_NAME = LOOKUP_NAME;
         this.socket = new MulticastSocket(MULTICAST_PORT);
         this.group = InetAddress.getByName(multicastAddress);
         this.multicastId = 0;
@@ -297,8 +308,9 @@ public class MulticastServer extends Thread {
 
     /**
      * Seleciona e desbloqueia um terminal disponivel em que o eleitor pode votar.
+     *
      * @param cc_number número de cartão de cidadão
-     * @param election ID da eleição
+     * @param election  ID da eleição
      */
     private void selectTerminal(int cc_number, int election) {
         String id = null;
@@ -373,6 +385,7 @@ public class MulticastServer extends Thread {
         }
         return res.toString();
     }
+
     /**
      * Inicia a interface da consola do terminal de voto com o seu menu principal
      */
@@ -398,6 +411,7 @@ public class MulticastServer extends Thread {
             }
         }
     }
+
     /**
      * Liga o Servidor ao grupo de multicast,
      * recebe as mensagens enviadas no grupo,
@@ -441,7 +455,7 @@ public class MulticastServer extends Thread {
     private void send(String message) {
         byte[] buffer = message.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
-        while(true) {
+        while (true) {
             try {
                 socket.send(packet);
                 break;
@@ -513,14 +527,15 @@ public class MulticastServer extends Thread {
         }
         availableTerminals.put(terminal_id, true);
     }
+
     /**
      * Vota na lista escolhida pelo eleitor ou vota em branco ou vota nulo
      *
      * @param candidacyOption opção escolhida pelo eleitor no terminal de voto
-     * @param id_election ID da eleição em que o eleitor votou
-     * @param cc numero de cartão de cidadão do eleitor
-     * @param ndep numero do departamento onde o voto foi realizado
-     * @param terminalId ID do terminal de voto
+     * @param id_election     ID da eleição em que o eleitor votou
+     * @param cc              numero de cartão de cidadão do eleitor
+     * @param ndep            numero do departamento onde o voto foi realizado
+     * @param terminalId      ID do terminal de voto
      */
     private void verifyVote(String candidacyOption, String id_election, String cc, String ndep, String terminalId) {
         ArrayList<Candidacy> candidacies;
@@ -577,6 +592,7 @@ public class MulticastServer extends Thread {
         String message = String.format("sender|multicast-%s-%s;destination|%s;message|voteOk;cc|%s;election|%s", this.getMulticastId(), this.department.getId(), terminalId, cc, id_election);
         this.send(message);
     }
+
     /**
      * Verifica se o ID requerido pelo o terminal de voto está
      * disponivel. <br>
@@ -587,7 +603,7 @@ public class MulticastServer extends Thread {
      * ao terminal de voto. <br>
      * Quando aceito, o terminal de voto é registado na base de dados através do RMI
      *
-     * @param id ID random do terminal de voto que enviou a mensagem
+     * @param id          ID random do terminal de voto que enviou a mensagem
      * @param required_id ID requerido pelo terminal de voto
      */
     private void registerTerminal(String id, String required_id) {
@@ -700,7 +716,7 @@ public class MulticastServer extends Thread {
     public void reconnectToRMI() {
         while (true) {
             try {
-                multicastServer.rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
+                multicastServer.rmiServer = (RMI) LocateRegistry.getRegistry(this.REGISTRY_PORT).lookup(this.LOOKUP_NAME);
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace(); //TODO caso o porte ou o lookup estejam errados, mais vale parar o programa
@@ -744,32 +760,46 @@ public class MulticastServer extends Thread {
                 }
         ).start();
     }
+
     /**
      * Getter do Servidor RMI
      *
      * @return servidor RMI
      */
-    public RMI getRmiServer() { return this.rmiServer; }
+    public RMI getRmiServer() {
+        return this.rmiServer;
+    }
+
     /**
      * Getter do ID do Servidor Multicast
      *
      * @return ID do Servidor Multicast
      */
-    public int getMulticastId() { return this.multicastId; }
+    public int getMulticastId() {
+        return this.multicastId;
+    }
+
     /**
      * Setter do ID do Servidor Multicast
      *
      * @param multicastId ID do Servidor Multicast
      */
-    public void setMulticastId(int multicastId) { this.multicastId = multicastId; }
+    public void setMulticastId(int multicastId) {
+        this.multicastId = multicastId;
+    }
+
     /**
      * Setter do Departamento do Servidor Multicast
      *
      * @param department Departamento do Servidor Multicast
      */
-    public void setDepartment(Department department) { this.department = department; }
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     /**
-     * Verifica o numero de argumentos ao iniciar o programa,
+     * Leitura dos dados no property file,
+     * verifica o numero de argumentos ao iniciar o programa,
      * pede o endereço IPv4 caso nao seja passado em argumento,
      * pede o departamento onde se localiza a mesa de voto,
      * efetua a ligação com o Servidor RMI e
@@ -777,8 +807,29 @@ public class MulticastServer extends Thread {
      * Caso nao consiga tenta até conseguir
      *
      * @param args argumentos de entrada do programa
+     * @throws IOException problema na leitura do property file
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        /*
+         * PROPERTIES
+         */
+        FileReader reader;
+        try {
+            //PARA OS JAR
+            reader = new FileReader("config.properties");
+        } catch (IOException e){
+            //PARA CORRER NO IDE
+            reader = new FileReader("src/pt/uc/dei/student/config.properties");
+        }
+        Properties p = new Properties();
+        p.load(reader);
+        int REGISTRY_PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
+        System.out.println("REGISTRY_PORT: "+REGISTRY_PORT);
+        String LOOKUP_NAME = p.getProperty("multicastLookupName");
+        System.out.println("LOOKUP_NAME: "+LOOKUP_NAME);
+        /*
+
+         */
         Scanner input = new Scanner(System.in);
         String network;
         switch (args.length) {
@@ -804,8 +855,8 @@ public class MulticastServer extends Thread {
         }
         try {
             int dep = -1;
-            RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-            multicastServer = new MulticastServer(network, rmiServer);
+            RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
+            multicastServer = new MulticastServer(network,REGISTRY_PORT,LOOKUP_NAME, rmiServer);
             /*
             SETUP
              */
@@ -831,8 +882,8 @@ public class MulticastServer extends Thread {
             int dep = -1;
             while (true) {
                 try {
-                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                    multicastServer = new MulticastServer(network, rmiServer);
+                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
+                    multicastServer = new MulticastServer(network,REGISTRY_PORT,LOOKUP_NAME, rmiServer);
                     ArrayList<Department> departments;
                     try {
                         departments = multicastServer.rmiServer.getDepartments();

@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="rmiserver:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/rmiserver_jar</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
     <root id="archive" name="rmiserver.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/src/rmiserver/META-INF/MANIFEST.MF" />

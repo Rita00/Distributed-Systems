@@ -745,7 +745,8 @@ public class MulticastServer extends Thread {
      */
     public void setDepartment(Department department) { this.department = department; }
     /**
-     * Verifica o numero de argumentos ao iniciar o programa,
+     * Leitura dos dados no property file,
+     * verifica o numero de argumentos ao iniciar o programa,
      * pede o endereço IPv4 caso nao seja passado em argumento,
      * pede o departamento onde se localiza a mesa de voto,
      * efetua a ligação com o Servidor RMI e
@@ -753,6 +754,7 @@ public class MulticastServer extends Thread {
      * Caso nao consiga tenta até conseguir
      *
      * @param args argumentos de entrada do programa
+     * @throws IOException problema na leitura do property file
      */
     public static void main(String[] args) throws IOException {
         /*

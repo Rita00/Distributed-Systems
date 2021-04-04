@@ -74,7 +74,9 @@ public class AdminConsole {
     /**
      * Construtor do Objeto Consola de administração
      *
-     * @param rmiServer servidor RMI
+     * @param REGISTRY_PORT     porte do registo do rmi
+     * @param LOOKUP_NAME       nome do lookup
+     * @param rmiServer         servidor RMI
      * @throws RemoteException falha no RMI
      */
     public AdminConsole(int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer) throws RemoteException {
@@ -1221,10 +1223,11 @@ public class AdminConsole {
         ).start();
     }
     /**
-     * Liga-se ao servidor RMI e inicializa a consola de administração
+     * Leitura dos dados no property file,
+     * liga-se ao servidor RMI e inicializa a consola de administração
      *
      * @param args argumentos de entrada do programa
-     * @throws IOException Problema de leitura do ficheiro property
+     * @throws IOException problema na leitura do property file
      */
     public static void main(String[] args) throws IOException {
         /*

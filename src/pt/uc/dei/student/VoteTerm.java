@@ -435,7 +435,6 @@ public class VoteTerm extends Thread {
      * @param args argumentos de entrada do programa
      */
     public static void main(String[] args) {
-        Console console = System.console();
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String network;

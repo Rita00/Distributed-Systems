@@ -1209,11 +1209,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public int getSERVER_PORT(){return this.SERVER_PORT;}
     /**
-     * Envia 5 pings para decidir se vai ser servidor primário,
+     * Leitura dos dados no property file,
+     * envia 5 pings para decidir se vai ser servidor primário,
      * inicializa o servidor RMI e as ligações UDP
      *
      * @param args  argumentos de entrada do programa
-     * @throws RemoteException falha no RMI TODO
+     * @throws IOException problema na leitura do property file
      */
     public static void main(String[] args) throws IOException {
         /*

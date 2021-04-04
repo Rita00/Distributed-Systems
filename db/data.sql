@@ -38,14 +38,76 @@ VALUES (NULL, 'Departamento de Matemática');
 INSERT INTO department(id, name)
 VALUES (NULL, 'Departamento de Química');
 
+-------------------------------Eleições-----------------------------------
+--- ================================= Eleições a decorrer ==================
 INSERT INTO election(id, title, type, description, begin_date, end_date)
-VALUES (NULL, 'NEI', 'students', 'Eleicoes do NEI', '2021-03-20 00:00:00', '2021-05-31 23:59:59');
+VALUES (1, 'NEI -> Estudantes, no dei', 'Estudante', 'Eleicoes do NEI', '2021-03-20 00:00:00', '2021-05-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (1, 6);
+
 INSERT INTO election(id, title, type, description, begin_date, end_date)
-VALUES (NULL, 'NEI', 'students', 'Eleicoes do NEI', '2021-03-20 00:00:00', '2021-05-31 23:59:59');
+VALUES (2, 'Eleição -> Estudantes, atual, em vários departamentos -> Estudantes', 'Estudante', 'Eleição para testar eleição em vários departamentos', '2021-03-20 00:00:00', '2021-05-31 23:59:59');
 INSERT INTO election_department(election_id, department_id)
-VALUES (1, -1);
+VALUES (2, -1);
+
+--- ============================ Eleições passadas =========================
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (3, 'Eleição -> Estudantes, terminada em vários departamentos', 'Estudante', 'Testar eleição que terminou e não tem departamento restringido', '2021-03-20 00:00:00', '2021-03-31 23:59:59');
 INSERT INTO election_department(election_id, department_id)
-VALUES (1, 4);
+VALUES (3, -1);
+
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (4, 'Eleição -> Estudantes, terminada e restringida -> Arquitetura', 'Estudante', 'Testar eleição que terminou e tem departamento restringido (Arquitetura)', '2021-03-20 00:00:00', '2021-03-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (4, 1);
+
+--- =========================== Eleições futuras ===========================
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (5, 'Eleição -> Estudantes, por começar em vários departamentos', 'Estudante', 'Testar eleição que ainda não começou e não tem departamento restringido', '2021-04-20 00:00:00', '2021-04-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (5, -1);
+
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (6, 'Eleição -> Estudantes, por começar restringida -> Ciências da Terra', 'Estudante', 'Testar eleição que ainda não começou e tem departamento restringido (Ciências da Terra)', '2021-04-20 00:00:00', '2021-04-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (6, 2);
+
+------------------ O mesmo que o anterior mas para docentes ----------------------
+--- ================================= Eleições a decorrer ==================
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (7, 'NEI -> Docentes, no dei', 'Docente', 'Eleicoes do NEI', '2021-03-20 00:00:00', '2021-05-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (7, 6);
+
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (8, 'Eleição -> Docentes, atual, em vários departamentos', 'Docente', 'Eleição para testar eleição em vários departamentos', '2021-03-20 00:00:00', '2021-05-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (8, -1);
+
+--- ============================ Eleições passadas =========================
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (9, 'Eleição -> Docentes, terminada em vários departamentos', 'Docente', 'Testar eleição que terminou e não tem departamento restringido', '2021-03-20 00:00:00', '2021-03-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (9, -1);
+
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (10, 'Eleição -> Docentes, terminada e restringida -> Arquitetura', 'Docente', 'Testar eleição que terminou e tem departamento restringido (Arquitetura)', '2021-03-20 00:00:00', '2021-03-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (10, 1);
+
+--- =========================== Eleições futuras ===========================
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (11, 'Eleição -> Docentes, por começar em vários departamentos', 'Docente', 'Testar eleição que ainda não começou e não tem departamento restringido', '2021-04-20 00:00:00', '2021-04-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (11, -1);
+
+INSERT INTO election(id, title, type, description, begin_date, end_date)
+VALUES (12, 'Eleição -> Docentes, por começar restringida -> Ciências da Terra', 'Docente', 'Testar eleição que ainda não começou e tem departamento restringido (Ciências da Terra)', '2021-04-20 00:00:00', '2021-04-31 23:59:59');
+INSERT INTO election_department(election_id, department_id)
+VALUES (12, 2);
+
+
+
 INSERT INTO election_department(election_id, department_id)
 VALUES (1, 3);
 INSERT INTO election_department(election_id, department_id)

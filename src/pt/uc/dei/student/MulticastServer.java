@@ -563,7 +563,7 @@ public class MulticastServer extends Thread {
                     reconnectToRMI();
                 }
             }
-        } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 1) {
+        } else if (Integer.parseInt(candidacyOption) == candidacies.get(candidacies.size() - 1).getId() + 1) {
             while (true) {
                 try {
                     this.rmiServer.updateBlankVotes(id_election, cc, ndep);
@@ -573,7 +573,7 @@ public class MulticastServer extends Thread {
                     reconnectToRMI();
                 }
             }
-        } else if (Integer.parseInt(candidacyOption) == candidacies.size() + 2) {
+        } else if (Integer.parseInt(candidacyOption) == candidacies.get(candidacies.size() - 1).getId() + 2) {
             while (true) {
                 try {
                     this.rmiServer.updateNullVotes(id_election, cc, ndep);

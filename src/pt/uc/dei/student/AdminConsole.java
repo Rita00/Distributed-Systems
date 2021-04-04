@@ -1199,7 +1199,7 @@ public class AdminConsole {
     public void reconnectToRMI() {
         while (true) {
             try {
-                RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("admin");
+                RMI rmiServer = (RMI) LocateRegistry.getRegistry(this.REGISTRY_PORT).lookup(this.LOOKUP_NAME);
                 admin.rmiServer = rmiServer;
                 break;
             } catch (NotBoundException | IOException remoteException) {

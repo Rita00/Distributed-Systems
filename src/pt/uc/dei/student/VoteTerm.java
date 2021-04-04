@@ -23,8 +23,14 @@ import pt.uc.dei.student.others.Utilitary;
  * @see Thread
  */
 public class VoteTerm extends Thread {
-
-    private String electionBlocked, ccBlocked;
+    /**
+     * TODO
+     */
+    private String electionBlocked;
+    /**
+     * TODO
+     */
+    private String ccBlocked;
     /**
      * Porte do Servidor Multicast
      */
@@ -161,13 +167,17 @@ public class VoteTerm extends Thread {
             }
         }
     }
-
+    /**
+     * TODO
+     */
     public void terminateVote(String election, String cc) {
         //verificar que é sobre o voto da pessoa para quem o terminal está desbloqueado
         if (electionBlocked.equals(election) && ccBlocked.equals(cc))
             this.available = true;
     }
-
+    /**
+     * TODO
+     */
     public void checkAlive() {
         String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|ping", this.getVoteTermId(), this.getDepartmentId(), "multicast");
         byte[] buffer = sendMsg.getBytes();

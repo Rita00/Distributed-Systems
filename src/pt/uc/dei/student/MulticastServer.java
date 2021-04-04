@@ -130,7 +130,7 @@ public class MulticastServer extends Thread {
      * @param dep_id ID do departamento
      */
     public void menuPollingStation(int dep_id) {
-        int command = -1, command2 = -1, election = -1, campo_num = -1;
+        String command = "-1", command2 = "-1", election = "-1", campo_num = "-1";
         String campo = "", campo_sql;
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -149,28 +149,30 @@ public class MulticastServer extends Thread {
                 }
                 while (true) {
                     try {
-                        candidacies = this.rmiServer.getCandidacies(election);
+                        candidacies = this.rmiServer.getCandidacies(Integer.parseInt(election));
                         break;
                     } catch (InterruptedException e) {
                         //e.printStackTrace();
                         reconnectToRMI();
                     }
                 }
-                while (candidacies.size() == 0 || !Utilitary.hasElection(election, currentElections)) {
+                while (!Utilitary.isNumber(election) || candidacies.size() == 0 || !Utilitary.hasElection(Integer.parseInt(election), currentElections)) {
                     System.out.println("Eleições a decorrer: ");
                     Utilitary.listElections(currentElections);
                     System.out.print(OPTION_STRING);
-                    election = input.nextInt();
-                    while (true) {
-                        try {
-                            candidacies = this.rmiServer.getCandidacies(election);
-                            break;
-                        } catch (RemoteException e) {
-                            reconnectToRMI();
-                            //e.printStackTrace();
+                    election = input.nextLine();
+                    if(Utilitary.isNumber(election)) {
+                        while (true) {
+                            try {
+                                candidacies = this.rmiServer.getCandidacies(Integer.parseInt(election));
+                                break;
+                            } catch (RemoteException e) {
+                                reconnectToRMI();
+                                //e.printStackTrace();
+                            }
                         }
+                        if (candidacies.size() == 0) System.out.println("Eleição sem listas, impossível votar!");
                     }
-                    if (candidacies.size() == 0) System.out.println("Eleição sem listas, impossível votar!");
                 }
                 break;
             } catch (RemoteException | InterruptedException e) {
@@ -178,7 +180,7 @@ public class MulticastServer extends Thread {
                 //e.printStackTrace();
             }
         }
-        while (!(command >= 1 && command <= 6)) {
+        while (!Utilitary.isNumber(command) || !(Integer.parseInt(command) >= 1 && Integer.parseInt(command) <= 6)) {
             System.out.println("Identificação de eleitor: ");
             System.out.println("Pesquisar por: ");
             System.out.println("\t(1)- Nome");
@@ -188,10 +190,10 @@ public class MulticastServer extends Thread {
             System.out.println("\t(5)- Morada");
             System.out.println("\t(6)- Número de cartão de cidadão");
             System.out.print(OPTION_STRING);
-            command = input.nextInt();
+            command = input.nextLine();
         }
 
-        if (command == 1) {
+        if (Integer.parseInt(command) == 1) {
             campo_sql = "name";
             System.out.print("Introduza o seu nome: ");
             try {
@@ -199,23 +201,25 @@ public class MulticastServer extends Thread {
             } catch (IOException e) {
                 //e.printStackTrace();//TODO tratar exceção
             }
-        } else if (command == 2) {
+        } else if (Integer.parseInt(command) == 2) {
             campo_sql = "job";
-            int cargo = -1;
-            while (!(cargo >= 1 && cargo <= 3)) {
+            String cargo = "-1";
+            while (!Utilitary.isNumber(cargo) || !(Integer.parseInt(cargo) >= 1 && Integer.parseInt(cargo) <= 3)) {
                 System.out.println("Introduza o cargo que ocupa: ");
                 System.out.println("\t(1)- Estudante");
                 System.out.println("\t(2)- Docente");
                 System.out.println("\t(3)- Funcionário");
                 System.out.print(OPTION_STRING);
-                cargo = input.nextInt();
-                campo = Utilitary.decideCargo(cargo);
+                cargo = input.nextLine();
+                if(Utilitary.isNumber(cargo)){
+                    campo = Utilitary.decideCargo(Integer.parseInt(cargo));
+                }
             }
-        } else if (command == 3) {
+        } else if (Integer.parseInt(command) == 3) {
             campo_sql = "department_id";
             try {
                 ArrayList<Department> departments;
-                while (!(campo_num >= 1 && campo_num <= 11)) {
+                while (!Utilitary.isNumber(campo_num) || !(Integer.parseInt(campo_num) >= 1 && Integer.parseInt(campo_num) <= 11)) {
                     System.out.println("Escolha o departamento que frequenta: ");
                     while (true) {
                         try {
@@ -228,17 +232,19 @@ public class MulticastServer extends Thread {
                     }
                     Utilitary.listDepart(departments);
                     System.out.print(OPTION_STRING);
-                    campo_num = input.nextInt();
+                    campo_num = input.nextLine();
                 }
             } catch (InterruptedException e) {
                 //e.printStackTrace();
                 reconnectToRMI();
             }
-        } else if (command == 4) {
+        } else if (Integer.parseInt(command) == 4) {
             campo_sql = "phone";
-            System.out.print("Introduza o seu número de telemóvel: ");
-            campo_num = input.nextInt();
-        } else if (command == 5) {
+            do {
+                System.out.print("Introduza o seu número de telemóvel: ");
+                campo_num = input.nextLine();
+            }while(!Utilitary.isNumber(campo_num));
+        } else if (Integer.parseInt(command) == 5) {
             campo_sql = "address";
             System.out.print("Introduza a sua morada: ");
             try {
@@ -248,8 +254,10 @@ public class MulticastServer extends Thread {
             }
         } else {
             campo_sql = "cc_number";
-            System.out.print("Introduza o seu número de cartão de cidadão: ");
-            campo_num = input.nextInt();
+            do{
+                System.out.print("Introduza o seu número de cartão de cidadão: ");
+                campo_num = input.nextLine();
+            }while(!Utilitary.isNumber(campo_num));
         }
 
 
@@ -258,7 +266,7 @@ public class MulticastServer extends Thread {
             try {
                 while (true) {
                     try {
-                        people = this.rmiServer.getRegisPeople(election, dep_id, campo, campo_sql, campo_num);
+                        people = this.rmiServer.getRegisPeople(Integer.parseInt(election), dep_id, campo, campo_sql, Integer.parseInt(campo_num));
                         break;
                     } catch (RemoteException e) {
                         //e.printStackTrace();
@@ -266,23 +274,23 @@ public class MulticastServer extends Thread {
                     }
                 }
                 if (people.size() != 0) {
-                    while (people.size() != 0 && !(command2 >= 1 && command2 <= people.size() + 1)) {
+                    while (!Utilitary.isNumber(command2) || people.size() != 0 && !(Integer.parseInt(command2) >= 1 && Integer.parseInt(command2) <= people.size() + 1)) {
                         System.out.println("Escolher Pessoa de acordo com o número de cartão de cidadão");
                         Utilitary.listPerson(people);
                         System.out.printf("\t(%s)- Nenhuma das anteriores\n", people.size() + 1);
                         System.out.print(OPTION_STRING);
-                        command2 = input.nextInt();
+                        command2 = input.nextLine();
                     }
-                    if (command2 == people.size() + 1) {
+                    if (Integer.parseInt(command2) == people.size() + 1) {
                         System.out.println("Não pode votar nesta eleição!");
                     } else {
                         //select voting terminal
-                        int cc_number = people.get(command2 - 1).getCc_number();
+                        int cc_number = people.get(Integer.parseInt(command2) - 1).getCc_number();
                         boolean alreadyVote;
                         while (true) {
                             // Caso a ligação falhe tentar reconectar-se
                             try {
-                                alreadyVote = this.rmiServer.checkIfAlreadyVote(cc_number, election);
+                                alreadyVote = this.rmiServer.checkIfAlreadyVote(cc_number, Integer.parseInt(election));
                                 break;
                             } catch (InterruptedException e) {
                                 //e.printStackTrace();
@@ -290,7 +298,7 @@ public class MulticastServer extends Thread {
                             }
                         }
                         if (!alreadyVote)
-                            selectTerminal(cc_number, election);
+                            selectTerminal(cc_number, Integer.parseInt(election));
                         else System.out.println("Já votou nesta eleição!");
                     }
                 } else

@@ -277,7 +277,6 @@ public class AdminConsole {
         } catch (InputMismatchException ime) {
             //volta para este menu caso os input esteja errado
             this.listVotingRecord();
-            return;
         }
     }
 

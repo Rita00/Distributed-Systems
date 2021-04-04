@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Classe do Objeto contendo Infomações sobre as mesas de voto
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  */
 public class InfoPolls implements Serializable {
     /**

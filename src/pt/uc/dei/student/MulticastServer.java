@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Mesa de Voto (Servidor dos Terminais de voto)
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  * @see RMIServer
  * @see Thread
  */
@@ -493,6 +493,12 @@ public class MulticastServer extends Thread {
         }
     }
 
+    /**
+     * Caso o terminal não tenha interação é feito um reset dos estados de atividade
+     * realacionados com esse terminal
+     *
+     * @param terminal_id ID do terminal
+     */
     void caseTimeout(String terminal_id) {
         while (true) {
             try {

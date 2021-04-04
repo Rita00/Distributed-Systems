@@ -26,7 +26,7 @@ import static java.lang.Thread.sleep;
  * Servidor RMI
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  * @see RMI
  * @see UnicastRemoteObject
  */
@@ -34,7 +34,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Numero maximo de mesas de voto
      */
-    private final int NUM_MULTICAST_SERVERS = 11;
+    private final int NUM_MULTICAST_SERVERS;
     /**
      * Endereço IPv4 do servidor
      */
@@ -63,13 +63,18 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Construtor do objeto Servidor RMI
      *
+     * @param SERVER_ADDRESS endereço IPv4 do servidor
+     * @param SERVER_PORT porte do servidor
+     * @param REGISTRY_PORT porte do registo RMI
+     * @param NUM_MULTICAST_SERVERS numero maximo de servidores multicast
      * @throws RemoteException falha do RMI
-     *///TODO
-    public RMIServer(String SERVER_ADDRESS, int SERVER_PORT, int REGISTRY_PORT) throws RemoteException {
+     */
+    public RMIServer(String SERVER_ADDRESS, int SERVER_PORT, int REGISTRY_PORT, int NUM_MULTICAST_SERVERS) throws RemoteException {
         super();
         this.SERVER_ADDRESS = SERVER_ADDRESS;
         this.SERVER_PORT = SERVER_PORT;
         this.REGISTRY_PORT = REGISTRY_PORT;
+        this.NUM_MULTICAST_SERVERS = NUM_MULTICAST_SERVERS;
         notifiersMulticast = new ConcurrentHashMap<>();
         notifiersVotesAdmin = new ArrayList<>();
         notifiersPollsAdmin = new ArrayList<>();
@@ -626,6 +631,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Seleciona as mesas de voto que não estejam associadas a uma determinada eleição
+     *
      * @param election_id ID da eleição
      * @return departamentos
      */
@@ -898,6 +904,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Envia informação sobre os votos via callback para o admin
+     *
+     * @param NOTIFIER notifier
      */
     public void sendRealTimeVotes(Notifier NOTIFIER) {
         String sql = "SELECT count(*), d.name as Name, e.title as Title" +
@@ -966,6 +974,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Envia informação sobre as mesas de votos e respetivos terminais de voto via callback para o admin
+     *
+     * @param NOTIFIER notifier
      */
     public void sendRealTimePolls(Notifier NOTIFIER) {
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
@@ -1064,12 +1074,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
-     * Verifica se uma determinada mesa de voto se pode ligar
+     * Verifica se uma determinada mesa de voto se pode ligar <br>
      * Pode-se ligar, caso o máximo de mesas de voto ativas ainda não tenha sido atingido
      * e o departamento escolhido ainda não tenha uma mesa de voto ativa
      * @param dep_id   ID do departamento
-     * @param NOTIFIER
-     * @return
+     * @param NOTIFIER notifier
+     * @return nome da mesa de voto criada ou null
      */
     public String initializeMulticast(int dep_id, Notifier NOTIFIER) {
         int numMulticast = countRowsBD("department WHERE hasMulticastServer = 1", null);
@@ -1140,7 +1150,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public void initializeRMI() {
         System.out.println("Becoming Primary Server!");
         try {
-            RMIServer obj = new RMIServer(this.SERVER_ADDRESS, this.SERVER_PORT, this.REGISTRY_PORT);
+            RMIServer obj = new RMIServer(this.SERVER_ADDRESS, this.SERVER_PORT, this.REGISTRY_PORT, this.NUM_MULTICAST_SERVERS);
             Registry r = LocateRegistry.createRegistry(this.REGISTRY_PORT);
             r.rebind("clientMulticast", obj);
             r.rebind("admin", obj);
@@ -1211,10 +1221,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         System.out.println("SERVER_PORT: " + SERVER_PORT);
         String SERVER_ADDRESS = p.getProperty("rmiServerAddress");
         System.out.println("SERVER_ADDRESS: " + SERVER_ADDRESS);
+        int NUM_MULTICAST_SERVERS = Integer.parseInt(p.getProperty("numMulticastServers"));
+        System.out.println("NUM_MULTICAST_SERVERS: " + NUM_MULTICAST_SERVERS);
         /*
          * RMI
          */
-        RMIServer rmiServer = new RMIServer(SERVER_ADDRESS, SERVER_PORT, REGISTRY_PORT);
+        RMIServer rmiServer = new RMIServer(SERVER_ADDRESS, SERVER_PORT, REGISTRY_PORT,NUM_MULTICAST_SERVERS);
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {
             try {

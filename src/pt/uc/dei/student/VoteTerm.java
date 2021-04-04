@@ -19,7 +19,7 @@ import pt.uc.dei.student.others.Utilitary;
  * Terminal de Voto (Cliente do Servidor Multicast)
  *
  * @author Ana Rita Rodrigues
- * @author Dylan Gonçãoves Perdigão
+ * @author Dylan Gonçalves Perdigão
  * @see MulticastServer
  * @see Thread
  */
@@ -294,6 +294,8 @@ public class VoteTerm extends Thread {
      * @param election   nome da eleição
      * @param cc         numero do cartão de cidadão
      * @param ndep       numero do departamento
+     * @param timer      temporizador da inatividade
+     * @param timeout    booleano para saber se está inativo há 60 segundos
      */
     private void accessVotingForm(String infoByName, String infoById, String election, String cc, String ndep, Timer timer, boolean[] timeout) {
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
@@ -462,12 +464,12 @@ public class VoteTerm extends Thread {
      * inicializa o terminal de voto
      *
      * @param args argumentos de entrada do programa
+     * @throws IOException Problema na leitura do ID requerido
      */
     public static void main(String[] args) throws IOException {
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String network;
-        System.out.println("55555557estacerta".hashCode());
         switch (args.length) {
             case 0:
                 do {

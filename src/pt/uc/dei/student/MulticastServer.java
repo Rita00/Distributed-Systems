@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
+//TODO CONSULTAR RESULTADOS DETALHADOS (FAIL)
 //TODO se pedir novo terminal de voto enquanto alguem está num terminal bloqueia para sempre
 //Todo listagem de registo nao aparece eleição 4001, idk why yet
 //TODO verificar se nas eleiçoes que nao sao restritas a um unico departamento as pessoas so podem votar apenas 1 vez (ter cuidado se pode votar em mais que um departamento)
@@ -557,7 +558,7 @@ public class MulticastServer extends Thread {
     private void registerTerminal(String id, String required_id) {
         //procurar terminais na base de dados com este id.
         int status;
-        String message = "";
+        String message;
         while (true) {
             try {
                 status = this.rmiServer.getTerminal(required_id);
@@ -664,8 +665,7 @@ public class MulticastServer extends Thread {
     public void reconnectToRMI() {
         while (true) {
             try {
-                RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                multicastServer.rmiServer = rmiServer;
+                multicastServer.rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace(); //TODO caso o porte ou o lookup estejam errados, mais vale parar o programa
@@ -798,7 +798,7 @@ public class MulticastServer extends Thread {
                 try {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
                     multicastServer = new MulticastServer(network, rmiServer);
-                    ArrayList<Department> departments = null;
+                    ArrayList<Department> departments;
                     try {
                         departments = multicastServer.rmiServer.getDepartments();
                         while (!(dep >= 1 && dep <= 11)) {

@@ -61,6 +61,7 @@ public class AdminConsole {
      * TODO
      */
     static AdminConsole admin;
+
     /**
      * Construtor do Objeto Consola de administração
      *
@@ -71,6 +72,7 @@ public class AdminConsole {
         this.rmiServer = rmiServer;
         this.pingRMI();
     }
+
     /**
      * Menu que apresenta as opções que os administradores podem realizar: <br>
      * (1)- Registar Pessoas <br>
@@ -138,6 +140,7 @@ public class AdminConsole {
         }
 
     }
+
     /**
      * Menu que mostra o numero de eleitores que votaram em
      * cada mesa de voto
@@ -180,6 +183,7 @@ public class AdminConsole {
         }
 
     }
+
     /**
      * Menu que mostra o estado de atividade das mesas de voto e
      * dos respetivos terminais de voto.
@@ -222,6 +226,7 @@ public class AdminConsole {
             }
         }
     }
+
     /**
      * Efetua a listagem dos registos de votos com: <br>
      * - titulo da eleição <br>
@@ -262,6 +267,7 @@ public class AdminConsole {
             return;
         }
     }
+
     /**
      * Menu com os resultados das eleições passadas,
      * pede ao utilizador para escolher uma eleição e
@@ -337,6 +343,7 @@ public class AdminConsole {
 
     /**
      * Lista as listas candidatas que tenham votos numa determinada eleição
+     *
      * @param id_election ID da eleição
      */
     public void listCandidacyWithVotes(int id_election) {
@@ -587,7 +594,8 @@ public class AdminConsole {
     /**
      * Verifica se o ID de um departamento se encontra num ArrayList de departamentos
      * e se o ID é um número
-     * @param dep string com ID do departamento
+     *
+     * @param dep         string com ID do departamento
      * @param departments ArrayList dos departamentos
      * @return true se encontrar, false caso contrário ou se não for um número
      * @see Department
@@ -602,7 +610,8 @@ public class AdminConsole {
 
     /**
      * Verifica se o ID de um departamento se encontra num ArrayList de departamentos
-     * @param dep ID do departamento
+     *
+     * @param dep         ID do departamento
      * @param departments ArrayList dos departamentos
      * @return true se encontrar, false caso contrário
      * @see Department
@@ -654,7 +663,7 @@ public class AdminConsole {
                 pass = reader.readLine();
                 while (!(1 <= Integer.parseInt(ndep) && Integer.parseInt(ndep) <= 11)) {
                     do {
-                        ArrayList<Department> departments = null;
+                        ArrayList<Department> departments;
                         while (true) {
                             try {
                                 departments = this.rmiServer.getDepartments();
@@ -833,6 +842,7 @@ public class AdminConsole {
             }
         }
     }
+
     /**
      * Menu para escolher uma eleição pata gerir: <br>
      * Lista as eleições que o utilizador pode escolher <br>
@@ -878,6 +888,7 @@ public class AdminConsole {
             }
         }
     }
+
     /**
      * Menu para gerir uma eleição: <br>
      * Lista as listas candidatas que pertencem à eleição para poderem serem consultadas <br>
@@ -1166,6 +1177,7 @@ public class AdminConsole {
             break;
         }
     }
+
     /**
      * Liga-se de novo ao registo do RMI e
      * faz o set do atributo rmiserver com um novo
@@ -1173,14 +1185,14 @@ public class AdminConsole {
     public void reconnectToRMI() {
         while (true) {
             try {
-                RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("admin");
-                admin.rmiServer = rmiServer;
+                admin.rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("admin");
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace();
             }
         }
     }
+
     /**
      * Cria e inicia uma thread que dá pings ao RMI,
      * em caso de problema tenta restabelecer a ligação
@@ -1208,8 +1220,10 @@ public class AdminConsole {
                 }
         ).start();
     }
+
     /**
      * Liga-se ao servidor RMI e inicializa a consola de administração
+     *
      * @param args argumentos de entrada do programa
      */
     public static void main(String[] args) {

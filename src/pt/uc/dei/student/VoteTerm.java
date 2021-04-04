@@ -8,8 +8,12 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 import pt.uc.dei.student.others.Utilitary;
 
@@ -214,6 +218,21 @@ public class VoteTerm extends Thread {
      * @param ndep       numero do departamento
      */
     private void login(String cc, String infoByName, String infoById, String election, String ndep) {
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        String enteredPassword;
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    input.close();
+                    System.out.println("Thread timeout");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // Your database code here
+            }
+        }, 15*1000);
         HashMap<String, String> msgHash;
         boolean isFirstAttempt = true;
         do {
@@ -224,23 +243,20 @@ public class VoteTerm extends Thread {
             /*
             GET USERNAME PASSWORD
              */
-            Scanner input = new Scanner(System.in);
-            System.out.println("User: " + cc);
 
-            //--------------
-            /*
-            Console console = System.console();
-            String enteredPassword;
-            if(console!=null){
-                 enteredPassword = new String(console.readPassword("Password (secure): "));
-            }else {
-                System.out.print("Password: ");
-                enteredPassword= input.nextLine();
-            }
-            */
-            //--------------
+            System.out.println("User: " + cc);
             System.out.print("Password: ");
-            String enteredPassword = input.nextLine();
+            try {
+                while(!input.ready());
+                enteredPassword = input.readLine();
+            } catch (IOException e) {
+                //e.printStackTrace();
+                System.out.println("Demorou demasiado tempo!");
+                return;
+            }
+
+
+            System.out.println("blablabla");
             //--------------
             String password = String.format("%s", (cc + enteredPassword).hashCode());
             String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|login;username|%s;password|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", cc, password);
@@ -264,7 +280,7 @@ public class VoteTerm extends Thread {
             } while (!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || (!(msgHash.get("message").equals("logged in") || msgHash.get("message").equals("wrong password"))));
         } while (!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || !msgHash.get("message").equals("logged in"));
         System.out.println("Successfully Logged In");
-        this.accessVotingForm(infoByName, infoById, election, cc, ndep);
+        this.accessVotingForm(infoByName, infoById, election, cc, ndep, timer, input);
     }
 
     /**
@@ -279,17 +295,26 @@ public class VoteTerm extends Thread {
      * @param cc         numero do cartão de cidadão
      * @param ndep       numero do departamento
      */
-    private void accessVotingForm(String infoByName, String infoById, String election, String cc, String ndep) {
+    private void accessVotingForm(String infoByName, String infoById, String election, String cc, String ndep, Timer timer, BufferedReader input) {
+        int list;
         electionBlocked = election;
         ccBlocked = cc;
-        Scanner input = new Scanner(System.in);
         String sendMsg;
-        int command;
+        String command;
         System.out.println("Escolha uma lista para votar: ");
         this.listInfo(infoByName, infoById);
         System.out.print(OPTION_STRING);
-        command = input.nextInt();
-        sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|vote;id_candidacy|%s;id_election|%s;cc|%s;dep|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", command, election, cc, ndep);
+        try {
+            while(!input.ready());
+            command = input.readLine();
+            list = Integer.parseInt(command);
+        } catch (IOException e) {
+            //e.printStackTrace();
+            System.out.println("Demorou demasiado tempo!");
+            return;
+        }
+        timer.cancel();
+        sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|vote;id_candidacy|%s;id_election|%s;cc|%s;dep|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", list, election, cc, ndep);
         while (true) {
             sendMessage(sendMsg);
             try {
@@ -314,6 +339,7 @@ public class VoteTerm extends Thread {
         while (true) {
             try {
                 this.getSocket().send(packet);
+                break;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -435,7 +461,6 @@ public class VoteTerm extends Thread {
      * @param args argumentos de entrada do programa
      */
     public static void main(String[] args) {
-        Console console = System.console();
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String network;

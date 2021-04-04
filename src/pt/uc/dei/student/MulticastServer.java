@@ -89,6 +89,9 @@ public class MulticastServer extends Thread {
      * HashMap com o estado dos terminais de voto
      */
     private final ConcurrentHashMap<String, Boolean> availableTerminals;
+    /**
+     * TODO
+     */
     private final ConcurrentHashMap<String, Integer> terminalPingCounter;
 
     /**
@@ -501,7 +504,7 @@ public class MulticastServer extends Thread {
             }
         }
     }
-
+    
     void caseTimeout(String terminal_id) {
         while (true) {
             try {

@@ -252,7 +252,7 @@ public class VoteTerm extends Thread {
             /*
             SEND TO MULTICAST FOR VERIFICATION
             */
-            do {
+            while(true){
                 try {
                     this.getSocket().send(packet);
                     byte[] buffer2 = new byte[256];
@@ -263,9 +263,19 @@ public class VoteTerm extends Thread {
                 }
                 String recvMsg = new String(packet.getData(), 0, packet.getLength());
                 msgHash = Utilitary.parseMessage(recvMsg);
-                //TODO check if message is for me
-            } while (!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || (!(msgHash.get("message").equals("logged in") || msgHash.get("message").equals("wrong password"))));
-        } while (!(msgHash.get("cc") != null && msgHash.get("cc").equals(cc)) || !msgHash.get("message").equals("logged in"));
+                if( msgHash.get("message").equals("wrong password") ){
+                    break;
+                }
+                if( msgHash.get("message").equals("logged in") ){
+                    if( msgHash.get("cc").equals(cc) ){
+                        break;
+                    }
+                }
+            }
+            if(msgHash.get("message").equals("logged in")){
+                break;
+            }
+        } while (msgHash.get("message").equals("wrong password"));
         System.out.println("Successfully Logged In");
         this.accessVotingForm(infoByName, infoById, election, cc, ndep, timer, timeout);
     }
@@ -450,10 +460,11 @@ public class VoteTerm extends Thread {
      *
      * @param args argumentos de entrada do programa
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner input = new Scanner(System.in);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String network;
+        System.out.println("55555557estacerta".hashCode());
         switch (args.length) {
             case 0:
                 do {
@@ -475,13 +486,14 @@ public class VoteTerm extends Thread {
                 return;
 
         }
-        VoteTerm client = new VoteTerm(network, MulticastServer.MULTICAST_PORT);
         System.out.println("Required id:");
-        try {
-            client.initializeTerminal(reader.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //client.start();
+        String reqID;
+        do{
+            System.out.print(">>> ");
+            reqID = reader.readLine();
+        }while(!Utilitary.isNumber(reqID));
+
+        VoteTerm client = new VoteTerm(network, MulticastServer.MULTICAST_PORT);
+        client.initializeTerminal(reqID);
     }
 }

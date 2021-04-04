@@ -459,6 +459,7 @@ public class MulticastServer extends Thread {
      */
     private void doThings(HashMap<String, String> msgHash) {
         //nao ler as suas proprias mensagens
+        String id;
         if (!msgHash.get("sender").startsWith("multicast")) {
             switch (msgHash.get("message")) {
                 case "login":
@@ -471,13 +472,47 @@ public class MulticastServer extends Thread {
                     registerTerminal(msgHash.get("sender"), msgHash.get("required_id"));
                     break;
                 case "ping":
-                    String id = msgHash.get("sender");
+                    id = msgHash.get("sender");
                     this.terminalPingCounter.put(id.split("-")[1], 5);
+                    break;
+                case "timeout":
+                    id = msgHash.get("sender").split("-")[1];
+                    caseTimeout(id);
                     break;
             }
         }
     }
 
+    void caseTimeout(String terminal_id) {
+        while (true) {
+            try {
+                this.rmiServer.updateTerminalInfoPerson(0, terminal_id);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
+            }
+        }
+        while (true) {
+            try {
+                this.rmiServer.updateTerminalInfoElection(-1, terminal_id);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
+            }
+        }
+        while (true) {
+            try {
+                this.rmiServer.updateTerminalStatus(terminal_id, "1");
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                //e.printStackTrace();
+                reconnectToRMI();
+            }
+        }
+        availableTerminals.put(terminal_id, true);
+    }
     /**
      * Vota na lista escolhida pelo eleitor ou vota em branco ou vota nulo
      *

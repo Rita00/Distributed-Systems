@@ -3,6 +3,7 @@ package pt.uc.dei.student;
 import pt.uc.dei.student.elections.*;
 import pt.uc.dei.student.others.*;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -16,6 +17,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.sleep;
@@ -36,15 +38,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Endereço IPv4 do servidor
      */
-    private final String SERVER_ADDRESS = "127.0.0.1";
+    private final String SERVER_ADDRESS;
     /**
      * Porte do servidor
      */
-    public final static int SERVER_PORT = 7001;
+    private final int SERVER_PORT;
     /**
      * Porte do RMI
      */
-    public final static int RMI_PORT = 7000;
+    private final int REGISTRY_PORT;
     /**
      * TODO
      */
@@ -69,9 +71,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Construtor do objeto Servidor RMI
      *
      * @throws RemoteException falha do RMI
-     */
-    public RMIServer() throws RemoteException {
+     *///TODO
+    public RMIServer(String SERVER_ADDRESS, int SERVER_PORT, int REGISTRY_PORT) throws RemoteException {
         super();
+        this.SERVER_ADDRESS = SERVER_ADDRESS;
+        this.SERVER_PORT=SERVER_PORT;
+        this.REGISTRY_PORT = REGISTRY_PORT;
         notifiersMulticast = new ConcurrentHashMap<>();
         notifiersVotesAdmin = new ArrayList<>();
         notifiersPollsAdmin = new ArrayList<>();
@@ -1134,8 +1139,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public void initializeRMI() {
         System.out.println("Becoming Primary Server!");
         try {
-            RMIServer obj = new RMIServer();
-            Registry r = LocateRegistry.createRegistry(this.RMI_PORT);
+            RMIServer obj = new RMIServer(this.SERVER_ADDRESS,this.SERVER_PORT,this.REGISTRY_PORT);
+            Registry r = LocateRegistry.createRegistry(this.REGISTRY_PORT);
             r.rebind("clientMulticast", obj);
             r.rebind("admin", obj);
             System.out.println("RMI Server ready!");
@@ -1185,16 +1190,55 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ConcurrentHashMap<Integer, Notifier> getNotifiersMulticast() {
         return notifiersMulticast;
     }
-
+    /**
+     * Getter do endereço IP do servidor RMI
+     *
+     * @return endereço IP do servidor RMI
+     */
+    public String getSERVER_ADDRESS(){return this.SERVER_ADDRESS;}
+    /**
+     * Getter do porte do registo  do RMI
+     *
+     * @return porte do registo do RMI
+     */
+    public int getREGISTRY_PORT(){return this.REGISTRY_PORT;}
+    /**
+     * Getter do porte do servidor RMI
+     *
+     * @return porte do servidor RMI
+     */
+    public int getSERVER_PORT(){return this.SERVER_PORT;}
     /**
      * Envia 5 pings para decidir se vai ser servidor primário,
      * inicializa o servidor RMI e as ligações UDP
      *
      * @param args  argumentos de entrada do programa
-     * @throws RemoteException falha no RMI
+     * @throws RemoteException falha no RMI TODO
      */
-    public static void main(String[] args) throws RemoteException {
-        RMIServer rmiServer = new RMIServer();
+    public static void main(String[] args) throws IOException {
+        /*
+         * PROPERTIES
+         */
+        FileReader reader;
+        try {
+            //PARA OS JAR
+            reader = new FileReader("config.properties");
+        } catch (IOException e){
+            //PARA CORRER NO IDE
+            reader = new FileReader("src/pt/uc/dei/student/config.properties");
+        }
+        Properties p = new Properties();
+        p.load(reader);
+        int REGISTRY_PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
+        System.out.println("REGISTRY_PORT: "+REGISTRY_PORT);
+        int SERVER_PORT = Integer.parseInt(p.getProperty("rmiServerPort"));
+        System.out.println("SERVER_PORT: "+SERVER_PORT);
+        String SERVER_ADDRESS = p.getProperty("rmiServerAddress");
+        System.out.println("SERVER_ADDRESS: "+SERVER_ADDRESS);
+        /*
+         * RMI
+         */
+        RMIServer rmiServer = new RMIServer(SERVER_ADDRESS,SERVER_PORT,REGISTRY_PORT);
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {
             try {

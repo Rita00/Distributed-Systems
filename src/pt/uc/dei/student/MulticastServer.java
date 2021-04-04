@@ -8,9 +8,7 @@ import pt.uc.dei.student.others.NotifierCallBack;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -20,6 +18,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,6 +64,14 @@ public class MulticastServer extends Thread {
      */
     private int multicastId;
     /**
+     * Servidor porte do registo RMI
+     */
+    private final int REGISTRY_PORT;
+    /**
+     * Servidor nome do lookup
+     */
+    private final String LOOKUP_NAME;
+    /**
      * Servidor RMI ao qual está ligado o Servidor Multicast
      */
     private RMI rmiServer;
@@ -89,13 +96,17 @@ public class MulticastServer extends Thread {
     /**
      * Construtor do Servidor Multicast (Mesa de Voto)
      *
-     * @param multicastAddress endereço IPv4 do Servidor Multicast
-     * @param rmiServer        servidor RMI
+     * @param multicastAddress  endereço IPv4 do Servidor Multicast
+     * @param REGISTRY_PORT     porte do registo do rmi
+     * @param LOOKUP_NAME       nome do lookup
+     * @param rmiServer         servidor RMI
      * @throws IOException exceção de I/O
      */
-    public MulticastServer(String multicastAddress, RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
+    public MulticastServer(String multicastAddress,int REGISTRY_PORT,String LOOKUP_NAME, RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
         this.rmiServer = rmiServer;
         this.MULTICAST_ADDRESS = multicastAddress;
+        this.REGISTRY_PORT = REGISTRY_PORT;
+        this.LOOKUP_NAME = LOOKUP_NAME;
         this.socket = new MulticastSocket(MULTICAST_PORT);
         this.group = InetAddress.getByName(multicastAddress);
         this.multicastId = 0;
@@ -664,7 +675,7 @@ public class MulticastServer extends Thread {
     public void reconnectToRMI() {
         while (true) {
             try {
-                RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
+                RMI rmiServer = (RMI) LocateRegistry.getRegistry(this.REGISTRY_PORT).lookup(this.LOOKUP_NAME);
                 multicastServer.rmiServer = rmiServer;
                 break;
             } catch (NotBoundException | IOException remoteException) {
@@ -743,7 +754,27 @@ public class MulticastServer extends Thread {
      *
      * @param args argumentos de entrada do programa
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        /*
+         * PROPERTIES
+         */
+        FileReader reader;
+        try {
+            //PARA OS JAR
+            reader = new FileReader("config.properties");
+        } catch (IOException e){
+            //PARA CORRER NO IDE
+            reader = new FileReader("src/pt/uc/dei/student/config.properties");
+        }
+        Properties p = new Properties();
+        p.load(reader);
+        int REGISTRY_PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
+        System.out.println("REGISTRY_PORT: "+REGISTRY_PORT);
+        String LOOKUP_NAME = p.getProperty("multicastLookupName");
+        System.out.println("LOOKUP_NAME: "+LOOKUP_NAME);
+        /*
+
+         */
         Scanner input = new Scanner(System.in);
         String network;
         switch (args.length) {
@@ -769,8 +800,8 @@ public class MulticastServer extends Thread {
         }
         try {
             int dep = -1;
-            RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-            multicastServer = new MulticastServer(network, rmiServer);
+            RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
+            multicastServer = new MulticastServer(network,REGISTRY_PORT,LOOKUP_NAME, rmiServer);
             /*
             SETUP
              */
@@ -796,8 +827,8 @@ public class MulticastServer extends Thread {
             int dep = -1;
             while (true) {
                 try {
-                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("clientMulticast");
-                    multicastServer = new MulticastServer(network, rmiServer);
+                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
+                    multicastServer = new MulticastServer(network,REGISTRY_PORT,LOOKUP_NAME, rmiServer);
                     ArrayList<Department> departments = null;
                     try {
                         departments = multicastServer.rmiServer.getDepartments();

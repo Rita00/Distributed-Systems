@@ -6,6 +6,7 @@ import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +52,14 @@ public class AdminConsole {
      */
     private int isGettingRealTime = 0;
     /**
+     * Servidor porte do registo RMI
+     */
+    private final int REGISTRY_PORT;
+    /**
+     * Servidor nome do lookup
+     */
+    private final String LOOKUP_NAME;
+    /**
      * Servidor RMI
      */
     private RMI rmiServer;
@@ -67,7 +77,9 @@ public class AdminConsole {
      * @param rmiServer servidor RMI
      * @throws RemoteException falha no RMI
      */
-    public AdminConsole(RMI rmiServer) throws RemoteException {
+    public AdminConsole(int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer) throws RemoteException {
+        this.REGISTRY_PORT = REGISTRY_PORT;
+        this.LOOKUP_NAME = LOOKUP_NAME;
         this.rmiServer = rmiServer;
         this.pingRMI();
     }
@@ -1173,7 +1185,7 @@ public class AdminConsole {
     public void reconnectToRMI() {
         while (true) {
             try {
-                RMI rmiServer = (RMI) LocateRegistry.getRegistry(RMIServer.RMI_PORT).lookup("admin");
+                RMI rmiServer = (RMI) LocateRegistry.getRegistry(this.REGISTRY_PORT).lookup(this.LOOKUP_NAME);
                 admin.rmiServer = rmiServer;
                 break;
             } catch (NotBoundException | IOException remoteException) {
@@ -1210,20 +1222,43 @@ public class AdminConsole {
     }
     /**
      * Liga-se ao servidor RMI e inicializa a consola de administração
+     *
      * @param args argumentos de entrada do programa
+     * @throws IOException Problema de leitura do ficheiro property
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        /*
+         * PROPERTIES
+         */
+        FileReader reader;
         try {
-            RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
+            //PARA OS JAR
+            reader = new FileReader("config.properties");
+        } catch (IOException e){
+            //PARA CORRER NO IDE
+            reader = new FileReader("src/pt/uc/dei/student/config.properties");
+        }
+        Properties p = new Properties();
+        p.load(reader);
+        int REGISTRY_PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
+        System.out.println("REGISTRY_PORT: "+REGISTRY_PORT);
+        String LOOKUP_NAME = p.getProperty("adminLookupName");
+        System.out.println("LOOKUP_NAME: "+LOOKUP_NAME);
+        try {
+
+            /*
+             * RMI
+             */
+            RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
             String message = rmiServer.saySomething();
             System.out.println("Hello Admin: " + message);
-            admin = new AdminConsole(rmiServer);
+            admin = new AdminConsole(REGISTRY_PORT, LOOKUP_NAME,rmiServer);
             admin.admin(-1);
         } catch (Exception e) {
             String message;
             while (true) {
                 try {
-                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(7000).lookup("admin");
+                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
                     while (true) {
                         try {
                             message = rmiServer.saySomething();
@@ -1233,7 +1268,7 @@ public class AdminConsole {
                         }
                     }
                     System.out.println("Hello Admin: " + message);
-                    admin = new AdminConsole(rmiServer);
+                    admin = new AdminConsole(REGISTRY_PORT, LOOKUP_NAME, rmiServer);
                     admin.admin(-1);
                     break;
                 } catch (NotBoundException | IOException remoteException) {

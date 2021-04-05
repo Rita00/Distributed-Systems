@@ -878,7 +878,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
      */
     public void updateNullVotes(String id_election, String cc, String ndep) {
         insertVotingRecord(id_election, cc, ndep);
-        updateOnDB("UPDATE electio SET null_votes = null_votes + 1 WHERE id = " + id_election);
+        updateOnDB("UPDATE election SET null_votes = null_votes + 1 WHERE id = " + id_election);
         this.sendRealTimeVotes();
     }
 

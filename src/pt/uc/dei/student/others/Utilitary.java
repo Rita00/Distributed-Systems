@@ -248,6 +248,13 @@ public class Utilitary {
         return prepared.replace("|", " ");
     }
 
+    /**
+     * Transforma a password na encriptação do número de cartão de cidadão com a password original
+     *
+     * @param username número de cartão de cidadão
+     * @param password password original
+     * @return password encriptada
+     */
     public static String getPasswordHash(String username, String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

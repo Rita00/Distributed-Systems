@@ -82,7 +82,8 @@ RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
-     * Insere uma determinada pessoa na base de dados
+     * Insere uma determinada pessoa na base de dados e
+     * encripta a palavra passe
      *
      * @param name        nome
      * @param cargo       cargo (Estudante, Docente ou Funcionário)
@@ -201,7 +202,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
      * Procura uma pessoa pelas suas cardenciais na base de dados
      *
      * @param username número de cartão de cidadão
-     * @param password HashCode da concatenação do número de cartão de cidadão e da palavra passe
+     * @param password código de acesso
      * @return pessoa pesquisada ou null caso não seja encontrada
      */
     public Person getPerson(String username, String password) {
@@ -387,7 +388,13 @@ RMIServer extends UnicastRemoteObject implements RMI {
         }
         return true;
     }
-
+    /**
+     * Insere/Remove na base de dados na respetivas tabela
+     *
+     * @param sql           commando sql
+     * @param argument1     argumento designado por "?" no comando sql
+     * @return true ou false dependendo se a inserção teve ou não sucesso
+     */
     public boolean updateOnDB(String sql, String argument1) {
         Connection conn = connectDB();
         try {
@@ -495,6 +502,13 @@ RMIServer extends UnicastRemoteObject implements RMI {
         return people;
     }
 
+    /**
+     * Seleciona pessoas na base de dados
+     *
+     * @param sql       comando SQL
+     * @param password  palavra passe
+     * @return arrayList com as pessoas
+     */
     public ArrayList<Person> selectPeople(String sql, String password) {
         Connection conn = connectDB();
         ArrayList<Person> people = new ArrayList<>();

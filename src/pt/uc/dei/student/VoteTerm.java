@@ -193,7 +193,6 @@ public class VoteTerm extends Thread {
 
     /**
      * Recolhe os dados de login do eleitor,
-     * cria uma hashCode coma a concatenação do numero de cartão de cidadão e palavra passe,
      * envia essa informação com o protocolo multicast para verificar se o login é valido,
      * aguarda resposta do servidor multicast se o login é valido
      *

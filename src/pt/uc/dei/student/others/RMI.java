@@ -322,7 +322,7 @@ public interface RMI extends Remote {
      * Procura uma pessoa pelas suas cardenciais na base de dados
      *
      * @param username número de cartão de cidadão
-     * @param password HashCode da concatenação do número de cartão de cidadão e da palavra passe
+     * @param password código de acesso
      * @return pessoa pesquisada ou null caso não seja encontrada
      * @throws RemoteException falha no RMI
      * @throws InterruptedException thread interrompida

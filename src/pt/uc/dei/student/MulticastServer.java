@@ -685,7 +685,7 @@ public class MulticastServer extends Thread {
      *
      * @param id       ID do terminal de voto
      * @param username numero de cartão de cidadão do eleitor
-     * @param password hashCode da concatenação do numero de CC do eleitor com a password introduzida pelo eleitor
+     * @param password código de acesso
      */
     private void verifyLogin(String id, String username, String password) {
         String message;

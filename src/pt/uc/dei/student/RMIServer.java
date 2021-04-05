@@ -202,7 +202,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
      * Procura uma pessoa pelas suas cardenciais na base de dados
      *
      * @param username número de cartão de cidadão
-     * @param password HashCode da concatenação do número de cartão de cidadão e da palavra passe
+     * @param password código de acesso
      * @return pessoa pesquisada ou null caso não seja encontrada
      */
     public Person getPerson(String username, String password) {

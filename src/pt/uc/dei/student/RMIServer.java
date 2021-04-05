@@ -678,7 +678,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
             return count;
         } catch (Exception e) {
             System.out.println("Erro a contar o número de linhas da tabela");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return 0;
     }
@@ -909,7 +909,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 try {
                     notifier.updateAdmin(info);
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         } catch (SQLException throwables) {
@@ -945,7 +945,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
             try {
                 NOTIFIER.updateAdmin(info);
             } catch (RemoteException | InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
         } catch (SQLException throwables) {
@@ -979,7 +979,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 try {
                     notifier.updatePollsAdmin(info);
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         } catch (SQLException throwables) {
@@ -1013,7 +1013,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
             try {
                 NOTIFIER.updatePollsAdmin(info);
             } catch (RemoteException | InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
         } catch (SQLException throwables) {
@@ -1113,7 +1113,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 try {
                     notifiersMulticast.get(dep_id).ping();
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 return selectDepartments("SELECT * FROM department WHERE id = " + dep_id).get(0).getName();
             }
@@ -1253,7 +1253,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                     numPingsFailed++;
                 else numPingsFailed = 0;
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         rmiServer.initializeRMI();

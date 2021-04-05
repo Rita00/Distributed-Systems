@@ -44,7 +44,7 @@ public class StatusChecker extends Thread {
             try {
                 sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             synchronized (this.notifiers) {
                 for (Integer id : this.notifiers.keySet()) {

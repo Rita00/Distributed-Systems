@@ -332,6 +332,7 @@ public class MulticastServer extends Thread {
                 if (availableTerminals.get(key)) {
                     id = key;
                     availableTerminals.put(key, false);
+                    terminalPingCounter.put(key, 60);
                     break;
                 }
             }
@@ -485,8 +486,13 @@ public class MulticastServer extends Thread {
                     registerTerminal(msgHash.get("sender"), msgHash.get("required_id"));
                     break;
                 case "ping":
-                    id = msgHash.get("sender");
-                    this.terminalPingCounter.put(id.split("-")[1], 5);
+                    id = msgHash.get("sender").split("-")[1];
+                    if (this.availableTerminals.get(id)) {
+                        this.terminalPingCounter.put(id, 5);
+                    } else {
+                        this.terminalPingCounter.put(id, 60);
+                    }
+
                     break;
                 case "timeout":
                     id = msgHash.get("sender").split("-")[1];
@@ -902,7 +908,7 @@ public class MulticastServer extends Thread {
             while (true) {
                 try {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
-                    multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer,MULTICAST_SERVER_ADDRESS);
+                    multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer, MULTICAST_SERVER_ADDRESS);
                     ArrayList<Department> departments;
                     try {
                         departments = multicastServer.rmiServer.getDepartments();

@@ -13,7 +13,7 @@ SELECT * FROM department WHERE hasMulticastServer IS NULL AND id = 2;
 SELECT * FROM department WHERE hasMulticastServer = 1;
 
 select * from voting_record;
-UPDATE department SET hasMulticastServer = null WHERE hasmulticastserver = 1;
+UPDATE department SET hasMulticastServer = null WHERE (hasmulticastserver = 1 OR hasmulticastserver = 0);
 
 SELECT name FROM department WHERE id = 1;
 

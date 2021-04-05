@@ -269,6 +269,7 @@ public class VoteTerm extends Thread {
                             break;
                         }
                     }
+                    doThings(msgHash);
                 } catch (IOException e) {
 //                    e.printStackTrace();
                 }

@@ -96,7 +96,8 @@ public interface RMI extends Remote {
      */
     void endRealTimeInfo(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
     /**
-     * Insere uma determinada pessoa na base de dados
+     * Insere uma determinada pessoa na base de dados e
+     * encripta a palavra passe
      *
      * @param name        nome
      * @param cargo       cargo (Estudante, Docente ou Funcionário)

@@ -192,13 +192,6 @@ public class VoteTerm extends Thread {
     }
 
     /**
-     * Permite parar a Thread
-     */
-    private void stopTerminal() {
-        this.interrupt();
-    }
-
-    /**
      * Recolhe os dados de login do eleitor,
      * cria uma hashCode coma a concatenação do numero de cartão de cidadão e palavra passe,
      * envia essa informação com o protocolo multicast para verificar se o login é valido,
@@ -414,6 +407,12 @@ public class VoteTerm extends Thread {
     }
 
     //TODO ENVIAR NDEP PARA O MULTICAST
+    /**
+     * Inicializa o terminal e efetua o pedido ao servidor multicast para ver
+     * se o ID requerido está disponivel
+     *
+     * @param required_id ID requerido pelo terminal de voto
+     */
     public void initializeTerminal(String required_id) {
         String sendMsg;
         sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|request_id;required_id|%s", this.getVoteTermId(), this.getDepartmentId(), "multicast", required_id);

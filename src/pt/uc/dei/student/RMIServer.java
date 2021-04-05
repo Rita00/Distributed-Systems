@@ -160,14 +160,31 @@ RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
-     * Atribui uma pessoa a uma lista na entidade candidacy_person da base de dados
+     * Atribui uma pessoa a uma lista na entidade candidacy_person da base de dados,
+     * e verifica se a pessoa pode candidatar-se.
      *
-     * @param candidacy_id ID da lista
-     * @param cc_number    número de cartão de cidadão da pessoa
-     * @return true em caso de sucesso na inserção, false caso contrário
+     * @param election_id   ID da eleição da lista
+     * @param candidacy_id  ID da lista
+     * @param cc_number     número de cartão de cidadão da pessoa
+     * @return String com a pensagem de erro
      */
-    public boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) {
-        return this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);", candidacy_id, cc_number));
+    public String insertPersonIntoCandidacy(int election_id, int candidacy_id, int cc_number) {
+        Person p = this.selectPeople("SELECT * FROM person WHERE cc_number="+cc_number).get(0);
+        Candidacy c = this.selectCandidacies("SELECT * FROM candidacy WHERE id="+candidacy_id).get(0);
+        int dep_id = this.countRowsBD("election_department WHERE election_id="+election_id,"department_id");
+        if(p!=null){
+            if(p.getJob().equals(c.getType()) && (p.getDepartment_id()==-1 || p.getDepartment_id()==dep_id)){
+                if(this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);", candidacy_id, cc_number))){
+                    return "";
+                }else{
+                    return "Erro ao associar a pessoa à lista";
+                }
+            }else{
+                return "O candidator não pode ser adicionado a esta lista";
+            }
+        }else{
+            return "Não forma encontradas pessoas com esse numero de carão de cidadão";
+        }
     }
 
     /**

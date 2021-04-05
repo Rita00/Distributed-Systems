@@ -147,15 +147,17 @@ public interface RMI extends Remote {
      */
     boolean insertCandidacyIntoElection(String name, String type, int election_id) throws java.rmi.RemoteException, InterruptedException;
     /**
-     * Atribui uma pessoa a uma lista na entidade candidacy_person da base de dados
+     * Atribui uma pessoa a uma lista na entidade candidacy_person da base de dados,
+     * e verifica se a pessoa pode candidatar-se.
      *
+     * @param election_id  ID da eleição da lista
      * @param candidacy_id ID da lista
      * @param cc_number    número de cartão de cidadão da pessoa
-     * @return true em caso de sucesso na inserção, false caso contrário
+     * @return String com a pensagem de erro
      * @throws RemoteException falha no RMI
      * @throws InterruptedException thread interrompida
      */
-    boolean insertPersonIntoCandidacy(int candidacy_id, int cc_number) throws java.rmi.RemoteException, InterruptedException;
+    String insertPersonIntoCandidacy(int election_id, int candidacy_id, int cc_number) throws java.rmi.RemoteException, InterruptedException;
     /**
      * Associa uma eleição a um departamento na base de dados
      *

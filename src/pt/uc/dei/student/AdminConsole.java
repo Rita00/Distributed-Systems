@@ -849,7 +849,9 @@ public class AdminConsole {
         String candidacyName = Utilitary.prepareForMulticast(input.nextLine());
         while (true) {
             try {
-                this.rmiServer.insertCandidacyIntoElection(candidacyName, election.getType(), election.getId());
+                if(candidacyName.length()>0) {
+                    this.rmiServer.insertCandidacyIntoElection(candidacyName, election.getType(), election.getId());
+                }
                 break;
             } catch (InterruptedException | RemoteException e) {
                 //e.printStackTrace();
@@ -1146,14 +1148,34 @@ public class AdminConsole {
                     switch (command) {
                         case ADD:
                             System.out.println("Numero do Cartao de Cidadao da pessoa:");
-                            while (true) {
-                                try {
-                                    this.rmiServer.insertPersonIntoCandidacy(candidacy.getId(), input.nextInt());
-                                    break;
-                                } catch (RemoteException | InterruptedException e) {
-                                    //e.printStackTrace();
-                                    reconnectToRMI();
+                            int cc=0;
+                            try {
+                                cc = input.nextInt();
+                            }catch(Exception e){
+                                System.out.println("⚠️ Numero de Cartão de Cidadão Inválido");
+                                this.manageCandidacy(election,candidacy);
+                                return;
+                            }
+                            if(Utilitary.checkCorrectCCNumber(cc)){
+                                while (true) {
+                                    try {
+                                        String msg=this.rmiServer.insertPersonIntoCandidacy(election.getId(),candidacy.getId(),cc);
+                                        if(!msg.equals("")){
+                                            System.out.println(msg);
+                                            this.manageCandidacy(election,candidacy);
+                                            return;
+                                        }else{
+                                            System.out.println("✅ Pessoa adicionada com sucesso");
+                                        }
+                                        break;
+                                    } catch (RemoteException | InterruptedException e) {
+                                        //e.printStackTrace();
+                                        reconnectToRMI();
+                                    }
                                 }
+                            }else{
+                                this.manageCandidacy(election,candidacy);
+                                return;
                             }
                             break;
                         case REMOVE:

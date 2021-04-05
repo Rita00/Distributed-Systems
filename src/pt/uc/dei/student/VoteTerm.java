@@ -128,7 +128,7 @@ public class VoteTerm extends Thread {
             String[] ndep = msgHash.get("sender").split("-");
             this.setDepartmentId(Integer.parseInt(ndep[2]));
             try {
-                if (Integer.parseInt(msgHash.get("destination")) == this.voteTermId) {
+                if (msgHash.get("destination").equals("all") || Integer.parseInt(msgHash.get("destination")) == this.voteTermId) {
                     switch (msgHash.get("message")) {
                         case "identify":
                             this.available = false;
@@ -139,6 +139,10 @@ public class VoteTerm extends Thread {
                             break;
                         case "voteOk":
                             this.terminateVote(msgHash.get("election"), msgHash.get("cc"));
+                            break;
+                        case "findTerminals":
+                            String sendMsg = String.format("sender|voteterm-%s-%s;destination|%s;message|found", this.getVoteTermId(), this.getDepartmentId(), "multicast");
+                            this.sendMessage(sendMsg);
                             break;
                     }
                 }
@@ -157,8 +161,10 @@ public class VoteTerm extends Thread {
      */
     public void terminateVote(String election, String cc) {
         //verificar que é sobre o voto da pessoa para quem o terminal está desbloqueado
-        if (electionBlocked.equals(election) && ccBlocked.equals(cc))
+        if (electionBlocked.equals(election) && ccBlocked.equals(cc)) {
             this.available = true;
+            System.out.println("Voto registado!");
+        }
     }
 
     /**

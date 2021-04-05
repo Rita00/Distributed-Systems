@@ -64,9 +64,9 @@ RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Construtor do objeto Servidor RMI
      *
-     * @param SERVER_ADDRESS endereço IPv4 do servidor
-     * @param SERVER_PORT porte do servidor
-     * @param REGISTRY_PORT porte do registo RMI
+     * @param SERVER_ADDRESS        endereço IPv4 do servidor
+     * @param SERVER_PORT           porte do servidor
+     * @param REGISTRY_PORT         porte do registo RMI
      * @param NUM_MULTICAST_SERVERS numero maximo de servidores multicast
      * @throws RemoteException falha do RMI
      */
@@ -1078,15 +1078,15 @@ RMIServer extends UnicastRemoteObject implements RMI {
      * Verifica se uma determinada mesa de voto se pode ligar <br>
      * Pode-se ligar, caso o máximo de mesas de voto ativas ainda não tenha sido atingido
      * e o departamento escolhido ainda não tenha uma mesa de voto ativa
+     *
      * @param dep_id   ID do departamento
      * @param NOTIFIER notifier
      * @return nome da mesa de voto criada ou null
      */
     public String initializeMulticast(int dep_id, Notifier NOTIFIER) {
         int numMulticast = countRowsBD("department WHERE hasMulticastServer = 1", null);
-        int count = countRowsBD("department WHERE (hasMulticastServer IS NULL OR hasMulticastServer = 0) AND id = " + dep_id, null);
 
-            if (numMulticast < NUM_MULTICAST_SERVERS && countRowsBD("department WHERE (hasMulticastServer IS NULL OR hasMulticastServer = 0) AND id = " + dep_id, null) != 0) {
+        if (numMulticast < NUM_MULTICAST_SERVERS && countRowsBD("department WHERE (hasMulticastServer IS NULL OR hasMulticastServer = 0) AND id = " + dep_id, null) != 0) {
             if (!updateOnDB("UPDATE department SET hasMulticastServer = 1 WHERE id = " + dep_id)) {
                 System.out.println("Impossível adicionar mesa de voto! :(");
                 return null;
@@ -1230,7 +1230,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
         /*
          * RMI
          */
-        RMIServer rmiServer = new RMIServer(SERVER_ADDRESS, SERVER_PORT, REGISTRY_PORT,NUM_MULTICAST_SERVERS);
+        RMIServer rmiServer = new RMIServer(SERVER_ADDRESS, SERVER_PORT, REGISTRY_PORT, NUM_MULTICAST_SERVERS);
         int numPingsFailed = 0;
         while (numPingsFailed < 5) {
             try {

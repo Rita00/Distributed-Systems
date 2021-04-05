@@ -35,6 +35,7 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
      * @see InfoElectors
      */
     public void updateAdmin(ArrayList<InfoElectors> info) {
+        System.out.println("==============================");
         for (InfoElectors i : info) {
             System.out.printf("%s\t%s\t%s\n", i.getElection_title(), i.getDep_name(), i.getCount());
         }

@@ -106,7 +106,8 @@ public class MulticastServer extends Thread {
      * @param rmiServer        servidor RMI
      * @throws IOException exceção de I/O
      */
-    public MulticastServer(String multicastAddress, int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer) throws IOException { //TODO tratar a exceção com um try catch?
+    public MulticastServer(String multicastAddress, int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer, String MULTICAST_SERVER_ADDRESS) throws IOException { //TODO tratar a exceção com um try catch?
+        System.setProperty("java.rmi.server.hostname", MULTICAST_SERVER_ADDRESS);
         this.rmiServer = rmiServer;
         this.MULTICAST_ADDRESS = multicastAddress;
         this.REGISTRY_PORT = REGISTRY_PORT;
@@ -420,6 +421,7 @@ public class MulticastServer extends Thread {
         try {
             //O servidor não recebe mensagens dos clientes (sem o Port)
             socket.joinGroup(group); // Para o servidor receber mensagens dar join ao grupo
+            this.findTerminals();
             while (isON) {
                 /*
                 RECEBER E PARSE DO PACOTE
@@ -489,6 +491,11 @@ public class MulticastServer extends Thread {
                 case "timeout":
                     id = msgHash.get("sender").split("-")[1];
                     caseTimeout(id);
+                    break;
+                case "found":
+                    id = msgHash.get("sender").split("-")[1];
+                    this.availableTerminals.put(id, true);
+                    this.terminalPingCounter.put(id, 5);
                     break;
             }
         }
@@ -801,6 +808,11 @@ public class MulticastServer extends Thread {
         this.department = department;
     }
 
+    public void findTerminals() {
+        String message = String.format("sender|multicast-%s-%s;destination|all;message|findTerminals", this.getMulticastId(), this.department.getId());
+        send(message);
+    }
+
     /**
      * Leitura dos dados no property file,
      * verifica o numero de argumentos ao iniciar o programa,
@@ -858,10 +870,11 @@ public class MulticastServer extends Thread {
                 return;
 
         }
+        String MULTICAST_SERVER_ADDRESS = p.getProperty("multicastServerAddress");
         try {
             int dep = -1;
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
-            multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer);
+            multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer, MULTICAST_SERVER_ADDRESS);
             /*
             SETUP
              */
@@ -879,6 +892,7 @@ public class MulticastServer extends Thread {
                 LIGAR
                  */
                 multicastServer.start();
+//                multicastServer.findTerminals();
                 multicastServer.initializeTerminalChecker();
                 multicastServer.connect();
             } else
@@ -888,7 +902,7 @@ public class MulticastServer extends Thread {
             while (true) {
                 try {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
-                    multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer);
+                    multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer,MULTICAST_SERVER_ADDRESS);
                     ArrayList<Department> departments;
                     try {
                         departments = multicastServer.rmiServer.getDepartments();
@@ -905,6 +919,7 @@ public class MulticastServer extends Thread {
                             LIGAR
                             */
                             multicastServer.start();
+//                            multicastServer.findTerminals();
                             multicastServer.initializeTerminalChecker();
                             multicastServer.connect();
                         } else

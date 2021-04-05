@@ -67,7 +67,7 @@ public class AdminConsole {
      * Callback usado para o servidor RMI enviar informação em tempo real acerca dos votos realizados
      * e do estado das mesas de votos e respetivos terminais de voto
      */
-    private NotifierCallBack NOTIFIER = new NotifierCallBack();
+    private NotifierCallBack NOTIFIER;
 
     static AdminConsole admin;
 
@@ -79,7 +79,9 @@ public class AdminConsole {
      * @param rmiServer         servidor RMI
      * @throws RemoteException falha no RMI
      */
-    public AdminConsole(int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer) throws RemoteException {
+    public AdminConsole(int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer,  String ADMIN_SERVER_ADDRESS) throws RemoteException {
+        System.setProperty("java.rmi.server.hostname", ADMIN_SERVER_ADDRESS);
+        this.NOTIFIER = new NotifierCallBack();
         this.REGISTRY_PORT = REGISTRY_PORT;
         this.LOOKUP_NAME = LOOKUP_NAME;
         this.rmiServer = rmiServer;
@@ -1260,6 +1262,7 @@ public class AdminConsole {
         System.out.println("REGISTRY_PORT: "+REGISTRY_PORT);
         String LOOKUP_NAME = p.getProperty("adminLookupName");
         System.out.println("LOOKUP_NAME: "+LOOKUP_NAME);
+        String ADMIN_SERVER_ADDRESS = p.getProperty("adminServerAddress");
         try {
 
             /*
@@ -1268,7 +1271,7 @@ public class AdminConsole {
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
             String message = rmiServer.saySomething();
             System.out.println("Hello Admin: " + message);
-            admin = new AdminConsole(REGISTRY_PORT, LOOKUP_NAME,rmiServer);
+            admin = new AdminConsole(REGISTRY_PORT, LOOKUP_NAME,rmiServer, ADMIN_SERVER_ADDRESS);
             admin.admin(-1);
         } catch (Exception e) {
             String message;
@@ -1284,7 +1287,7 @@ public class AdminConsole {
                         }
                     }
                     System.out.println("Hello Admin: " + message);
-                    admin = new AdminConsole(REGISTRY_PORT, LOOKUP_NAME, rmiServer);
+                    admin = new AdminConsole(REGISTRY_PORT, LOOKUP_NAME, rmiServer, ADMIN_SERVER_ADDRESS);
                     admin.admin(-1);
                     break;
                 } catch (NotBoundException | IOException remoteException) {

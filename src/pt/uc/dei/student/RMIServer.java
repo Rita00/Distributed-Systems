@@ -695,7 +695,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
             return count;
         } catch (Exception e) {
             System.out.println("Erro a contar o número de linhas da tabela");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return 0;
     }
@@ -926,7 +926,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 try {
                     notifier.updateAdmin(info);
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         } catch (SQLException throwables) {
@@ -962,7 +962,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
             try {
                 NOTIFIER.updateAdmin(info);
             } catch (RemoteException | InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
         } catch (SQLException throwables) {
@@ -996,7 +996,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 try {
                     notifier.updatePollsAdmin(info);
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         } catch (SQLException throwables) {
@@ -1030,7 +1030,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
             try {
                 NOTIFIER.updatePollsAdmin(info);
             } catch (RemoteException | InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
         } catch (SQLException throwables) {
@@ -1082,7 +1082,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
         boolean ok = true;
         try {
             aSocket = new DatagramSocket();
-            System.out.print("Mensagem a enviar = ");
+            //System.out.print("Mensagem a enviar = ");
 
             InetAddress aHost = InetAddress.getByName(this.SERVER_ADDRESS);
             byte[] m = "Pinging".getBytes();
@@ -1092,12 +1092,12 @@ RMIServer extends UnicastRemoteObject implements RMI {
             byte[] buffer = new byte[1000];
             DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
             aSocket.receive(reply);
-            System.out.println("Recebeu: " + new String(reply.getData(), 0, reply.getLength()));
+            //System.out.println("Recebeu: " + new String(reply.getData(), 0, reply.getLength()));
         } catch (SocketException e) {
-            System.out.println("Socket: " + e.getMessage());
+//            System.out.println("Socket: " + e.getMessage());
             ok = false;
         } catch (IOException e) {
-            System.out.println("IO: " + e.getMessage());
+//            System.out.println("IO: " + e.getMessage());
             ok = false;
         } finally {
             if (aSocket != null) aSocket.close();
@@ -1130,7 +1130,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 try {
                     notifiersMulticast.get(dep_id).ping();
                 } catch (RemoteException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 return selectDepartments("SELECT * FROM department WHERE id = " + dep_id).get(0).getName();
             }
@@ -1208,15 +1208,15 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 DatagramPacket request = new DatagramPacket(buffer, buffer.length);
                 aSocket.receive(request);
                 s = new String(request.getData(), 0, request.getLength());
-                System.out.println("Recebeu um ping: " + s);
+//                System.out.println("Recebeu um ping: " + s);
                 buffer = "I'm Alive".getBytes();
                 DatagramPacket reply = new DatagramPacket(buffer, buffer.length, request.getAddress(), request.getPort());
                 aSocket.send(reply);
             }
         } catch (SocketException e) {
-            System.out.println("Socket: " + e.getMessage());
+//            System.out.println("Socket: " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("IO: " + e.getMessage());
+//            System.out.println("IO: " + e.getMessage());
         }
     }
 
@@ -1270,7 +1270,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                     numPingsFailed++;
                 else numPingsFailed = 0;
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         rmiServer.initializeRMI();

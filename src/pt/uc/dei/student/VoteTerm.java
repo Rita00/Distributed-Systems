@@ -236,7 +236,7 @@ public class VoteTerm extends Thread {
             try {
                 password = input.readLine();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             if (timeout[0]) {
                 return;
@@ -311,7 +311,7 @@ public class VoteTerm extends Thread {
             command = input.readLine();
             list = Integer.parseInt(command);
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         if (timeout[0]) {
             return;

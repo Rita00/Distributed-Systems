@@ -951,8 +951,8 @@ public class AdminConsole {
                 command = input.nextInt();
                 switch (command) {
                     case EDIT:
-                        //verificar se a data é antes da atual
-                        if (election.getBegin().isBefore(LocalDateTime.now())) {
+                        //verificar se a eleicao ainda n esta a decorrer
+                        if (election.getBegin().isAfter(LocalDateTime.now())) {
                             this.editElection(election);
                         } else {
                             System.out.println("⚠️ Não é possivel editar eleições a decorrer/passadas!");

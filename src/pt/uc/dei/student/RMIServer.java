@@ -1083,7 +1083,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public String initializeMulticast(int dep_id, Notifier NOTIFIER) {
         int numMulticast = countRowsBD("department WHERE hasMulticastServer = 1", null);
-        if (numMulticast < NUM_MULTICAST_SERVERS && countRowsBD("department WHERE hasMulticastServer IS NULL OR hasMulticastServer = 0 AND id = " + dep_id, null) != 0) {
+        int count = countRowsBD("department WHERE (hasMulticastServer IS NULL OR hasMulticastServer = 0) AND id = " + dep_id, null);
+
+            if (numMulticast < NUM_MULTICAST_SERVERS && countRowsBD("department WHERE (hasMulticastServer IS NULL OR hasMulticastServer = 0) AND id = " + dep_id, null) != 0) {
             if (!updateOnDB("UPDATE department SET hasMulticastServer = 1 WHERE id = " + dep_id)) {
                 System.out.println("Impossível adicionar mesa de voto! :(");
                 return null;

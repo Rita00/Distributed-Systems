@@ -74,9 +74,10 @@ public class AdminConsole {
     /**
      * Construtor do Objeto Consola de administração
      *
-     * @param REGISTRY_PORT     porte do registo do rmi
-     * @param LOOKUP_NAME       nome do lookup
-     * @param rmiServer         servidor RMI
+     * @param REGISTRY_PORT         porte do registo do rmi
+     * @param LOOKUP_NAME           nome do lookup
+     * @param rmiServer             servidor RMI
+     * @param ADMIN_SERVER_ADDRESS  endereço IPv4
      * @throws RemoteException falha no RMI
      */
     public AdminConsole(int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer,  String ADMIN_SERVER_ADDRESS) throws RemoteException {

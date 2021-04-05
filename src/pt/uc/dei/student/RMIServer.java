@@ -1221,6 +1221,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         System.out.println("SERVER_PORT: " + SERVER_PORT);
         String SERVER_ADDRESS = p.getProperty("rmiServerAddress");
         System.out.println("SERVER_ADDRESS: " + SERVER_ADDRESS);
+        System.setProperty("java.rmi.server.host", SERVER_ADDRESS);
         int NUM_MULTICAST_SERVERS = Integer.parseInt(p.getProperty("numMulticastServers"));
         System.out.println("NUM_MULTICAST_SERVERS: " + NUM_MULTICAST_SERVERS);
         /*

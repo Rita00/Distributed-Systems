@@ -166,7 +166,7 @@ public class MulticastServer extends Thread {
                     Utilitary.listElections(currentElections);
                     System.out.print(OPTION_STRING);
                     election = input.nextLine();
-                    if(Utilitary.isNumber(election)) {
+                    if (Utilitary.isNumber(election)) {
                         while (true) {
                             try {
                                 candidacies = this.rmiServer.getCandidacies(Integer.parseInt(election));
@@ -216,7 +216,7 @@ public class MulticastServer extends Thread {
                 System.out.println("\t(3)- Funcionário");
                 System.out.print(OPTION_STRING);
                 cargo = input.nextLine();
-                if(Utilitary.isNumber(cargo)){
+                if (Utilitary.isNumber(cargo)) {
                     campo = Utilitary.decideCargo(Integer.parseInt(cargo));
                 }
             }
@@ -248,7 +248,7 @@ public class MulticastServer extends Thread {
             do {
                 System.out.print("Introduza o seu número de telemóvel: ");
                 campo_num = input.nextLine();
-            }while(!Utilitary.isNumber(campo_num));
+            } while (!Utilitary.isNumber(campo_num));
         } else if (Integer.parseInt(command) == 5) {
             campo_sql = "address";
             System.out.print("Introduza a sua morada: ");
@@ -259,10 +259,10 @@ public class MulticastServer extends Thread {
             }
         } else {
             campo_sql = "cc_number";
-            do{
+            do {
                 System.out.print("Introduza o seu número de cartão de cidadão: ");
                 campo_num = input.nextLine();
-            }while(!Utilitary.isNumber(campo_num));
+            } while (!Utilitary.isNumber(campo_num));
         }
 
 
@@ -440,7 +440,8 @@ public class MulticastServer extends Thread {
             } catch (InterruptedException e) {
                 this.run();
             }
-        } catch (IOException ignore) {}
+        } catch (IOException ignore) {
+        }
     }
 
     /**
@@ -820,16 +821,17 @@ public class MulticastServer extends Thread {
         try {
             //PARA OS JAR
             reader = new FileReader("config.properties");
-        } catch (IOException e){
+        } catch (IOException e) {
             //PARA CORRER NO IDE
             reader = new FileReader("src/pt/uc/dei/student/config.properties");
         }
         Properties p = new Properties();
         p.load(reader);
+        String SERVER_ADDRESS = p.getProperty("rmiServerAddress");
         int REGISTRY_PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
-        System.out.println("REGISTRY_PORT: "+REGISTRY_PORT);
+        System.out.println("REGISTRY_PORT: " + REGISTRY_PORT);
         String LOOKUP_NAME = p.getProperty("multicastLookupName");
-        System.out.println("LOOKUP_NAME: "+LOOKUP_NAME);
+        System.out.println("LOOKUP_NAME: " + LOOKUP_NAME);
         /*
 
          */
@@ -858,8 +860,8 @@ public class MulticastServer extends Thread {
         }
         try {
             int dep = -1;
-            RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
-            multicastServer = new MulticastServer(network,REGISTRY_PORT,LOOKUP_NAME, rmiServer);
+            RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
+            multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer);
             /*
             SETUP
              */
@@ -885,8 +887,8 @@ public class MulticastServer extends Thread {
             int dep = -1;
             while (true) {
                 try {
-                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
-                    multicastServer = new MulticastServer(network,REGISTRY_PORT,LOOKUP_NAME, rmiServer);
+                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
+                    multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer);
                     ArrayList<Department> departments;
                     try {
                         departments = multicastServer.rmiServer.getDepartments();

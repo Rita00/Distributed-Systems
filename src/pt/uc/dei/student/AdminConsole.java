@@ -1255,6 +1255,7 @@ public class AdminConsole {
         }
         Properties p = new Properties();
         p.load(reader);
+        String SERVER_ADDRESS = p.getProperty("rmiServerAddress");
         int REGISTRY_PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
         System.out.println("REGISTRY_PORT: "+REGISTRY_PORT);
         String LOOKUP_NAME = p.getProperty("adminLookupName");
@@ -1264,7 +1265,7 @@ public class AdminConsole {
             /*
              * RMI
              */
-            RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
+            RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
             String message = rmiServer.saySomething();
             System.out.println("Hello Admin: " + message);
             admin = new AdminConsole(REGISTRY_PORT, LOOKUP_NAME,rmiServer);
@@ -1273,7 +1274,7 @@ public class AdminConsole {
             String message;
             while (true) {
                 try {
-                    RMI rmiServer = (RMI) LocateRegistry.getRegistry(REGISTRY_PORT).lookup(LOOKUP_NAME);
+                    RMI rmiServer = (RMI) LocateRegistry.getRegistry( SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
                     while (true) {
                         try {
                             message = rmiServer.saySomething();

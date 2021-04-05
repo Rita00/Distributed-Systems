@@ -173,11 +173,11 @@ RMIServer extends UnicastRemoteObject implements RMI {
         Candidacy c = this.selectCandidacies("SELECT * FROM candidacy WHERE id="+candidacy_id).get(0);
         int dep_id = this.countRowsBD("election_department WHERE election_id="+election_id,"department_id");
         if(p!=null){
-            if(p.getJob().equals(c.getType()) && (p.getDepartment_id()==-1 || p.getDepartment_id()==dep_id)){
+            if(p.getJob().equals(c.getType()) && (dep_id==-1 || p.getDepartment_id()==dep_id)){
                 if(this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);", candidacy_id, cc_number))){
                     return "";
                 }else{
-                    return "Erro ao associar a pessoa à lista";
+                    return "A pessoa já está associada a uma lista";
                 }
             }else{
                 return "O candidator não pode ser adicionado a esta lista";

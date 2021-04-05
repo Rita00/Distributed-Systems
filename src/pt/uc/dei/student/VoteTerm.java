@@ -261,13 +261,18 @@ public class VoteTerm extends Thread {
                     this.getSocket().receive(packet);
                     String recvMsg = new String(packet.getData(), 0, packet.getLength());
                     msgHash = Utilitary.parseMessage(recvMsg);
-                    if (msgHash.get("message").equals("wrong password")) {
-                        break;
-                    }
                     if (msgHash.get("message").equals("logged in")) {
                         if (msgHash.get("cc").equals(cc)) {
                             break;
                         }
+                    }
+                    if (msgHash.get("message").equals("wrong password")) {
+                        while(msgHash.get("message").equals("wrong password")){
+                            this.getSocket().receive(packet);
+                            recvMsg = new String(packet.getData(), 0, packet.getLength());
+                            msgHash = Utilitary.parseMessage(recvMsg);
+                        }
+                        break;
                     }
                     doThings(msgHash);
                 } catch (IOException e) {
@@ -277,7 +282,7 @@ public class VoteTerm extends Thread {
             if (msgHash.get("message").equals("logged in")) {
                 break;
             }
-        } while (msgHash.get("message").equals("wrong password"));
+        } while (!msgHash.get("message").equals("logged in"));
         System.out.println("Successfully Logged In");
         this.accessVotingForm(infoByName, infoById, election, cc, ndep, timer, timeout);
     }

@@ -1306,7 +1306,7 @@ public class AdminConsole {
              */
             RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
             String message = rmiServer.saySomething();
-            System.out.println("Hello Admin: " + message);
+//            System.out.println("Hello Admin: " + message);
             admin = new AdminConsole(REGISTRY_PORT, LOOKUP_NAME,rmiServer, ADMIN_SERVER_ADDRESS);
             admin.admin(-1);
         } catch (Exception e) {

@@ -1065,7 +1065,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
         boolean ok = true;
         try {
             aSocket = new DatagramSocket();
-            System.out.print("Mensagem a enviar = ");
+            //System.out.print("Mensagem a enviar = ");
 
             InetAddress aHost = InetAddress.getByName(this.SERVER_ADDRESS);
             byte[] m = "Pinging".getBytes();
@@ -1075,12 +1075,12 @@ RMIServer extends UnicastRemoteObject implements RMI {
             byte[] buffer = new byte[1000];
             DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
             aSocket.receive(reply);
-            System.out.println("Recebeu: " + new String(reply.getData(), 0, reply.getLength()));
+            //System.out.println("Recebeu: " + new String(reply.getData(), 0, reply.getLength()));
         } catch (SocketException e) {
-            System.out.println("Socket: " + e.getMessage());
+//            System.out.println("Socket: " + e.getMessage());
             ok = false;
         } catch (IOException e) {
-            System.out.println("IO: " + e.getMessage());
+//            System.out.println("IO: " + e.getMessage());
             ok = false;
         } finally {
             if (aSocket != null) aSocket.close();
@@ -1191,15 +1191,15 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 DatagramPacket request = new DatagramPacket(buffer, buffer.length);
                 aSocket.receive(request);
                 s = new String(request.getData(), 0, request.getLength());
-                System.out.println("Recebeu um ping: " + s);
+//                System.out.println("Recebeu um ping: " + s);
                 buffer = "I'm Alive".getBytes();
                 DatagramPacket reply = new DatagramPacket(buffer, buffer.length, request.getAddress(), request.getPort());
                 aSocket.send(reply);
             }
         } catch (SocketException e) {
-            System.out.println("Socket: " + e.getMessage());
+//            System.out.println("Socket: " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("IO: " + e.getMessage());
+//            System.out.println("IO: " + e.getMessage());
         }
     }
 

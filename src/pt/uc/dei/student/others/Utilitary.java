@@ -51,7 +51,9 @@ public class Utilitary {
                     list.append(keyVal[i]);
                     list.append("|");
                 }
-                list.deleteCharAt(list.length() - 1);
+                try {
+                    list.deleteCharAt(list.length() - 1);
+                }catch(StringIndexOutOfBoundsException ignore){}
                 hash.put(keyVal[0], list.toString());
             }
         }

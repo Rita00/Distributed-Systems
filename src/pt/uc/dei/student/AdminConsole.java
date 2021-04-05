@@ -74,9 +74,10 @@ public class AdminConsole {
     /**
      * Construtor do Objeto Consola de administração
      *
-     * @param REGISTRY_PORT     porte do registo do rmi
-     * @param LOOKUP_NAME       nome do lookup
-     * @param rmiServer         servidor RMI
+     * @param REGISTRY_PORT         porte do registo do rmi
+     * @param LOOKUP_NAME           nome do lookup
+     * @param rmiServer             servidor RMI
+     * @param ADMIN_SERVER_ADDRESS  endereço IPv4
      * @throws RemoteException falha no RMI
      */
     public AdminConsole(int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer,  String ADMIN_SERVER_ADDRESS) throws RemoteException {
@@ -950,8 +951,8 @@ public class AdminConsole {
                 command = input.nextInt();
                 switch (command) {
                     case EDIT:
-                        //verificar se a data é antes da atual
-                        if (election.getBegin().isBefore(LocalDateTime.now())) {
+                        //verificar se a eleicao ainda n esta a decorrer
+                        if (election.getBegin().isAfter(LocalDateTime.now())) {
                             this.editElection(election);
                         } else {
                             System.out.println("⚠️ Não é possivel editar eleições a decorrer/passadas!");
@@ -966,7 +967,7 @@ public class AdminConsole {
                         break;
                     default:
                         if (0 < command && command <= candidacies.size()) {
-                            this.manageCandidacy(candidacies.get(command - 1));
+                            this.manageCandidacy(election,candidacies.get(command - 1));
                         } else {
                             //volta para este menu caso o numero do comando esteja errado
                             this.manageElection(election);
@@ -1096,10 +1097,11 @@ public class AdminConsole {
      * (-2) - Adicionar pessoa <br>
      * (0)  - Voltar <br>
      *
+     * @param election eleição da lista
      * @param candidacy lista candidata para ser gerida
      * @see Candidacy
      */
-    private void manageCandidacy(Candidacy candidacy) {
+    private void manageCandidacy(Election election, Candidacy candidacy) {
         int command = -1;
         while (command != RETURN) {
             System.out.println(candidacy.toString());
@@ -1116,77 +1118,111 @@ public class AdminConsole {
             try {
                 //listar pessoas
                 if (people.size() > 0) {
-                    System.out.println("Remover Sra./Sr.:");
+                    if (election.getBegin().isAfter(LocalDateTime.now())) {
+                        System.out.println("Remover Sra./Sr.:");
+                    }else{
+                        System.out.println("Membros:");
+                    }
                     for (Person p : people) {
-                        System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1, p.getName(), p.getCensoredCc_number(4));
+                        if (election.getBegin().isAfter(LocalDateTime.now())) {
+                            System.out.printf("\t(%s)- %s (%s)\n", people.indexOf(p) + 1, p.getName(), p.getCensoredCc_number(4));
+                        }else{
+                            System.out.printf("\t- %s (%s)\n", people.indexOf(p) + 1, p.getName(), p.getCensoredCc_number(4));
+                        }
                     }
                 } else {
                     System.out.println("A lista não tem pessoas\n");
                 }
-                System.out.println("(" + REMOVE + ")- Remover lista");
-                System.out.println("(" + ADD + ")- Adicionar pessoa");
+                if (election.getBegin().isAfter(LocalDateTime.now())) {
+                    System.out.println("(" + REMOVE + ")- Remover lista");
+                    System.out.println("(" + ADD + ")- Adicionar pessoa");
+                }
                 System.out.println("(" + RETURN + ")-  Voltar");
                 //esperar pelo input
                 Scanner input = new Scanner(System.in);
                 System.out.print(OPTION_STRING);
                 command = input.nextInt();
-                switch (command) {
-                    case ADD:
-                        System.out.println("Numero do Cartao de Cidadao da pessoa:");
-                        while (true) {
-                            try {
-                                this.rmiServer.insertPersonIntoCandidacy(candidacy.getId(), input.nextInt());
-                                break;
-                            } catch (RemoteException | InterruptedException e) {
-                                //e.printStackTrace();
-                                reconnectToRMI();
-                            }
-                        }
-                        break;
-                    case REMOVE:
-                        while (true) {
-                            try {
-                                this.rmiServer.removeOnDB("candidacy", "id", candidacy.getId());
-                                break;
-                            } catch (RemoteException | InterruptedException e) {
-                                //e.printStackTrace();
-                                reconnectToRMI();
-                            }
-                        }
-                        while (true) {
-                            try {
-                                this.rmiServer.removeOnDB("candidacy_person", "candidacy_id", candidacy.getId());
-                                break;
-                            } catch (RemoteException | InterruptedException e) {
-                                //e.printStackTrace();
-                                reconnectToRMI();
-                            }
-                        }
-                        command = RETURN;//para voltar ao menu das eleicoes
-                        break;
-                    case RETURN:
-                        //VAZIO PARA VOLTAR
-                        break;
-                    default:
-                        if (0 < command && command <= people.size()) {
+                if(election.getBegin().isAfter(LocalDateTime.now())){
+                    switch (command) {
+                        case ADD:
+                            System.out.println("Numero do Cartao de Cidadao da pessoa:");
                             while (true) {
                                 try {
-                                    this.rmiServer.removeOnDB("candidacy_person", "person_cc_number", people.get(command - 1).getCc_number());
+                                    this.rmiServer.insertPersonIntoCandidacy(candidacy.getId(), input.nextInt());
                                     break;
                                 } catch (RemoteException | InterruptedException e) {
                                     //e.printStackTrace();
                                     reconnectToRMI();
                                 }
                             }
-                        } else {
-                            //volta para este menu caso esteja algo errado
-                            this.manageCandidacy(candidacy);
-                        }
-                        break;
+                            break;
+                        case REMOVE:
+                            while (true) {
+                                try {
+                                    this.rmiServer.removeOnDB("candidacy", "id", candidacy.getId());
+                                    break;
+                                } catch (RemoteException | InterruptedException e) {
+                                    //e.printStackTrace();
+                                    reconnectToRMI();
+                                }
+                            }
+                            while (true) {
+                                try {
+                                    this.rmiServer.removeOnDB("candidacy_person", "candidacy_id", candidacy.getId());
+                                    break;
+                                } catch (RemoteException | InterruptedException e) {
+                                    //e.printStackTrace();
+                                    reconnectToRMI();
+                                }
+                            }
+                            command = RETURN;//para voltar ao menu das eleicoes
+                            break;
+                        case RETURN:
+                            //VAZIO PARA VOLTAR
+                            break;
+                        default:
+                            if (0 < command && command <= people.size()) {
+                                while (true) {
+                                    try {
+                                        this.rmiServer.removeOnDB("candidacy_person", "person_cc_number", people.get(command - 1).getCc_number());
+                                        break;
+                                    } catch (RemoteException | InterruptedException e) {
+                                        //e.printStackTrace();
+                                        reconnectToRMI();
+                                    }
+                                }
+                            } else {
+                                //volta para este menu caso esteja algo errado
+                                this.manageCandidacy(election,candidacy);
+                            }
+                            break;
+                    }
+                }else{
+                    switch(command) {
+                        case RETURN:
+                            //VAZIO PARA VOLTAR
+                            break;
+                        default:
+                            if (0 < command && command <= people.size()) {
+                                while (true) {
+                                    try {
+                                        this.rmiServer.removeOnDB("candidacy_person", "person_cc_number", people.get(command - 1).getCc_number());
+                                        break;
+                                    } catch (RemoteException | InterruptedException e) {
+                                        //e.printStackTrace();
+                                        reconnectToRMI();
+                                    }
+                                }
+                            } else {
+                                //volta para este menu caso esteja algo errado
+                                this.manageCandidacy(election, candidacy);
+                            }
+                            break;
+                    }
                 }
             } catch (InputMismatchException ime) {
                 //volta para este menu caso o input esteja errado
-                this.manageCandidacy(candidacy);
+                this.manageCandidacy(election,candidacy);
             }
             break;
         }

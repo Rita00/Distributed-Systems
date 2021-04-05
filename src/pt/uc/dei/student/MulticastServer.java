@@ -13,12 +13,9 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
-import java.nio.charset.StandardCharsets;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -100,10 +97,11 @@ public class MulticastServer extends Thread {
     /**
      * Construtor do Servidor Multicast (Mesa de Voto)
      *
-     * @param multicastAddress endereço IPv4 do Servidor Multicast
-     * @param REGISTRY_PORT    porte do registo do rmi
-     * @param LOOKUP_NAME      nome do lookup
-     * @param rmiServer        servidor RMI
+     * @param multicastAddress      endereço IPv4 do Servidor Multicast
+     * @param REGISTRY_PORT         porte do registo do rmi
+     * @param LOOKUP_NAME           nome do lookup
+     * @param rmiServer             servidor RMI
+     * @param MULTICAST_SERVER_ADDRESS  endereço IPv4
      * @throws IOException exceção de I/O
      */
     public MulticastServer(String multicastAddress, int REGISTRY_PORT, String LOOKUP_NAME, RMI rmiServer, String MULTICAST_SERVER_ADDRESS) throws IOException { //TODO tratar a exceção com um try catch?
@@ -332,6 +330,7 @@ public class MulticastServer extends Thread {
                 if (availableTerminals.get(key)) {
                     id = key;
                     availableTerminals.put(key, false);
+                    terminalPingCounter.put(key, 60);
                     break;
                 }
             }
@@ -485,8 +484,13 @@ public class MulticastServer extends Thread {
                     registerTerminal(msgHash.get("sender"), msgHash.get("required_id"));
                     break;
                 case "ping":
-                    id = msgHash.get("sender");
-                    this.terminalPingCounter.put(id.split("-")[1], 5);
+                    id = msgHash.get("sender").split("-")[1];
+                    if (this.availableTerminals.get(id)) {
+                        this.terminalPingCounter.put(id, 5);
+                    } else {
+                        this.terminalPingCounter.put(id, 60);
+                    }
+
                     break;
                 case "timeout":
                     id = msgHash.get("sender").split("-")[1];
@@ -808,6 +812,10 @@ public class MulticastServer extends Thread {
         this.department = department;
     }
 
+    /**
+     * Envia mensagem para todos os terminais de voto no grupo de multicast
+     * para conhecê-los
+     */
     public void findTerminals() {
         String message = String.format("sender|multicast-%s-%s;destination|all;message|findTerminals", this.getMulticastId(), this.department.getId());
         send(message);
@@ -902,7 +910,7 @@ public class MulticastServer extends Thread {
             while (true) {
                 try {
                     RMI rmiServer = (RMI) LocateRegistry.getRegistry(SERVER_ADDRESS, REGISTRY_PORT).lookup(LOOKUP_NAME);
-                    multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer,MULTICAST_SERVER_ADDRESS);
+                    multicastServer = new MulticastServer(network, REGISTRY_PORT, LOOKUP_NAME, rmiServer, MULTICAST_SERVER_ADDRESS);
                     ArrayList<Department> departments;
                     try {
                         departments = multicastServer.rmiServer.getDepartments();

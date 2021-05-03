@@ -1,3 +1,4 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
 
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -18,17 +19,23 @@
 <body>
 
 <div id="logreg-forms" style="position: absolute; left: 50%; top: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);">
-    <form class="form-signin">
+    <s:form action="login" method="post" class="form-signin">
         <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
         <div class="social-login" style="text-align: center">
             <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
         </div>
         <p style="text-align:center"> OR  </p>
-        <input type="ccnumber" id="ccnumber" class="form-control" placeholder="CC Number" required="" autofocus="">
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+<%--        <s:text name = "CC Number" />--%>
+<%--        <s:textfield name="cc number" class="form-control"/>--%>
 
-        <button class="btn btn-success btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
-    </form>
+<%--        <s:text name = "Password"/>--%>
+<%--        <s:textfield name="password" class="form-control"/>--%>
+
+        <html:text name="ccnumber" id="ccnumber" class="form-control" required="" autofocus="">CC Number</html:text>
+        <html:text type="password" id="inputPassword" class="form-control" required="">Password</html:text>
+
+        <html:submit class="btn btn-success btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</html:submit>
+    </s:form>
     <br>
 </div>
 </body>

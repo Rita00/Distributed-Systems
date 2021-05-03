@@ -30,5 +30,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
     <action name="index">
       <result>/index.jsp</result>
     </action>
+
+      <action name="login" class="login.action.LoginAction" method="execute">
+          <result name="success">/login.jsp</result>
+          <result name="login">/login.jsp</result>
+      </action>
   </package>
 </struts>

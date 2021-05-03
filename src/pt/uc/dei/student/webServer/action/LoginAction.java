@@ -2,6 +2,44 @@
  * Raul Barbosa 2014-11-07
  */
 package pt.uc.dei.student.webServer.action;
+
+import com.opensymphony.xwork2.ActionSupport;
+import org.apache.struts2.interceptor.SessionAware;
+import java.util.Map;
+
+public class LoginAction extends ActionSupport implements SessionAware {
+    private Map<String, Object> session;
+    private int ccnumber;
+    private String password = null;
+
+    /*@Override
+    public String execute() throws Exception {
+        if(this.ccnumber != 0) {
+            this.getHeyBean().setUsername(this.username);
+            this.getHeyBean().setPassword(this.password);
+            session.put("username", username);
+            session.put("loggedin", true); // this marks the user as logged in
+            return SUCCESS;
+        }
+        else
+            return LOGIN;
+    }
+    }*/
+
+    public int getUsername() {
+        return ccnumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public void setSession(Map<String, Object> session) {
+        this.session = session;
+    }
+}
+
 /*
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.interceptor.SessionAware;

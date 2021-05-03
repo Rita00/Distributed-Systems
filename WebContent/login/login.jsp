@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="login.css">
 <!------ Include the above in your HEAD tag ---------->
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +19,7 @@
 <body>
 
 <div id="logreg-forms" style="position: absolute; left: 50%; top: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);">
-    <s:form action="login" method="post" class="form-signin">
+    <s:form action="login" method="post" theme="simple" cssClass="form-signin">
         <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
         <div class="social-login" style="text-align: center">
             <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
@@ -30,11 +30,12 @@
 
 <%--        <s:text name = "Password"/>--%>
 <%--        <s:textfield name="password" class="form-control"/>--%>
+<%--        --%>
+        <s:textfield type="ccnumber" id="ccnumber" class="form-control" placeholder="CC Number" autofocus=""/>
 
-        <html:text name="ccnumber" id="ccnumber" class="form-control" required="" autofocus="">CC Number</html:text>
-        <html:text type="password" id="inputPassword" class="form-control" required="">Password</html:text>
+        <s:textfield type="password" id="inputPassword" class="form-control" placeholder="Password"/>
 
-        <html:submit class="btn btn-success btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</html:submit>
+        <s:submit cssClass="btn btn-success btn-block" placeholder="Sign in"/>
     </s:form>
     <br>
 </div>

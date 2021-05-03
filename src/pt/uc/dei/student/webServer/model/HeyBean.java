@@ -6,10 +6,11 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class HeyBean {
     private RMI server;
-    private String username; // username and password supplied by the user
+    private int ccnumber; // username and password supplied by the user
     private String password;
 
     public HeyBean() {
@@ -19,6 +20,15 @@ public class HeyBean {
         } catch (NotBoundException | MalformedURLException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void setUsername(int ccnumber) {
+        this.ccnumber = ccnumber;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 

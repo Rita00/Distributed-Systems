@@ -5,6 +5,8 @@ package pt.uc.dei.student.webServer.action;
 
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.interceptor.SessionAware;
+import pt.uc.dei.student.webServer.model.HeyBean;
+
 import java.util.Map;
 
 public class LoginAction extends ActionSupport implements SessionAware {
@@ -12,19 +14,18 @@ public class LoginAction extends ActionSupport implements SessionAware {
     private int ccnumber;
     private String password = null;
 
-    /*@Override
+    @Override
     public String execute() throws Exception {
         if(this.ccnumber != 0) {
-            this.getHeyBean().setUsername(this.username);
+            this.getHeyBean().setUsername(this.ccnumber);
             this.getHeyBean().setPassword(this.password);
-            session.put("username", username);
+            session.put("ccnumber", ccnumber);
             session.put("loggedin", true); // this marks the user as logged in
             return SUCCESS;
         }
         else
             return LOGIN;
     }
-    }*/
 
     public int getUsername() {
         return ccnumber;
@@ -34,9 +35,27 @@ public class LoginAction extends ActionSupport implements SessionAware {
         return password;
     }
 
+    public void setUsername(int ccnumber) {
+        this.ccnumber = ccnumber; // will you sanitize this input? maybe use a prepared statement?
+    }
+
+    public void setPassword(String password) {
+        this.password = password; // what about this input?
+    }
+
     @Override
     public void setSession(Map<String, Object> session) {
         this.session = session;
+    }
+
+    public HeyBean getHeyBean() {
+        if(!session.containsKey("heyBean"))
+            this.setHeyBean(new HeyBean());
+        return (HeyBean) session.get("heyBean");
+    }
+
+    public void setHeyBean(HeyBean heyBean) {
+        this.session.put("heyBean", heyBean);
     }
 }
 

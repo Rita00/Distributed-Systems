@@ -1,7 +1,27 @@
-/**
- * Raul Barbosa 2014-11-07
- */
 package pt.uc.dei.student.webServer.model;
+
+import pt.uc.dei.student.others.RMI;
+
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+
+public class HeyBean {
+    private RMI server;
+    private String username; // username and password supplied by the user
+    private String password;
+
+    public HeyBean() {
+        // Connect to RMI Server
+        try {
+            server = (RMI) Naming.lookup("server");
+        } catch (NotBoundException | MalformedURLException | RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
 /*
 import java.util.ArrayList;
 import java.rmi.Naming;

@@ -9,6 +9,6 @@
         <title>Hey!</title>
     </head>
     <body>
-        <c:redirect url="/login/login.jsp"/>
+        <c:redirect url="login/login.jsp"/>
     </body>
 </html>

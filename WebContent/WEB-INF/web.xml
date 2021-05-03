@@ -6,7 +6,7 @@ file, Struts defines its FilterDispatcher, the Servlet Filter class that initial
 framework and handles all requests. This filter can contain initialization parameters that affect
 what, if any, additional configuration files are loaded and how the framework should behave. -->
 
-<web-app id="primes" version="2.4"
+<web-app id="eVoting" version="2.4"
     xmlns="http://java.sun.com/xml/ns/j2ee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">

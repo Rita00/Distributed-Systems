@@ -7,7 +7,7 @@
           <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/WebContent/WEB-INF/web.xml" />
         </descriptors>
         <webroots>
-         <root url="file://$MODULE_DIR$/WebContent" relative="/" />
+          <root url="file://$MODULE_DIR$/WebContent" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>
@@ -32,5 +32,8 @@
     </orderEntry>
     <orderEntry type="library" exported="" name="javax.servlet:jstl:1.2" level="project" />
     <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="all" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
   </component>
 </module>

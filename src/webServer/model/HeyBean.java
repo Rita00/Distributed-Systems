@@ -1,11 +1,13 @@
 package webServer.model;
 
+import pt.uc.dei.student.elections.Person;
 import pt.uc.dei.student.others.RMI;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 
 public class HeyBean {
     private RMI server;
@@ -15,8 +17,9 @@ public class HeyBean {
     public HeyBean() {
         // Connect to RMI Server
         try {
-            server = (RMI) Naming.lookup("server");
-        } catch (NotBoundException | MalformedURLException | RemoteException e) {
+            server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
+//            server = (RMI) Naming.lookup("server");
+        } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
     }
@@ -28,6 +31,16 @@ public class HeyBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Person getUser() throws RemoteException {
+        Person p = null;
+        try {
+            p = server.getPerson(String.valueOf(this.ccnumber), password);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return p;
     }
 }
 

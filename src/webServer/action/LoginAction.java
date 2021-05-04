@@ -16,9 +16,9 @@ public class LoginAction extends ActionSupport implements SessionAware {
 
     @Override
     public String execute() throws Exception {
-        if(this.ccnumber != 0) {
-            this.getHeyBean().setCcnumber(this.ccnumber);
-            this.getHeyBean().setPassword(this.password);
+        this.getHeyBean().setCcnumber(this.ccnumber);
+        this.getHeyBean().setPassword(this.password);
+        if(this.getHeyBean().getUser() != null) {
             session.put("ccnumber", ccnumber);
             session.put("loggedin", true); // this marks the user as logged in
             return SUCCESS;

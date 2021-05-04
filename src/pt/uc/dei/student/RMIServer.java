@@ -1187,6 +1187,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
             RMIServer obj = new RMIServer(this.SERVER_ADDRESS, this.SERVER_PORT, this.REGISTRY_PORT, this.NUM_MULTICAST_SERVERS);
             Registry r = LocateRegistry.createRegistry(this.REGISTRY_PORT);
             r.rebind("clientMulticast", obj);
+            r.rebind("server", obj);
             r.rebind("admin", obj);
             System.out.println("RMI Server ready!");
         } catch (RemoteException re) {

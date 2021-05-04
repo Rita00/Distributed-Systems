@@ -1,4 +1,4 @@
-package pt.uc.dei.student.webServer.model;
+package webServer.model;
 
 import pt.uc.dei.student.others.RMI;
 
@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 public class HeyBean {
     private RMI server;
@@ -23,7 +22,7 @@ public class HeyBean {
     }
 
 
-    public void setUsername(int ccnumber) {
+    public void setCcnumber(int ccnumber) {
         this.ccnumber = ccnumber;
     }
 

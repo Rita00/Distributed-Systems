@@ -8,21 +8,7 @@
     <title>Hey!</title>
 </head>
 <body>
-
-<c:choose>
-    <c:when test="${session.loggedin == true}">
-        <p>Welcome, ${session.username}. Say HEY to someone.</p>
-    </c:when>
-    <c:otherwise>
         <p>Welcome, anonymous user. Say HEY to someone.</p>
-    </c:otherwise>
-</c:choose>
-
-<c:forEach items="${heyBean.allUsers}" var="value">
-    <c:out value="${value}" /><br>
-</c:forEach>
-
-<p><a href="<s:url action="index" />">Start</a></p>
 
 </body>
 </html>

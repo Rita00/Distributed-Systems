@@ -1,23 +1,23 @@
 /**
  * Raul Barbosa 2014-11-07
  */
-package pt.uc.dei.student.webServer.action;
+package webServer.action;
 
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.interceptor.SessionAware;
-import pt.uc.dei.student.webServer.model.HeyBean;
+import webServer.model.HeyBean;
 
 import java.util.Map;
 
 public class LoginAction extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
-    private int ccnumber;
+    private int ccnumber = 0;
     private String password = null;
 
     @Override
     public String execute() throws Exception {
         if(this.ccnumber != 0) {
-            this.getHeyBean().setUsername(this.ccnumber);
+            this.getHeyBean().setCcnumber(this.ccnumber);
             this.getHeyBean().setPassword(this.password);
             session.put("ccnumber", ccnumber);
             session.put("loggedin", true); // this marks the user as logged in
@@ -27,7 +27,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
             return LOGIN;
     }
 
-    public int getUsername() {
+    public int getCcnumber() {
         return ccnumber;
     }
 
@@ -35,8 +35,8 @@ public class LoginAction extends ActionSupport implements SessionAware {
         return password;
     }
 
-    public void setUsername(int ccnumber) {
-        this.ccnumber = ccnumber; // will you sanitize this input? maybe use a prepared statement?
+    public void setCcnumber(int ccnumber) {
+        this.ccnumber = ccnumber;
     }
 
     public void setPassword(String password) {

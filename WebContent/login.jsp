@@ -31,9 +31,9 @@
 <%--        <s:text name = "Password"/>--%>
 <%--        <s:textfield name="password" class="form-control"/>--%>
 <%--        --%>
-        <s:textfield type="ccnumber" id="ccnumber" class="form-control" placeholder="CC Number" autofocus=""/>
+        <s:textfield type="number" name="ccnumber" id="ccnumber" class="form-control" placeholder="CC Number" autofocus=""/>
 
-        <s:textfield type="password" id="inputPassword" class="form-control" placeholder="Password"/>
+        <s:password name="password" id="inputPassword" class="form-control" placeholder="Password"/>
 
         <s:submit cssClass="btn btn-success btn-block" placeholder="Sign in"/>
     </s:form>

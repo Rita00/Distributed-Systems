@@ -1,0 +1,38 @@
+#container{
+    margin: 10% auto;
+    padding: 5% 0;
+    width: 40%;
+    text-align: center;
+}
+
+h1{
+    margin: 5% auto;
+}
+
+button{
+    margin: 3% 10%;
+    padding: 1% 0;
+    width: 80%;
+}
+
+#exit{
+    margin: 5% 30%;
+    width: 40%;
+    background-color: #DB5461;
+}
+#exit:hover{
+    background-color: #E3655B;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+input{
+    margin: 3% 10%;
+    padding: 1% 0;
+    width: 80%;
+}
+
+#logo{
+    position: relative;
+    margin: auto;
+}

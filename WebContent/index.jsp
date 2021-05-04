@@ -5,8 +5,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-        <link rel="stylesheet" href="style.css">
-        <title>Hey!</title>
+        <link rel="stylesheet" href="style/main.css">
+        <title>UC eVoting</title>
+        <!--icon-->
+        <link rel="shortcut icon" href="images/favicon.ico">
     </head>
     <body>
         <c:redirect url="login.jsp"/>

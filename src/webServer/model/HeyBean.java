@@ -1,5 +1,7 @@
 package webServer.model;
 
+import pt.uc.dei.student.elections.Candidacy;
+import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 import pt.uc.dei.student.others.RMI;
 
@@ -8,11 +10,13 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
 
 public class HeyBean {
     private RMI server;
     private int ccnumber; // username and password supplied by the user
     private String password;
+    private int election_id;
 
     public HeyBean() {
         // Connect to RMI Server
@@ -24,13 +28,16 @@ public class HeyBean {
         }
     }
 
-
     public void setCcnumber(int ccnumber) {
         this.ccnumber = ccnumber;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setElection_id(int election_id) {
+        this.election_id = election_id;
     }
 
     public Person getUser() throws RemoteException {
@@ -41,6 +48,27 @@ public class HeyBean {
             e.printStackTrace();
         }
         return p;
+    }
+
+    public ArrayList<Election> getElections() {
+        ArrayList<Election> elections = null;
+
+        try {
+            elections = server.getCurrentElections(-1);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return elections;
+    }
+
+    public ArrayList<Candidacy> getCandidacies() {
+        ArrayList<Candidacy> candidacies = null;
+        try {
+            candidacies = server.getCandidacies(this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return candidacies;
     }
 }
 

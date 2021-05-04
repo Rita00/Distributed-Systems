@@ -747,6 +747,8 @@ RMIServer extends UnicastRemoteObject implements RMI {
      * @return eleições a decorrerem no departamento
      */
     public ArrayList<Election> getCurrentElections(int department_id) {
+        if (department_id == 0)
+            return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now')");
         return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND (department_id = " + department_id + " OR department_id = -1)");
     }
 

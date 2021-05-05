@@ -10,14 +10,20 @@ import java.util.Map;
 public class ChooseElectionAction extends ActionSupport implements SessionAware {
     private int election_id;
     private Map<String, Object> session;
+    private String message = "";
 
     @Override
     public String execute() throws Exception {
         this.getHeyBean().setElection_id(this.election_id);
-        if(this.election_id != 0 && this.getHeyBean().getCandidacies() != null)
+
+        if(!this.getHeyBean().checkIfAlreadyVotes() && this.election_id != 0 && this.getHeyBean().getCandidacies() != null)
             return SUCCESS;
-        else
+        else {
+            message = "Já votou nesta eleição!";
+            addActionError(message);
             return ERROR;
+        }
+
     }
 
     public int getElection_id() {

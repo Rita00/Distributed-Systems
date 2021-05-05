@@ -19,6 +19,7 @@
                         <h3 class="panel-title">
                             <span class="glyphicon glyphicon-hand-right"></span>Escolha a eleição que deseja votar!</h3>
                     </div>
+                    <s:actionerror/>
                     <s:form action="chooseElection" method="post">
                         <div class="panel-body">
                             <ul class="list-group">

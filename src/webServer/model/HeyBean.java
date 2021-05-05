@@ -84,6 +84,15 @@ public class HeyBean {
             e.printStackTrace();
         }
     }
+
+    public boolean checkIfAlreadyVotes() {
+        try {
+            return server.checkIfAlreadyVote(this.ccnumber, this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 
 /*

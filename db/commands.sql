@@ -112,3 +112,5 @@ SELECT * FROM election, election_department WHERE begin_date <= date('now') AND 
 
 
 SELECT * FROM department WHERE (hasMulticastServer IS NULL OR hasMulticastServer = 0) AND id = 2;
+
+SELECT * FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = 'Funcionário'

@@ -17,6 +17,8 @@ public class HeyBean {
     private int ccnumber; // username and password supplied by the user
     private String password;
     private int election_id;
+    private int candidacy_id;
+
 
     public HeyBean() {
         // Connect to RMI Server
@@ -40,6 +42,10 @@ public class HeyBean {
         this.election_id = election_id;
     }
 
+    public void setCandidacy_id(int candidacy_id) {
+        this.candidacy_id = candidacy_id;
+    }
+
     public Person getUser() throws RemoteException {
         Person p = null;
         try {
@@ -54,7 +60,7 @@ public class HeyBean {
         ArrayList<Election> elections = null;
 
         try {
-            elections = server.getCurrentElections(-1);
+            elections = server.getCurrentElectionsPerson(String.valueOf(ccnumber), String.valueOf(password));
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -69,6 +75,14 @@ public class HeyBean {
             e.printStackTrace();
         }
         return candidacies;
+    }
+
+    public void updateVotes() {
+        try {
+            server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(0));
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 

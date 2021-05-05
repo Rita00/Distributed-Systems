@@ -384,15 +384,18 @@ public interface RMI extends Remote {
      * @throws InterruptedException thread interrompida
      */
     ArrayList<Election> getCurrentElections(int department_id) throws java.rmi.RemoteException, InterruptedException;
+
+    ArrayList<Election> getCurrentElectionsPerson(String cc, String password) throws java.rmi.RemoteException, InterruptedException;
+
     /**
-     * Devolve o numero de votos em branco para uma
-     * determinada eleição na base de dados
-     *
-     * @param id_election ID da eleição
-     * @return numero de votos em branco da eleição
-     * @throws RemoteException falha no RMI
-     * @throws InterruptedException thread interrompida
-     */
+         * Devolve o numero de votos em branco para uma
+         * determinada eleição na base de dados
+         *
+         * @param id_election ID da eleição
+         * @return numero de votos em branco da eleição
+         * @throws RemoteException falha no RMI
+         * @throws InterruptedException thread interrompida
+         */
     int getBlackVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
     /**
      * Devolve o numero de votos nulos para uma

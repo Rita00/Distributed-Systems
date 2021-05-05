@@ -163,26 +163,26 @@ RMIServer extends UnicastRemoteObject implements RMI {
      * Atribui uma pessoa a uma lista na entidade candidacy_person da base de dados,
      * e verifica se a pessoa pode candidatar-se.
      *
-     * @param election_id   ID da eleição da lista
-     * @param candidacy_id  ID da lista
-     * @param cc_number     número de cartão de cidadão da pessoa
+     * @param election_id  ID da eleição da lista
+     * @param candidacy_id ID da lista
+     * @param cc_number    número de cartão de cidadão da pessoa
      * @return String com a pensagem de erro
      */
     public String insertPersonIntoCandidacy(int election_id, int candidacy_id, int cc_number) {
-        Person p = this.selectPeople("SELECT * FROM person WHERE cc_number="+cc_number).get(0);
-        Candidacy c = this.selectCandidacies("SELECT * FROM candidacy WHERE id="+candidacy_id).get(0);
-        int dep_id = this.countRowsBD("election_department WHERE election_id="+election_id,"department_id");
-        if(p!=null){
-            if(p.getJob().equals(c.getType()) && (dep_id==-1 || p.getDepartment_id()==dep_id)){
-                if(this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);", candidacy_id, cc_number))){
+        Person p = this.selectPeople("SELECT * FROM person WHERE cc_number=" + cc_number).get(0);
+        Candidacy c = this.selectCandidacies("SELECT * FROM candidacy WHERE id=" + candidacy_id).get(0);
+        int dep_id = this.countRowsBD("election_department WHERE election_id=" + election_id, "department_id");
+        if (p != null) {
+            if (p.getJob().equals(c.getType()) && (dep_id == -1 || p.getDepartment_id() == dep_id)) {
+                if (this.updateOnDB(String.format("INSERT INTO candidacy_person(candidacy_id,person_cc_number) VALUES (%s,%s);", candidacy_id, cc_number))) {
                     return "";
-                }else{
+                } else {
                     return "A pessoa já está associada a uma lista";
                 }
-            }else{
+            } else {
                 return "O candidator não pode ser adicionado a esta lista";
             }
-        }else{
+        } else {
             return "Não forma encontradas pessoas com esse numero de carão de cidadão";
         }
     }
@@ -405,11 +405,12 @@ RMIServer extends UnicastRemoteObject implements RMI {
         }
         return true;
     }
+
     /**
      * Insere/Remove na base de dados na respetivas tabela
      *
-     * @param sql           commando sql
-     * @param argument1     argumento designado por "?" no comando sql
+     * @param sql       commando sql
+     * @param argument1 argumento designado por "?" no comando sql
      * @return true ou false dependendo se a inserção teve ou não sucesso
      */
     public boolean updateOnDB(String sql, String argument1) {
@@ -522,8 +523,8 @@ RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Seleciona pessoas na base de dados
      *
-     * @param sql       comando SQL
-     * @param password  palavra passe
+     * @param sql      comando SQL
+     * @param password palavra passe
      * @return arrayList com as pessoas
      */
     public ArrayList<Person> selectPeople(String sql, String password) {
@@ -752,6 +753,14 @@ RMIServer extends UnicastRemoteObject implements RMI {
         return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND (department_id = " + department_id + " OR department_id = -1)");
     }
 
+    public ArrayList<Election> getCurrentElectionsPerson(String cc, String password) {
+        Person p = getPerson(cc, password);
+        if (p != null) {
+            return selectElections("SELECT * FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = '" + p.getJob() +"'");
+        }
+        return null;
+    }
+
     /**
      * Devolve o numero de votos em branco para uma
      * determinada eleição na base de dados
@@ -809,7 +818,8 @@ RMIServer extends UnicastRemoteObject implements RMI {
      * @param campo_num     nome do que está a ser pesquisado (i.e. numero de cc, numero de telemovel, ...)
      * @return lista de pessoas
      */
-    public ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql, int campo_num) {
+    public ArrayList<Person> getRegisPeople(int election_id, int department_id, String campo, String campo_sql,
+                                            int campo_num) {
         // Verificar se a eleição está restringida a um departamento
         int ndep = countRowsBD("election_department WHERE election_id = " + election_id, "department_id");
         if (ndep == -1) {
@@ -855,6 +865,8 @@ RMIServer extends UnicastRemoteObject implements RMI {
      * @param ndep        ID do departamento
      */
     public void insertVotingRecord(String id_election, String cc, String ndep) {
+        if (ndep.equals("0"))
+            updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", "Online", cc, id_election));
         updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", ndep, cc, id_election));
     }
 

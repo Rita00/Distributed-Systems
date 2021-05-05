@@ -19,14 +19,14 @@
                         <h3 class="panel-title">
                             <span class="glyphicon glyphicon-hand-right"></span>Escolha a eleição que deseja votar!</h3>
                     </div>
-                    <s:form action="chooseElection" method="post">
+                    <s:form action="vote" method="post">
                         <div class="panel-body">
                             <ul class="list-group">
                                 <c:forEach items="${HeyBean.candidacies}" var="value">
                                     <li class="list-group-item">
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="optionsRadios">
+                                                <input type="radio" name="candidacy_id" value="${value.id}">
                                                 <c:out value="${value.name}" />
                                             </label>
                                         </div>
@@ -35,8 +35,7 @@
                             </ul>
                         </div>
                         <div class="panel-footer text-center">
-                            <button type="button" class="btn btn-primary btn-block btn-sm">
-                                Vote</button>
+                            <s:submit cssClass="btn btn-primary btn-block btn-sm" value="Vote"/>
                         </div>
                     </s:form>
                 </div>

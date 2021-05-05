@@ -17,6 +17,7 @@ h1{
     /* identical to box height */
     color: #FFFFFF;
 }
+
 h4{
     text-align: center;
     font-family: Montserrat;
@@ -71,4 +72,14 @@ input, .input{
     padding-left: 10px;
     background: #FFFFFF;
     border-radius: 10px;
+}
+
+hr,.hr{
+    border-top: 1px solid #25A18E;
+    margin: 2% 5%;
+    width: 90%;
+}
+
+.facebook-btn:after{
+    content:'Facebook';
 }

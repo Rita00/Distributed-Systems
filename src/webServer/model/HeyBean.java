@@ -18,6 +18,7 @@ public class HeyBean {
     private String password;
     private int election_id;
     private int candidacy_id;
+    private String consoleOption;
 
 
     public HeyBean() {
@@ -28,6 +29,10 @@ public class HeyBean {
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setConsoleOption(String consoleOption) {
+        this.consoleOption = consoleOption;
     }
 
     public void setCcnumber(int ccnumber) {
@@ -93,45 +98,10 @@ public class HeyBean {
         }
         return false;
     }
+
+    public void menuConsole() {
+        if (this.consoleOption.equals("register")) {
+
+        }
+    }
 }
-
-/*
-import java.util.ArrayList;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
-
-import pt.uc.dei.student.others.RMI;
-
-public class HeyBean {
-	private RMI server;
-	private String username; // username and password supplied by the user
-	private String password;
-
-	public HeyBean() {
-		try {
-			server = (RMI) Naming.lookup("server");
-		}
-		catch(NotBoundException|MalformedURLException|RemoteException e) {
-			e.printStackTrace(); // what happens *after* we reach this line?
-		}
-	}
-
-	public ArrayList<String> getAllUsers() throws RemoteException {
-		return server.getAllUsers(); // are you going to throw all exceptions?
-	}
-
-	public boolean getUserMatchesPassword() throws RemoteException {
-		return server.userMatchesPassword(this.username, this.password);
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-}
-*/

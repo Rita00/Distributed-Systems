@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap"
           rel="stylesheet">
     <!-- css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="style/main.css">
     <link rel="stylesheet" type="text/css" href="style/form.css">
     <!--icon-->
@@ -23,8 +24,7 @@
     <h1>Sign In</h1>
     <s:form action="login" method="post" theme="simple">
 
-        <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
-
+        <a href="#" class="fb button center"><i class="fa fa-facebook fa-fw"></i> Login with Facebook</a>
         <h2> OR </h2>
 
         <label>Cartão de Cidadão</label><br>
@@ -33,9 +33,7 @@
         <label>Password</label><br>
         <s:password name="password" id="inputPassword" cssClass="input" placeholder="***********"/><br>
 
-        <s:submit cssClass="button" id="login" placeholder="Sign in"/>
-
-
+        <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%;"  placeholder="Sign in"/>
 
     </s:form>
 

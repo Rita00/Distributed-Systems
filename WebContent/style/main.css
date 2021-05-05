@@ -17,6 +17,17 @@ h1{
     /* identical to box height */
     color: #FFFFFF;
 }
+h2{
+    text-align: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1em;
+    line-height: 39px;
+    /* identical to box height */
+    color: #FFFFFF;
+    margin:5%;
+}
 
 h4{
     text-align: center;
@@ -67,19 +78,26 @@ label{
     color: #FFFFFF;
 }
 
-input, .input{
+.input{
     border: none;
     padding-left: 10px;
     background: #FFFFFF;
     border-radius: 10px;
 }
-
-hr,.hr{
-    border-top: 1px solid #25A18E;
-    margin: 2% 5%;
-    width: 90%;
+.center{
+    display:flex;
+    text-align: center;
+    vertical-align: center;
 }
-
-.facebook-btn:after{
-    content:'Facebook';
+/*===================================================FACEBOOK*/
+.fb.button{
+    margin: 5% auto;
+    padding: 5px;
+    width: 35%;
+    text-decoration: none;
+    background-color: #3B5998;
+    color: white;
+}
+.fa-fw{
+    padding-top:2.5% ;
 }

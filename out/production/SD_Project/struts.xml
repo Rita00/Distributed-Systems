@@ -45,11 +45,11 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="success">/chooseElection.jsp</result>
         </action>
 
-        <action name="registerConsole" class="webServer.action.RegisterAction" method="execute">
+        <action name="registerConsole" class="webServer.action.RedirectAction" method="execute">
             <result name="success">/registerConsole.jsp</result>
         </action>
 
-        <action name="register" class="webServer.action.RegisterAction" method="execute">
+        <action name="register" class="webServer.action.RedirectAction" method="execute">
             <result>/menuConsole.jsp</result>
         </action>
 

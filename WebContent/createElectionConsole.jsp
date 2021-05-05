@@ -4,6 +4,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- title -->
+    <title>UC eVoting | Consola de Administração | Criar Eleição</title>
     <!-- encoding -->
     <meta charset="UTF-8">
     <!-- font -->
@@ -12,8 +14,6 @@
     <!-- css -->
     <link rel="stylesheet" type="text/css" href="style/main.css">
     <link rel="stylesheet" type="text/css" href="style/form.css">
-    <!-- title -->
-    <title>UC eVoting | Consola de Administração | Criar Eleição</title>
     <!--icon-->
     <link rel="shortcut icon" href="images/favicon.ico">
 </head>

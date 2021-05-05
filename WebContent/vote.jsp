@@ -22,13 +22,12 @@
                     <s:form action="chooseElection" method="post">
                         <div class="panel-body">
                             <ul class="list-group">
-                                <c:forEach items="${HeyBean.elections}" var="value">
+                                <c:forEach items="${HeyBean.candidacies}" var="value">
                                     <li class="list-group-item">
                                         <div class="radio">
                                             <label>
                                                 <input type="radio" name="optionsRadios">
-                                                Teste
-<%--                                                <c:out value="${value.title}" />--%>
+                                                <c:out value="${value.name}" />
                                             </label>
                                         </div>
                                     </li>

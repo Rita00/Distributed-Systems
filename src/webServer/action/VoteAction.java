@@ -2,6 +2,7 @@ package webServer.action;
 
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.interceptor.SessionAware;
+import pt.uc.dei.student.elections.Election;
 import webServer.model.HeyBean;
 
 import java.util.Map;

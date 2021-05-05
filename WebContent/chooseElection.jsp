@@ -26,10 +26,10 @@
                                     <li class="list-group-item">
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="optionsRadios">
+                                                <input type="radio" name="election_id" value="${value.id}">
                                                 <c:out value="${value.title}"/>
                                             </label>
-                                        </div>+
+                                        </div>
                                     </li>
                                 </c:forEach>
                             </ul>

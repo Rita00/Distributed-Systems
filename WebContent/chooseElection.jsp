@@ -1,5 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -7,7 +8,6 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="vote.css">
-    <meta charset="UTF-8">
 </head>
 <body>
 <div style="position: absolute; left: 50%; top: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%)" >
@@ -35,7 +35,7 @@
                             </ul>
                         </div>
                         <div class="panel-footer text-center">
-                            <s:submit cssClass="btn btn-primary btn-block btn-sm" placeholder="Vote"/>
+                            <s:submit cssClass="btn btn-primary btn-block btn-sm" value="Vote"/>
                         </div>
                     </s:form>
                 </div>

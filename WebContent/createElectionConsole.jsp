@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
     <!-- title -->
@@ -23,46 +23,50 @@
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
     <h1>Criar Eleição</h1>
-    <form>
+    <s:actionerror/>
+    <s:form action="createElection" method="post">
         <label>Titulo
-            <input class="input" type="text" placeholder="Eleições NEI/AAC 2020/2021"/>
+            <s:textfield name="title" cssClass="input" placeholder="Eleições NEI/AAC 2020/2021"/>
         </label>
         <label>Descrição
-            <textarea class="input" type="text"
-                      placeholder="O NEI/AAC (Núcleo de Estudantes de Informática da Associação Académica de Coimbra) é um órgão integrante da AAC que tem o propósito de representar os estudantes de Engenharia Informática e Design e Multimédia da Universidade de Coimbra, sócios da AAC."></textarea>
+            <s:textarea name="description" cssClass="input" placeholder="O NEI/AAC (Núcleo de Estudantes de Informática da Associação
+            Académica de Coimbra) é um órgão integrante da AAC que tem o propósito de representar os estudantes de
+            Engenharia Informática e Design e Multimédia da Universidade de Coimbra, sócios da AAC."/>
         </label>
         <label>Tipo<br>
-            <select class="input" name="job" id="job">
+            <select class="input" name="type" id="job">
                 <option value="Estudante">Estudante</option>
                 <option value="Docente">Docente</option>
                 <option value="Funcionário">Funcionário</option>
             </select><br>
         </label>
         <label>Data de Início<br>
-            <input class="input" type="date" placeholder="2025-10-01 11:59"/>
+            <s:textfield name="iniDate" type="datetime-local" cssClass="input"/>
+                <%--            <input class="input" type="date" placeholder="2025-10-01 11:59"/>--%>
         </label>
         <label>Data de fim
-            <input class="input" type="date" placeholder="2025-11-01 23:59"/>
+            <s:textfield name="fimDate" type="datetime-local" cssClass="input"/>
         </label>
         <label>Restringir Eleição?<br>
             <select class="input" name="restriction" id="restriction">
                 <option value="yes">Sim</option>
-                <option value="yes">Não</option>
+                <option value="no">Não</option>
             </select><br>
         </label>
-        <!--IF RESTRICAO -->
+        <%--IF RESTRICAO --%>
         <label>Departamento<br>
-            <select class="input" name="department" id="department">
-                <option value="TODO">TODO</option>
+            <select class="input" name="dep" id="department">
+                <c:forEach items="${HeyBean.departments}" var="value">
+                    <option value="${value.id}">${value.name}</option>
+                </c:forEach>
             </select><br>
         </label>
-        <!--END IF RESTRICAO -->
+        <%--END IF RESTRICAO --%>
         <div class="row">
             <input class="button" type="submit" id="exit" value="Voltar"/>
             <input class="button" type="submit" id="create" value="Criar"/>
         </div>
-    </form>
-
+    </s:form>
 </div>
 </body>
 </html>

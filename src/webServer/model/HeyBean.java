@@ -21,8 +21,10 @@ public class HeyBean {
     private int election_id;
     private int candidacy_id;
     // Fields for register
-    private String name, cargo, address, ccDate;
+    private String name, cargo, address, ccDate, restriction;
     private int phone, dep;
+    // Fields for create an election
+    String title, description, type, iniDate, fimDate;
 
 
     public HeyBean() {
@@ -73,6 +75,30 @@ public class HeyBean {
 
     public void setCandidacy_id(int candidacy_id) {
         this.candidacy_id = candidacy_id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setIniDate(String iniDate) {
+        this.iniDate = iniDate;
+    }
+
+    public void setFimDate(String fimDate) {
+        this.fimDate = fimDate;
+    }
+
+    public void setRestriction(String restriction) {
+        this.restriction = restriction;
     }
 
     public Person getUser() throws RemoteException {
@@ -140,5 +166,19 @@ public class HeyBean {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public int insertElection() {
+        int id_election = -1;
+        try {
+            id_election = server.insertElection(this.iniDate, this.fimDate, this.title, this.description, this.type);
+            if (this.restriction.equals("yes")) {
+                server.insertElectionDepartment(id_election, this.dep);
+            } else
+                server.insertElectionDepartment(id_election, -1);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return id_election;
     }
 }

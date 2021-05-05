@@ -26,7 +26,7 @@
     <s:form action="registerConsole" method="post">
             <button>Registar Pessoas</button>
     </s:form>
-    <s:form action="createElection" method="post">
+    <s:form action="createElectionConsole" method="post">
             <button>Criar Eleição</button>
     </s:form>
     <s:form action="manageElection" method="post">

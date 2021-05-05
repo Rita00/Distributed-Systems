@@ -33,7 +33,7 @@
         <label>Password</label><br>
         <s:password name="password" id="inputPassword" cssClass="input" placeholder="***********"/><br>
 
-        <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%;"  placeholder="Sign in"/>
+        <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%;"  value="Sign in"/>
 
     </s:form>
 

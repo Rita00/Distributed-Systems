@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="vote.css">
 </head>
 <body>
-<div style="position: absolute; left: 50%; top: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%)" >
+<div style="position: absolute; left: 50%; top: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%)">
     <div class="container">
         <div class="row">
             <div class="col-md-3">
@@ -27,9 +27,9 @@
                                         <div class="radio">
                                             <label>
                                                 <input type="radio" name="optionsRadios">
-                                                <c:out value="${value.title}" />
+                                                <c:out value="${value.title}"/>
                                             </label>
-                                        </div>
+                                        </div>+
                                     </li>
                                 </c:forEach>
                             </ul>

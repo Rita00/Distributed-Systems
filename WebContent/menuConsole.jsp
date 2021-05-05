@@ -21,7 +21,7 @@
 <div id="container" class="container">
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
-
+    <s:actionmessage/>
     <h1>Consola de Administração</h1>
     <s:form action="registerConsole" method="post">
             <button>Registar Pessoas</button>

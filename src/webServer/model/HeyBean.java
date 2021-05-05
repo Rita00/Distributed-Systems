@@ -12,6 +12,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class HeyBean {
     private RMI server;
@@ -19,7 +20,9 @@ public class HeyBean {
     private String password;
     private int election_id;
     private int candidacy_id;
-    private String consoleOption;
+    // Fields for register
+    private String name, cargo, address, ccDate;
+    private int phone, dep;
 
 
     public HeyBean() {
@@ -32,8 +35,28 @@ public class HeyBean {
         }
     }
 
-    public void setConsoleOption(String consoleOption) {
-        this.consoleOption = consoleOption;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    public void setDep(int dep) {
+        this.dep = dep;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPhone(int phone) {
+        this.phone = phone;
+    }
+
+    public void setCcDate(String ccDate) {
+        this.ccDate = ccDate;
     }
 
     public void setCcnumber(int ccnumber) {
@@ -104,6 +127,15 @@ public class HeyBean {
     public boolean checkIfAlreadyVotes() {
         try {
             return server.checkIfAlreadyVote(this.ccnumber, this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean insertRegister() {
+        try {
+            return server.insertPerson(this.name, this.cargo, this.password, this.dep, this.phone, this.address, this.ccnumber, this.ccDate);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }

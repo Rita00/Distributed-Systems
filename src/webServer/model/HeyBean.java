@@ -1,6 +1,7 @@
 package webServer.model;
 
 import pt.uc.dei.student.elections.Candidacy;
+import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 import pt.uc.dei.student.others.RMI;
@@ -82,6 +83,16 @@ public class HeyBean {
         return candidacies;
     }
 
+    public ArrayList<Department> getDepartments() {
+        ArrayList<Department> departments = null;
+        try {
+            departments = server.getDepartments();
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return departments;
+    }
+
     public void updateVotes() {
         try {
             server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(0));
@@ -97,11 +108,5 @@ public class HeyBean {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public void menuConsole() {
-        if (this.consoleOption.equals("register")) {
-
-        }
     }
 }

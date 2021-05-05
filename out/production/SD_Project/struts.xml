@@ -45,8 +45,20 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="success">/chooseElection.jsp</result>
         </action>
 
-        <action name="register">
-            <result>/registerConsole.jsp</result>
+        <action name="registerConsole" class="webServer.action.RegisterAction" method="execute">
+            <result name="success">/registerConsole.jsp</result>
+        </action>
+
+        <action name="register" class="webServer.action.RegisterAction" method="execute">
+            <result>/menuConsole.jsp</result>
+        </action>
+
+        <action name="createElection">
+            <result>/createElectionConsole.jsp</result>
+        </action>
+
+        <action name="manageElection">
+            <result>/manageElectionsConsole.jsp</result>
         </action>
     </package>
 </struts>

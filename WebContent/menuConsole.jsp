@@ -23,7 +23,7 @@
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
     <h1>Consola de Administração</h1>
-    <s:form action="register" method="post">
+    <s:form action="registerConsole" method="post">
             <button>Registar Pessoas</button>
     </s:form>
     <s:form action="createElection" method="post">

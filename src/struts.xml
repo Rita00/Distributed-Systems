@@ -54,8 +54,13 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="error">/registerConsole.jsp</result>
         </action>
 
-        <action name="createElection" class="webServer.action.RedirectAction" method="execute">
+        <action name="createElectionConsole" class="webServer.action.RedirectAction" method="execute">
             <result>/createElectionConsole.jsp</result>
+        </action>
+
+        <action name="createElection" class="webServer.action.CreateElectionAction" method="execute">
+            <result name="success">/menuConsole.jsp</result>
+            <result name="error">/createElectionConsole.jsp</result>
         </action>
 
         <action name="manageElection" class="webServer.action.RedirectAction" method="execute">

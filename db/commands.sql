@@ -113,4 +113,6 @@ SELECT * FROM election, election_department WHERE begin_date <= date('now') AND 
 
 SELECT * FROM department WHERE (hasMulticastServer IS NULL OR hasMulticastServer = 0) AND id = 2;
 
-SELECT * FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = 'Funcionário'
+SELECT * FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = 'Funcionário';
+
+INSERT INTO election(title,type,description,begin_date,end_date) VALUES('teste 5/5','null','teste','2022-12-12 14:30:00','2022-12-13 14:30:00');

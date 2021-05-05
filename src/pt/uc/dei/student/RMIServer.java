@@ -113,6 +113,8 @@ RMIServer extends UnicastRemoteObject implements RMI {
      * @return true ou false caso tenha sido inserido com sucesso ou não na base de dados
      */
     public int insertElection(String begin_data, String end_data, String titulo, String descricao, String type_ele) {
+        begin_data = begin_data.replace('T', ' ');
+        end_data = end_data.replace('T', ' ');
         String dataIni = String.format("%s:00", begin_data), dataFim = String.format("%s:00", end_data);
         String sql = String.format("INSERT INTO election(title,type,description,begin_date,end_date) VALUES('%s','%s','%s','%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
         if (sql == null) return -1;
@@ -131,6 +133,11 @@ RMIServer extends UnicastRemoteObject implements RMI {
             return auto_id;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             return -1;
         }
     }

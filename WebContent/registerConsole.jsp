@@ -23,43 +23,39 @@
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
     <h1>Registo de Pessoas</h1>
+    <s:actionerror/>
     <s:form action="register" method="post">
         <label>Nome
-            <input class="input" type="text" placeholder="Alberto Caeiro"/>
+            <s:textfield name="name" cssClass="input" placeholder="Alberto Caeiro"/>
         </label>
         <label>Cargo<br>
-            <select class="input" name="job" id="job">
+            <select class="input" name="cargo" id="job">
                 <option value="Estudante">Estudante</option>
                 <option value="Docente">Docente</option>
                 <option value="Funcionário">Funcionário</option>
             </select><br>
         </label>
         <label>Password
-            <input class="input" type="password" placeholder="**********"/>
+            <s:textfield name="password" cssClass="input" type="password" placeholder="**********"/>
         </label>
         <label>Departamento<br>
-            <select class="input" name="department" id="department">
+            <select class="input" name="dep" id="department">
                 <c:forEach items="${HeyBean.departments}" var="value">
-                    <%--                        <c:out value="${value.name}"/>--%>
                     <option value="${value.id}">${value.name}</option>
-
                 </c:forEach>
             </select><br>
-                <%--                <select class="input" name="department" id="department">--%>
-                <%--                    <option value="TODO">TODO</option>--%>
-                <%--                </select><br>--%>
         </label>
         <label>Telemóvel
-            <input class="input" type="text" placeholder="93XXXXXXX"/>
+            <s:textfield name="phone" cssClass="input" placeholder="93XXXXXXX"/>
         </label>
         <label>Morada
-            <input class="input" type="text" placeholder="Avenida Inês de Castro 69, 3040-390 Coimbra"/>
+            <s:textfield name="address" cssClass="input" placeholder="Avenida Inês de Castro 69, 3040-390 Coimbra"/>
         </label>
         <label>Cartão de Cidadão
-            <input class="input" type="text" placeholder="11223344"/>
+            <s:textfield name="ccnumber" cssClass="input" placeholder="11223344"/>
         </label>
         <label>Validade
-            <input class="input" type="date" placeholder="2025-10-01"/>
+            <s:textfield name="ccDate" cssClass="input" type="date" placeholder="2025-10-01"/>
         </label>
         <div class="row">
             <input class="button" type="submit" id="exit" value="Voltar"/>

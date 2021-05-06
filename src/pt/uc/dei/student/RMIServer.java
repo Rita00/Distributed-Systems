@@ -1083,6 +1083,10 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 "ORDER BY voting_record.election_id, p.name");
     }
 
+    public int getElectionFromCnadidacy(int candidacy_id) {
+        return countRowsBD("candidacy WHERE id = " + candidacy_id, "election_id");
+    }
+
     /**
      * Manda mensagem para dizer que está a funcionar
      *

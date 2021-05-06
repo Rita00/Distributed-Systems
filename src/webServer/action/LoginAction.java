@@ -16,6 +16,8 @@ public class LoginAction extends ActionSupport implements SessionAware {
 
     @Override
     public String execute() throws Exception {
+        // todo Verificar se já tem login feito, caso tenha não iniicar sessão de novo!
+        // todo é preciso ter smp em atenção que se pode fazer pedidos sem ser pelo browser (exemplo: postman)
         this.getHeyBean().setCcnumber(this.ccnumber);
         this.getHeyBean().setPassword(this.password);
         if(this.getHeyBean().getUser() != null) {

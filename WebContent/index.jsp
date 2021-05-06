@@ -11,6 +11,6 @@
         <link rel="shortcut icon" href="images/favicon.ico">
     </head>
     <body>
-        <c:redirect url="editElectionConsole.jsp"/>
+        <c:redirect url="login.jsp"/>
     </body>
 </html>

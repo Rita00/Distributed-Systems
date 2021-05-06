@@ -15,15 +15,26 @@ public class ChooseElectionAction extends ActionSupport implements SessionAware 
     @Override
     public String execute() throws Exception {
         this.getHeyBean().setElection_id(this.election_id);
-
-        if(!this.getHeyBean().checkIfAlreadyVotes() && this.election_id != 0 && this.getHeyBean().getCandidacies() != null)
-            return SUCCESS;
-        else {
-            message = "Já votou nesta eleição!";
+        if (session.get("loggedin") != null) {
+            boolean res = (Boolean) session.get("loggedin");
+            if (!res) {
+                message = "Não tem sessão iniciada.";
+                addActionError(message);
+                return ERROR;
+            } else {
+                if (!this.getHeyBean().checkIfAlreadyVotes() && this.election_id != 0 && this.getHeyBean().getCandidacies() != null)
+                    return SUCCESS;
+                else {
+                    message = "Já votou nesta eleição!";
+                    addActionError(message);
+                    return ERROR;
+                }
+            }
+        } else {
+            message = "Não tem sessão iniciada.";
             addActionError(message);
             return ERROR;
         }
-
     }
 
     public int getElection_id() {
@@ -40,7 +51,7 @@ public class ChooseElectionAction extends ActionSupport implements SessionAware 
     }
 
     public HeyBean getHeyBean() {
-        if(!session.containsKey("heyBean"))
+        if (!session.containsKey("heyBean"))
             this.setHeyBean(new HeyBean());
         return (HeyBean) session.get("heyBean");
     }

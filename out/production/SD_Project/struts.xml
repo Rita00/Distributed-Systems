@@ -42,7 +42,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="vote" class="webServer.action.VoteAction" method="execute">
-            <result name="success">/chooseElection.jsp</result>
+            <result>/chooseElection.jsp</result>
         </action>
 
         <action name="registerConsole" class="webServer.action.RedirectAction" method="execute">

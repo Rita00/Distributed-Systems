@@ -31,6 +31,7 @@
                     </h1>
                 </div>
                 <s:actionerror/>
+                <s:actionmessage/>
                 <s:form action="chooseElection" method="post">
                     <div class="panel-body">
                         <c:forEach items="${HeyBean.elections}" var="value">

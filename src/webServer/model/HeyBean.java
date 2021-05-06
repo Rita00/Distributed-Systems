@@ -181,4 +181,18 @@ public class HeyBean {
         }
         return id_election;
     }
+
+    // Previne que alguem tente votar (caso não possa) passando logo para a página se escolher as listas e não ter passado pela página de escolher uma eleição
+    public boolean checkIfAlreadyVoteOnVoteForm() {
+        int election_id;
+        try {
+            election_id = server.getElectionFromCnadidacy(this.candidacy_id);
+            // Pra simplificar considera-se que caso uma elição não exista o utilizador já tenha votado nela
+            if (election_id == 0 && server.checkIfAlreadyVote(this.ccnumber, election_id))
+                return true;
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

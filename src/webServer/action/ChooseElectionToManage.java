@@ -8,12 +8,12 @@ import java.util.Map;
 
 public class ChooseElectionToManage extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
-    int election_to_manage;
+    String name_election_to_manage;
     String message = "";
 
     @Override
     public String execute() throws Exception {
-        this.getHeyBean().setElection_to_manage(this.election_to_manage);
+        this.getHeyBean().setElection_to_manage(this.name_election_to_manage);
         if (this.getHeyBean().checkIfSelectedElectionExists()) {
             return SUCCESS;
         } else {
@@ -23,12 +23,12 @@ public class ChooseElectionToManage extends ActionSupport implements SessionAwar
         }
     }
 
-    public int getElection_to_manage() {
-        return election_to_manage;
+    public String getElection_to_manage() {
+        return name_election_to_manage;
     }
 
-    public void setElection_to_manage(int election_to_manage) {
-        this.election_to_manage = election_to_manage;
+    public void setElection_to_manage(String election_to_manage) {
+        this.name_election_to_manage = election_to_manage;
     }
 
     @Override

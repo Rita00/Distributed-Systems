@@ -27,7 +27,7 @@ public class HeyBean {
     // Fields for create an election
     String title, description, type, iniDate, fimDate;
     // Field to manage an election
-    int election_to_manage;
+    String name_election_to_manage;
 
 
     public HeyBean() {
@@ -104,7 +104,7 @@ public class HeyBean {
         this.restriction = restriction;
     }
 
-    public void setElection_to_manage(int election_to_manage) { this.election_to_manage = election_to_manage; }
+    public void setElection_to_manage(String election_to_manage) { this.name_election_to_manage = election_to_manage; }
 
     public Person getUser() throws RemoteException {
         Person p = null;
@@ -201,7 +201,7 @@ public class HeyBean {
     public boolean checkIfAlreadyVoteOnVoteForm() {
         int election_id;
         try {
-            election_id = server.getElectionFromCnadidacy(this.candidacy_id);
+            election_id = server.getElectionFromCandidacy(this.candidacy_id);
             // Pra simplificar considera-se que caso uma elição não exista o utilizador já tenha votado nela
             if (election_id == 0 && server.checkIfAlreadyVote(this.ccnumber, election_id))
                 return true;
@@ -212,6 +212,18 @@ public class HeyBean {
     }
 
     public boolean checkIfSelectedElectionExists() {
-        return Utilitary.hasElection(this.election_to_manage, getAllElections());
+        int election_to_manage = getIdOfElectionToManage();
+        if (election_to_manage != 0)
+            return Utilitary.hasElection(election_to_manage, getAllElections());
+        return false;
+    }
+
+    public int getIdOfElectionToManage() {
+        try {
+            return server.getElectionToManage(this.name_election_to_manage);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

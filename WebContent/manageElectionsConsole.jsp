@@ -27,7 +27,7 @@
     <s:actionmessage/>
     <s:form action="chooseElectionToManage" method="post">
         <c:forEach items="${HeyBean.allElections}" var="value">
-            <button name="election_to_manage" value="${value.id}">${value.title}</button>
+            <button name="election_to_manage" value="${value.title}">${value.title}</button>
         </c:forEach>
     </s:form>
     <button id="exit">Voltar</button>

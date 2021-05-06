@@ -503,6 +503,9 @@ public interface RMI extends Remote {
      */
     ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
 
-    int getElectionFromCnadidacy(int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
+    int getElectionFromCandidacy(int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
+
+    int getElectionToManage(String title_election) throws java.rmi.RemoteException, InterruptedException;
+
 }
 

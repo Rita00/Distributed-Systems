@@ -30,8 +30,7 @@ import static java.lang.Thread.sleep;
  * @see RMI
  * @see UnicastRemoteObject
  */
-public class
-RMIServer extends UnicastRemoteObject implements RMI {
+public class RMIServer extends UnicastRemoteObject implements RMI {
     /**
      * Numero maximo de mesas de voto
      */
@@ -920,6 +919,10 @@ RMIServer extends UnicastRemoteObject implements RMI {
         this.sendRealTimeVotes();
     }
 
+    public int getElectionToManage(String title_election) {
+        return countRowsBD("election where title = '" + title_election + "'", "id");
+    }
+
     /**
      * Envia informação sobre os votos via callback para todos os admins que estão a receber informação em tempo real
      */
@@ -1083,7 +1086,7 @@ RMIServer extends UnicastRemoteObject implements RMI {
                 "ORDER BY voting_record.election_id, p.name");
     }
 
-    public int getElectionFromCnadidacy(int candidacy_id) {
+    public int getElectionFromCandidacy(int candidacy_id) {
         return countRowsBD("candidacy WHERE id = " + candidacy_id, "election_id");
     }
 

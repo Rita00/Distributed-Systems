@@ -34,7 +34,7 @@
                 <s:form action="chooseElection" method="post">
                     <div class="panel-body">
                         <c:forEach items="${HeyBean.elections}" var="value">
-                            <div class="radio" style="border:2px solid #004E64;float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
+                            <div class="radio" style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
                                 <label style="width: 100%; margin-left: 1px">
                                     <input type="radio" name="election_id" value="${value.id}">
                                     <c:out value="${value.title}"/>

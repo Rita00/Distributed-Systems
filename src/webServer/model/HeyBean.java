@@ -5,6 +5,7 @@ import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 import pt.uc.dei.student.others.RMI;
+import pt.uc.dei.student.others.Utilitary;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -25,6 +26,8 @@ public class HeyBean {
     private int phone, dep;
     // Fields for create an election
     String title, description, type, iniDate, fimDate;
+    // Field to manage an election
+    int election_to_manage;
 
 
     public HeyBean() {
@@ -101,6 +104,8 @@ public class HeyBean {
         this.restriction = restriction;
     }
 
+    public void setElection_to_manage(int election_to_manage) { this.election_to_manage = election_to_manage; }
+
     public Person getUser() throws RemoteException {
         Person p = null;
         try {
@@ -120,6 +125,16 @@ public class HeyBean {
             e.printStackTrace();
         }
         return elections;
+    }
+
+    public ArrayList<Election> getAllElections() {
+        ArrayList<Election> allElections = null;
+        try {
+            allElections = server.getElections();
+        } catch(RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return allElections;
     }
 
     public ArrayList<Candidacy> getCandidacies() {
@@ -194,5 +209,9 @@ public class HeyBean {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean checkIfSelectedElectionExists() {
+        return Utilitary.hasElection(this.election_to_manage, getAllElections());
     }
 }

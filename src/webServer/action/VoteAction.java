@@ -14,9 +14,10 @@ public class VoteAction extends ActionSupport implements SessionAware {
     @Override
     public String execute() throws Exception {
         this.getHeyBean().setCandidacy_id(this.candidacy_id);
-        //todo verificar se pode votar
+        // verifica se tem sessão iniciada para pode votar
         if(session.get("loggedin") != null) {
             boolean res = (Boolean) session.get("loggedin");
+            // Verifica se estás on ou off
             if (!res) {
                 message = "Não tem sessão iniciada.";
                 addActionError(message);

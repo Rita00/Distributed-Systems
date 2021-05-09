@@ -24,31 +24,31 @@
     <s:actionmessage/>
     <h1>Consola de Administração</h1>
     <s:form action="registerConsole" method="post">
-            <button>Registar Pessoas</button>
+            <button title="Registar uma pessoa nova na base de dados">Registar Pessoas</button>
     </s:form>
     <s:form action="createElectionConsole" method="post">
-            <button>Criar Eleição</button>
+            <button title="Registar uma eleição nova na base de dados">Criar Eleição</button>
     </s:form>
     <s:form action="manageElection" method="post">
-            <button>Gerir Eleição</button>
+            <button title="Editar detalhes de uma eleição e adicionar listas">Gerir Eleição</button>
     </s:form>
     <s:form action="managePollingStation" method="post">
-            <button>Gerir Mesas de Voto</button>
+            <button title="Adicionar ou remover mesas de voto para uma eleição">Gerir Mesas de Voto</button>
     </s:form>
     <s:form action="localVotes" method="post">
-            <button>Local em que cada eleitor votou</button>
+            <button title="Consultar o local em que cada eleitor votou">Registo de Votos</button>
     </s:form>
     <s:form action="electionsResults" method="post">
-            <button>Consultar resultados detalhados de eleições passadas</button>
+            <button title="Consultar resultados detalhados de eleições passadas">Resultados das Eleições</button>
     </s:form>
     <s:form action="statusPollingStations" method="post">
-            <button>Consultar estado das mesas de voto e respetivos terminais de voto</button>
+            <button title="Consultar estado das mesas de voto e respetivos terminais de voto">Estado das Mesas de Voto</button>
     </s:form>
     <s:form action="countVotes" method="post">
-            <button>Consultar contagem de votos em tempo real</button>
+            <button title="Consultar contagem de votos em tempo real">Contagem dos Votos</button>
     </s:form>
     <s:form action="backMenuConsole" method="post">
-        <button id="exit">Sair</button>
+        <button id="exit" title="Sair da consola de administração">Sair</button>
     </s:form>
 </div>
 

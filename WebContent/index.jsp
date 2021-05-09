@@ -11,6 +11,6 @@
         <link rel="shortcut icon" href="images/favicon.ico">
     </head>
     <body>
-        <c:redirect url="removePollingStation.jsp"/>
+        <c:redirect url="electionsResults.jsp"/>
     </body>
 </html>

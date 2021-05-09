@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="style/main.css">
     <link rel="stylesheet" type="text/css" href="style/menu.css">
     <!-- title -->
-    <title>UC eVoting | Consola de Administração</title>
+    <title>UC eVoting | Menu da Administração</title>
     <!--icon-->
     <link rel="shortcut icon" href="images/favicon.ico">
 </head>

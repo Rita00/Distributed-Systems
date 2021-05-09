@@ -25,9 +25,7 @@ public class HeyBean {
     private String name, cargo, address, ccDate, restriction;
     private int phone, dep;
     // Fields for create an election
-    String title, description, type, iniDate, fimDate;
-    // Field to manage an election
-    String name_election_to_manage;
+    private String title, description, type, iniDate, fimDate;
 
 
     public HeyBean() {
@@ -38,6 +36,26 @@ public class HeyBean {
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getIniDate() {
+        return iniDate;
+    }
+
+    public String getFimDate() {
+        return fimDate;
     }
 
     public void setName(String name) {
@@ -104,7 +122,6 @@ public class HeyBean {
         this.restriction = restriction;
     }
 
-    public void setElection_to_manage(String election_to_manage) { this.name_election_to_manage = election_to_manage; }
 
     public Person getUser() throws RemoteException {
         Person p = null;
@@ -212,18 +229,6 @@ public class HeyBean {
     }
 
     public boolean checkIfSelectedElectionExists() {
-        int election_to_manage = getIdOfElectionToManage();
-        if (election_to_manage != 0)
-            return Utilitary.hasElection(election_to_manage, getAllElections());
-        return false;
-    }
-
-    public int getIdOfElectionToManage() {
-        try {
-            return server.getElectionToManage(this.name_election_to_manage);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return 0;
+        return Utilitary.hasElection(this.election_id, getAllElections());
     }
 }

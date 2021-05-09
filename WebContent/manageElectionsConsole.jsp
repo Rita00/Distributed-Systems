@@ -25,11 +25,16 @@
     <h1>Gerir Eleição</h1>
     <s:actionerror/>
     <s:actionmessage/>
-    <s:form action="chooseElectionToManage" method="post">
-        <c:forEach items="${HeyBean.allElections}" var="value">
-            <button name="election_to_manage" value="${value.title}">${value.title}</button>
-        </c:forEach>
-    </s:form>
+    <c:forEach items="${HeyBean.allElections}" var="value">
+        <s:form action="chooseElectionToManage" method="post">
+            <button name="election_id" value="${value.id}">${value.title}</button>
+            <input type="hidden" name="election_title" value="${value.title}">
+            <input type="hidden" name="election_type" value="${value.type}">
+            <input type="hidden" name="election_description" value="${value.description}">
+            <input type="hidden" name="iniDate" value="${value.beginStr}">
+            <input type="hidden" name="fimDate" value="${value.endStr}">
+        </s:form>
+    </c:forEach>
     <button id="exit">Voltar</button>
 </div>
 </body>

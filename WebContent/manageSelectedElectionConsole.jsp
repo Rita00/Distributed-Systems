@@ -7,7 +7,8 @@
     <!-- encoding -->
     <meta charset="UTF-8">
     <!-- font -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap"
+          rel="stylesheet">
     <!-- css -->
     <link rel="stylesheet" type="text/css" href="style/main.css">
     <link rel="stylesheet" type="text/css" href="style/menu.css">
@@ -17,20 +18,32 @@
     <link rel="shortcut icon" href="images/favicon.ico">
 </head>
 <body>
-    <div id="container" class="container">
-        <img alt="UC Logo" width="100%" id="logo" src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
+<div id="container" class="container">
+    <img alt="UC Logo" width="100%" id="logo"
+         src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
-        <h1>TODO NOME ELEICAO</h1>
-        <p>TODO TIPO</p>
-        <p>TODO DESCICAO</p>
-        <p>TODO INICIO até TODO FIM</p>
-        <br>
-        <label>TODO LISTA 1</label><br>
-        <label>TODO LISTA 2</label>
+    <h1>${HeyBean.title}</h1>
+    <p style="color: black">${HeyBean.type}</p>
+    <p style="color: black">${HeyBean.description}</p>
+    <p style="color: black">${HeyBean.iniDate} até ${HeyBean.fimDate}</p>
+    <br>
+    <c:forEach items="${HeyBean.candidacies}" var="value">
+        <s:form action="seeDetailsList" method="post">
+            <div style="width: 50%; margin-left: 200px ">
+                <button  name="candidacy_id" value="${value.id}">${value.name}</button>
+            </div>
+        </s:form>
+    </c:forEach>
+    <s:form action="editSelectedElectionConsole" method="post">
         <button>Editar</button>
+    </s:form>
+    <s:form action="addListToElectionConsole" method="post">
         <button>Adicionar Lista</button>
-
+    </s:form>
+    <s:form action="backOnManageSelectedElectionConsole" method="post">
         <button id="exit">Voltar</button>
-    </div>
+    </s:form>
+
+</div>
 </body>
 </html>

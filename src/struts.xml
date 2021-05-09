@@ -46,35 +46,41 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="registerConsole" class="webServer.action.RedirectAction" method="execute">
-            <result name="success">/registerConsole.jsp</result>
+            <result name="success">/AdminConsole_OP1_registerPerson.jsp</result>
         </action>
 
         <action name="register" class="webServer.action.RegisterAction" method="execute">
-            <result name="success">/menuConsole.jsp</result>
-            <result name="error">/registerConsole.jsp</result>
+            <result name="success">/AdminConsole_menu.jsp</result>
+            <result name="error">/AdminConsole_OP1_registerPerson.jsp</result>
         </action>
 
         <action name="createElectionConsole" class="webServer.action.RedirectAction" method="execute">
-            <result>/createElectionConsole.jsp</result>
+            <result>/AdminConsole_OP2_createElection.jsp</result>
         </action>
 
         <action name="createElection" class="webServer.action.CreateElectionAction" method="execute">
-            <result name="success">/menuConsole.jsp</result>
-            <result name="error">/createElectionConsole.jsp</result>
+            <result name="success">/AdminConsole_menu.jsp</result>
+            <result name="error">/AdminConsole_OP2_createElection.jsp</result>
         </action>
 
         <action name="manageElection" class="webServer.action.RedirectAction" method="execute">
-            <result>/manageElectionsConsole.jsp</result>
+            <result>/AdminConsole_OP3_manageElections.jsp</result>
         </action>
 
         <action name="chooseElectionToManage" class="webServer.action.ChooseElectionToManage" method="execute">
-            <result name="success">/manageSelectedElectionConsole.jsp</result>
-            <result name="error">/manageElectionsConsole.jsp</result>
+            <result name="success">/AdminConsole_OP3_manageSelectedElection.jsp</result>
+            <result name="error">/AdminConsole_OP3_manageElections.jsp</result>
         </action>
 
         <action name="seeDetailsList" class="webServer.action.RedirectAction" method="execute">
+<!--            TODO nada a ver com isto (não esquecer mudar quando o jsp estiver feito!)-->
             <result name="success">/editElectionConsole.jsp</result>
             <result name="error">/manageSelectedElectionConsole.jsp</result>
+        </action>
+
+        <action name="editSelectedElectionConsole" class="webServer.action.EditElectionAction" method="execute">
+            <result name="success">/AdminConsole_OP3_editElection.jsp</result>
+            <result name="error">/AdminConsole_OP3_manageSelectedElection.jsp</result>
         </action>
     </package>
 </struts>

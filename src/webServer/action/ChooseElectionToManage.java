@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ChooseElectionToManage extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
-    int election_id;
+    int election_id, candidacy_id;
     String election_title, election_type, election_description, iniDate, fimDate;
     String message = "";
 
@@ -21,6 +21,7 @@ public class ChooseElectionToManage extends ActionSupport implements SessionAwar
             this.getHeyBean().setDescription(this.election_description);
             this.getHeyBean().setIniDate(this.iniDate);
             this.getHeyBean().setFimDate(this.fimDate);
+            this.getHeyBean().setCandidacy_id(this.candidacy_id);
             return SUCCESS;
         } else {
             message = "A eleição que escolheu não existe.";

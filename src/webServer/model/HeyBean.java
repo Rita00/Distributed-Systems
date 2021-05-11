@@ -232,6 +232,15 @@ public class HeyBean {
         return Utilitary.hasElection(this.election_id, getAllElections());
     }
 
+    public int checkIfCanEdit() {
+        try {
+            return server.checkIfElectionNotStarted(this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public boolean editElection() {
         // todo Verificar se eleição pode ser editada, maybe ainda antes de clicar no editar
         // TODO antes de tentar dar update verificar se a eleição existe na bd e se pode ser editada

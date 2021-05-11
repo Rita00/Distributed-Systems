@@ -767,6 +767,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return null;
     }
 
+    public int checkIfElectionNotStarted(int election_id) {
+        return countRowsBD("election WHERE id = " + election_id + " AND begin_date > date('now')", null);
+    }
+
     /**
      * Devolve o numero de votos em branco para uma
      * determinada eleição na base de dados

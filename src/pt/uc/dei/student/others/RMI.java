@@ -507,5 +507,7 @@ public interface RMI extends Remote {
 
     int getElectionToManage(String title_election) throws java.rmi.RemoteException, InterruptedException;
 
+    int checkIfElectionNotStarted(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
 }
 

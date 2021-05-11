@@ -21,7 +21,8 @@
 <div id="container" class="container">
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
-
+    <s:actionerror/>
+    <s:actionmessage/>
     <h1>${HeyBean.title}</h1>
     <p style="color: black">${HeyBean.type}</p>
     <p style="color: black">${HeyBean.description}</p>
@@ -30,7 +31,7 @@
     <c:forEach items="${HeyBean.candidacies}" var="value">
         <s:form action="seeDetailsList" method="post">
             <div style="width: 50%; margin-left: 200px ">
-                <button  name="candidacy_id" value="${value.id}">${value.name}</button>
+                <button name="candidacy_id" value="${value.id}">${value.name}</button>
             </div>
         </s:form>
     </c:forEach>

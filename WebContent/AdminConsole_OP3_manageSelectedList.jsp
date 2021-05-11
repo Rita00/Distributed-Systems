@@ -25,11 +25,11 @@
         <p>TODO DESCICAO</p>
         <p>TODO INICIO até TODO FIM</p>
         <br>
-        <label>TODO LISTA 1</label><br>
-        <label>TODO LISTA 2</label>
+        <label>TODO Pessoa 1</label><br>
+        <label>TODO Pessoa 2</label>
         <button>Editar</button>
-        <button>Adicionar Lista</button>
-        <input placeholder="Nome da lista" />
+        <button>Adicionar Pessoa</button>
+        <input placeholder="Número de cartão de cidadão da pessoa" />
         <button id="exit">Voltar</button>
     </div>
 </body>

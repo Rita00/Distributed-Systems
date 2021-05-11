@@ -26,7 +26,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <exception-mapping exception="java.lang.Exception" result="error"/>
         </global-exception-mappings>
 
-        <!-- 'index' action leads to the view provided by login.jsp -->
+        <!-- 'index' action leads to the view provided by Login.jsp -->
         <action name="index">
             <result>/index.jsp</result>
         </action>

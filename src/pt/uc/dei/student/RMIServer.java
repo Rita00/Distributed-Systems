@@ -199,7 +199,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return todas as eleições
      */
     public ArrayList<Election> getElections() {
-        return this.selectElections("SELECT * FROM election");
+        return this.selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election");
     }
 
     /**
@@ -452,8 +452,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                         rs.getString("title"),
                         rs.getString("type"),
                         rs.getString("description"),
-                        rs.getString("begin_date"),
-                        rs.getString("end_date")
+                        rs.getString("begin"),
+                        rs.getString("end")
                 ));
             }
             stmt.close();

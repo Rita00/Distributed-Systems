@@ -34,10 +34,12 @@ public class Election implements Serializable {
      * Data e hora de início da eleição
      */
     private LocalDateTime begin;
+    private String beginStr;
     /**
      * Data e hora de fim da eleição
      */
     private LocalDateTime end;
+    private String endStr;
     /**
      * Construtor do Objeto Eleição
      *
@@ -54,7 +56,9 @@ public class Election implements Serializable {
         this.type = type;
         this.description = description;
         this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.beginStr = begin.replace('T',' ');
         this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.endStr = end.replace('T',' ');
     }
     /**
      * Converte duas strings contendo a data e a hora num objeto do tipo LocalDateTime
@@ -85,6 +89,23 @@ public class Election implements Serializable {
                 String.format("Fim - %s às %s\n", this.end.toLocalDate().toString(), this.end.toLocalTime().toString()) +
                 "-----------------------------\n";
     }
+
+    public String getBeginStr() {
+        return beginStr;
+    }
+
+    public String getEndStr() {
+        return endStr;
+    }
+
+    public void setBeginStr(String beginStr) {
+        this.beginStr = beginStr;
+    }
+
+    public void setEndStr(String endStr) {
+        this.endStr = endStr;
+    }
+
     /**
      * Getter do id da eleicao
      *

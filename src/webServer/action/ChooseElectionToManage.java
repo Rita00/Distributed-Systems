@@ -17,7 +17,7 @@ public class ChooseElectionToManage extends ActionSupport implements SessionAwar
         this.getHeyBean().setElection_id(this.election_id);
         if (this.getHeyBean().checkIfSelectedElectionExists()) {
             this.getHeyBean().setTitle(this.election_title);
-            this.getHeyBean().setCargo(this.election_type);
+            this.getHeyBean().setType(this.election_type);
             this.getHeyBean().setDescription(this.election_description);
             this.getHeyBean().setIniDate(this.iniDate);
             this.getHeyBean().setFimDate(this.fimDate);

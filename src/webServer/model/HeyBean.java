@@ -231,4 +231,12 @@ public class HeyBean {
     public boolean checkIfSelectedElectionExists() {
         return Utilitary.hasElection(this.election_id, getAllElections());
     }
+
+    public boolean editElection() {
+        // todo Verificar se eleição pode ser editada, maybe ainda antes de clicar no editar
+        // TODO antes de tentar dar update verificar se a eleição existe na bd e se pode ser editada
+        // TODO Verificar se o update na BD correu bem
+//        server.updateElections();
+        return false;
+    }
 }

@@ -78,7 +78,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="error">/manageSelectedElectionConsole.jsp</result>
         </action>
 
-        <action name="editSelectedElectionConsole" class="webServer.action.EditElectionAction" method="execute">
+        <action name="editSelectedElectionConsole" class="webServer.action.RedirectAction" method="execute">
             <result name="success">/AdminConsole_OP3_editElection.jsp</result>
             <result name="error">/AdminConsole_OP3_manageSelectedElection.jsp</result>
         </action>

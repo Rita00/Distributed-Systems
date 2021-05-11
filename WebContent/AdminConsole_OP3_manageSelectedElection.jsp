@@ -40,6 +40,7 @@
     </s:form>
     <s:form action="addListToElectionConsole" method="post">
         <button>Adicionar Lista</button>
+        <input placeholder="Nome da lista" />
     </s:form>
     <s:form action="backOnManageSelectedElectionConsole" method="post">
         <button id="exit">Voltar</button>

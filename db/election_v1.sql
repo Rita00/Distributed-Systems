@@ -85,3 +85,5 @@ CREATE TABLE candidacy_person (
       FOREIGN KEY (candidacy_id) REFERENCES candidacy(id),
       FOREIGN KEY (person_cc_number) REFERENCES person(cc_number)
 );
+
+ALTER TABLE person ADD isAdmin INTEGER;

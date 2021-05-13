@@ -73,9 +73,9 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="seeDetailsList" class="webServer.action.ChooseCandidacyToSeeDetailsAction" method="execute">
-<!--            TODO nada a ver com isto (não esquecer mudar quando o jsp estiver feito!)-->
-            <result name="success">/AdminConsole_OP3_editElection.jsp</result>
-            <result name="error">/manageSelectedElectionConsole.jsp</result>
+            <result name="success">/AdminConsole_OP3_manageSelectedList.jsp</result>
+            <result name="error_candidacy">/AdminConsole_OP3_manageSelectedElection.jsp</result>
+            <result name="error">/AdminConsole_OP3_manageElections.jsp</result>
         </action>
 
 <!--        <action name="manageSelectedElection" class="webServer.action.ChooseElectionToManage" method="execute">-->

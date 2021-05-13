@@ -20,16 +20,14 @@
     <div id="container" class="container">
         <img alt="UC Logo" width="100%" id="logo" src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
-        <h1>TODO NOME ELEICAO</h1>
-        <p>TODO TIPO</p>
-        <p>TODO DESCICAO</p>
-        <p>TODO INICIO até TODO FIM</p>
+        <h1>${HeyBean.candidacy_name}</h1>
+        <p style="color: black">${HeyBean.candidacy_type}</p>
         <br>
-        <label>TODO Pessoa 1</label><br>
-        <label>TODO Pessoa 2</label>
-        <button>Editar</button>
+        <p style="color: black; font-size: 30px"> Membros:</p>
+        <c:forEach items="${HeyBean.candidaciesPeople}" var="value">
+            <p style="color: black; font-size: 20px"> ${value.name}</p>
+        </c:forEach>
         <button>Adicionar Pessoa</button>
-        <input placeholder="Número de cartão de cidadão da pessoa" />
         <button id="exit">Voltar</button>
     </div>
 </body>

@@ -279,7 +279,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
 
     public int checkElectionHasCandidacy(int election_id, int candidacy_id) {
-        return this.countRowsBD("candidacy where electionid = " + election_id + " and id = " + candidacy_id, null);
+        return this.countRowsBD("candidacy where election_id = " + election_id + " and id = " + candidacy_id, null);
     }
 
     /**

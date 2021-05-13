@@ -32,6 +32,9 @@
         <s:form action="seeDetailsList" method="post">
             <div style="width: 50%; margin-left: 200px ">
                 <button name="candidacy_id" value="${value.id}">${value.name}</button>
+                <input type="hidden" name="candidacy_name" value="${value.name}">
+                <input type="hidden" name="candidacy_type" value="${value.type}">
+
             </div>
         </s:form>
     </c:forEach>

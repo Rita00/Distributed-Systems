@@ -26,7 +26,8 @@ public class HeyBean {
     private int phone, dep;
     // Fields for create an election
     private String title, description, type, iniDate, fimDate;
-    private Election e;
+    // Fields for candidacies
+    String candidacy_name, candidacy_type;
 
 
     public HeyBean() {
@@ -37,6 +38,14 @@ public class HeyBean {
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getCandidacy_name() {
+        return candidacy_name;
+    }
+
+    public String getCandidacy_type() {
+        return candidacy_type;
     }
 
     public String getTitle() {
@@ -123,6 +132,13 @@ public class HeyBean {
         this.restriction = restriction;
     }
 
+    public void setCandidacy_name(String candidacy_name) {
+        this.candidacy_name = candidacy_name;
+    }
+
+    public void setCandidacy_type(String candidacy_type) {
+        this.candidacy_type = candidacy_type;
+    }
 
     public Person getUser() throws RemoteException {
         Person p = null;
@@ -173,6 +189,16 @@ public class HeyBean {
             e.printStackTrace();
         }
         return departments;
+    }
+
+    public ArrayList<Person> getCandidaciesPeople() {
+        ArrayList<Person> candidaciesPeople = null;
+        try {
+            candidaciesPeople = server.getPeople(this.candidacy_id);
+        } catch (RemoteException | InterruptedException remoteException) {
+            remoteException.printStackTrace();
+        }
+        return candidaciesPeople;
     }
 
     public void updateVotes() {

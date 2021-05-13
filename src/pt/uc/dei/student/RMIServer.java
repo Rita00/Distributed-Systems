@@ -273,6 +273,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    public boolean updateElectionOnEdit(int election_id, String name, String type, String description, String begin_date, String end_date) {
+        return this.updateOnDB(String.format("UPDATE election SET title ='%s', type='%s', description='%s', begin_date='%s', end_date='%s' WHERE id=%s", name, type, description, begin_date, end_date, election_id));
+    }
+
+
+    public int checkElectionHasCandidacy(int election_id, int candidacy_id) {
+        return this.countRowsBD("candidacy where electionid = " + election_id + " and id = " + candidacy_id, null);
+    }
+
     /**
      * Insere dados sobre um terminal de voto na base de dados
      *
@@ -762,7 +771,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Election> getCurrentElectionsPerson(String cc, String password) {
         Person p = getPerson(cc, password);
         if (p != null) {
-            return selectElections("SELECT * FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = '" + p.getJob() +"'");
+            return selectElections("SELECT * FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = '" + p.getJob() + "'");
         }
         return null;
     }

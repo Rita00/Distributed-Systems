@@ -9,18 +9,36 @@ import java.util.Map;
 public class EditElectionAction extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
     String title, type, description, iniDate, FimDate;
+    String message;
 
     @Override
     public String execute() throws Exception {
-        this.getHeyBean().setTitle(this.title);
-        this.getHeyBean().setType(this.type);
-        this.getHeyBean().setDescription(this.description);
-        this.getHeyBean().setIniDate(this.iniDate);
-        this.getHeyBean().setFimDate(this.FimDate);
-        if (this.getHeyBean().editElection()) {
-
+        if (this.getHeyBean().checkIfSelectedElectionExists()) {
+            if (this.getHeyBean().checkIfCanEdit() == 0) {
+                message = "Esta eleição não pode ser editada!";
+                addActionError(message);
+                return ERROR;
+            } else {
+                this.getHeyBean().setTitle(this.title);
+                this.getHeyBean().setType(this.type);
+                this.getHeyBean().setDescription(this.description);
+                this.getHeyBean().setIniDate(this.iniDate);
+                this.getHeyBean().setFimDate(this.FimDate);
+                if (this.getHeyBean().editElection()) {
+                    message = "Eleição editada com sucesso!";
+                    addActionMessage(message);
+                    return SUCCESS;
+                } else {
+                    message = "Não pode editar esta eleição!";
+                    addActionError(message);
+                    return SUCCESS;
+                }
+            }
+        } else {
+            message = "A eleição não existe!";
+            addActionError(message);
+            return ERROR;
         }
-        return SUCCESS;
     }
 
     public String getTitle() {

@@ -22,38 +22,40 @@
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
+    <s:form action="editElection" method="post">
     <h1>${HeyBean.title}</h1>
 
-    <s:form action="" method="post">
-        <label>Nome
-            <s:textfield cssClass="input" name="title" placeholder="${HeyBean.title}"/>
-        </label>
-        <label>Tipo<br>
-            <select class="input" name="type" id="job">
-                <!-- TODO SELECTED-->
-<%--                <option selected="selected">${HeyBean.type}</option>--%>
-                <option hidden>${HeyBean.type}</option>
-                <option value="Estudante">Estudante</option>
-                <option value="Docente">Docente</option>
-                <option value="Funcionário">Funcionário</option>
-            </select><br>
-        </label>
-        <label>Descrição<br>
-            <s:textarea name="description" cssClass="input" placeholder="${HeyBean.description}"/>
-        </label><br>
-        <label>Data de início
-            <s:textfield name="iniDate" type="text" onfocus="(this.type='datetime-local')" cssClass="input"
-                         placeholder="${HeyBean.iniDate}"/>
-        </label>
-        <label>Data de fim
-            <s:textfield name="fimDate" type="text" onfocus="(this.type='datetime-local')" cssClass="input"
-                         placeholder="${HeyBean.fimDate}"/>
-        </label>
-        <div class="row">
-            <s:submit cssClass="button" id="exit" value="Voltar"/>
-            <s:submit cssClass="button" value="Guardar"/>
-        </div>
-    </s:form>
+    <label>Nome
+        <s:textfield cssClass="input" name="title" value="%{HeyBean.title}"/>
+    </label>
+    <label>Tipo<br>
+        <select class="input" name="type" id="job">
+            <!-- TODO SELECTED-->
+                <%--                <option selected="selected">${HeyBean.type}</option>--%>
+            <option hidden>${HeyBean.type}</option>
+            <option value="Estudante">Estudante</option>
+            <option value="Docente">Docente</option>
+            <option value="Funcionário">Funcionário</option>
+        </select><br>
+    </label>
+    <label>Descrição<br>
+        <s:textarea name="description" cssClass="input" value="%{HeyBean.description}"/>
+    </label><br>
+    <label>Data de início
+        <s:textfield name="iniDate" type="text" onfocus="(this.type='datetime-local')" cssClass="input"
+                     value="%{HeyBean.iniDate}"/>
+    </label>
+    <label>Data de fim
+        <s:textfield name="fimDate" type="text" onfocus="(this.type='datetime-local')" cssClass="input"
+                     value="%{HeyBean.fimDate}"/>
+    </label>
+    <div class="row">
+        <s:submit cssClass="button" value="Guardar"/>
+        </s:form>
+        <s:submit cssClass="button" id="exit" value="Voltar"/>
+
+    </div>
+
 </div>
 </body>
 

@@ -26,6 +26,7 @@ public class HeyBean {
     private int phone, dep;
     // Fields for create an election
     private String title, description, type, iniDate, fimDate;
+    private Election e;
 
 
     public HeyBean() {
@@ -232,6 +233,17 @@ public class HeyBean {
         return Utilitary.hasElection(this.election_id, getAllElections());
     }
 
+    public boolean checkSelectedCandidacy_Election() {
+        try {
+            if (server.checkElectionHasCandidacy(this.election_id, this.candidacy_id) != 0) {
+                return true;
+            }
+        } catch (RemoteException | InterruptedException remoteException) {
+            remoteException.printStackTrace();
+        }
+        return false;
+    }
+
     public int checkIfCanEdit() {
         try {
             return server.checkIfElectionNotStarted(this.election_id);
@@ -242,10 +254,13 @@ public class HeyBean {
     }
 
     public boolean editElection() {
-        // todo Verificar se eleição pode ser editada, maybe ainda antes de clicar no editar
-        // TODO antes de tentar dar update verificar se a eleição existe na bd e se pode ser editada
-        // TODO Verificar se o update na BD correu bem
-//        server.updateElections();
+        if (checkIfSelectedElectionExists()) {
+            try {
+                return server.updateElectionOnEdit(this.election_id, this.name, this.type, this.description, this.iniDate, this.fimDate);
+            } catch (RemoteException | InterruptedException remoteException) {
+                remoteException.printStackTrace();
+            }
+        }
         return false;
     }
 }

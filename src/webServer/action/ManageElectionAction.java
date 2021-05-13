@@ -16,7 +16,7 @@ public class ManageElectionAction extends ActionSupport implements SessionAware 
             if (this.getHeyBean().checkIfCanEdit() != 0) {
                 return SUCCESS;
             } else {
-                message = "Eleição não pode ser editada!";
+                message = "Não pode editar esta eleição!";
                 addActionError(message);
                 return ERROR;
             }

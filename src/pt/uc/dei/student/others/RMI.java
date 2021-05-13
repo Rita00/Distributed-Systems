@@ -237,6 +237,10 @@ public interface RMI extends Remote {
      */
     void updateElections(Election e) throws java.rmi.RemoteException, InterruptedException;
 
+    boolean updateElectionOnEdit(int election_id, String name, String type, String description, String begin_date, String end_date) throws java.rmi.RemoteException, InterruptedException;
+
+    int checkElectionHasCandidacy(int election_id, int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
+
     /**
      * Atualiza a informação sobre a pessoa no terminal de voto
      *

@@ -282,7 +282,7 @@ public class HeyBean {
     public boolean editElection() {
         if (checkIfSelectedElectionExists()) {
             try {
-                return server.updateElectionOnEdit(this.election_id, this.name, this.type, this.description, this.iniDate, this.fimDate);
+                return server.updateElectionOnEdit(this.election_id, this.title, this.type, this.description, this.iniDate, this.fimDate);
             } catch (RemoteException | InterruptedException remoteException) {
                 remoteException.printStackTrace();
             }

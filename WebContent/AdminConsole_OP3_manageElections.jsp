@@ -35,7 +35,9 @@
             <input type="hidden" name="fimDate" value="${value.endStr}">
         </s:form>
     </c:forEach>
-    <button id="exit">Voltar</button>
+    <s:form action="backManageElection" method="post">
+        <button id="exit">Voltar</button>
+    </s:form>
 </div>
 </body>
 </html>

@@ -30,6 +30,8 @@ public class HeyBean {
     String candidacy_name, candidacy_type;
     // Field for add a list to an election
     String list_name;
+    // Field for add a person to a list
+    int person_cc;
 
 
     public HeyBean() {
@@ -40,6 +42,10 @@ public class HeyBean {
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getPerson_cc() {
+        return person_cc;
     }
 
     public String getList_name() {
@@ -148,6 +154,10 @@ public class HeyBean {
 
     public void setCandidacy_type(String candidacy_type) {
         this.candidacy_type = candidacy_type;
+    }
+
+    public void setPerson_cc(int person_cc) {
+        this.person_cc = person_cc;
     }
 
     public Person getUser() throws RemoteException {
@@ -308,5 +318,17 @@ public class HeyBean {
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         } return false;
+    }
+
+    public String checkIfPersonExists() {
+        try {
+            String name_person = server.checkIfPersonExists(this.person_cc);
+            if (name_person != null) {
+                return server.insertPersonIntoCandidacy(this.election_id, this.candidacy_id, this.person_cc);
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

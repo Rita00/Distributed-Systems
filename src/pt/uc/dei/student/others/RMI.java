@@ -513,5 +513,6 @@ public interface RMI extends Remote {
 
     int checkIfElectionNotStarted(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
-}
+    String checkIfPersonExists(int cc_number) throws java.rmi.RemoteException, InterruptedException;
+    }
 

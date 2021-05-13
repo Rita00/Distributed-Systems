@@ -93,5 +93,22 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="add_list_error">/AdminConsole_OP3_manageSelectedElection.jsp</result>
             <result name="error">/AdminConsole_OP3_manageElections.jsp</result>
         </action>
+
+        <action name="backOnManageSelectedElectionConsole" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP3_manageElections.jsp</result>
+        </action>
+
+        <action name="addPersonToList" class="webServer.action.AddPersonToListAction" method="execute">
+            <result name="success">/AdminConsole_OP3_manageSelectedList.jsp</result>
+            <result name="error">/AdminConsole_OP3_manageSelectedList.jsp</result>
+        </action>
+
+        <action name="backSeeDetailsList" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP3_manageSelectedElection.jsp</result>
+        </action>
+
+        <action name="backManageElection" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_menu.jsp</result>
+        </action>
     </package>
 </struts>

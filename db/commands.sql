@@ -119,4 +119,4 @@ INSERT INTO election(title,type,description,begin_date,end_date) VALUES('teste 5
 
 select election_id from candidacy where id = 123;
 
-select id from election where title = ;
+Select name FROM person where cc_number = 12345678;

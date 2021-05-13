@@ -19,7 +19,8 @@
 <body>
     <div id="container" class="container">
         <img alt="UC Logo" width="100%" id="logo" src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
-
+        <s:actionerror/>
+        <s:actionmessage/>
         <h1>${HeyBean.candidacy_name}</h1>
         <p style="color: black">${HeyBean.candidacy_type}</p>
         <br>
@@ -27,8 +28,13 @@
         <c:forEach items="${HeyBean.candidaciesPeople}" var="value">
             <p style="color: black; font-size: 20px"> ${value.name}</p>
         </c:forEach>
-        <button>Adicionar Pessoa</button>
-        <button id="exit">Voltar</button>
+        <s:form action="addPersonToList" method="post">
+            <input name="person_cc" placeholder="Número de cartão de cidadão" />
+            <button>Adicionar Pessoa</button>
+        </s:form>
+        <s:form action="backSeeDetailsList" method="post">
+            <button id="exit">Voltar</button>
+        </s:form>
     </div>
 </body>
 </html>

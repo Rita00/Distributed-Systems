@@ -101,6 +101,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return updateOnDB(sql, pass);
     }
 
+    public String checkIfPersonExists(int cc_number) {
+        return getStrings("Select name FROM person where cc_number = " + cc_number);
+    }
+
     /**
      * Insere uma determinada eleição na base de dados
      *
@@ -714,6 +718,23 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             //e.printStackTrace();
         }
         return 0;
+    }
+
+    public String getStrings(String sql) {
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet res;
+            res = stmt.executeQuery(sql);
+            String field = res.getString(1);
+            stmt.close();
+            conn.close();
+            return field;
+        } catch (Exception e) {
+            System.out.println("Erro a contar o número de linhas da tabela");
+            //e.printStackTrace();
+        }
+        return null;
     }
 
     /**

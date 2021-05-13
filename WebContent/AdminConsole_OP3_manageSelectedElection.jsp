@@ -42,7 +42,7 @@
         <button>Editar</button>
     </s:form>
     <s:form action="addListToElectionConsole" method="post">
-        <input placeholder="Nome da lista" />
+        <input name="list_name" placeholder="Nome da lista" />
         <button>Adicionar Lista</button>
     </s:form>
     <s:form action="backOnManageSelectedElectionConsole" method="post">

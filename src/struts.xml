@@ -78,11 +78,6 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="error">/AdminConsole_OP3_manageElections.jsp</result>
         </action>
 
-<!--        <action name="manageSelectedElection" class="webServer.action.ChooseElectionToManage" method="execute">-->
-<!--            <result name="success">/AdminConsole_OP3_manageSelectedElection.jsp</result>-->
-<!--            <result name="error">/AdminConsole_OP3_manageSelectedElection.jsp</result>-->
-<!--        </action>-->
-
         <action name="editSelectedElectionConsole" class="webServer.action.ManageElectionAction" method="execute">
             <result name="success">/AdminConsole_OP3_editElection.jsp</result>
             <result name="error">/AdminConsole_OP3_manageSelectedElection.jsp</result>
@@ -91,6 +86,12 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <action name="editElection" class="webServer.action.EditElectionAction" method="execute">
             <result name="success">/AdminConsole_OP3_manageSelectedElection.jsp</result>
             <result name="error">AdminConsole_OP3_manageSelectedElection.jsp</result>
+        </action>
+
+        <action name="addListToElectionConsole" class="webServer.action.AddListToAnElectionAction" method="execute">
+            <result name="success">/AdminConsole_OP3_manageSelectedElection.jsp</result>
+            <result name="add_list_error">/AdminConsole_OP3_manageSelectedElection.jsp</result>
+            <result name="error">/AdminConsole_OP3_manageElections.jsp</result>
         </action>
     </package>
 </struts>

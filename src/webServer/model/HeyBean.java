@@ -28,6 +28,8 @@ public class HeyBean {
     private String title, description, type, iniDate, fimDate;
     // Fields for candidacies
     String candidacy_name, candidacy_type;
+    // Field for add a list to an election
+    String list_name;
 
 
     public HeyBean() {
@@ -38,6 +40,10 @@ public class HeyBean {
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getList_name() {
+        return list_name;
     }
 
     public String getCandidacy_name() {
@@ -126,6 +132,10 @@ public class HeyBean {
 
     public void setFimDate(String fimDate) {
         this.fimDate = fimDate;
+    }
+
+    public void setList_name(String list_name) {
+        this.list_name = list_name;
     }
 
     public void setRestriction(String restriction) {
@@ -288,5 +298,15 @@ public class HeyBean {
             }
         }
         return false;
+    }
+
+    public boolean addListToAnElection() {
+        try {
+            if (server.checkIfElectionNotStarted(this.election_id) != 0) {
+                return server.insertCandidacyIntoElection(this.list_name, this.type, this.election_id);
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        } return false;
     }
 }

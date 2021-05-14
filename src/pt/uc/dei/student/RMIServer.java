@@ -792,7 +792,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Election> getCurrentElectionsPerson(String cc, String password) {
         Person p = getPerson(cc, password);
         if (p != null) {
-            return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = '" + p.getJob() + "'");
+            return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election, election_department WHERE election.id = election_department.election_id and begin_date <= date('now') AND end_date >= date('now') AND election.type = '" + p.getJob() + "' AND (election_department.department_id = " + p.getDepartment_id() + " or election_department.department_id = -1)");
         }
         return null;
     }

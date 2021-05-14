@@ -228,9 +228,7 @@ public class HeyBean {
      * @return lista com todas as eleições a decorrer no momento
      */
     public ArrayList<Election> getElections() {
-        // TODO verificar caso uma eleição esteja restringida se o departamento da eleição é igual ao departamento da pessoa
         ArrayList<Election> elections = null;
-
         try {
             elections = server.getCurrentElectionsPerson(String.valueOf(this.ccnumber), String.valueOf(this.password));
         } catch (RemoteException | InterruptedException e) {

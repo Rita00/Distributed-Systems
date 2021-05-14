@@ -17,23 +17,52 @@ import java.util.Date;
 
 public class HeyBean {
     private RMI server;
+    /**
+     * Guarda o número de cartão de cidadão de uma pessoa, serve como identificação única, como por exemplo para inicio de sessão
+     */
     private int ccnumber; // username and password supplied by the user
+    /**
+     * Guarda a password de uma determinada pessoa, serve para inicio de sessão
+     */
     private String password;
+    /**
+     * Guarda o id de uma determinada eleição que uma determinada pessoa escolheu para votar
+     */
     private int election_id;
+    /**
+     * Guarda o id da lista que o eleitor votou
+     */
     private int candidacy_id;
+    /**
+     * Guarda os campos necessários para efetuar o registo de um utilizador, que são recebidos através da view (ficheiro jsp)
+     */
     // Fields for register
     private String name, cargo, address, ccDate, restriction;
     private int phone, dep;
+    /**
+     * Guarda os campos necessários para criar uma nova eleição, que são recebidos através da view (ficheiro jsp)
+     */
     // Fields for create an election
     private String title, description, type, iniDate, fimDate;
     // Fields for candidacies
+    /**
+     * Guarda os campos de uma determinada lista para consultar os seus detalhes
+     */
     String candidacy_name, candidacy_type;
     // Field for add a list to an election
+    /**
+     * Guarda o nome de uma nova lista a ser adicionada a uma eleição
+     */
     String list_name;
+    /**
+     * Guarda o cartão de cidadão de uma determinada pessoa que se candidata como membro a uma lista
+     */
     // Field for add a person to a list
     int person_cc;
 
-
+    /**
+     * Conecta-se ao RMI
+     */
     public HeyBean() {
         // Connect to RMI Server
         try {
@@ -44,38 +73,65 @@ public class HeyBean {
         }
     }
 
+    /**
+     * @return Devolve o número de cartão de cidadão de uma pessoa caso seja necessário apresentar na view
+     */
     public int getPerson_cc() {
         return person_cc;
     }
 
+    /**
+     * @return Devolve o nome da lista adicionada caso seja necessário apresentar na view
+     */
     public String getList_name() {
         return list_name;
     }
 
+    /**
+     * @return Devolve o nome da lista selecionada caso seja necessário apresentar na view
+     */
     public String getCandidacy_name() {
         return candidacy_name;
     }
 
+    /**
+     * @return Devolve o tipo da lista selecionada caso seja necessário apresentar na view
+     */
     public String getCandidacy_type() {
         return candidacy_type;
     }
 
+    /**
+     * @return Devolve o titulo da eleição selecionada caso seja necessário apresentar na view
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * @return Devolve a descrição da eleição selecionada caso seja necessário apresentar na view
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @return Devolve o tipo da eleição selecionada caso seja necessário apresentar na view
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * @return Devolve a data inicial da eleição selecionada caso seja necessário apresentar na view
+     */
     public String getIniDate() {
         return iniDate;
     }
 
+    /**
+     * @return Devolve a data final da eleição selecionada caso seja necessário apresentar na view
+     */
     public String getFimDate() {
         return fimDate;
     }
@@ -170,6 +226,10 @@ public class HeyBean {
         return p;
     }
 
+    /**
+     * Chama um método no RMI que devolve todas as eleições a decorrer no momento na base de dados
+     * @return lista com todas as eleições a decorrer no momento
+     */
     public ArrayList<Election> getElections() {
         ArrayList<Election> elections = null;
 
@@ -181,6 +241,13 @@ public class HeyBean {
         return elections;
     }
 
+    /**
+     * Chama um método no RMI que devolve todas as eleições presentes na base de dados
+     * Serve para consultar os detalhes de eleições passadas
+     * Modificar detalhes de uma determinada eleição que ainda não tenha começado
+     * Consultar os detalhes das listas de uma determinada eleição, mesmo que esta esteja a decorrer no momento
+     * @return lista com todas as eleições presentes na base de dados
+     */
     public ArrayList<Election> getAllElections() {
         ArrayList<Election> allElections = null;
         try {
@@ -191,6 +258,10 @@ public class HeyBean {
         return allElections;
     }
 
+    /**
+     * Chama um método no RMI que devolve as listas de uma determinada eleição
+     * @return lista com as candidaturas a uma determinada eleição
+     */
     public ArrayList<Candidacy> getCandidacies() {
         ArrayList<Candidacy> candidacies = null;
         try {
@@ -201,6 +272,11 @@ public class HeyBean {
         return candidacies;
     }
 
+    /**
+     * Chama um método no RMI que devolve todos os departamentos da Universidade de Coimbra
+     * Serve para listar os departamentos, quando uma pessoa se está a registar escolher o departamento que frequenta, por exemplo
+     * @return lista com todos os departamentos da Universidade de Coimbra
+     */
     public ArrayList<Department> getDepartments() {
         ArrayList<Department> departments = null;
         try {
@@ -211,6 +287,10 @@ public class HeyBean {
         return departments;
     }
 
+    /**
+     * Chama um método no RMI que devolve todos os membros pertencentes a uma determianda lista
+     * @return lista com os membros de uma determinada lista
+     */
     public ArrayList<Person> getCandidaciesPeople() {
         ArrayList<Person> candidaciesPeople = null;
         try {
@@ -221,6 +301,10 @@ public class HeyBean {
         return candidaciesPeople;
     }
 
+    /**
+     * Chama um método no RMI que dá update à base de dados aquando a realização de um voto
+     * Na base de dados fica que o voto foi realizado online
+     */
     public void updateVotes() {
         try {
             server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(0));
@@ -229,6 +313,11 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Chama método no RMI que verifica na base de dados se já existe algum registo
+     * que uma determinada pessoa já tenha votado numa determinada eleição
+     * @return se já tiver votado devolve true, caso contrário devolve false
+     */
     public boolean checkIfAlreadyVotes() {
         try {
             return server.checkIfAlreadyVote(this.ccnumber, this.election_id);
@@ -238,6 +327,10 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Chama método no RMI que tenta inserir na base de dados um novo utilizador aquando o seu registo
+     * @return devolve true ou false caso tenha tido sucesso ou não, respetivamente
+     */
     public boolean insertRegister() {
         try {
             return server.insertPerson(this.name, this.cargo, this.password, this.dep, this.phone, this.address, this.ccnumber, this.ccDate);
@@ -247,6 +340,10 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Chama método no RMI que tenta inserir na base de dados uma nova eleição aquando a sua criação
+     * @return devolve true ou false caso tenha tido sucesso ou não, respetivamente
+     */
     public int insertElection() {
         int id_election = -1;
         try {
@@ -261,7 +358,14 @@ public class HeyBean {
         return id_election;
     }
 
-    // Previne que alguem tente votar (caso não possa) passando logo para a página se escolher as listas e não ter passado pela página de escolher uma eleição
+    /**
+     * Verifica se uma determinada lista pertence realmente à eleição em questão
+     * Verifica se uma determinada pessoa pode votar numa determinada eleição
+     * Previne que alguem tente votar (caso não possa) passando logo para a página
+     * se escolher as listas e não ter passado pela página de escolher uma eleição
+     * @return se já tiver votado devolve true, caso contrário devolve false
+     * se a lista não pertencer à eleição especifica devolve false
+     */
     public boolean checkIfAlreadyVoteOnVoteForm() {
         int election_id;
         try {
@@ -275,10 +379,21 @@ public class HeyBean {
         return false;
     }
 
+
+    /**
+     * Verifica se uma determinada eleição existe
+     * Previne que o utilizador não vá diretamente à pagina de uma determinada eleição sem passar pelo menu de a escolher primeiro
+     * @return true ou false consoante exista ou não, respetivamente
+     */
     public boolean checkIfSelectedElectionExists() {
         return Utilitary.hasElection(this.election_id, getAllElections());
     }
 
+    /**
+     * Verifica se uma determinada lista existe e se pertence a uma determinada eleição
+     * Previne que o utilizador não vá diretamente à pagina de uma determinada lista sem passar pelo menu de escolher primeiro a eleição e a lista
+     * @return true ou false consoante exista ou não, respetivamente
+     */
     public boolean checkSelectedCandidacy_Election() {
         try {
             if (server.checkElectionHasCandidacy(this.election_id, this.candidacy_id) != 0) {

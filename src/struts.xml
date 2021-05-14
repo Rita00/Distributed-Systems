@@ -33,7 +33,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
 
         <action name="login" class="webServer.action.LoginAction" method="execute">
             <result name="success">/chooseElection.jsp</result>
-            <result name="login">/login.jsp</result>
+            <result name="login">/Login.jsp</result>
         </action>
 
         <action name="chooseElection" class="webServer.action.ChooseElectionToVoteAction" method="execute">
@@ -109,6 +109,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
 
         <action name="backManageElection" class="webServer.action.RedirectAction" method="execute">
             <result>/AdminConsole_menu.jsp</result>
+        </action>
+
+        <action name="localVotes" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP5_votingRecord.jsp</result>
         </action>
     </package>
 </struts>

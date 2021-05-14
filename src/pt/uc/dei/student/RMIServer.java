@@ -792,7 +792,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public ArrayList<Election> getCurrentElectionsPerson(String cc, String password) {
         Person p = getPerson(cc, password);
         if (p != null) {
-            return selectElections("SELECT * FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = '" + p.getJob() + "'");
+            return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = '" + p.getJob() + "'");
         }
         return null;
     }
@@ -907,7 +907,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public void insertVotingRecord(String id_election, String cc, String ndep) {
         if (ndep.equals("0"))
             updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", "Online", cc, id_election));
-        updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", ndep, cc, id_election));
+        else updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", ndep, cc, id_election));
     }
 
     /**

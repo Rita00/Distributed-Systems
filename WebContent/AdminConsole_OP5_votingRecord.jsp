@@ -23,10 +23,15 @@
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
     <h1>Registo de Votos</h1>
+<%--    {% if ${HeyBean.allVotingRecords} == null %}--%>
     <!-- IF NAO TEM REGISTO DE VOTOS -->
     <h4>Não tem Registo de Votos</h4>
+<%--    {% else %}--%>
+    <c:forEach items="${HeyBean.allVotingRecords}" var="value">
+        <h4>${value.title}, ${value.p_name}, ${value.d_name}, ${value.vote_date}</h4>
+    </c:forEach>
     <!-- ELSE -->
-    <h4>vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date()</h4>
+<%--    <h4>vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date()</h4>--%>
     <!-- END IF-->
     <button id="exit">Voltar</button>
 </div>

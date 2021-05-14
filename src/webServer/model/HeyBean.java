@@ -1,9 +1,6 @@
 package webServer.model;
 
-import pt.uc.dei.student.elections.Candidacy;
-import pt.uc.dei.student.elections.Department;
-import pt.uc.dei.student.elections.Election;
-import pt.uc.dei.student.elections.Person;
+import pt.uc.dei.student.elections.*;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 
@@ -231,10 +228,11 @@ public class HeyBean {
      * @return lista com todas as eleições a decorrer no momento
      */
     public ArrayList<Election> getElections() {
+        // TODO verificar caso uma eleição esteja restringida se o departamento da eleição é igual ao departamento da pessoa
         ArrayList<Election> elections = null;
 
         try {
-            elections = server.getCurrentElectionsPerson(String.valueOf(ccnumber), String.valueOf(password));
+            elections = server.getCurrentElectionsPerson(String.valueOf(this.ccnumber), String.valueOf(this.password));
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -445,5 +443,15 @@ public class HeyBean {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<VotingRecord> getVotingRecords() {
+        ArrayList<VotingRecord> allVotingRecords = null;
+        try {
+            allVotingRecords = server.getVotingRecords();
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return allVotingRecords;
     }
 }

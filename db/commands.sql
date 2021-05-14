@@ -120,3 +120,5 @@ INSERT INTO election(title,type,description,begin_date,end_date) VALUES('teste 5
 select election_id from candidacy where id = 123;
 
 Select name FROM person where cc_number = 12345678;
+
+SELECT * FROM election WHERE begin_date <= date('now') AND end_date >= date('now') AND election.type = 'Funcionário'

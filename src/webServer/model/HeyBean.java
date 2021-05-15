@@ -29,7 +29,7 @@ public class HeyBean {
     /**
      * Guarda o id da lista que o eleitor votou
      */
-    private int candidacy_id;
+    private int candidacy_id, null_vote, blank_vote;
     /**
      * Guarda os campos necessários para efetuar o registo de um utilizador, que são recebidos através da view (ficheiro jsp)
      */
@@ -68,6 +68,14 @@ public class HeyBean {
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getNull_vote() {
+        return null_vote;
+    }
+
+    public int getBlank_vote() {
+        return blank_vote;
     }
 
     /**
@@ -213,6 +221,14 @@ public class HeyBean {
         this.person_cc = person_cc;
     }
 
+    public void setNull_vote(int null_vote) {
+        this.null_vote = null_vote;
+    }
+
+    public void setBlank_vote(int blank_vote) {
+        this.blank_vote = blank_vote;
+    }
+
     public Person getUser() throws RemoteException {
         Person p = null;
         try {
@@ -313,7 +329,13 @@ public class HeyBean {
      */
     public void updateVotes() {
         try {
-            server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(12));
+            if (this.candidacy_id == -1) {
+                server.updateNullVotes(String.valueOf(this.election_id), String.valueOf(this.ccnumber), String.valueOf(12));
+            } else if (this.candidacy_id == -2) {
+                server.updateBlankVotes(String.valueOf(this.election_id), String.valueOf(this.ccnumber), String.valueOf(12));
+            } else {
+                server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(12));
+            }
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }

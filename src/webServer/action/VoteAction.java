@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class VoteAction extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
-    private int candidacy_id;
+    private int candidacy_id, blank_vote, null_vote;
     String message = "";
 
     @Override
@@ -47,6 +47,14 @@ public class VoteAction extends ActionSupport implements SessionAware {
 
     public void setCandidacy_id(int candidacy_id) {
         this.candidacy_id = candidacy_id;
+    }
+
+    public int getBlank_vote() {
+        return blank_vote;
+    }
+
+    public int getNull_vote() {
+        return null_vote;
     }
 
     @Override

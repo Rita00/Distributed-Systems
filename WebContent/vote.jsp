@@ -41,6 +41,18 @@
                                 </label>
                             </div>
                         </c:forEach>
+                        <div class="radio" style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
+                            <label style="width: 100%; margin-left: 1px">
+                                <input type="radio" name="candidacy_id" value="-1">
+                                <c:out value="Voto Nulo"/>
+                            </label>
+                        </div>
+                        <div class="radio" style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
+                            <label style="width: 100%; margin-left: 1px">
+                                <input type="radio" name="candidacy_id" value="-2">
+                                <c:out value="Voto em branco"/>
+                            </label>
+                        </div>
                     </div>
                     <div class="panel-footer text-center">
                         <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%" value="Votar!"/>

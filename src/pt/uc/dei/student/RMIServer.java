@@ -386,7 +386,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return departamentos da base de dados
      */
     public ArrayList<Department> getDepartments() {
-        return this.selectDepartments("SELECT * FROM department");
+        return this.selectDepartments("SELECT * FROM department WHERE name != 'Online'");
     }
 
     /**
@@ -691,7 +691,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return selectDepartments("SELECT id, name FROM department WHERE department.hasmulticastserver = 1 " +
                 "EXCEPT " +
                 "SELECT id, name FROM department, election_department " +
-                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id);
+                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id + " AND department.name != 'Online'");
     }
 
     /**
@@ -905,9 +905,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param ndep        ID do departamento
      */
     public void insertVotingRecord(String id_election, String cc, String ndep) {
-        if (ndep.equals("0"))
-            updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", "Online", cc, id_election));
-        else updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", ndep, cc, id_election));
+        updateOnDB(String.format("INSERT INTO voting_record(vote_date,department,person_cc_number,election_id) VALUES(datetime('now'),'%s','%s','%s')", ndep, cc, id_election));
     }
 
     /**

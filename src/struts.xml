@@ -107,12 +107,16 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result>/AdminConsole_OP3_manageSelectedElection.jsp</result>
         </action>
 
-        <action name="backManageElection" class="webServer.action.RedirectAction" method="execute">
+        <action name="backSubMenusAdminMenu" class="webServer.action.RedirectAction" method="execute">
             <result>/AdminConsole_menu.jsp</result>
         </action>
 
-        <action name="localVotes" class="webServer.action.RedirectAction" method="execute">
-            <result>/AdminConsole_OP5_votingRecord.jsp</result>
+        <action name="localVotes" class="webServer.action.VotingRecordsAction" method="execute">
+            <result name="success">/AdminConsole_OP5_votingRecord.jsp</result>
+        </action>
+
+        <action name="backVotingRecords" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_menu.jsp</result>
         </action>
     </package>
 </struts>

@@ -127,3 +127,8 @@ SELECT id, title, type, description, begin_date as begin, end_date as end FROM e
 WHERE election.id = election_department.election_id and
       begin_date <= date('now') AND end_date >= date('now') AND election.type = 'Funcionário'
   AND (election_department.department_id = -1 or election_department.department_id = 1);
+
+select vote_date as date, d.name as d_name, p.name as p_name, title FROM voting_record JOIN person p on voting_record.person_cc_number = p.cc_number
+    JOIN election e on voting_record.election_id = e.id
+    JOIN department d on d.id = voting_record.department
+ORDER BY voting_record.election_id, p.name;

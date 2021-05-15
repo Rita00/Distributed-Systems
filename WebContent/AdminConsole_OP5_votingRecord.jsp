@@ -21,19 +21,14 @@
 <div id="container" class="container">
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
-
+    <s:actionmessage/>
     <h1>Registo de Votos</h1>
-<%--    {% if ${HeyBean.allVotingRecords} == null %}--%>
-    <!-- IF NAO TEM REGISTO DE VOTOS -->
-    <h4>Não tem Registo de Votos</h4>
-<%--    {% else %}--%>
-    <c:forEach items="${HeyBean.allVotingRecords}" var="value">
-        <h4>${value.title}, ${value.p_name}, ${value.d_name}, ${value.vote_date}</h4>
+    <c:forEach items="${HeyBean.votingRecords}" var="value">
+        <h4 style="color: black">${value.election_title}, ${value.person_name}, ${value.department_name}, ${value.vote_date}</h4>
     </c:forEach>
-    <!-- ELSE -->
-<%--    <h4>vr.getElection_title(), vr.getPerson_name(), vr.getDepartment_name(), vr.getVote_date()</h4>--%>
-    <!-- END IF-->
-    <button id="exit">Voltar</button>
+    <s:form action="backSubMenusAdminMenu" method="post">
+        <button id="exit">Voltar</button>
+    </s:form>
 </div>
 </body>
 </html>

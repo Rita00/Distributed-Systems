@@ -39,6 +39,8 @@ INSERT INTO department(id, name)
 VALUES (NULL, 'Departamento de Matemática');
 INSERT INTO department(id, name)
 VALUES (NULL, 'Departamento de Química');
+INSERT INTO department(id, name)
+VALUES (NULL, 'Online');
 
 -------------------------------Eleições-----------------------------------
 --- ================================= Eleições a decorrer ==================

@@ -283,6 +283,16 @@ public class HeyBean {
         return departments;
     }
 
+    public ArrayList<VotingRecord> getVotingRecords() {
+        ArrayList<VotingRecord> votingRecords = null;
+        try {
+            votingRecords = server.getVotingRecords();
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return votingRecords;
+    }
+
     /**
      * Chama um método no RMI que devolve todos os membros pertencentes a uma determianda lista
      * @return lista com os membros de uma determinada lista
@@ -303,7 +313,7 @@ public class HeyBean {
      */
     public void updateVotes() {
         try {
-            server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(0));
+            server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(12));
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -441,15 +451,5 @@ public class HeyBean {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public ArrayList<VotingRecord> getVotingRecords() {
-        ArrayList<VotingRecord> allVotingRecords = null;
-        try {
-            allVotingRecords = server.getVotingRecords();
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return allVotingRecords;
     }
 }

@@ -1,5 +1,7 @@
 package pt.uc.dei.student.others;
 
+import webServer.ws.WebSocket;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
  * @see UnicastRemoteObject
  */
 public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
+    private final WebSocket ws;
     /**
      * Construtor do Callback
      *
@@ -19,6 +22,7 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
      */
     public NotifierCallBack() throws RemoteException {
         super();
+        this.ws = new WebSocket();
     }
     /**
      * Tenta fazer um ping, caso contrario lança uma exceção
@@ -38,6 +42,7 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
         System.out.println("==============================");
         for (InfoElectors i : info) {
             System.out.printf("%s\t%s\t%s\n", i.getElection_title(), i.getDep_name(), i.getCount());
+            ws.sendMessage(i.getElection_title() +"\t"+ i.getDep_name() +"\t"+ i.getCount()+"\n");
         }
     }
     /**

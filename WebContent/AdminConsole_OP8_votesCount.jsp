@@ -16,6 +16,58 @@
     <title>UC eVoting | Consola de Administração | Constagem dos Votos</title>
     <!--icon-->
     <link rel="shortcut icon" href="images/favicon.ico">
+    <script type="text/javascript">
+
+        var websocket = null;
+
+        window.onload = function() { // URI = ws://10.16.0.165:8080/WebSocket/ws
+            connect('ws://' + window.location.host + '/webserver/webServer/ws/');
+            document.getElementById("chat").focus();
+        }
+
+        function connect(host) { // connect to the host websocket
+            if ('WebSocket' in window)
+                websocket = new WebSocket(host);
+            else if ('MozWebSocket' in window)
+                websocket = new MozWebSocket(host);
+            else {
+                writeToHistory('Get a real browser which supports WebSocket.');
+                return;
+            }
+
+            websocket.onopen    = onOpen; // set the 4 event listeners below
+            websocket.onclose   = onClose;
+            websocket.onmessage = onMessage;
+            websocket.onerror   = onError;
+        }
+
+        function onOpen(event) {
+            writeToHistory('Connected to ' + window.location.host + '.');
+            document.getElementById('chat').onkeydown = function(key) {
+            };
+        }
+
+        function onClose(event) {
+            writeToHistory('WebSocket closed (code ' + event.code + ').');
+            document.getElementById('chat').onkeydown = null;
+        }
+
+        function onMessage(message) { // print the received message
+            writeToHistory(message.data);
+        }
+
+        function onError(event) {
+            writeToHistory('WebSocket error.');
+            document.getElementById('chat').onkeydown = null;
+        }
+
+        function writeToHistory(text) {
+            var textbox = document.getElementById('text');
+            textbox.style.wordWrap = 'break-word';
+            textbox.innerHTML = text;
+        }
+    </script>
+
 </head>
 <body>
 <div id="container" class="container">
@@ -23,12 +75,9 @@
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
     <h1>Contagem dos Votos</h1>
-    <!-- FOR EACH DEPARTMENT -->
-        <h4>TODO NOMES DAS ELEICOES</h4>
-        <!-- FOR EACH TERMINAL OF DEPARTMENT  -->
-            <p>TOODO LISTA _ NUMERO DE VOTOS</p>
-        <!-- END FOR EACH  -->
-    <!-- END FOR EACH-->
+
+    <p id="text"></p>
+
     <button id="exit">Voltar</button>
 </div>
 </body>

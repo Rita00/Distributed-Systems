@@ -3,6 +3,7 @@ package webServer.model;
 import pt.uc.dei.student.elections.*;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
+import webServer.ws.WebSocket;
 
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
@@ -62,6 +63,7 @@ public class HeyBean {
     /**
      * Conecta-se ao RMI
      */
+
     public HeyBean() {
         // Connect to RMI Server
         try {

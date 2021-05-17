@@ -37,10 +37,10 @@
     <orderEntry type="library" name="bootstrap" level="application" />
     <orderEntry type="library" name="font-awesome" level="application" />
     <orderEntry type="library" name="font-awesome" level="application" />
-    <orderEntry type="library" name="com.github.hiwepy:scribejava-apis-ext:1.0.0.RELEASE" level="project" />
     <orderEntry type="library" name="json_simple-1.1" level="project" />
     <orderEntry type="library" name="async-http-client-1.9.31" level="project" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
     <orderEntry type="library" name="javax.websocket:javax.websocket-api:1.1" level="project" />
+    <orderEntry type="library" name="com.github.scribejava:scribejava-apis:8.3.1" level="project" />
   </component>
 </module>

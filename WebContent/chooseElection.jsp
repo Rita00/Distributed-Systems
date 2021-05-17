@@ -50,6 +50,9 @@
             </div>
         </div>
     </div>
+    <s:form action="associateFacebook" method="post">
+        <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%" value="Associar Facebook!"/>
+    </s:form>
 </div>
 </body>
 </html>

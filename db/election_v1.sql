@@ -49,6 +49,7 @@ phone	 INTEGER NOT NULL,
 address	 VARCHAR(512) NOT NULL,
 cc_number	 INTEGER,
 cc_validity	 DATE NOT NULL CONSTRAINT cc_validity CHECK (cc_validity is date(cc_validity) AND cc_validity > date('now)')),
+fbID    VARCHAR(512),
 PRIMARY KEY(cc_number),
 FOREIGN KEY (department_id) REFERENCES department(id)
 );

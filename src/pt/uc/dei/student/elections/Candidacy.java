@@ -21,6 +21,8 @@ public class Candidacy implements Serializable {
      * Tipo de lista (Estudante, Docente, Funcionario)
      */
     private String type;
+
+    private int votes;
     /**
      * Construtor do Objeto Lista(Candidatura)
      *
@@ -32,6 +34,13 @@ public class Candidacy implements Serializable {
         this.id = id;
         this.name = name;
         this.type = type;
+    }
+
+    public Candidacy(int id, String name, String type, int votes) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.votes = votes;
     }
     /**
      * Devolve uma string com informacoes relativas a uma lista
@@ -67,6 +76,11 @@ public class Candidacy implements Serializable {
     public String getType() {
         return this.type;
     }
+
+    public int getVotes() {
+        return votes;
+    }
+
     /**
      * Setter do nome da lista
      *
@@ -82,5 +96,9 @@ public class Candidacy implements Serializable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 }

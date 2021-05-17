@@ -132,3 +132,7 @@ select vote_date as date, d.name as d_name, p.name as p_name, title FROM voting_
     JOIN election e on voting_record.election_id = e.id
     JOIN department d on d.id = voting_record.department
 ORDER BY voting_record.election_id, p.name;
+
+SELECT * FROM election WHERE end_date < date('now');
+
+select * from candidacy;

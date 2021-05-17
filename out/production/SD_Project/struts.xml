@@ -118,5 +118,18 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <action name="backVotingRecords" class="webServer.action.RedirectAction" method="execute">
             <result>/AdminConsole_menu.jsp</result>
         </action>
+
+        <action name="electionsResults" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP6_ChooseElectionResults.jsp</result>
+        </action>
+
+        <action name="chooseElectionToSeeDetails" class="webServer.action.ChooseElectionToSeeResultsAction" method="execute">
+            <result name="error">/AdminConsole_OP6_ChooseElectionResults.jsp</result>
+            <result name="success">/AdminConsole_OP6_electionResults.jsp</result>
+        </action>
+
+        <action name="backResultsElection" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP6_ChooseElectionResults.jsp</result>
+        </action>
     </package>
 </struts>

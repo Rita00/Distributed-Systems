@@ -4,6 +4,7 @@ import pt.uc.dei.student.elections.*;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -45,17 +46,18 @@ public class HeyBean {
     /**
      * Guarda os campos de uma determinada lista para consultar os seus detalhes
      */
-    String candidacy_name, candidacy_type;
+    private String candidacy_name, candidacy_type;
     // Field for add a list to an election
     /**
      * Guarda o nome de uma nova lista a ser adicionada a uma eleição
      */
-    String list_name;
+    private String list_name;
     /**
      * Guarda o cartão de cidadão de uma determinada pessoa que se candidata como membro a uma lista
      */
     // Field for add a person to a list
     int person_cc;
+    //Fields for see details election
 
     /**
      * Conecta-se ao RMI
@@ -76,6 +78,10 @@ public class HeyBean {
 
     public int getBlank_vote() {
         return blank_vote;
+    }
+
+    public int getCandidacy_id() {
+        return candidacy_id;
     }
 
     /**
@@ -473,5 +479,45 @@ public class HeyBean {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<Election> getEndedElections() {
+        ArrayList<Election> endedElections = null;
+        try {
+            endedElections = server.getEndedElections();
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return endedElections;
+    }
+
+    public int getBlankVotes() {
+        int black_votes = 0;
+        try {
+            black_votes = server.getBlackVotes(this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return black_votes;
+    }
+
+    public int getNullVotes() {
+        int null_votes = 0;
+        try {
+            null_votes = server.getNullVotes(this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null_votes;
+    }
+
+    public ArrayList<Candidacy> getCandidaciesWithVotes() {
+        ArrayList<Candidacy> candidaciesWithVotes = null;
+        try {
+            candidaciesWithVotes = server.getCandidaciesWithVotes(this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return candidaciesWithVotes;
     }
 }

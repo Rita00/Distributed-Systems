@@ -225,6 +225,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = " + election_id);
     }
 
+    public ArrayList<Candidacy> getCandidaciesWithVotes(int election_id) {
+        return this.selectCandidaciesWithVotes("SELECT * FROM candidacy WHERE election_id = " + election_id);
+    }
+
     /**
      * Procura uma pessoa pelas suas cardenciais na base de dados
      *
@@ -512,6 +516,35 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param sql commando sql
      * @return devolve o resultado da query ou null
      */
+    public ArrayList<Candidacy> selectCandidaciesWithVotes(String sql) {
+        Connection conn = connectDB();
+        ArrayList<Candidacy> candidacies = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                candidacies.add(new Candidacy(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("type"),
+                        rs.getInt("votes")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return candidacies;
+    }
+
+    /**
+     * Seleciona listas(candidaturas) na base de dados
+     *
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
     public ArrayList<Person> selectPeople(String sql) {
         Connection conn = connectDB();
         ArrayList<Person> people = new ArrayList<>();
@@ -773,7 +806,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return eleições passadas
      */
     public ArrayList<Election> getEndedElections() {
-        return selectElections("SELECT * FROM election WHERE end_date < date('now')");
+        return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election WHERE end_date < date('now')");
     }
 
     /**
@@ -785,8 +818,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public ArrayList<Election> getCurrentElections(int department_id) {
         if (department_id == 0)
-            return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now')");
-        return selectElections("SELECT * FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND (department_id = " + department_id + " OR department_id = -1)");
+            return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now')");
+        return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND (department_id = " + department_id + " OR department_id = -1)");
     }
 
     public ArrayList<Election> getCurrentElectionsPerson(String cc, String password) {

@@ -26,7 +26,8 @@
     <s:actionerror/>
     <s:actionmessage/>
     <c:forEach items="${HeyBean.allElections}" var="value">
-        <s:form action="chooseElectionToManage" method="post">
+        <s:form action="
+" method="post">
             <button name="election_id" value="${value.id}">${value.title}</button>
             <input type="hidden" name="election_title" value="${value.title}">
             <input type="hidden" name="election_type" value="${value.type}">

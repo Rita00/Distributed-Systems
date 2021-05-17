@@ -492,13 +492,13 @@ public class HeyBean {
     }
 
     public int getBlankVotes() {
-        int black_votes = 0;
+        int blank_votes = 0;
         try {
-            black_votes = server.getBlackVotes(this.election_id);
+            blank_votes = server.getBlackVotes(this.election_id);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-        return black_votes;
+        return blank_votes;
     }
 
     public int getNullVotes() {

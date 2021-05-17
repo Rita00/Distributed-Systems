@@ -17,9 +17,13 @@
 
 package org.apache.commons.codec.binary;
 
-import org.apache.commons.codec.*;
-
 import java.io.UnsupportedEncodingException;
+
+import org.apache.commons.codec.BinaryDecoder;
+import org.apache.commons.codec.BinaryEncoder;
+import org.apache.commons.codec.CharEncoding;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.EncoderException;
 
 /**
  * Converts hexadecimal Strings. The charset used for certain operation can be set, the default is set in

@@ -17,17 +17,17 @@
 
 package org.apache.commons.codec.digest;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.binary.StringUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.binary.StringUtils;
+
 /**
- * Operations to simplify common {@link MessageDigest} tasks. This class is thread safe.
- *
+ * Operations to simplify common {@link java.security.MessageDigest} tasks. This class is thread safe.
+ * 
  * @author Apache Software Foundation
  * @version $Id: DigestUtils.java 1064793 2011-01-28 17:42:55Z ggregory $
  */
@@ -37,7 +37,7 @@ public class DigestUtils {
 
     /**
      * Read through an InputStream and returns the digest for the data
-     *
+     * 
      * @param digest
      *            The MessageDigest to use (e.g. MD5)
      * @param data
@@ -60,7 +60,7 @@ public class DigestUtils {
 
     /**
      * Calls {@link StringUtils#getBytesUtf8(String)}
-     *
+     * 
      * @param data
      *            the String to encode
      * @return encoded bytes
@@ -71,7 +71,7 @@ public class DigestUtils {
 
     /**
      * Returns a <code>MessageDigest</code> for the given <code>algorithm</code>.
-     *
+     * 
      * @param algorithm
      *            the name of the algorithm requested. See <a
      *            href="http://java.sun.com/j2se/1.3/docs/guide/security/CryptoSpec.html#AppA">Appendix A in the Java
@@ -80,7 +80,7 @@ public class DigestUtils {
      * @return An MD5 digest instance.
      * @see MessageDigest#getInstance(String)
      * @throws RuntimeException
-     *             when a {@link NoSuchAlgorithmException} is caught.
+     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
     static MessageDigest getDigest(String algorithm) {
         try {
@@ -92,10 +92,10 @@ public class DigestUtils {
 
     /**
      * Returns an MD5 MessageDigest.
-     *
+     * 
      * @return An MD5 digest instance.
      * @throws RuntimeException
-     *             when a {@link NoSuchAlgorithmException} is caught.
+     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
     private static MessageDigest getMd5Digest() {
         return getDigest("MD5");
@@ -106,10 +106,10 @@ public class DigestUtils {
      * <p>
      * Throws a <code>RuntimeException</code> on JRE versions prior to 1.4.0.
      * </p>
-     *
+     * 
      * @return An SHA-256 digest instance.
      * @throws RuntimeException
-     *             when a {@link NoSuchAlgorithmException} is caught.
+     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
     private static MessageDigest getSha256Digest() {
         return getDigest("SHA-256");
@@ -120,10 +120,10 @@ public class DigestUtils {
      * <p>
      * Throws a <code>RuntimeException</code> on JRE versions prior to 1.4.0.
      * </p>
-     *
+     * 
      * @return An SHA-384 digest instance.
      * @throws RuntimeException
-     *             when a {@link NoSuchAlgorithmException} is caught.
+     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
     private static MessageDigest getSha384Digest() {
         return getDigest("SHA-384");
@@ -134,10 +134,10 @@ public class DigestUtils {
      * <p>
      * Throws a <code>RuntimeException</code> on JRE versions prior to 1.4.0.
      * </p>
-     *
+     * 
      * @return An SHA-512 digest instance.
      * @throws RuntimeException
-     *             when a {@link NoSuchAlgorithmException} is caught.
+     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
     private static MessageDigest getSha512Digest() {
         return getDigest("SHA-512");
@@ -145,10 +145,10 @@ public class DigestUtils {
 
     /**
      * Returns an SHA-1 digest.
-     *
+     * 
      * @return An SHA-1 digest instance.
      * @throws RuntimeException
-     *             when a {@link NoSuchAlgorithmException} is caught.
+     *             when a {@link java.security.NoSuchAlgorithmException} is caught.
      */
     private static MessageDigest getShaDigest() {
         return getDigest("SHA");

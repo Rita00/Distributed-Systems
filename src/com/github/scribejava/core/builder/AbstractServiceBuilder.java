@@ -1,12 +1,11 @@
 package com.github.scribejava.core.builder;
 
+import java.io.OutputStream;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.model.SignatureType;
 import com.github.scribejava.core.utils.Preconditions;
-
-import java.io.OutputStream;
 
 abstract class AbstractServiceBuilder<T extends AbstractServiceBuilder> {
 

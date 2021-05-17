@@ -4,7 +4,7 @@ import com.github.scribejava.core.model.AbstractRequest;
 
 /**
  * Simple command object that extracts a base string from a
- * {@link AbstractRequest}
+ * {@link com.github.scribejava.core.model.AbstractRequest}
  *
  * @author Pablo Fernandez
  */
@@ -12,7 +12,7 @@ public interface BaseStringExtractor {
 
     /**
      * Extracts an url-encoded base string from the
-     * {@link AbstractRequest}.
+     * {@link com.github.scribejava.core.model.AbstractRequest}.
      *
      * See <a href="http://oauth.net/core/1.0/#anchor14">the oauth spec</a> for more info on this.
      *

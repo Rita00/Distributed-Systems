@@ -21,7 +21,7 @@ public class FacebookApi2 extends DefaultApi20 {
     public String getAccessTokenEndpoint() {
         return "https://graph.facebook.com/v2.2/oauth/access_token";
     }
-
+    
     // Solution adapted from https://github.com/alvarosanchez/grails-spring-security-rest/issues/327
     @Override
     public AccessTokenExtractor getAccessTokenExtractor() {
@@ -32,7 +32,7 @@ public class FacebookApi2 extends DefaultApi20 {
 
                 Preconditions.checkEmptyString(response, "Response body is incorrect. Can't extract a token from an empty string");
                 try {
-
+                	
                     JSONObject json = (JSONObject) JSONValue.parse(response);
                     String token = (String) json.get("access_token");
 
@@ -43,7 +43,7 @@ public class FacebookApi2 extends DefaultApi20 {
             }
         };
     }
-
+        
     @Override
     public String getAuthorizationUrl(final OAuthConfig config) {
         Preconditions.checkValidUrl(config.getCallback(),

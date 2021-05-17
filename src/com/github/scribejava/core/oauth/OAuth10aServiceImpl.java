@@ -1,14 +1,21 @@
 package com.github.scribejava.core.oauth;
 
-import com.github.scribejava.core.builder.api.DefaultApi10a;
-import com.github.scribejava.core.model.*;
-import com.github.scribejava.core.services.Base64Encoder;
-import com.github.scribejava.core.utils.MapUtils;
 import com.ning.http.client.ProxyServer;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.Future;
+import com.github.scribejava.core.builder.api.DefaultApi10a;
+import com.github.scribejava.core.model.AbstractRequest;
+import com.github.scribejava.core.model.OAuthAsyncRequestCallback;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.OAuthConstants;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.OAuthRequestAsync;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.Verifier;
+import com.github.scribejava.core.services.Base64Encoder;
+import com.github.scribejava.core.utils.MapUtils;
 
 /**
  * OAuth 1.0a implementation of {@link OAuthService}

@@ -1,7 +1,6 @@
 package com.github.scribejava.core.model;
 
 import com.ning.http.client.AsyncHttpClientConfig;
-
 import java.io.OutputStream;
 
 public class OAuthConfigAsync extends OAuthConfig {

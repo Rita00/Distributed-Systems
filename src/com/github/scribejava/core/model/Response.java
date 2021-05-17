@@ -1,14 +1,13 @@
 package com.github.scribejava.core.model;
 
-import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.utils.StreamUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.utils.StreamUtils;
 
 public class Response {
 

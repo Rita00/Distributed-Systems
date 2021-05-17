@@ -1,8 +1,7 @@
 package com.github.scribejava.core.model;
 
-import com.github.scribejava.core.utils.Preconditions;
-
 import java.io.Serializable;
+import com.github.scribejava.core.utils.Preconditions;
 
 /**
  * Represents an OAuth token (either request or access token) and its secret

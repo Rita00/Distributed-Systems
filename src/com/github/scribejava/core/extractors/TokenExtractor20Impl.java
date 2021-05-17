@@ -1,12 +1,11 @@
 package com.github.scribejava.core.extractors;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import com.github.scribejava.core.utils.Preconditions;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Default implementation of {@link AccessTokenExtractor}. Conforms to OAuth 2.0

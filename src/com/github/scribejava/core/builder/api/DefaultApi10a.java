@@ -1,6 +1,12 @@
 package com.github.scribejava.core.builder.api;
 
-import com.github.scribejava.core.extractors.*;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.extractors.BaseStringExtractor;
+import com.github.scribejava.core.extractors.BaseStringExtractorImpl;
+import com.github.scribejava.core.extractors.HeaderExtractor;
+import com.github.scribejava.core.extractors.HeaderExtractorImpl;
+import com.github.scribejava.core.extractors.RequestTokenExtractor;
+import com.github.scribejava.core.extractors.TokenExtractorImpl;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;

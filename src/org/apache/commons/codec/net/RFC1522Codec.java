@@ -17,11 +17,11 @@
 
 package org.apache.commons.codec.net;
 
+import java.io.UnsupportedEncodingException;
+
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.binary.StringUtils;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * <p>

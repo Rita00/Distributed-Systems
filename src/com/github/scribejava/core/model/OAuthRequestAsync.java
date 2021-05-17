@@ -1,17 +1,16 @@
 package com.github.scribejava.core.model;
 
-import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.oauth.OAuthService;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 import com.ning.http.client.ProxyServer;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.oauth.OAuthService;
 
 public class OAuthRequestAsync extends AbstractRequest {
 

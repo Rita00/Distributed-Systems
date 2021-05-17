@@ -1,10 +1,9 @@
 package com.github.scribejava.core.services;
 
-import com.github.scribejava.core.exceptions.OAuthSignatureException;
-
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import com.github.scribejava.core.exceptions.OAuthSignatureException;
 
 /**
  * A signature service that uses the RSA-SHA1 algorithm.

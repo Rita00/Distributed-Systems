@@ -1,7 +1,5 @@
 package com.github.scribejava.core.utils;
 
-import com.github.scribejava.core.exceptions.OAuthException;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -9,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import com.github.scribejava.core.exceptions.OAuthException;
 
 /**
  * @author Pablo Fernandez

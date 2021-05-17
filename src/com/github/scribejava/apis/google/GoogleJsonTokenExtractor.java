@@ -1,9 +1,8 @@
 package com.github.scribejava.apis.google;
 
-import com.github.scribejava.core.extractors.JsonTokenExtractor;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.github.scribejava.core.extractors.JsonTokenExtractor;
 
 /**
  * additionally parses OpenID id_token

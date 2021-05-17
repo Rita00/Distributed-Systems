@@ -1,9 +1,8 @@
 package com.github.scribejava.core.utils;
 
-import com.github.scribejava.core.model.OAuthConstants;
-
 import java.util.Locale;
 import java.util.regex.Pattern;
+import com.github.scribejava.core.model.OAuthConstants;
 
 /**
  * Utils for checking preconditions and invariants

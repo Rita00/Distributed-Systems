@@ -17,9 +17,9 @@
 
 package org.apache.commons.codec.binary;
 
-import org.apache.commons.codec.CharEncoding;
-
 import java.io.UnsupportedEncodingException;
+
+import org.apache.commons.codec.CharEncoding;
 
 /**
  * Converts String to and from bytes using the encodings required by the Java specification. These encodings are specified in <a

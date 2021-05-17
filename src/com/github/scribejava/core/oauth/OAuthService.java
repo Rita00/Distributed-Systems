@@ -1,11 +1,17 @@
 package com.github.scribejava.core.oauth;
 
-import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.*;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ProxyServer;
-
 import java.util.concurrent.Future;
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.model.AbstractRequest;
+import com.github.scribejava.core.model.ForceTypeOfHttpRequest;
+import com.github.scribejava.core.model.OAuthAsyncRequestCallback;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.OAuthConfigAsync;
+import com.github.scribejava.core.model.ScribeJavaConfig;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.Verifier;
 
 /**
  * The main ScribeJava object.

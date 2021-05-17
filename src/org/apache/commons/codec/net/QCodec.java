@@ -17,10 +17,14 @@
 
 package org.apache.commons.codec.net;
 
-import org.apache.commons.codec.*;
-
 import java.io.UnsupportedEncodingException;
 import java.util.BitSet;
+
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.CharEncoding;
+import org.apache.commons.codec.StringDecoder;
+import org.apache.commons.codec.StringEncoder;
 
 /**
  * <p>

@@ -538,5 +538,7 @@ public interface RMI extends Remote {
     void updatePercentVotesCandidacy(int election_id, int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
 
     void updateAllVotes(int election_id) throws java.rmi.RemoteException, InterruptedException;
-}
+
+    String getElectionTitleFromCandidacy(int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
+    }
 

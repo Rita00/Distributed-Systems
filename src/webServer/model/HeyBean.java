@@ -467,6 +467,14 @@ public class HeyBean {
         return false;
     }
 
+    public String getTitleElection() {
+        try {
+            return server.getElectionTitleFromCandidacy(this.candidacy_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * Verifica se uma determinada eleição existe

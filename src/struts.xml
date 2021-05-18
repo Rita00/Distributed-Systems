@@ -65,7 +65,12 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="vote" class="webServer.action.VoteAction" method="execute">
-            <result>/chooseElection.jsp</result>
+            <result name="success" type="redirect">${authorizationUrl}</result>
+            <result name="error">/chooseElection.jsp</result>
+        </action>
+
+        <action name="postVote" class="webServer.action.VoteAction" method="postVote">
+            <result name="success">/chooseElection.jsp</result>
         </action>
 
         <action name="registerConsole" class="webServer.action.RedirectAction" method="execute">

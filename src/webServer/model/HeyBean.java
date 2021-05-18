@@ -593,7 +593,6 @@ public class HeyBean {
         String associatedFbId = null;
         try {
             return server.getAssociatedFbId(this.ccnumber);
-
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }

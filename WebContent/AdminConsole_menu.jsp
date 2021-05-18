@@ -44,7 +44,7 @@
     <s:form action="statusPollingStations" method="post">
             <button title="Consultar estado das mesas de voto e respetivos terminais de voto">Estado das Mesas de Voto</button>
     </s:form>
-    <s:form action="countVotes" method="post">
+    <s:form action="votesCount" method="post">
             <button title="Consultar contagem de votos em tempo real">Contagem dos Votos</button>
     </s:form>
     <s:form action="backMenuConsole" method="post">

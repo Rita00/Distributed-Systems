@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="war" name="webserver">
-    <output-path>$PROJECT_DIR$/out/artifacts/webserver</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
     <root id="archive" name="webserver.war">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
@@ -13,8 +13,9 @@
           <element id="file-copy" path="$PROJECT_DIR$/sqlite-jdbc-3.32.3.2.jar" />
           <element id="library" level="project" name="async-http-client-1.9.31" />
           <element id="library" level="project" name="json_simple-1.1" />
-          <element id="library" level="project" name="com.github.hiwepy:scribejava-apis-ext:1.0.0.RELEASE" />
           <element id="library" level="project" name="Java EE 6-Java EE 6" />
+          <element id="library" level="project" name="javax.websocket:javax.websocket-api:1.1" />
+          <element id="library" level="project" name="com.github.scribejava:scribejava-apis:8.3.1" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="SD_Project/web/Web" />

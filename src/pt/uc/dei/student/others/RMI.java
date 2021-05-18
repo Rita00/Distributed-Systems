@@ -518,5 +518,7 @@ public interface RMI extends Remote {
     ArrayList<Candidacy> selectCandidaciesWithVotes(String sql) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<Candidacy> getCandidaciesWithVotes(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
+
 }
 

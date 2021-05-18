@@ -1,10 +1,12 @@
 package webServer.model;
 
 import pt.uc.dei.student.elections.*;
+import pt.uc.dei.student.others.NotifierCallBack;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 import webServer.ws.WebSocket;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -521,5 +523,24 @@ public class HeyBean {
             e.printStackTrace();
         }
         return candidaciesWithVotes;
+    }
+
+    public void setRealTimeOn(NotifierCallBack NOTIFIER) {
+        while (true) {
+            try {
+                this.server.initializeRealTimeVotes(NOTIFIER);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setRealTimeOff(NotifierCallBack NOTIFIER){
+        try {
+            this.server.endRealTimeInfo(NOTIFIER);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -22,18 +22,20 @@
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
     <h1>Sign In</h1>
+
+    <s:form action="loginFacebook" method="post">
+        <button class="fb button center"><i class="fa fa-facebook fa-fw"></i> Login with Facebook</button>
+    </s:form>
+    <h2> OU </h2>
     <s:form action="login" method="post" theme="simple">
-
-        <a href="#" class="fb button center"><i class="fa fa-facebook fa-fw"></i> Login with Facebook</a>
-        <h2> OR </h2>
-
         <label>Cartão de Cidadão</label><br>
-        <s:textfield type="number" name="ccnumber" id="ccnumber" cssClass="input" placeholder="11223344" autofocus=""/><br>
+        <s:textfield type="number" name="ccnumber" id="ccnumber" cssClass="input" placeholder="11223344"
+                     autofocus=""/><br>
 
         <label>Password</label><br>
         <s:password name="password" id="inputPassword" cssClass="input" placeholder="***********"/><br>
 
-        <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%;"  value="Sign in"/>
+        <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%;" value="Sign in"/>
 
     </s:form>
 

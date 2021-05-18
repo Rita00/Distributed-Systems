@@ -97,6 +97,10 @@ public class HeyBean {
         return person_cc;
     }
 
+    public int getCcnumber() {
+        return ccnumber;
+    }
+
     /**
      * @return Devolve o nome da lista adicionada caso seja necessário apresentar na view
      */
@@ -249,6 +253,17 @@ public class HeyBean {
         this.authorizationURL = authorizationURL;
     }
 
+    public Person getUserFb(String FbId) throws RemoteException {
+        Person p = null;
+        try {
+            p = server.getPersonFb(FbId);
+        } catch (
+                InterruptedException e) {
+            e.printStackTrace();
+        }
+        return p;
+    }
+
     public Person getUser() throws RemoteException {
         Person p = null;
         try {
@@ -267,7 +282,7 @@ public class HeyBean {
     public ArrayList<Election> getElections() {
         ArrayList<Election> elections = null;
         try {
-            elections = server.getCurrentElectionsPerson(String.valueOf(this.ccnumber), String.valueOf(this.password));
+            elections = server.getCurrentElectionsPerson(String.valueOf(this.ccnumber));
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -558,7 +573,7 @@ public class HeyBean {
         }
     }
 
-    public void setRealTimeOff(NotifierCallBack NOTIFIER){
+    public void setRealTimeOff(NotifierCallBack NOTIFIER) {
         try {
             this.server.endRealTimeInfo(NOTIFIER);
         } catch (IOException | InterruptedException e) {
@@ -587,7 +602,4 @@ public class HeyBean {
         }
         return null;
     }
-//    public String FacebookLoginURL() {
-//        String response;
-//    }
 }

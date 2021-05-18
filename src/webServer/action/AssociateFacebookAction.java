@@ -53,8 +53,6 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
                 .scope("public_profile")
                 .build();
 
-//        String authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
-
         Verifier verifier = new Verifier(this.code);
         Token accessToken = service.getAccessToken(EMPTY_TOKEN, verifier);
         OAuthRequest request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL, service);

@@ -237,9 +237,25 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return pessoa pesquisada ou null caso não seja encontrada
      */
     public Person getPerson(String username, String password) {
+        ArrayList<Person> people = null;
         try {
-            password = Utilitary.getPasswordHash(username, password);
-            ArrayList<Person> people = this.selectPeople("SELECT * FROM person WHERE cc_number='" + username + "' AND password=?;", password);
+            if (password == null) {
+                people = selectPeople("SELECT * FROM person WHERE cc_number = '" + username + "'");
+            } else {
+                password = Utilitary.getPasswordHash(username, password);
+                people = this.selectPeople("SELECT * FROM person WHERE cc_number='" + username + "' AND password=?;", password);
+            }
+            if (people != null && people.size() != 0)
+                return people.get(0);
+            else return null;
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    public Person getPersonFb(String fbId) {
+        try {
+            ArrayList<Person> people = this.selectPeople("SELECT * FROM person WHERE fbID = " + fbId);
             if (people.size() != 0)
                 return people.get(0);
             else return null;
@@ -822,8 +838,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND (department_id = " + department_id + " OR department_id = -1)");
     }
 
-    public ArrayList<Election> getCurrentElectionsPerson(String cc, String password) {
-        Person p = getPerson(cc, password);
+    public ArrayList<Election> getCurrentElectionsPerson(String cc) {
+        Person p = getPerson(cc, null);
         if (p != null) {
             return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election, election_department WHERE election.id = election_department.election_id and begin_date <= date('now') AND end_date >= date('now') AND election.type = '" + p.getJob() + "' AND (election_department.department_id = " + p.getDepartment_id() + " or election_department.department_id = -1)");
         }

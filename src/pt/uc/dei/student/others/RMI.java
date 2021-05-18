@@ -427,7 +427,7 @@ public interface RMI extends Remote {
      */
     ArrayList<Election> getCurrentElections(int department_id) throws java.rmi.RemoteException, InterruptedException;
 
-    ArrayList<Election> getCurrentElectionsPerson(String cc, String password) throws java.rmi.RemoteException, InterruptedException;
+    ArrayList<Election> getCurrentElectionsPerson(String cc) throws java.rmi.RemoteException, InterruptedException;
 
     /**
      * Devolve o numero de votos em branco para uma
@@ -521,6 +521,8 @@ public interface RMI extends Remote {
 
     String getAssociatedFbId(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
+    Person getPersonFb(String fbId) throws java.rmi.RemoteException, InterruptedException;
 
-}
+
+    }
 

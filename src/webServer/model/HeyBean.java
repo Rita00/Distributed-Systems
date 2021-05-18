@@ -391,8 +391,7 @@ public class HeyBean {
             } else {
                 server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(12));
             }
-            server.updatePercentBlank(this.election_id);
-            server.updatePercentNull(this.election_id);
+            server.updateAllVotes(this.election_id);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }

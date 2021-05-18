@@ -146,4 +146,8 @@ select * from candidacy;
 
 select null_votes from election where id = 14;
 
+Select sum(votes) from candidacy where election_id = 14;
+
+select * from candidacy where election_id = 14;
+
 SELECT id, title, type, description, begin_date as begin, end_date as end, blank_votes, null_votes, round(null_percent, 2), round(blank_percent, 2) FROM election WHERE end_date < date('now');

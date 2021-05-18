@@ -38,6 +38,7 @@ name	 VARCHAR(512) NOT NULL,
 type	 VARCHAR(512) NOT NULL,
 votes	 BIGINT NOT NULL DEFAULT 0,
 election_id INTEGER NOT NULL,
+votes_percent float,
 PRIMARY KEY(id),
 FOREIGN KEY (election_id) REFERENCES election(id)
 );

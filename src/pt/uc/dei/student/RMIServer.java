@@ -226,7 +226,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public ArrayList<Candidacy> getCandidaciesWithVotes(int election_id) {
-        return this.selectCandidaciesWithVotes("SELECT * FROM candidacy WHERE election_id = " + election_id);
+        return this.selectCandidaciesWithVotes("SELECT id, name, type, votes, round(votes_percent * 100, 2) as votes_percent FROM candidacy WHERE election_id = " + election_id);
     }
 
     /**
@@ -578,7 +578,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("type"),
-                        rs.getInt("votes")
+                        rs.getInt("votes"),
+                        rs.getFloat("votes_percent")
                 ));
             }
             stmt.close();
@@ -942,16 +943,34 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return (float) blank_votes / (float) getTotalVotes(id_election);
     }
 
-    public boolean updatePercentNull(int id_election) {
-        return updateOnDB("UPDATE election set null_percent = " + getPercentNullVotes(id_election) + " WHERE id = " + id_election);
+    public float getPercentCandidacyVotes(int election_id, int candidacy_id) {
+        int candidacy_votes = getVotesCandidacy(election_id, candidacy_id);
+        return (float) candidacy_votes / (float) getTotalVotes(election_id);
     }
 
-    public boolean updatePercentBlank(int id_election) {
-        return updateOnDB("UPDATE election set blank_percent = " + getPercentBlankVotes(id_election) + " WHERE id = " + id_election);
+    public void updatePercentNull(int id_election) {
+        updateOnDB("UPDATE election set null_percent = " + getPercentNullVotes(id_election) + " WHERE id = " + id_election);
+    }
+
+    public void updatePercentBlank(int id_election) {
+        updateOnDB("UPDATE election set blank_percent = " + getPercentBlankVotes(id_election) + " WHERE id = " + id_election);
+    }
+
+    public void updatePercentVotesCandidacy(int election_id, int candidacy_id) {
+        updateOnDB("UPDATE candidacy set votes_percent = " + getPercentCandidacyVotes(election_id, candidacy_id) + " WHERE election_id = " + election_id + " AND id = " + candidacy_id);
     }
 
     public int getTotalVotes(int election_id) {
-        return countRowsBD("candidacy WHERE election_id = " + election_id, "count(votes)") + getBlankVotes(election_id) + getNullVotes(election_id);
+        return countRowsBD("candidacy WHERE election_id = " + election_id, "sum(votes)") + getBlankVotes(election_id) + getNullVotes(election_id);
+    }
+
+    public void updateAllVotes(int election_id) {
+        ArrayList<Candidacy> candidaciesElection = getCandidacies(election_id);
+        for (Candidacy c : candidaciesElection) {
+            updatePercentVotesCandidacy(election_id, c.getId());
+        }
+        updatePercentBlank(election_id);
+        updatePercentNull(election_id);
     }
 
     /**

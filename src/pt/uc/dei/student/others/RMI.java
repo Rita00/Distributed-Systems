@@ -531,8 +531,12 @@ public interface RMI extends Remote {
 
     float getPercentBlankVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean updatePercentNull(int id_election) throws java.rmi.RemoteException, InterruptedException;
+    void updatePercentNull(int id_election) throws java.rmi.RemoteException, InterruptedException;
 
-    boolean updatePercentBlank(int id_election) throws java.rmi.RemoteException, InterruptedException;
+    void updatePercentBlank(int id_election) throws java.rmi.RemoteException, InterruptedException;
+
+    void updatePercentVotesCandidacy(int election_id, int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateAllVotes(int election_id) throws java.rmi.RemoteException, InterruptedException;
 }
 

@@ -25,7 +25,7 @@
     <h1>${HeyBean.title}</h1>
     <!-- FOR EACH ELECTION -->
     <c:forEach items="${HeyBean.candidaciesWithVotes}" var="value">
-        <p style="font-size: 15px ; color: black">${value.name}: ${value.votes}</p>
+        <p style="font-size: 15px ; color: black">${value.name}: ${value.votes}  (${value.votes_percent}%)</p>
     </c:forEach>
 
     <p style="font-size: 15px ; color: black">Votos Nulos: ${HeyBean.null_votes}  (${HeyBean.null_percent}%)</p>

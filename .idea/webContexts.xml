@@ -4,6 +4,7 @@
     <option name="state">
       <map>
         <entry key="file://$PROJECT_DIR$/WebContent/AdminConsole_OP5_votingRecord.jsp" value="file://$PROJECT_DIR$/WebContent" />
+        <entry key="file://$PROJECT_DIR$/WebContent/AdminConsole_OP6_ChooseElectionResults.jsp" value="file://$PROJECT_DIR$/WebContent" />
         <entry key="file://$PROJECT_DIR$/WebContent/AdminConsole_OP8_votesCount.jsp" value="file://$PROJECT_DIR$/WebContent" />
         <entry key="file://$PROJECT_DIR$/WebContent/AdminConsole_menu.jsp" value="file://$PROJECT_DIR$/WebContent" />
         <entry key="file://$PROJECT_DIR$/WebContent/index.jsp" value="file://$PROJECT_DIR$/WebContent" />

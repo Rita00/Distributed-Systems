@@ -555,6 +555,8 @@ public class HeyBean {
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
 
     public void setRealTimeOff(NotifierCallBack NOTIFIER){
         try {
@@ -580,7 +582,6 @@ public class HeyBean {
         String associatedFbId = null;
         try {
             return server.getAssociatedFbId(this.ccnumber);
-
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }

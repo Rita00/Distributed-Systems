@@ -137,7 +137,6 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
 <!--        TODO nao me posso esquecer das percentagens na apresentação dos resultados de uma eleição e faltam os volos brancos e nulos-->
-<!--        TODO nao me posso esquecer das percentagens na apresentação dos resultados de uma eleição e faltam os volos brancos e nulos-->
 
         <action name="associateFacebook" class="webServer.action.AssociateFacebookAction" method="execute">
             <result name="success" type = "redirect">${authorizationUrl}</result>

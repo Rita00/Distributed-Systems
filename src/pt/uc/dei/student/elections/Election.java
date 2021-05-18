@@ -42,6 +42,7 @@ public class Election implements Serializable {
     private String endStr;
 
     private int null_votes, blank_votes;
+    private float null_percent, blank_percent;
     /**
      * Construtor do Objeto Eleição
      *
@@ -63,7 +64,7 @@ public class Election implements Serializable {
         this.endStr = end.replace('T',' ');
     }
 
-    public Election(int id, String title, String type, String description, String begin, String end, int null_votes, int blank_votes) {
+    public Election(int id, String title, String type, String description, String begin, String end, int null_votes, int blank_votes, float null_percent, float blank_percent) {
         this.id = id;
         this.title = title;
         this.type = type;
@@ -74,6 +75,8 @@ public class Election implements Serializable {
         this.endStr = end.replace('T',' ');
         this.null_votes = null_votes;
         this.blank_votes = blank_votes;
+        this.blank_percent = blank_percent;
+        this.null_percent = null_percent;
     }
 
     /**
@@ -106,6 +109,13 @@ public class Election implements Serializable {
                 "-----------------------------\n";
     }
 
+    public float getNull_percent() {
+        return null_percent;
+    }
+
+    public float getBlank_percent() {
+        return blank_percent;
+    }
 
     public int getNull_votes() {
         return null_votes;
@@ -178,6 +188,14 @@ public class Election implements Serializable {
      */
     public LocalDateTime getEnd() {
         return this.end;
+    }
+
+    public void setNull_percent(float null_percent) {
+        this.null_percent = null_percent;
+    }
+
+    public void setBlank_percent(float blank_percent) {
+        this.blank_percent = blank_percent;
     }
 
     public void setNull_votes(int null_votes) {

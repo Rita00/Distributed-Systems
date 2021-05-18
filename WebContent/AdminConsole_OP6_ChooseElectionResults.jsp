@@ -29,6 +29,8 @@
             <input type="hidden" name="election_title" value="${value.title}">
             <input type="hidden" name="blank_votes" value="${value.blank_votes}">
             <input type="hidden" name="null_votes" value="${value.null_votes}">
+            <input type="hidden" name="null_percent" value="${value.null_percent}">
+            <input type="hidden" name="blank_percent" value="${value.blank_percent}">
         </s:form>
     </c:forEach>
 

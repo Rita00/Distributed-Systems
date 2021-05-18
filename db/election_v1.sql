@@ -27,6 +27,8 @@ begin_date	 VARCHAR(32) NOT NULL CONSTRAINT begin_date CHECK (begin_date is date
 end_date	 VARCHAR(32) NOT NULL CONSTRAINT end_date CHECK (end_date is datetime(end_date) and end_date > election.begin_date),
 blank_votes BIGINT NOT NULL DEFAULT 0,
 null_votes	 BIGINT NOT NULL DEFAULT 0,
+null_percent float,
+blank_percent float,
 PRIMARY KEY(id)
 );
 

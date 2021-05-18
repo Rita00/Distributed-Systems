@@ -518,8 +518,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                         rs.getString("description"),
                         rs.getString("begin"),
                         rs.getString("end"),
+                        rs.getInt("null_votes"),
                         rs.getInt("blank_votes"),
-                        rs.getInt("nuLl_votes")
+                        rs.getFloat("null_percent"),
+                        rs.getFloat("blank_percent")
                 ));
             }
             stmt.close();
@@ -855,7 +857,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return eleições passadas
      */
     public ArrayList<Election> getEndedElections() {
-        return selectElectionsWithVotes("SELECT id, title, type, description, begin_date as begin, end_date as end, blank_votes, null_votes FROM election WHERE end_date < date('now')");
+        return selectElectionsWithVotes("SELECT id, title, type, description, begin_date as begin, end_date as end, blank_votes, null_votes, round(blank_percent * 100, 2) as blank_percent, round(null_percent * 100, 2) as null_percent FROM election WHERE end_date < date('now')");
     }
 
     /**
@@ -890,7 +892,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param id_election ID da eleição
      * @return numero de votos em branco da eleição
      */
-    public int getBlackVotes(int id_election) {
+    public int getBlankVotes(int id_election) {
         return countRowsBD("election WHERE id = " + id_election, "blank_votes");
     }
 
@@ -925,9 +927,31 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return percentagem de votos
      */
     public float getPercentVotesCandidacy(int id_election, int id_candidacy) {
-        int totalVotes = countRowsBD("candidacy", "SUM(votes)") + getBlackVotes(id_election) + getNullVotes(id_election);
-        if (id_candidacy == -1) return ((float) getBlackVotes(id_election) / (float) totalVotes) * 100;
+        int totalVotes = countRowsBD("candidacy", "SUM(votes)") + getBlankVotes(id_election) + getNullVotes(id_election);
+        if (id_candidacy == -1) return ((float) getBlankVotes(id_election) / (float) totalVotes) * 100;
         else return ((float) getVotesCandidacy(id_election, id_candidacy) / (float) totalVotes) * 100;
+    }
+
+    public float getPercentNullVotes(int id_election) {
+        int null_votes = countRowsBD("election WHERE id = " + id_election, "null_votes");
+        return (float) null_votes / (float) getTotalVotes(id_election);
+    }
+
+    public float getPercentBlankVotes(int id_election) {
+        int blank_votes = countRowsBD("election WHERE id = " + id_election, "blank_votes");
+        return (float) blank_votes / (float) getTotalVotes(id_election);
+    }
+
+    public boolean updatePercentNull(int id_election) {
+        return updateOnDB("UPDATE election set null_percent = " + getPercentNullVotes(id_election) + " WHERE id = " + id_election);
+    }
+
+    public boolean updatePercentBlank(int id_election) {
+        return updateOnDB("UPDATE election set blank_percent = " + getPercentBlankVotes(id_election) + " WHERE id = " + id_election);
+    }
+
+    public int getTotalVotes(int election_id) {
+        return countRowsBD("candidacy WHERE election_id = " + election_id, "count(votes)") + getBlankVotes(election_id) + getNullVotes(election_id);
     }
 
     /**

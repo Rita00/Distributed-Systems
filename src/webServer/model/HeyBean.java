@@ -66,6 +66,9 @@ public class HeyBean {
 
 
     private int null_votes, blank_votes;
+
+    private float null_percent, blank_percent;
+
     /**
      * Conecta-se ao RMI
      */
@@ -78,6 +81,14 @@ public class HeyBean {
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public float getNull_percent() {
+        return null_percent;
+    }
+
+    public float getBlank_percent() {
+        return blank_percent;
     }
 
     public int getNull_votes() {
@@ -162,6 +173,7 @@ public class HeyBean {
     public String getAuthorizationURL() {
         return authorizationURL;
     }
+
 
     public void setNull_votes(int null_votes) {
         this.null_votes = null_votes;
@@ -379,6 +391,8 @@ public class HeyBean {
             } else {
                 server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(12));
             }
+            server.updatePercentBlank(this.election_id);
+            server.updatePercentNull(this.election_id);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -596,5 +610,13 @@ public class HeyBean {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void setNull_percent(float null_percent) {
+        this.null_percent = null_percent;
+    }
+
+    public void setBlank_percent(float blank_percent) {
+        this.blank_percent = blank_percent;
     }
 }

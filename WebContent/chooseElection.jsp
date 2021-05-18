@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="ww" uri="/struts-tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -35,7 +36,8 @@
                 <s:form action="chooseElection" method="post">
                     <div class="panel-body">
                         <c:forEach items="${HeyBean.elections}" var="value">
-                            <div class="radio" style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
+                            <div class="radio"
+                                 style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
                                 <label style="width: 100%; margin-left: 1px">
                                     <input type="radio" name="election_id" value="${value.id}">
                                     <c:out value="${value.title}"/>
@@ -50,9 +52,11 @@
             </div>
         </div>
     </div>
-    <s:form action="associateFacebook" method="post">
-        <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%" value="Associar Facebook!"/>
-    </s:form>
+    <c:if test="${HeyBean.associatedFbId == null}">
+        <s:form action="associateFacebook" method="post">
+            <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%" value="Associar Facebook!"/>
+        </s:form>
+    </c:if>
 </div>
 </body>
 </html>

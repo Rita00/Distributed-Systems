@@ -136,3 +136,7 @@ ORDER BY voting_record.election_id, p.name;
 SELECT * FROM election WHERE end_date < date('now');
 
 select * from candidacy;
+
+SELECT fbID FROM person WHERE cc_number = 77777777;
+
+Update person set fbID = null;

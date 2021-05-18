@@ -40,6 +40,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
     }
 
     public String associate() throws Exception {
+        String message = "";
         String apiKey = "1345313155825147";
         String apiSecret = "f6c3ca41446cc2d017a37650223f581c";
 
@@ -63,7 +64,13 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
         System.out.println(response.getBody());
         JSONObject json = (JSONObject) JSONValue.parse(response.getBody());
         String FBPerson_id = (String) json.get("id");
-        this.getHeyBean().associateFbId(FBPerson_id);
+        if (!this.getHeyBean().associateFbId(FBPerson_id)) {
+            message = "Esta conta já está associada!";
+            addActionError(message);
+        } else {
+            message = "Conta associada com sucesso!";
+            addActionMessage(message);
+        }
         return SUCCESS;
     }
 

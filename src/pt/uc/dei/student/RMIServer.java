@@ -1159,6 +1159,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return updateOnDB("UPDATE person SET fbID = '" + fbId + "' WHERE cc_number = " + ccnumber);
     }
 
+    public String getAssociatedFbId(int cc_number) {
+        return getStrings("SELECT fbID FROM person WHERE cc_number = " + cc_number);
+    }
+
     /**
      * Manda mensagem para dizer que está a funcionar
      *

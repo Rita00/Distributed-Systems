@@ -546,12 +546,25 @@ public class HeyBean {
     }
 
     public boolean associateFbId(String fbId) {
+        if (getAssociatedFbId() == null) {
+            try {
+                return server.associateFbId(this.ccnumber, fbId);
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public String getAssociatedFbId() {
+        String associatedFbId = null;
         try {
-            return server.associateFbId(this.ccnumber, fbId);
+            return server.getAssociatedFbId(this.ccnumber);
+
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 //    public String FacebookLoginURL() {
 //        String response;

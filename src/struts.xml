@@ -15,6 +15,15 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
     <constant name="struts.action.excludePattern" value="/webServer/ws"/>
     <package name="webServer" extends="struts-default">
 
+        <interceptors>
+            <interceptor name="showVotesCountInterceptor" class="webServer.interceptor.ShowVotesCountInterceptor" />
+            <interceptor-stack name="showVotesCountStack">
+                <interceptor-ref name="showVotesCountInterceptor" />
+                <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="showVotesCountStack" />
+
         <default-action-ref name="index"/>
 
         <global-results>
@@ -24,7 +33,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <!-- all exceptions not caught by the application will lead to error.jsp -->
         <global-exception-mappings>
             <exception-mapping exception="java.lang.Exception" result="error"/>
+
         </global-exception-mappings>
+
+
 
         <!-- 'index' action leads to the view provided by Login.jsp -->
         <action name="index">
@@ -134,6 +146,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="votesCount" class="webServer.action.ShowVotesCountAction" method="execute">
+            <result name="success">/AdminConsole_OP8_votesCount.jsp</result>
             <result>/AdminConsole_OP8_votesCount.jsp</result>
         </action>
 

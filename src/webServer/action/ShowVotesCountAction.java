@@ -9,7 +9,24 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Map;
 
-public class ShowVotesCountAction extends ActionSupport implements SessionAware {
+public class ShowVotesCountAction extends ActionSupport implements SessionAware{
+    /*
+    private HeyBean webBean;
+
+    public String execute() throws Exception {
+        setWebBean(new HeyBean());
+        return SUCCESS;
+    }
+
+    public HeyBean getWebBean() {
+        return webBean;
+    }
+
+    public void setWebBean(HeyBean webBean) {
+        this.webBean = webBean;
+    }
+*/
+
     private Map<String, Object> session;
     private NotifierCallBack NOTIFIER;
 

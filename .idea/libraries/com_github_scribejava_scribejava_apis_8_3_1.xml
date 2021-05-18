@@ -2,6 +2,12 @@
   <library name="com.github.scribejava:scribejava-apis:8.3.1" type="repository">
     <properties maven-id="com.github.scribejava:scribejava-apis:8.3.1" />
     <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/scribejava-apis-8.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/scribejava-core-8.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/scribejava-java8-8.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-databind-2.12.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-annotations-2.12.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-core-2.12.3.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/github/scribejava/scribejava-apis/8.3.1/scribejava-apis-8.3.1.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/github/scribejava/scribejava-core/8.3.1/scribejava-core-8.3.1.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/github/scribejava/scribejava-java8/8.3.1/scribejava-java8-8.3.1.jar!/" />

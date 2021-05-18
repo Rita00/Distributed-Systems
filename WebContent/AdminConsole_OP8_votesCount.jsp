@@ -21,20 +21,21 @@
         var websocket = null;
 
         window.onload = function() { // URI = ws://10.16.0.165:8080/WebSocket/ws
-            connect('ws://' + window.location.host + '/webserver/webServer/ws/');
-            document.getElementById("chat").focus();
+            connect('ws://' + window.location.host + '/webserver/webServer/ws');
         }
 
         function connect(host) { // connect to the host websocket
-            if ('WebSocket' in window)
+            if ('WebSocket' in window) {
+                console.log("WebSocket in window")
                 websocket = new WebSocket(host);
-            else if ('MozWebSocket' in window)
+            } else if ('MozWebSocket' in window){
+                console.log("MozWebSocket in window")
                 websocket = new MozWebSocket(host);
-            else {
-                writeToHistory('Get a real browser which supports WebSocket.');
+            }else {
+                console.log("Get a real browser which supports WebSocket.");
+                write('Get a real browser which supports WebSocket.');
                 return;
             }
-
             websocket.onopen    = onOpen; // set the 4 event listeners below
             websocket.onclose   = onClose;
             websocket.onmessage = onMessage;
@@ -42,26 +43,22 @@
         }
 
         function onOpen(event) {
-            writeToHistory('Connected to ' + window.location.host + '.');
-            document.getElementById('chat').onkeydown = function(key) {
-            };
+            write('Connected to ' + window.location.host + '.');
         }
 
         function onClose(event) {
-            writeToHistory('WebSocket closed (code ' + event.code + ').');
-            document.getElementById('chat').onkeydown = null;
+            write('WebSocket closed (code ' + event.code + ').');
         }
 
         function onMessage(message) { // print the received message
-            writeToHistory(message.data);
+            write(message.data);
         }
 
         function onError(event) {
-            writeToHistory('WebSocket error.');
-            document.getElementById('chat').onkeydown = null;
+            write('WebSocket error.');
         }
 
-        function writeToHistory(text) {
+        function write(text) {
             var textbox = document.getElementById('text');
             textbox.style.wordWrap = 'break-word';
             textbox.innerHTML = text;

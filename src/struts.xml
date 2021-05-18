@@ -12,7 +12,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
     <!-- devMode equals debug information and reload everything for every request -->
     <constant name="struts.devMode" value="true"/>
     <constant name="struts.ui.theme" value="simple"/>
-
+    <constant name="struts.action.excludePattern" value="/webServer/ws"/>
     <package name="webServer" extends="struts-default">
 
         <default-action-ref name="index"/>
@@ -131,6 +131,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
 
         <action name="backResultsElection" class="webServer.action.RedirectAction" method="execute">
             <result>/AdminConsole_OP6_ChooseElectionResults.jsp</result>
+        </action>
+
+        <action name="votesCount" class="webServer.action.ShowVotesCountAction" method="execute">
+            <result>/AdminConsole_OP8_votesCount.jsp</result>
         </action>
 
         <!--        TODO nao me posso esquecer das percentagens na apresentação dos resultados de uma eleição e faltam os volos brancos e nulos-->

@@ -1294,6 +1294,11 @@ public class AdminConsole {
         ).start();
     }
 
+
+    public void setIsGettingRealTime(int isGettingRealTime) {
+        this.isGettingRealTime = isGettingRealTime;
+    }
+
     /**
      * Leitura dos dados no property file,
      * liga-se ao servidor RMI e inicializa a consola de administração

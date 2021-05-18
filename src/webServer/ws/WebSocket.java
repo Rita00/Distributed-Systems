@@ -10,7 +10,7 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnError;
 import javax.websocket.Session;
 
-@ServerEndpoint(value = "/webServer/ws/")
+@ServerEndpoint("/webServer/ws")
 public class WebSocket {
     private static final AtomicInteger sequence = new AtomicInteger(1);
     private final String username;
@@ -23,8 +23,6 @@ public class WebSocket {
     @OnOpen
     public void start(Session session) {
         this.session = session;
-        String message = "*" + username + "* connected.";
-        sendMessage(message);
     }
 
     @OnClose

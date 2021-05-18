@@ -499,6 +499,39 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
+     * Seleciona eleições na base de dados com os respetivos votos brancos e nulos
+     *
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
+    public ArrayList<Election> selectElectionsWithVotes(String sql) {
+        Connection conn = connectDB();
+        ArrayList<Election> elections = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                elections.add(new Election(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("type"),
+                        rs.getString("description"),
+                        rs.getString("begin"),
+                        rs.getString("end"),
+                        rs.getInt("blank_votes"),
+                        rs.getInt("nuLl_votes")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return elections;
+    }
+
+    /**
      * Seleciona listas(candidaturas) na base de dados
      *
      * @param sql commando sql
@@ -822,7 +855,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return eleições passadas
      */
     public ArrayList<Election> getEndedElections() {
-        return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election WHERE end_date < date('now')");
+        return selectElectionsWithVotes("SELECT id, title, type, description, begin_date as begin, end_date as end, blank_votes, null_votes FROM election WHERE end_date < date('now')");
     }
 
     /**
@@ -1002,6 +1035,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public int getElectionToManage(String title_election) {
         return countRowsBD("election where title = '" + title_election + "'", "id");
+    }
+
+    public int checkIfIsAdmin(int cc_number) {
+        return countRowsBD("person WHERE cc_number = " + cc_number, "isAdmin");
     }
 
     /**

@@ -40,6 +40,8 @@ public class Election implements Serializable {
      */
     private LocalDateTime end;
     private String endStr;
+
+    private int null_votes, blank_votes;
     /**
      * Construtor do Objeto Eleição
      *
@@ -60,6 +62,20 @@ public class Election implements Serializable {
         this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
         this.endStr = end.replace('T',' ');
     }
+
+    public Election(int id, String title, String type, String description, String begin, String end, int null_votes, int blank_votes) {
+        this.id = id;
+        this.title = title;
+        this.type = type;
+        this.description = description;
+        this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.beginStr = begin.replace('T',' ');
+        this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.endStr = end.replace('T',' ');
+        this.null_votes = null_votes;
+        this.blank_votes = blank_votes;
+    }
+
     /**
      * Converte duas strings contendo a data e a hora num objeto do tipo LocalDateTime
      *
@@ -88,6 +104,15 @@ public class Election implements Serializable {
                 String.format("Inicio - %s às %s\n", this.begin.toLocalDate().toString(), this.begin.toLocalTime().toString()) +
                 String.format("Fim - %s às %s\n", this.end.toLocalDate().toString(), this.end.toLocalTime().toString()) +
                 "-----------------------------\n";
+    }
+
+
+    public int getNull_votes() {
+        return null_votes;
+    }
+
+    public int getBlank_votes() {
+        return blank_votes;
     }
 
     public String getBeginStr() {
@@ -154,6 +179,15 @@ public class Election implements Serializable {
     public LocalDateTime getEnd() {
         return this.end;
     }
+
+    public void setNull_votes(int null_votes) {
+        this.null_votes = null_votes;
+    }
+
+    public void setBlank_votes(int blank_votes) {
+        this.blank_votes = blank_votes;
+    }
+
     /**
      * Setter do nome da eleicao
      *

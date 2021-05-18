@@ -21,8 +21,8 @@ public class ChooseElectionToSeeResultsAction extends ActionSupport implements S
             addActionError(message);
             return ERROR;
         } else {
-            this.getHeyBean().setNull_vote(this.null_votes);
-            this.getHeyBean().setBlank_vote(this.blank_votes);
+            this.getHeyBean().setNull_votes(this.null_votes);
+            this.getHeyBean().setBlank_votes(this.blank_votes);
         }
         return SUCCESS;
     }

@@ -523,6 +523,8 @@ public interface RMI extends Remote {
 
     Person getPersonFb(String fbId) throws java.rmi.RemoteException, InterruptedException;
 
+    int checkIfIsAdmin(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
-    }
+    ArrayList<Election> selectElectionsWithVotes(String sql) throws java.rmi.RemoteException, InterruptedException;
+}
 

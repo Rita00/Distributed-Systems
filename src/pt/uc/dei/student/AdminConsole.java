@@ -323,7 +323,7 @@ public class AdminConsole {
             int blankVotes;
             while (true) {
                 try {
-                    blankVotes = this.rmiServer.getBlackVotes(election);
+                    blankVotes = this.rmiServer.getBlankVotes(election);
                     break;
                 } catch (RemoteException | InterruptedException e) {
                     //e.printStackTrace();

@@ -226,7 +226,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public ArrayList<Candidacy> getCandidaciesWithVotes(int election_id) {
-        return this.selectCandidaciesWithVotes("SELECT * FROM candidacy WHERE election_id = " + election_id);
+        return this.selectCandidaciesWithVotes("SELECT id, name, type, votes, round(votes_percent * 100, 2) as votes_percent FROM candidacy WHERE election_id = " + election_id);
     }
 
     /**
@@ -499,6 +499,41 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
+     * Seleciona eleições na base de dados com os respetivos votos brancos e nulos
+     *
+     * @param sql commando sql
+     * @return devolve o resultado da query ou null
+     */
+    public ArrayList<Election> selectElectionsWithVotes(String sql) {
+        Connection conn = connectDB();
+        ArrayList<Election> elections = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                elections.add(new Election(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("type"),
+                        rs.getString("description"),
+                        rs.getString("begin"),
+                        rs.getString("end"),
+                        rs.getInt("null_votes"),
+                        rs.getInt("blank_votes"),
+                        rs.getFloat("null_percent"),
+                        rs.getFloat("blank_percent")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+        return elections;
+    }
+
+    /**
      * Seleciona listas(candidaturas) na base de dados
      *
      * @param sql commando sql
@@ -543,7 +578,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("type"),
-                        rs.getInt("votes")
+                        rs.getInt("votes"),
+                        rs.getFloat("votes_percent")
                 ));
             }
             stmt.close();
@@ -822,7 +858,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return eleições passadas
      */
     public ArrayList<Election> getEndedElections() {
-        return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election WHERE end_date < date('now')");
+        return selectElectionsWithVotes("SELECT id, title, type, description, begin_date as begin, end_date as end, blank_votes, null_votes, round(blank_percent * 100, 2) as blank_percent, round(null_percent * 100, 2) as null_percent FROM election WHERE end_date < date('now')");
     }
 
     /**
@@ -857,7 +893,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param id_election ID da eleição
      * @return numero de votos em branco da eleição
      */
-    public int getBlackVotes(int id_election) {
+    public int getBlankVotes(int id_election) {
         return countRowsBD("election WHERE id = " + id_election, "blank_votes");
     }
 
@@ -892,9 +928,49 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return percentagem de votos
      */
     public float getPercentVotesCandidacy(int id_election, int id_candidacy) {
-        int totalVotes = countRowsBD("candidacy", "SUM(votes)") + getBlackVotes(id_election) + getNullVotes(id_election);
-        if (id_candidacy == -1) return ((float) getBlackVotes(id_election) / (float) totalVotes) * 100;
+        int totalVotes = countRowsBD("candidacy", "SUM(votes)") + getBlankVotes(id_election) + getNullVotes(id_election);
+        if (id_candidacy == -1) return ((float) getBlankVotes(id_election) / (float) totalVotes) * 100;
         else return ((float) getVotesCandidacy(id_election, id_candidacy) / (float) totalVotes) * 100;
+    }
+
+    public float getPercentNullVotes(int id_election) {
+        int null_votes = countRowsBD("election WHERE id = " + id_election, "null_votes");
+        return (float) null_votes / (float) getTotalVotes(id_election);
+    }
+
+    public float getPercentBlankVotes(int id_election) {
+        int blank_votes = countRowsBD("election WHERE id = " + id_election, "blank_votes");
+        return (float) blank_votes / (float) getTotalVotes(id_election);
+    }
+
+    public float getPercentCandidacyVotes(int election_id, int candidacy_id) {
+        int candidacy_votes = getVotesCandidacy(election_id, candidacy_id);
+        return (float) candidacy_votes / (float) getTotalVotes(election_id);
+    }
+
+    public void updatePercentNull(int id_election) {
+        updateOnDB("UPDATE election set null_percent = " + getPercentNullVotes(id_election) + " WHERE id = " + id_election);
+    }
+
+    public void updatePercentBlank(int id_election) {
+        updateOnDB("UPDATE election set blank_percent = " + getPercentBlankVotes(id_election) + " WHERE id = " + id_election);
+    }
+
+    public void updatePercentVotesCandidacy(int election_id, int candidacy_id) {
+        updateOnDB("UPDATE candidacy set votes_percent = " + getPercentCandidacyVotes(election_id, candidacy_id) + " WHERE election_id = " + election_id + " AND id = " + candidacy_id);
+    }
+
+    public int getTotalVotes(int election_id) {
+        return countRowsBD("candidacy WHERE election_id = " + election_id, "sum(votes)") + getBlankVotes(election_id) + getNullVotes(election_id);
+    }
+
+    public void updateAllVotes(int election_id) {
+        ArrayList<Candidacy> candidaciesElection = getCandidacies(election_id);
+        for (Candidacy c : candidaciesElection) {
+            updatePercentVotesCandidacy(election_id, c.getId());
+        }
+        updatePercentBlank(election_id);
+        updatePercentNull(election_id);
     }
 
     /**
@@ -1002,6 +1078,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public int getElectionToManage(String title_election) {
         return countRowsBD("election where title = '" + title_election + "'", "id");
+    }
+
+    public int checkIfIsAdmin(int cc_number) {
+        return countRowsBD("person WHERE cc_number = " + cc_number, "isAdmin");
     }
 
     /**

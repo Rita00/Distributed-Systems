@@ -33,7 +33,7 @@ public class HeyBean {
     /**
      * Guarda o id da lista que o eleitor votou
      */
-    private int candidacy_id, null_vote, blank_vote;
+    private int candidacy_id;
     /**
      * Guarda os campos necessários para efetuar o registo de um utilizador, que são recebidos através da view (ficheiro jsp)
      */
@@ -64,6 +64,11 @@ public class HeyBean {
 
     private String authorizationURL;
 
+
+    private int null_votes, blank_votes;
+
+    private float null_percent, blank_percent;
+
     /**
      * Conecta-se ao RMI
      */
@@ -78,12 +83,20 @@ public class HeyBean {
         }
     }
 
-    public int getNull_vote() {
-        return null_vote;
+    public float getNull_percent() {
+        return null_percent;
     }
 
-    public int getBlank_vote() {
-        return blank_vote;
+    public float getBlank_percent() {
+        return blank_percent;
+    }
+
+    public int getNull_votes() {
+        return null_votes;
+    }
+
+    public int getBlank_votes() {
+        return blank_votes;
     }
 
     public int getCandidacy_id() {
@@ -159,6 +172,15 @@ public class HeyBean {
 
     public String getAuthorizationURL() {
         return authorizationURL;
+    }
+
+
+    public void setNull_votes(int null_votes) {
+        this.null_votes = null_votes;
+    }
+
+    public void setBlank_votes(int blank_votes) {
+        this.blank_votes = blank_votes;
     }
 
     public void setName(String name) {
@@ -241,13 +263,6 @@ public class HeyBean {
         this.person_cc = person_cc;
     }
 
-    public void setNull_vote(int null_vote) {
-        this.null_vote = null_vote;
-    }
-
-    public void setBlank_vote(int blank_vote) {
-        this.blank_vote = blank_vote;
-    }
 
     public void setAuthorizationURL(String authorizationURL) {
         this.authorizationURL = authorizationURL;
@@ -376,6 +391,7 @@ public class HeyBean {
             } else {
                 server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(12));
             }
+            server.updateAllVotes(this.election_id);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -532,26 +548,6 @@ public class HeyBean {
         return endedElections;
     }
 
-    public int getBlankVotes() {
-        int blank_votes = 0;
-        try {
-            blank_votes = server.getBlackVotes(this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return blank_votes;
-    }
-
-    public int getNullVotes() {
-        int null_votes = 0;
-        try {
-            null_votes = server.getNullVotes(this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null_votes;
-    }
-
     public ArrayList<Candidacy> getCandidaciesWithVotes() {
         ArrayList<Candidacy> candidaciesWithVotes = null;
         try {
@@ -601,5 +597,24 @@ public class HeyBean {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean checkIfIsAdmin() {
+        try {
+            if (server.checkIfIsAdmin(this.ccnumber) == 1) {
+                return true;
+            }
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void setNull_percent(float null_percent) {
+        this.null_percent = null_percent;
+    }
+
+    public void setBlank_percent(float blank_percent) {
+        this.blank_percent = blank_percent;
     }
 }

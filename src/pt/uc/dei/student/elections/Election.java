@@ -40,6 +40,9 @@ public class Election implements Serializable {
      */
     private LocalDateTime end;
     private String endStr;
+
+    private int null_votes, blank_votes;
+    private float null_percent, blank_percent;
     /**
      * Construtor do Objeto Eleição
      *
@@ -60,6 +63,22 @@ public class Election implements Serializable {
         this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
         this.endStr = end.replace('T',' ');
     }
+
+    public Election(int id, String title, String type, String description, String begin, String end, int null_votes, int blank_votes, float null_percent, float blank_percent) {
+        this.id = id;
+        this.title = title;
+        this.type = type;
+        this.description = description;
+        this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.beginStr = begin.replace('T',' ');
+        this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.endStr = end.replace('T',' ');
+        this.null_votes = null_votes;
+        this.blank_votes = blank_votes;
+        this.blank_percent = blank_percent;
+        this.null_percent = null_percent;
+    }
+
     /**
      * Converte duas strings contendo a data e a hora num objeto do tipo LocalDateTime
      *
@@ -88,6 +107,22 @@ public class Election implements Serializable {
                 String.format("Inicio - %s às %s\n", this.begin.toLocalDate().toString(), this.begin.toLocalTime().toString()) +
                 String.format("Fim - %s às %s\n", this.end.toLocalDate().toString(), this.end.toLocalTime().toString()) +
                 "-----------------------------\n";
+    }
+
+    public float getNull_percent() {
+        return null_percent;
+    }
+
+    public float getBlank_percent() {
+        return blank_percent;
+    }
+
+    public int getNull_votes() {
+        return null_votes;
+    }
+
+    public int getBlank_votes() {
+        return blank_votes;
     }
 
     public String getBeginStr() {
@@ -154,6 +189,23 @@ public class Election implements Serializable {
     public LocalDateTime getEnd() {
         return this.end;
     }
+
+    public void setNull_percent(float null_percent) {
+        this.null_percent = null_percent;
+    }
+
+    public void setBlank_percent(float blank_percent) {
+        this.blank_percent = blank_percent;
+    }
+
+    public void setNull_votes(int null_votes) {
+        this.null_votes = null_votes;
+    }
+
+    public void setBlank_votes(int blank_votes) {
+        this.blank_votes = blank_votes;
+    }
+
     /**
      * Setter do nome da eleicao
      *

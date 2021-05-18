@@ -27,6 +27,8 @@ begin_date	 VARCHAR(32) NOT NULL CONSTRAINT begin_date CHECK (begin_date is date
 end_date	 VARCHAR(32) NOT NULL CONSTRAINT end_date CHECK (end_date is datetime(end_date) and end_date > election.begin_date),
 blank_votes BIGINT NOT NULL DEFAULT 0,
 null_votes	 BIGINT NOT NULL DEFAULT 0,
+null_percent float,
+blank_percent float,
 PRIMARY KEY(id)
 );
 
@@ -36,6 +38,7 @@ name	 VARCHAR(512) NOT NULL,
 type	 VARCHAR(512) NOT NULL,
 votes	 BIGINT NOT NULL DEFAULT 0,
 election_id INTEGER NOT NULL,
+votes_percent float,
 PRIMARY KEY(id),
 FOREIGN KEY (election_id) REFERENCES election(id)
 );

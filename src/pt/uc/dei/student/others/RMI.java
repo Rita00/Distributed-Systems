@@ -438,7 +438,7 @@ public interface RMI extends Remote {
      * @throws RemoteException      falha no RMI
      * @throws InterruptedException thread interrompida
      */
-    int getBlackVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
+    int getBlankVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
 
     /**
      * Devolve o numero de votos nulos para uma
@@ -523,6 +523,20 @@ public interface RMI extends Remote {
 
     Person getPersonFb(String fbId) throws java.rmi.RemoteException, InterruptedException;
 
+    int checkIfIsAdmin(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
-    }
+    ArrayList<Election> selectElectionsWithVotes(String sql) throws java.rmi.RemoteException, InterruptedException;
+
+    float getPercentNullVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
+
+    float getPercentBlankVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
+
+    void updatePercentNull(int id_election) throws java.rmi.RemoteException, InterruptedException;
+
+    void updatePercentBlank(int id_election) throws java.rmi.RemoteException, InterruptedException;
+
+    void updatePercentVotesCandidacy(int election_id, int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
+
+    void updateAllVotes(int election_id) throws java.rmi.RemoteException, InterruptedException;
+}
 

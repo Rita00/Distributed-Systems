@@ -15,6 +15,16 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
     <constant name="struts.action.excludePattern" value="/webServer/ws"/>
     <package name="webServer" extends="struts-default">
 
+<!--        <interceptors>-->
+<!--            <interceptor name="loginInterceptor" class="webServer.interceptor.LoginInterceptor" />-->
+<!--            <interceptor-stack name="loginStack">-->
+<!--                <interceptor-ref name="loginInterceptor" />-->
+<!--                <interceptor-ref name="defaultStack" />-->
+<!--            </interceptor-stack>-->
+<!--        </interceptors>-->
+
+<!--        <default-interceptor-ref name="loginStack" />-->
+
         <interceptors>
             <interceptor name="showVotesCountInterceptor" class="webServer.interceptor.ShowVotesCountInterceptor" />
             <interceptor-stack name="showVotesCountStack">
@@ -23,6 +33,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             </interceptor-stack>
         </interceptors>
         <default-interceptor-ref name="showVotesCountStack" />
+
 
         <default-action-ref name="index"/>
 
@@ -44,6 +55,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="login" class="webServer.action.LoginAction" method="execute">
+            <result name="isAdmin">/Login_menuAdministrator.jsp</result>
             <result name="success">/chooseElection.jsp</result>
             <result name="login">/Login.jsp</result>
         </action>

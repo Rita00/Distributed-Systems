@@ -23,6 +23,9 @@ public class Candidacy implements Serializable {
     private String type;
 
     private int votes;
+
+    private float votes_percent;
+
     /**
      * Construtor do Objeto Lista(Candidatura)
      *
@@ -36,11 +39,12 @@ public class Candidacy implements Serializable {
         this.type = type;
     }
 
-    public Candidacy(int id, String name, String type, int votes) {
+    public Candidacy(int id, String name, String type, int votes, float votes_percent) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.votes = votes;
+        this.votes_percent = votes_percent;
     }
     /**
      * Devolve uma string com informacoes relativas a uma lista
@@ -52,6 +56,11 @@ public class Candidacy implements Serializable {
                 String.format("%s\t(%s)\n", this.name, this.type) +
                 "---------------------------\n";
     }
+
+    public float getVotes_percent() {
+        return votes_percent;
+    }
+
     /**
      * Getter do id da lista
      *
@@ -79,6 +88,10 @@ public class Candidacy implements Serializable {
 
     public int getVotes() {
         return votes;
+    }
+
+    public void setVotes_percent(float votes_percent) {
+        this.votes_percent = votes_percent;
     }
 
     /**

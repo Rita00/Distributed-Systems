@@ -28,6 +28,9 @@
         <p style="font-size: 15px ; color: black">${value.name}: ${value.votes}</p>
     </c:forEach>
 
+    <p style="font-size: 15px ; color: black">Votos Nulos: ${HeyBean.null_votes}</p>
+    <p style="font-size: 15px ; color: black">Votos brancos: ${value.blank_votes}</p>
+
     <s:form action="backResultsElection" method="post">
         <button id="exit">Voltar</button>
     </s:form>

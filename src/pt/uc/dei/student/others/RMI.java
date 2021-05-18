@@ -515,9 +515,11 @@ public interface RMI extends Remote {
 
     String checkIfPersonExists(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
-    ArrayList<Candidacy> selectCandidaciesWithVotes(String sql) throws java.rmi.RemoteException, InterruptedException;
-
     ArrayList<Candidacy> getCandidaciesWithVotes(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
+    boolean associateFbId(int ccnumber, String fbId) throws java.rmi.RemoteException, InterruptedException;
+
+    String getAssociatedFbId(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
 
 }

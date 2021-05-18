@@ -14,8 +14,8 @@ public class FacebookRestClient
   public static void main(String[] args)
   {
     // Replace these with your own api key and secret
-    String apiKey = "";
-    String apiSecret = "";
+    String apiKey = "1345313155825147";
+    String apiSecret = "f6c3ca41446cc2d017a37650223f581c";
     
     
     OAuthService service = new ServiceBuilder()

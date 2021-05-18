@@ -59,8 +59,10 @@ public class HeyBean {
      * Guarda o cartão de cidadão de uma determinada pessoa que se candidata como membro a uma lista
      */
     // Field for add a person to a list
-    int person_cc;
+    private int person_cc;
     //Fields for see details election
+
+    private String authorizationURL;
 
     /**
      * Conecta-se ao RMI
@@ -151,6 +153,10 @@ public class HeyBean {
         return fimDate;
     }
 
+    public String getAuthorizationURL() {
+        return authorizationURL;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -239,6 +245,10 @@ public class HeyBean {
         this.blank_vote = blank_vote;
     }
 
+    public void setAuthorizationURL(String authorizationURL) {
+        this.authorizationURL = authorizationURL;
+    }
+
     public Person getUser() throws RemoteException {
         Person p = null;
         try {
@@ -251,6 +261,7 @@ public class HeyBean {
 
     /**
      * Chama um método no RMI que devolve todas as eleições a decorrer no momento na base de dados
+     *
      * @return lista com todas as eleições a decorrer no momento
      */
     public ArrayList<Election> getElections() {
@@ -268,13 +279,14 @@ public class HeyBean {
      * Serve para consultar os detalhes de eleições passadas
      * Modificar detalhes de uma determinada eleição que ainda não tenha começado
      * Consultar os detalhes das listas de uma determinada eleição, mesmo que esta esteja a decorrer no momento
+     *
      * @return lista com todas as eleições presentes na base de dados
      */
     public ArrayList<Election> getAllElections() {
         ArrayList<Election> allElections = null;
         try {
             allElections = server.getElections();
-        } catch(RemoteException | InterruptedException e) {
+        } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
         return allElections;
@@ -282,6 +294,7 @@ public class HeyBean {
 
     /**
      * Chama um método no RMI que devolve as listas de uma determinada eleição
+     *
      * @return lista com as candidaturas a uma determinada eleição
      */
     public ArrayList<Candidacy> getCandidacies() {
@@ -297,6 +310,7 @@ public class HeyBean {
     /**
      * Chama um método no RMI que devolve todos os departamentos da Universidade de Coimbra
      * Serve para listar os departamentos, quando uma pessoa se está a registar escolher o departamento que frequenta, por exemplo
+     *
      * @return lista com todos os departamentos da Universidade de Coimbra
      */
     public ArrayList<Department> getDepartments() {
@@ -321,6 +335,7 @@ public class HeyBean {
 
     /**
      * Chama um método no RMI que devolve todos os membros pertencentes a uma determianda lista
+     *
      * @return lista com os membros de uma determinada lista
      */
     public ArrayList<Person> getCandidaciesPeople() {
@@ -354,6 +369,7 @@ public class HeyBean {
     /**
      * Chama método no RMI que verifica na base de dados se já existe algum registo
      * que uma determinada pessoa já tenha votado numa determinada eleição
+     *
      * @return se já tiver votado devolve true, caso contrário devolve false
      */
     public boolean checkIfAlreadyVotes() {
@@ -367,6 +383,7 @@ public class HeyBean {
 
     /**
      * Chama método no RMI que tenta inserir na base de dados um novo utilizador aquando o seu registo
+     *
      * @return devolve true ou false caso tenha tido sucesso ou não, respetivamente
      */
     public boolean insertRegister() {
@@ -380,6 +397,7 @@ public class HeyBean {
 
     /**
      * Chama método no RMI que tenta inserir na base de dados uma nova eleição aquando a sua criação
+     *
      * @return devolve true ou false caso tenha tido sucesso ou não, respetivamente
      */
     public int insertElection() {
@@ -401,6 +419,7 @@ public class HeyBean {
      * Verifica se uma determinada pessoa pode votar numa determinada eleição
      * Previne que alguem tente votar (caso não possa) passando logo para a página
      * se escolher as listas e não ter passado pela página de escolher uma eleição
+     *
      * @return se já tiver votado devolve true, caso contrário devolve false
      * se a lista não pertencer à eleição especifica devolve false
      */
@@ -421,6 +440,7 @@ public class HeyBean {
     /**
      * Verifica se uma determinada eleição existe
      * Previne que o utilizador não vá diretamente à pagina de uma determinada eleição sem passar pelo menu de a escolher primeiro
+     *
      * @return true ou false consoante exista ou não, respetivamente
      */
     public boolean checkIfSelectedElectionExists() {
@@ -430,6 +450,7 @@ public class HeyBean {
     /**
      * Verifica se uma determinada lista existe e se pertence a uma determinada eleição
      * Previne que o utilizador não vá diretamente à pagina de uma determinada lista sem passar pelo menu de escolher primeiro a eleição e a lista
+     *
      * @return true ou false consoante exista ou não, respetivamente
      */
     public boolean checkSelectedCandidacy_Election() {
@@ -470,7 +491,8 @@ public class HeyBean {
             }
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
-        } return false;
+        }
+        return false;
     }
 
     public String checkIfPersonExists() {
@@ -496,13 +518,13 @@ public class HeyBean {
     }
 
     public int getBlankVotes() {
-        int black_votes = 0;
+        int blank_votes = 0;
         try {
-            black_votes = server.getBlackVotes(this.election_id);
+            blank_votes = server.getBlackVotes(this.election_id);
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-        return black_votes;
+        return blank_votes;
     }
 
     public int getNullVotes() {
@@ -530,11 +552,9 @@ public class HeyBean {
             try {
                 this.server.initializeRealTimeVotes(NOTIFIER);
                 break;
-            } catch (RemoteException | InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-    }
 
     public void setRealTimeOff(NotifierCallBack NOTIFIER){
         try {
@@ -543,4 +563,30 @@ public class HeyBean {
             e.printStackTrace();
         }
     }
+
+    public boolean associateFbId(String fbId) {
+        if (getAssociatedFbId() == null) {
+            try {
+                return server.associateFbId(this.ccnumber, fbId);
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public String getAssociatedFbId() {
+        String associatedFbId = null;
+        try {
+            return server.getAssociatedFbId(this.ccnumber);
+
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+//    public String FacebookLoginURL() {
+//        String response;
+//    }
 }

@@ -136,14 +136,14 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <action name="votesCount" class="webServer.action.ShowVotesCountAction" method="execute">
             <result>/AdminConsole_OP8_votesCount.jsp</result>
         </action>
+
         <!--        TODO nao me posso esquecer das percentagens na apresentação dos resultados de uma eleição e faltam os volos brancos e nulos-->
 
         <action name="associateFacebook" class="webServer.action.AssociateFacebookAction" method="execute">
             <result name="success" type="redirect">${authorizationUrl}</result>
         </action>
 
-        <action name="associateFacebookForRealThisTime" class="webServer.action.AssociateFacebookAction"
-                method="associate">
+        <action name="associateFacebookForRealThisTime" class="webServer.action.AssociateFacebookAction" method="associate">
             <result>/chooseElection.jsp</result>
         </action>
 

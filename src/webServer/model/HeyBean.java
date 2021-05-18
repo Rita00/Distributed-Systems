@@ -570,8 +570,10 @@ public class HeyBean {
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
 
-    public void setRealTimeOff(NotifierCallBack NOTIFIER){
+    public void setRealTimeOff(NotifierCallBack NOTIFIER) {
         try {
             this.server.endRealTimeInfo(NOTIFIER);
         } catch (IOException | InterruptedException e) {

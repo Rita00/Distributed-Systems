@@ -18,15 +18,22 @@ public class LoginAction extends ActionSupport implements SessionAware {
     public String execute() throws Exception {
         // todo Verificar se já tem login feito, caso tenha não iniicar sessão de novo!
         // todo é preciso ter smp em atenção que se pode fazer pedidos sem ser pelo browser (exemplo: postman)
-        this.getHeyBean().setCcnumber(this.ccnumber);
-        this.getHeyBean().setPassword(this.password);
-        if(this.getHeyBean().getUser() != null) {
-            session.put("ccnumber", ccnumber);
-            session.put("loggedin", true); // this marks the user as logged in
+        if (this.getHeyBean().getCcnumber() == 0) {
+            this.getHeyBean().setCcnumber(this.ccnumber);
+            this.getHeyBean().setPassword(this.password);
+            if (this.getHeyBean().getUser() != null) {
+                session.put("ccnumber", ccnumber);
+                session.put("loggedin", true); // this marks the user as logged in
+                return SUCCESS;
+            } else {
+                this.getHeyBean().setCcnumber(0);
+                this.getHeyBean().setPassword(null);
+                return LOGIN;
+            }
+        } else {
             return SUCCESS;
         }
-        else
-            return LOGIN;
+
     }
 
     public int getCcnumber() {
@@ -51,7 +58,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
     }
 
     public HeyBean getHeyBean() {
-        if(!session.containsKey("heyBean"))
+        if (!session.containsKey("heyBean"))
             this.setHeyBean(new HeyBean());
         return (HeyBean) session.get("heyBean");
     }

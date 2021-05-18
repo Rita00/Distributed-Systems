@@ -12,7 +12,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
     <!-- devMode equals debug information and reload everything for every request -->
     <constant name="struts.devMode" value="true"/>
     <constant name="struts.ui.theme" value="simple"/>
-    
+
     <package name="webServer" extends="struts-default">
 
         <default-action-ref name="index"/>
@@ -123,7 +123,8 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result>/AdminConsole_OP6_ChooseElectionResults.jsp</result>
         </action>
 
-        <action name="chooseElectionToSeeDetails" class="webServer.action.ChooseElectionToSeeResultsAction" method="execute">
+        <action name="chooseElectionToSeeDetails" class="webServer.action.ChooseElectionToSeeResultsAction"
+                method="execute">
             <result name="error">/AdminConsole_OP6_ChooseElectionResults.jsp</result>
             <result name="success">/AdminConsole_OP6_electionResults.jsp</result>
         </action>
@@ -132,14 +133,24 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result>/AdminConsole_OP6_ChooseElectionResults.jsp</result>
         </action>
 
-<!--        TODO nao me posso esquecer das percentagens na apresentação dos resultados de uma eleição e faltam os volos brancos e nulos-->
+        <!--        TODO nao me posso esquecer das percentagens na apresentação dos resultados de uma eleição e faltam os volos brancos e nulos-->
 
         <action name="associateFacebook" class="webServer.action.AssociateFacebookAction" method="execute">
-            <result name="success" type = "redirect">${authorizationUrl}</result>
+            <result name="success" type="redirect">${authorizationUrl}</result>
         </action>
 
         <action name="associateFacebookForRealThisTime" class="webServer.action.AssociateFacebookAction" method="associate">
             <result>/chooseElection.jsp</result>
+        </action>
+
+        <action name="loginFacebook" class="webServer.action.LoginFacebookAction" method="execute">
+            <result name="success" type="redirect">${authorizationUrl}</result>
+        </action>
+
+        <action name="loginFacebookForRealThisTime" class="webServer.action.LoginFacebookAction" method="login">
+            <result name="success" type="redirect">/login</result>
+            <result name="error">/Login.jsp</result>
+
         </action>
     </package>
 </struts>

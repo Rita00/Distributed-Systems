@@ -43,7 +43,7 @@
         }
 
         function onOpen(event) {
-            write('Connected to ' + window.location.host + '.');
+            //write('Connected to ' + window.location.host + '.');
         }
 
         function onClose(event) {
@@ -51,6 +51,7 @@
         }
 
         function onMessage(message) { // print the received message
+            console.log(message.data);
             write(message.data);
         }
 

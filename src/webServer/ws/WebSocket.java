@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.OnOpen;
@@ -16,25 +16,26 @@ import javax.websocket.Session;
 @ServerEndpoint("/webServer/ws")
 public class WebSocket {
 
-    private static Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
+    private static final Set<WebSocket> connections = new CopyOnWriteArraySet<>();
+    Session session;
 
     @OnOpen
     public void onOpen(Session session) {
-        sessions.add(session);
+        this.session=session;
+        connections.add(this);
+        //broadcast("Hey");
     }
 
     @OnClose
     public void onClose(Session session) {
-        sessions.remove(session);
+        connections.remove(this);
+        //broadcast("Bye");
     }
 
     @OnMessage
-    public String receiveMessage(String message) {
-        // one should never trust the client, and sensitive HTML
-        // characters should be replaced with &lt; &gt; &quot; &amp;
-        //String upperCaseMessage = message.toUpperCase();
-        //sendMessage("[" + username + "] " + upperCaseMessage);
-        return message;
+    public void incoming(String message) {
+        System.out.println(message);
+        broadcast(message);
     }
 
     @OnError
@@ -42,31 +43,23 @@ public class WebSocket {
         t.printStackTrace();
     }
 
-    public static void sendMessage(String text) {
-        // uses *this* object's session to call sendText()
-
-        for(Session s : sessions){
+    public static void broadcast(String text) {
+        for(WebSocket c : connections){
             try {
-                s.getBasicRemote().sendText(text);
+                synchronized (c) {
+                    c.session.getBasicRemote().sendText(text);
+                }
                 break;
             } catch (IOException e) {
-                // clean up once the WebSocket connection is closed
+                connections.remove(c);
                 try {
-                    s.close();
+                    c.session.close();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+                //broadcast("Removed");
             }
         }
 
-    }
-
-
-    public static Set<Session> getSessions() {
-        return sessions;
-    }
-
-    public static void setSessions(Set<Session> sessions) {
-        WebSocket.sessions = sessions;
     }
 }

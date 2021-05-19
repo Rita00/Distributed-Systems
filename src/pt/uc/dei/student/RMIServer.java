@@ -974,7 +974,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     /**
-     * Procura pessoas na base de dados cujo os dados correpondam
+     * Procura pessoas na base de dados cujoss dados correpondam
      *
      * @param election_id   ID da eleição
      * @param department_id ID do departamento
@@ -1249,6 +1249,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public int getElectionFromCandidacy(int candidacy_id) {
         return countRowsBD("candidacy WHERE id = " + candidacy_id, "election_id");
+    }
+
+    public String getElectionTitleFromCandidacy(int candidacy_id) {
+        return getStrings("Select title FROM candidacy WHERE id = " + candidacy_id);
     }
 
     public boolean associateFbId(int ccnumber, String fbId) {

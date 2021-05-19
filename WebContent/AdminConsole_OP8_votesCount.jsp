@@ -18,7 +18,7 @@
     <link rel="shortcut icon" href="images/favicon.ico">
     <script type="text/javascript">
 
-        var websocket = null;
+        let websocket = null;
 
         window.onload = function() { // URI = ws://10.16.0.165:8080/WebSocket/ws
             connect('ws://' + window.location.host + '/webserver/webServer/ws');
@@ -32,8 +32,7 @@
                 console.log("MozWebSocket in window")
                 websocket = new MozWebSocket(host);
             }else {
-                console.log("Get a real browser which supports WebSocket.");
-                write('Get a real browser which supports WebSocket.');
+                alert('Get a real browser which supports WebSocket.');
                 return;
             }
             websocket.onopen    = onOpen; // set the 4 event listeners below
@@ -43,7 +42,7 @@
         }
 
         function onOpen(event) {
-            //write('Connected to ' + window.location.host + '.');
+            alert('Connected to ' + window.location.host + '.');
         }
 
         function onClose(event) {
@@ -51,7 +50,7 @@
         }
 
         function onMessage(message) { // print the received message
-            console.log(message.data);
+            alert(message.data);
             write(message.data);
         }
 
@@ -76,7 +75,9 @@
 
     <p id="text"></p>
 
-    <button id="exit">Voltar</button>
+    <s:form action="" method="post">
+        <button id="exit">Voltar</button>
+    </s:form>
 </div>
 </body>
 </html>

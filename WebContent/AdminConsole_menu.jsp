@@ -47,6 +47,9 @@
     <s:form action="votesCount" method="post">
             <button title="Consultar contagem de votos em tempo real">Contagem dos Votos</button>
     </s:form>
+    <s:form action="onlineUsers" method="post">
+        <button title="Consultar os utilizadores online">Utilizadores Online</button>
+    </s:form>
     <s:form action="backMenuConsole" method="post">
         <button id="exit" title="Sair da consola de administração">Sair</button>
     </s:form>

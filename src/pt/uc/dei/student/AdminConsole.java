@@ -4,6 +4,7 @@ import pt.uc.dei.student.elections.*;
 import pt.uc.dei.student.others.NotifierCallBack;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
+import webServer.ws.WebSocket;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -147,6 +148,7 @@ public class AdminConsole {
                         this.statusVotes();
                         break;
                     default:
+                        WebSocket.broadcast(String.format("%s",command));
                         break;
                 }
             }

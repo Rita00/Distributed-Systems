@@ -40,11 +40,16 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
     public void updateAdmin(ArrayList<InfoElectors> info) {
         System.out.println("==============================");
         String str="";
-        for (InfoElectors i : info) {
-            str += String.format("%s\t%s\t%s\n", i.getElection_title(), i.getDep_name(), i.getCount());
+        if(info.size()>0){
+            for (InfoElectors i : info) {
+                str = String.format("%s%s\t%s\t%s\n", str, i.getElection_title(), i.getDep_name(),i.getCount());
+            }
+        }else{
+            str = "Sem dados para apresentar atualmente.\n";
         }
-        WebSocket.broadcast(str);
-        System.out.printf("%s",str);
+        //WebSocket.broadcast(str);
+        WebSocket.broadcast("AQUIIIIIIII");
+        System.out.printf("%s", str);
     }
     /**
      * Print das informações das mesas de voto e respetivos terminais de voto

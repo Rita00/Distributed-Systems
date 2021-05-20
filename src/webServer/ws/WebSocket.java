@@ -17,13 +17,13 @@ import javax.websocket.Session;
 public class WebSocket {
 
     private static final Set<WebSocket> connections = new CopyOnWriteArraySet<>();
-    Session session;
+    private Session session;
 
     @OnOpen
     public void onOpen(Session session) {
         this.session=session;
         connections.add(this);
-        //broadcast("Hey");
+        broadcast("Hey");
     }
 
     @OnClose
@@ -39,7 +39,7 @@ public class WebSocket {
     }
 
     @OnError
-    public void handleError(Throwable t) {
+    public void onError(Throwable t) {
         t.printStackTrace();
     }
 
@@ -49,14 +49,16 @@ public class WebSocket {
                 synchronized (c) {
                     c.session.getBasicRemote().sendText(text);
                 }
-                break;
             } catch (IOException e) {
+                e.printStackTrace();
+                /*
                 connections.remove(c);
                 try {
                     c.session.close();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+                */
                 //broadcast("Removed");
             }
         }

@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="style/main.css">
     <link rel="stylesheet" type="text/css" href="style/menu.css">
     <!-- title -->
-    <title>UC eVoting | Consola de Administração | Constagem dos Votos</title>
+    <title>UC eVoting | Consola de Administração | Utilizadores Online</title>
     <!--icon-->
     <link rel="shortcut icon" href="images/favicon.ico">
     <script type="text/javascript">
@@ -71,7 +71,7 @@
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
-    <h1>Contagem dos Votos</h1>
+    <h1>Utilizadores Online</h1>
 
     <p id="text"></p>
 

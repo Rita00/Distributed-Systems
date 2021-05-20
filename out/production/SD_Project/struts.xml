@@ -201,5 +201,13 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <action name="adminVote" class="webServer.action.RedirectAction" method="execute">
             <result> /chooseElection.jsp</result>
         </action>
+
+        <action name="adminConsole" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_menu.jsp</result>
+        </action>
+
+        <action name="backMenuConsole" class="webServer.action.RedirectAction" method="execute">
+            <result>/Login_menuAdministrator.jsp</result>
+        </action>
     </package>
 </struts>

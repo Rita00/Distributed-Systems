@@ -26,7 +26,7 @@
     <s:form action="adminVote" method="post">
             <button>Votar</button>
     </s:form>
-    <s:form action="" method="post">
+    <s:form action="adminConsole" method="post">
             <button>Consola de Administração</button>
     </s:form>
 

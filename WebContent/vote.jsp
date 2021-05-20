@@ -12,7 +12,8 @@
     <!-- css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="style/main.css">
-    <link rel="stylesheet" type="text/css" href="style/form.css">
+    <link rel="stylesheet" type="text/css" href="style/menu.css">
+    <link rel="stylesheet" type="text/css" href="style/vote.css">
     <!--icon-->
     <link rel="shortcut icon" href="images/favicon.ico">
 
@@ -34,22 +35,22 @@
                 <s:form action="vote" method="post">
                     <div class="panel-body">
                         <c:forEach items="${HeyBean.candidacies}" var="value">
-                            <div class="radio" style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
-                                <label style="width: 100%; margin-left: 1px">
-                                    <input type="radio" name="candidacy_id" value="${value.id}">
+                            <div class="radio">
+                                <label class="voteLabel">
+                                    <input class="radiobtn" type="radio" name="candidacy_id" value="${value.id}">
                                     <c:out value="${value.name}"/>
                                 </label>
                             </div>
                         </c:forEach>
-                        <div class="radio" style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
-                            <label style="width: 100%; margin-left: 1px">
-                                <input type="radio" name="candidacy_id" value="-1">
-                                <c:out value="Voto Nulo"/>
+                        <div class="radio">
+                            <label class="voteLabel">
+                                <input class="radiobtn" type="radio" name="candidacy_id" value="-1">
+                                <c:out value="Voto nulo"/>
                             </label>
                         </div>
-                        <div class="radio" style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
-                            <label style="width: 100%; margin-left: 1px">
-                                <input type="radio" name="candidacy_id" value="-2">
+                        <div class="radio">
+                            <label class="voteLabel">
+                                <input class="radiobtn" type="radio" name="candidacy_id" value="-2">
                                 <c:out value="Voto em branco"/>
                             </label>
                         </div>
@@ -61,25 +62,30 @@
             </div>
         </div>
     </div>
+    <div class="rowBtn">
+        <div style="margin-right:5%; width:45%" class="fb-share-button"  data-href="https://www.telepizza.pt/" data-layout="button" data-size="small">
+            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.telepizza.pt/;src=sdkpreparse" class="fb button center" style="width: 100%">
+                <i class="fa fa-facebook fa-fw"></i>
+                Partilhar
+            </a>
+        </div>
 
-    <div class="fb-share-button" data-href="https://www.telepizza.pt/" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.telepizza.pt/;src=sdkpreparse" class="fb-xfbml-parse-ignore">Partilhar no facebook!</a></div>
+        <%--<script>
+            document.getElementById('shareBtn').onclick = function() {
+                FB.ui({
+                    display: 'popup',
+                    method: 'share',
+                    href: 'http://localhost:8080/webserver/login.action',
+                }, function(response){});
+            }
+        </script>--%>
 
-    <%--<script>
-        document.getElementById('shareBtn').onclick = function() {
-            FB.ui({
-                display: 'popup',
-                method: 'share',
-                href: 'http://localhost:8080/webserver/login.action',
-            }, function(response){});
-        }
-    </script>--%>
-
-    <c:if test="${HeyBean.associatedFbId == null}">
-        <s:form action="associateFacebook" method="post">
-            <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%" value="Associar Facebook!"/>
-        </s:form>
-    </c:if>
-
+        <c:if test="${HeyBean.associatedFbId == null}">
+            <s:form style="margin-left:5%; width:45%" action="associateFacebook" method="post">
+                    <s:submit cssClass="fb button center" style="width: 100%" value='Associar ao Facebook'/>
+            </s:form>
+        </c:if>
+    </div>
     <s:form action="" method="post">
         <button id="exit">Sign Out</button>
     </s:form>

@@ -13,7 +13,7 @@
     <!-- css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="style/main.css">
-    <link rel="stylesheet" type="text/css" href="style/form.css">
+    <link rel="stylesheet" type="text/css" href="style/menu.css">
     <!--icon-->
     <link rel="shortcut icon" href="images/favicon.ico">
 
@@ -55,7 +55,7 @@
     </div>
     <c:if test="${HeyBean.associatedFbId == null}">
         <s:form action="associateFacebook" method="post">
-            <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%" value="Associar Facebook!"/>
+            <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%" value="Associar Facebook"/>
         </s:form>
     </c:if>
 

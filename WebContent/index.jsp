@@ -11,6 +11,6 @@
         <link rel="shortcut icon" href="images/favicon.ico">
     </head>
     <body>
-    <c:redirect url="vote.jsp"/>
+    <c:redirect url="AdminConsole_menu.jsp"/>
     </body>
 </html>

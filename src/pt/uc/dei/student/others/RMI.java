@@ -542,5 +542,7 @@ public interface RMI extends Remote {
     String getElectionTitleFromCandidacy(int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<InfoElectors> getInfoElectors() throws java.rmi.RemoteException, InterruptedException;
+
+    ArrayList<InfoPolls> getInfoPolls() throws java.rmi.RemoteException, InterruptedException;
 }
 

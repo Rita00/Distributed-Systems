@@ -1,8 +1,6 @@
 package webServer.ws;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -23,9 +21,7 @@ public class WebSocket {
     public void onOpen(Session session) {
         this.session=session;
         connections.add(this);
-/*
-        broadcast("Hey");
-*/
+        //broadcast("Hey");
     }
 
     @OnClose
@@ -45,15 +41,12 @@ public class WebSocket {
         t.printStackTrace();
     }
 
-    public static void broadcast(String text) {
+    public synchronized static void broadcast(String text) {
         for(WebSocket c : connections){
             try {
-                synchronized (c) {
-                    c.session.getBasicRemote().sendText(text);
-                }
+                c.session.getBasicRemote().sendText(text);
             } catch (IOException e) {
                 e.printStackTrace();
-
                 connections.remove(c);
                 try {
                     c.session.close();

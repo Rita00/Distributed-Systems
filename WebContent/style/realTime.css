@@ -1,0 +1,15 @@
+.history{
+    margin: 0 10%;
+    width:80%;
+    color: black;
+}
+.history p{
+    color: black;
+}
+.history label{
+    text-align: center;
+}
+.history h4{
+    text-align: left;
+    margin:0 !important;
+}

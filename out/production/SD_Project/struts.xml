@@ -23,24 +23,24 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
 <!--            </interceptor-stack>-->
 <!--        </interceptors>-->
 
-<!--        <default-interceptor-ref name="loginStack" />-->
+<!--        <default-interceptor-ref name="loginStack" />
+        <!-
+                <interceptors>
+                    <interceptor name="showVotesCountInterceptor" class="webServer.interceptor.ShowVotesCountInterceptor" />
+                    <interceptor-stack name="showVotesCountStack">
+                        <interceptor-ref name="showVotesCountInterceptor" />
+                        <interceptor-ref name="defaultStack" />
+                    </interceptor-stack>
+                </interceptors>
+                <default-interceptor-ref name="showVotesCountStack" />
+        -->
+                <default-action-ref name="index"/>
 
-        <interceptors>
-            <interceptor name="showVotesCountInterceptor" class="webServer.interceptor.ShowVotesCountInterceptor" />
-            <interceptor-stack name="showVotesCountStack">
-                <interceptor-ref name="showVotesCountInterceptor" />
-                <interceptor-ref name="defaultStack" />
-            </interceptor-stack>
-        </interceptors>
-        <default-interceptor-ref name="showVotesCountStack" />
+                <global-results>
+                    <result name="error">/error.jsp</result>
+                </global-results>
 
-        <default-action-ref name="index"/>
-
-        <global-results>
-            <result name="error">/error.jsp</result>
-        </global-results>
-
-        <!-- all exceptions not caught by the application will lead to error.jsp -->
+                <!-- all exceptions not caught by the application will lead to error.jsp -->
         <global-exception-mappings>
             <exception-mapping exception="java.lang.Exception" result="error"/>
 
@@ -169,10 +169,21 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result>/AdminConsole_OP6_ChooseElectionResults.jsp</result>
         </action>
 
+        <!--    ESTADO MESAS DE VOTO     -->
+
+        <action name="statusPollingStations" class="webServer.action.ShowPollingStationsAction" method="execute">
+            <result name="success">/AdminConsole_OP7_statusPollingStation.jsp</result>
+            <result>/AdminConsole_OP7_statusPollingStation.jsp</result>
+        </action>
+
+        <!--    ESTADO CONTO DOS VOTOS     -->
+
         <action name="votesCount" class="webServer.action.ShowVotesCountAction" method="execute">
             <result name="success">/AdminConsole_OP8_votesCount.jsp</result>
             <result>/AdminConsole_OP8_votesCount.jsp</result>
         </action>
+
+        <!--    UTILIZADORES ONLINE     -->
 
         <action name="onlineUsers" class="webServer.action.OnlineUsersAction" method="execute">
             <result>/AdminConsole_OP9_onlineUsers.jsp</result>

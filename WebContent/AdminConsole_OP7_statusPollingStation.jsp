@@ -12,23 +12,69 @@
     <!-- css -->
     <link rel="stylesheet" type="text/css" href="style/main.css">
     <link rel="stylesheet" type="text/css" href="style/menu.css">
+    <link rel="stylesheet" type="text/css" href="style/realTime.css">
     <!-- title -->
     <title>UC eVoting | Consola de Administração | Estado das Mesas de Voto</title>
     <!--icon-->
     <link rel="shortcut icon" href="images/favicon.ico">
+    <script type="text/javascript">
+
+        let websocket = null;
+
+        window.onload = function() { // URI = ws://10.16.0.165:8080/WebSocket/ws
+            connect('ws://' + window.location.host + '/webserver/webServer/ws');
+        }
+
+        function connect(host) { // connect to the host websocket
+            if ('WebSocket' in window) {
+                console.log("WebSocket in window")
+                websocket = new WebSocket(host);
+            } else if ('MozWebSocket' in window){
+                console.log("MozWebSocket in window")
+                websocket = new MozWebSocket(host);
+            }else {
+                alert('Get a real browser which supports WebSocket.');
+                return;
+            }
+            websocket.onopen    = onOpen; // set the 4 event listeners below
+            websocket.onclose   = onClose;
+            websocket.onmessage = onMessage;
+            websocket.onerror   = onError;
+        }
+
+        function onOpen(event) {
+            //alert('Connected to ' + window.location.host + '.');
+        }
+
+        function onClose(event) {
+            write('WebSocket closed (code ' + event.code + ').');
+        }
+
+        function onMessage(message) { // print the received message
+            //alert(message.data);
+            write(message.data);
+        }
+
+        function onError(event) {
+            write('WebSocket error.');
+        }
+
+        function write(text) {
+            var textbox = document.getElementById('text');
+            textbox.style.wordWrap = 'break-word';
+            textbox.innerHTML = text;
+        }
+    </script>
+
 </head>
 <body>
 <div id="container" class="container">
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
-    <h1>Estado das Mesas de Voto</h1>
-    <!-- FOR EACH DEPARTMENT -->
-        <h4>TODO NOMES DE DEPARTAMENTOS</h4>
-        <!-- FOR EACH TERMINAL OF DEPARTMENT  -->
-            <p>TODO ID TERMINAIS - TODO ESTADO</p>
-        <!-- END FOR EACH  -->
-    <!-- END FOR EACH-->
+    <div class="history" id="text">
+        ${HeyBean.infoPollingStations}
+    </div>
     <button id="exit">Voltar</button>
 </div>
 </body>

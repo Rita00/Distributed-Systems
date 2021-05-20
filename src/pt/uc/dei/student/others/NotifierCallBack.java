@@ -6,6 +6,9 @@ import javax.websocket.Session;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 /**
  * Classe do Callback
  *
@@ -38,18 +41,29 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
      * @see InfoElectors
      */
     public void updateAdmin(ArrayList<InfoElectors> info) {
-        System.out.println("==============================");
-        String str="";
+        String strWeb="";
+        String strConsole="==============================\nCONTAGEM DOS VOTOS\n==============================\n";
         if(info.size()>0){
+            info.sort(Comparator.comparing(InfoElectors::getElection_title));
+            String before = "";
             for (InfoElectors i : info) {
-                str = String.format("%s%s\t%s\t%s<br>", str, i.getElection_title(), i.getDep_name(),i.getCount());
+                if(!before.equals(i.getElection_title())){
+                    strWeb = String.format("%s<label>%s</label>",strWeb, i.getElection_title());
+                    strConsole = String.format("%s%s\n\t",strConsole, i.getElection_title());
+                }else{
+                    strConsole = String.format("%s\t",strConsole);
+
+                }
+                strWeb = String.format("%s<p>%s: %s voto(s)</p>", strWeb, i.getDep_name(),i.getCount());
+                strConsole = String.format("%s%s\t%s\n", strConsole, i.getDep_name(),i.getCount());
+                before = i.getElection_title();
             }
         }else{
-            str = "Sem dados para apresentar atualmente.\n";
+            strWeb = "<p>Sem dados para apresentar atualmente.<p>";
+            strConsole = "Sem dados para apresentar atualmente.\n";
         }
-        //WebSocket.broadcast(str);
-        WebSocket.broadcast(str);
-        System.out.printf("%s", str);
+        WebSocket.broadcast(strWeb);
+        System.out.printf("%s", strConsole);
     }
     /**
      * Print das informações das mesas de voto e respetivos terminais de voto
@@ -58,24 +72,32 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
      * @see InfoPolls
      */
     public void updatePollsAdmin(ArrayList<InfoPolls> info) {
+        String strConsole="==============================\nESTADO MESAS DE VOTO\n==============================\n";
+        String strWeb="";
         String last = "";
-        System.out.println("==============================");
         for (InfoPolls i : info) {
             if (!i.getDep_name().equals(last)) {
                 if (i.getStatusPoll() == 1) {
-                    System.out.printf("%s\tLigado\n", i.getDep_name());
+                    strWeb = String.format("%s<label>%s 🟢</label>",strWeb,i.getDep_name());
+                    strConsole = String.format("%s%s 🟢\n",strConsole,i.getDep_name());
                 } else {
-                    System.out.printf("%s\tDesligado\n", i.getDep_name());
+                    strWeb = String.format("%s<label>%s 🔴</label>",strWeb,i.getDep_name());
+                    strConsole = String.format("%s%s 🔴\n",strConsole,i.getDep_name());
                 }
             }
             last = i.getDep_name();
             if (i.getTerminal_id() != 0) {
                 if (i.getStatusTerminal() == 0) {
-                    System.out.printf("\tTerminal %s\tDesligado\n", i.getTerminal_id());
+                    strWeb = String.format("%s<p>Terminal #%s 🔴</p>",strWeb,i.getTerminal_id());
+                    strConsole = String.format("%s\tTerminal #%s 🔴\n",strConsole,i.getTerminal_id());
                 } else {
-                    System.out.printf("\tTerminal %s\tLigado\n", i.getTerminal_id());
+                    strWeb = String.format("%s<p>Terminal #%s 🟢</p>",strWeb,i.getTerminal_id());
+                    strConsole = String.format("%s\tTerminal #%s 🟢\n",strConsole,i.getTerminal_id());
                 }
             }
         }
+        strWeb=strWeb.replace("</label><label>","</label><p></p><label>");
+        WebSocket.broadcast(strWeb);
+        System.out.printf("%s",strConsole);
     }
 }

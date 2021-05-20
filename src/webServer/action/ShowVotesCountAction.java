@@ -16,7 +16,7 @@ public class ShowVotesCountAction extends ActionSupport implements SessionAware{
     @Override
     public String execute() throws Exception {
         this.NOTIFIER = new NotifierCallBack();
-        this.getHeyBean().setRealTimeOn(this.NOTIFIER);
+        this.getHeyBean().setRealTimeVotesOn(this.NOTIFIER);
         return SUCCESS;
     }
 

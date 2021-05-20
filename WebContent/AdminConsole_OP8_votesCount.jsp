@@ -78,7 +78,7 @@
         ${HeyBean.infoVotes}
     </div>
 
-    <s:form action="" method="post">
+    <s:form action="backSubMenusAdminMenu" method="post">
         <button id="exit">Voltar</button>
     </s:form>
 </div>

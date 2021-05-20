@@ -24,10 +24,10 @@
     <s:actionmessage/>
     <h1>Menu da Administração</h1>
     <s:form action="adminVote" method="post">
-            <button>Votar</button>
+        <button>Votar</button>
     </s:form>
-    <s:form action="" method="post">
-            <button>Consola de Administração</button>
+    <s:form action="adminConsole" method="post">
+        <button>Consola de Administração</button>
     </s:form>
 
     <s:form action="" method="post">
@@ -40,6 +40,5 @@
         </s:form>
     </c:if>
 </div>
-
 </body>
 </html>

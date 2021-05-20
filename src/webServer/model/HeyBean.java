@@ -69,6 +69,8 @@ public class HeyBean {
 
     private float null_percent, blank_percent;
 
+    private int department_id;
+
     /**
      * Conecta-se ao RMI
      */
@@ -81,6 +83,14 @@ public class HeyBean {
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getDepartment_id() {
+        return department_id;
+    }
+
+    public void setDepartment_id(int department_id) {
+        this.department_id = department_id;
     }
 
     public float getNull_percent() {
@@ -373,7 +383,7 @@ public class HeyBean {
         return electionNotStarted;
     }
 
-    ArrayList<Department> getNonAssociativePollingStations() {
+    public ArrayList<Department> getNonAssociativePollingStations() {
         ArrayList<Department> nonAssociativePollingStations = null;
         try {
             nonAssociativePollingStations = server.selectNoAssociatedPollingStation(this.election_id);
@@ -720,5 +730,26 @@ public class HeyBean {
             strWeb = "<p>Sem dados para apresentar atualmente.<p>";
         }
         return strWeb;
+    }
+
+    public boolean checkIfPollingStationIsActive() {
+        ArrayList<Department> pollingStations;
+        try {
+            pollingStations = server.getPollingStation();
+            if (pollingStations != null && Utilitary.hasDep(this.department_id, pollingStations))
+                return true;
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean addPollingStation() {
+        try {
+            return server.insertPollingStation(this.election_id, this.department_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

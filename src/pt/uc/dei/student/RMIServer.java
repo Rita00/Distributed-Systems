@@ -101,6 +101,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return updateOnDB(sql, pass);
     }
 
+    /**
+     * Verifica se uma determinada pessoa existe na base de dados
+     *
+     * @param cc_number Identificador de uma determinada pessoa
+     * @return devolve o nome de um utilizador cujo número de cartão de cidadão é: cc_number
+     */
     public String checkIfPersonExists(int cc_number) {
         return getStrings("Select name FROM person where cc_number = " + cc_number);
     }
@@ -225,6 +231,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return this.selectCandidacies("SELECT * FROM candidacy WHERE election_id = " + election_id);
     }
 
+    /**
+     * Devolve as listas de uma determinada eleição e respetivo número de votos
+     *
+     * @param election_id identificador de uma determinada eleição
+     * @return lista de todas as listas de uma eleição, com os votos incluidos
+     */
     public ArrayList<Candidacy> getCandidaciesWithVotes(int election_id) {
         return this.selectCandidaciesWithVotes("SELECT id, name, type, votes, round(votes_percent * 100, 2) as votes_percent FROM candidacy WHERE election_id = " + election_id);
     }
@@ -253,6 +265,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    /**
+     * Devolve a pessoa com um determinado token de facebook associado
+     *
+     * @param fbId identificador do facebook
+     * @return pessoa cujo identificador do facebook seja: fbId
+     */
     public Person getPersonFb(String fbId) {
         try {
             ArrayList<Person> people = this.selectPeople("SELECT * FROM person WHERE fbID = " + fbId);
@@ -297,11 +315,28 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
     }
 
+    /**
+     * Dá update de uma determianda eleição quando se edita os seus detalhes
+     *
+     * @param election_id identificador da eleição
+     * @param name        titulo da eleição
+     * @param type        tipo da eleição
+     * @param description descrição da eleiçõa
+     * @param begin_date  inicio da eleição
+     * @param end_date    fim da eleição
+     * @return devolve true ou false consoante tenha efetuado a atualização com sucesso ou não, respetivamente
+     */
     public boolean updateElectionOnEdit(int election_id, String name, String type, String description, String begin_date, String end_date) {
         return this.updateOnDB(String.format("UPDATE election SET title ='%s', type='%s', description='%s', begin_date='%s', end_date='%s' WHERE id=%s", name, type, description, begin_date, end_date, election_id));
     }
 
-
+    /**
+     * Verifica se uma lista pertence a uma determinada eleição
+     *
+     * @param election_id  identificador de uma determinada eleição
+     * @param candidacy_id identificar de uma determinada lista
+     * @return devolve 1 ou 0 consoante pertença ou não a uma determinada eleição, respetivamente
+     */
     public int checkElectionHasCandidacy(int election_id, int candidacy_id) {
         return this.countRowsBD("candidacy where election_id = " + election_id + " and id = " + candidacy_id, null);
     }
@@ -765,6 +800,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     }
 
+    /**
+     * Devolve todas as mesas de voto ativas
+     * @return Array com todas as mesas de voto ativas
+     */
+    public ArrayList<Department> getPollingStation() {
+        return selectDepartments("SELECT id, name FROM department WHERE hasmulticastserver = 1");
+    }
 
     /**
      * Seleciona as mesas de voto que não estejam associadas a uma determinada eleição
@@ -773,10 +815,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return departamentos
      */
     public ArrayList<Department> selectNoAssociatedPollingStation(int election_id) {
-        return selectDepartments("SELECT id, name FROM department WHERE department.hasmulticastserver = 1 " +
-                "EXCEPT " +
-                "SELECT id, name FROM department, election_department " +
-                "WHERE department.id = election_department.department_id AND election_department.election_id != " + election_id + " AND department.name != 'Online'");
+        return selectDepartments("select id, name from department WHERE hasmulticastserver = 1 " +
+                "except select id, name from department, election_department " +
+                "where department.id = election_department.department_id " +
+                "and election_department.election_id = " + election_id + " and department_id != -1");
     }
 
     /**
@@ -805,6 +847,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return 0;
     }
 
+    /**
+     * Devolve a informção de um campo específico de uma tabela
+     *
+     * @param sql comando sql para obter o campo desejado
+     * @return String armazenada num determinado campo
+     */
     public String getStrings(String sql) {
         Connection conn = connectDB();
         try {
@@ -838,7 +886,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param department_id ID do departamento
      */
     public boolean insertPollingStation(int election_id, int department_id) {
-        int checkRestriction = countRowsBD("election_department WHERE election_id = " + election_id, "department_id");
+        int checkRestriction = countRowsBD("election_department WHERE election_id = " + election_id + " and department_id = -1", "department_id");
         if (checkRestriction == -1) {
             insertElectionDepartment(election_id, department_id);
             return true;
@@ -879,6 +927,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election, election_department WHERE begin_date <= date('now') AND end_date >= date('now') AND election.id = election_department.election_id AND (department_id = " + department_id + " OR department_id = -1)");
     }
 
+    /**
+     * Devolve as eleições que estejam a decorrer e que uma pessoa possa votar
+     *
+     * @param cc numero de cartao de cidadao de uma determinada pessoa
+     * @return devolve um array com todas as eleição a decorrer no momento
+     */
     public ArrayList<Election> getCurrentElectionsPerson(String cc) {
         Person p = getPerson(cc, null);
         if (p != null) {
@@ -887,6 +941,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return null;
     }
 
+    /**
+     * Verifica se uma determinada eleição não começou
+     *
+     * @param election_id id que representa uma determinada eleição
+     * @return devolve 0 ou 1 consoante tenha ou não começado respetivamente
+     */
     public int checkIfElectionNotStarted(int election_id) {
         return countRowsBD("election WHERE id = " + election_id + " AND begin_date > date('now')", null);
     }
@@ -938,37 +998,83 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         else return ((float) getVotesCandidacy(id_election, id_candidacy) / (float) totalVotes) * 100;
     }
 
+    /**
+     * Calcula a percentagem de votos nulos de uma determinada eleição
+     *
+     * @param id_election identificar de uma determinada eleição
+     * @return percentagem de votos nulos
+     */
     public float getPercentNullVotes(int id_election) {
         int null_votes = countRowsBD("election WHERE id = " + id_election, "null_votes");
         return (float) null_votes / (float) getTotalVotes(id_election);
     }
 
+    /**
+     * Calcula a percentagem de votos brancos de uma determinada eleição
+     *
+     * @param id_election identificar de uma determinada eleição
+     * @return percentagem de votos brancos
+     */
     public float getPercentBlankVotes(int id_election) {
         int blank_votes = countRowsBD("election WHERE id = " + id_election, "blank_votes");
         return (float) blank_votes / (float) getTotalVotes(id_election);
     }
 
+    /**
+     * Calcula a percentagem de votos brancos de uma determinada lista de uma determinada eleição
+     *
+     * @param election_id  identificar de uma determinada eleição
+     * @param candidacy_id identificar de uma determinada lista
+     * @return percentagem de votos de uma lista
+     */
     public float getPercentCandidacyVotes(int election_id, int candidacy_id) {
         int candidacy_votes = getVotesCandidacy(election_id, candidacy_id);
         return (float) candidacy_votes / (float) getTotalVotes(election_id);
     }
 
+    /**
+     * Dá update da percentagem de votos nulos de uma determinda eleição
+     *
+     * @param id_election identificar de uma determinada eleição
+     */
     public void updatePercentNull(int id_election) {
         updateOnDB("UPDATE election set null_percent = " + getPercentNullVotes(id_election) + " WHERE id = " + id_election);
     }
 
+    /**
+     * Dá update da percentagem de votos brancos de uma determinda eleição
+     *
+     * @param id_election identificar de uma determinada eleição
+     */
     public void updatePercentBlank(int id_election) {
         updateOnDB("UPDATE election set blank_percent = " + getPercentBlankVotes(id_election) + " WHERE id = " + id_election);
     }
 
+    /**
+     * Dá update da percentagem de votos de uma determinda lista
+     *
+     * @param election_id  identificar de uma determinada eleição
+     * @param candidacy_id identificar de uma determinada lista
+     */
     public void updatePercentVotesCandidacy(int election_id, int candidacy_id) {
         updateOnDB("UPDATE candidacy set votes_percent = " + getPercentCandidacyVotes(election_id, candidacy_id) + " WHERE election_id = " + election_id + " AND id = " + candidacy_id);
     }
 
+    /**
+     * Conta o número total de votos de uma eleição (inclui os votos de todas as listas dessa eleição, votos brancos e nulos)
+     *
+     * @param election_id identificar de uma determinada eleição
+     * @return número total de votos de uma eleição
+     */
     public int getTotalVotes(int election_id) {
         return countRowsBD("candidacy WHERE election_id = " + election_id, "sum(votes)") + getBlankVotes(election_id) + getNullVotes(election_id);
     }
 
+    /**
+     * Sempre que um utilizador efetua um voto, todas as percentagens são atualizadas
+     *
+     * @param election_id identificar de uma determinada eleição
+     */
     public void updateAllVotes(int election_id) {
         ArrayList<Candidacy> candidaciesElection = getCandidacies(election_id);
         for (Candidacy c : candidaciesElection) {
@@ -1081,10 +1187,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         this.sendRealTimeVotes();
     }
 
-    public int getElectionToManage(String title_election) {
-        return countRowsBD("election where title = '" + title_election + "'", "id");
-    }
-
+    /**
+     * Verifica se  utilizador que fez login é administrador
+     *
+     * @param cc_number identifica um determinado utilizador
+     * @return devolve 1 ou 0 caso seja ou não administrador, respetivamente
+     */
     public int checkIfIsAdmin(int cc_number) {
         return countRowsBD("person WHERE cc_number = " + cc_number, "isAdmin");
     }
@@ -1136,6 +1244,37 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             //e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Devolve todos os registo de votos até ao momento
+     *
+     * @return array com o registo dos votos
+     */
+    public ArrayList<InfoElectors> getInfoElectors() {
+        String sql = "SELECT count(*), d.name as Name, e.title as Title" +
+                " FROM voting_record" +
+                " JOIN department d on voting_record.department = d.id" +
+                " JOIN election e on e.id = voting_record.election_id" +
+                " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by voting_record.department, voting_record.election_id";
+        ArrayList<InfoElectors> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoElectors(
+                        rs.getInt("count(*)"),
+                        rs.getString("Name"),
+                        rs.getString("Title")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return info;
     }
 
     /**
@@ -1230,18 +1369,43 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
                 "ORDER BY voting_record.election_id, p.name");
     }
 
+    /**
+     * Devolve a eleição a que uma determinada lista pertence
+     *
+     * @param candidacy_id identificador de uma determinada eleição
+     * @return id da eleiçãao de uma determinada lista
+     */
     public int getElectionFromCandidacy(int candidacy_id) {
         return countRowsBD("candidacy WHERE id = " + candidacy_id, "election_id");
     }
 
+    /**
+     * Devolve o título de uma determinada eleição a partir do id de uma lista
+     *
+     * @param candidacy_id identificar de uma determinada lista
+     * @return título da eleição cuja lista tem o id: candidacy_id
+     */
     public String getElectionTitleFromCandidacy(int candidacy_id) {
         return getStrings("Select title FROM candidacy WHERE id = " + candidacy_id);
     }
 
+    /**
+     * Associa o token do facebook a um determinado utilizador
+     *
+     * @param ccnumber identificador do utilizador
+     * @param fbId     token do facebook
+     * @return devolve true ou false consoante tenha ou não conseguido atualizar o token do facebook
+     */
     public boolean associateFbId(int ccnumber, String fbId) {
         return updateOnDB("UPDATE person SET fbID = '" + fbId + "' WHERE cc_number = " + ccnumber);
     }
 
+    /**
+     * Devolve o token do facebook associado a um determinado utilizador
+     *
+     * @param cc_number identificador de um determinado utilizador
+     * @return token do facebook
+     */
     public String getAssociatedFbId(int cc_number) {
         return getStrings("SELECT fbID FROM person WHERE cc_number = " + cc_number);
     }

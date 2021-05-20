@@ -237,8 +237,30 @@ public interface RMI extends Remote {
      */
     void updateElections(Election e) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Dá update de uma determianda eleição quando se edita os seus detalhes
+     *
+     * @param election_id identificador da eleição
+     * @param name        titulo da eleição
+     * @param type        tipo da eleição
+     * @param description descrição da eleiçõa
+     * @param begin_date  inicio da eleição
+     * @param end_date    fim da eleição
+     * @return devolve true ou false consoante tenha efetuado a atualização com sucesso ou não, respetivamente
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     boolean updateElectionOnEdit(int election_id, String name, String type, String description, String begin_date, String end_date) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Verifica se uma lista pertence a uma determinada eleição
+     *
+     * @param election_id  identificador de uma determinada eleição
+     * @param candidacy_id identificar de uma determinada lista
+     * @return devolve 1 ou 0 consoante pertença ou não a uma determinada eleição, respetivamente
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     int checkElectionHasCandidacy(int election_id, int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
 
     /**
@@ -427,6 +449,14 @@ public interface RMI extends Remote {
      */
     ArrayList<Election> getCurrentElections(int department_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Devolve as eleições em que uma determinada pessoa pode votar
+     *
+     * @param cc identificador de um determinado utilizador
+     * @return Array com todas as eleições que um determinado utilizador pode votar
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     ArrayList<Election> getCurrentElectionsPerson(String cc) throws java.rmi.RemoteException, InterruptedException;
 
     /**
@@ -507,42 +537,181 @@ public interface RMI extends Remote {
      */
     ArrayList<VotingRecord> getVotingRecords() throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Retorna o id de uma eleição a partir de uma das suas listas
+     *
+     * @param candidacy_id identificar de uma determinada lista
+     * @return retorna o id da eleição ou 0 caso não pertença a nenhuma eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interromida
+     */
     int getElectionFromCandidacy(int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
 
-    int getElectionToManage(String title_election) throws java.rmi.RemoteException, InterruptedException;
-
+    /**
+     * Verifica se uma eleição já começou ou não
+     *
+     * @param election_id identificador de uma determinda eleição
+     * @return retorna 1 ou 0 consoante tenha ou não começado, respetivamente
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     int checkIfElectionNotStarted(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Verifica se uma determinada pessoa existe
+     *
+     * @param cc_number identificador de uma determinada pessoa
+     * @return retorna o nome da pessoa ou null caso exista ou não, respetivamente
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     String checkIfPersonExists(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Devolve todas as listas com os respetivos votos, de uma determinada eleição
+     *
+     * @param election_id identificador de uma determinda eleição
+     * @return array com todas as listas de uma determinda eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     ArrayList<Candidacy> getCandidaciesWithVotes(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Associa o token de facebook a um determinado utilizador
+     *
+     * @param ccnumber identificador de um determinado utilizador
+     * @param fbId     token associado a um determinado utlizador
+     * @return devolve true ou false caso tenha conseguidp associar o token
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     boolean associateFbId(int ccnumber, String fbId) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Devolve o token de facebook associado a um determinado utilizador
+     *
+     * @param cc_number identificador de um determinado uilizador
+     * @return devolve o token
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     String getAssociatedFbId(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * devolve uma determinada pessoa a partir do seu token de facebook
+     *
+     * @param fbId token de facbook associado
+     * @return devolve uma pessoa com o token fbId
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     Person getPersonFb(String fbId) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Verifica se um determinado utilizador é administrador
+     *
+     * @param cc_number identificador de um determinado utilizador
+     * @return devolve 1 ou 0 caso seja ou não administrador respetivamente
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     int checkIfIsAdmin(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Devolve eleições com os repsetivos votos
+     *
+     * @param sql comando sql que procura eleições e as devolve com os respetivos votos
+     * @return Array com as eleições
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     ArrayList<Election> selectElectionsWithVotes(String sql) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Calcula a percentagem de votos nulos de uma determinada eleição
+     *
+     * @param id_election identificar de uma determinada eleição
+     * @return percentagem de votos nulos
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     float getPercentNullVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Calcula a percentagem de votos brancos de uma determinada eleição
+     *
+     * @param id_election identificar de uma determinada eleição
+     * @return percentagem de votos brancos
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     float getPercentBlankVotes(int id_election) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Dá update da percentagem de votos nulos de uma determinda eleição
+     *
+     * @param id_election identificar de uma determinada eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     void updatePercentNull(int id_election) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Dá update da percentagem de votos brancos de uma determinda eleição
+     *
+     * @param id_election identificar de uma determinada eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     void updatePercentBlank(int id_election) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Dá update da percentagem de votos de uma determinda lista
+     *
+     * @param election_id  identificar de uma determinada eleição
+     * @param candidacy_id identificar de uma determinada lista
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     void updatePercentVotesCandidacy(int election_id, int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Sempre que um utilizador efetua um voto, todas as percentagens são atualizadas
+     *
+     * @param election_id identificar de uma determinada eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     void updateAllVotes(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Devolve o título de uma determinada eleição a partir do id de uma lista
+     *
+     * @param candidacy_id identificar de uma determinada lista
+     * @return título da eleição cuja lista tem o id: candidacy_id
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     String getElectionTitleFromCandidacy(int candidacy_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Devolve todos os registo de votos até ao momento
+     *
+     * @return array com o registo dos votos
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     ArrayList<InfoElectors> getInfoElectors() throws java.rmi.RemoteException, InterruptedException;
 
     ArrayList<InfoPolls> getInfoPolls() throws java.rmi.RemoteException, InterruptedException;
+    /**
+     * Devolve todas as mesas de voto ativas
+     *
+     * @return Array com todas as mesas de voto ativas
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
+    ArrayList<Department> getPollingStation() throws java.rmi.RemoteException, InterruptedException;
 }
 

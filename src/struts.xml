@@ -108,6 +108,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="success">/AdminConsole_OP4_managePollingStation.jsp</result>
         </action>
 
+        <action name="addPollingStation" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP4_addPollingStation.jsp</result>
+        </action>
+
         <action name="seeDetailsList" class="webServer.action.ChooseCandidacyToSeeDetailsAction" method="execute">
             <result name="success">/AdminConsole_OP3_manageSelectedList.jsp</result>
             <result name="error_candidacy">/AdminConsole_OP3_manageSelectedElection.jsp</result>
@@ -212,5 +216,28 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <action name="adminVote" class="webServer.action.RedirectAction" method="execute">
             <result> /chooseElection.jsp</result>
         </action>
+
+        <action name="adminConsole" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_menu.jsp</result>
+        </action>
+
+        <action name="backMenuConsole" class="webServer.action.RedirectAction" method="execute">
+            <result>/Login_menuAdministrator.jsp</result>
+        </action>
+
+        <action name="btnBackAddRemovePollingStation" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP4_managePollingStation.jsp</result>
+        </action>
+
+        <action name="backListPollingStation" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP4_listElectionsToManagePollingStation.jsp</result>
+        </action>
+
+        <action name="addPollingStationReally" class="webServer.action.AddPollingStationAction" method="execute">
+            <result name="Success">/AdminConsole_OP4_managePollingStation.jsp</result>
+            <result name="restrict">/AdminConsole_OP4_managePollingStation.jsp</result>
+            <result name="error">/AdminConsole_OP4_listElectionsToManagePollingStation.jsp</result>
+        </action>
+
     </package>
 </struts>

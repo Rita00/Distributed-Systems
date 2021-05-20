@@ -476,3 +476,43 @@ FROM voting_record;
 
 SELECT *
 FROM voting_record;
+
+/*departamentos das eleições*/
+INSERT INTO election_department(election_id, department_id)
+VALUES (1, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (2, 2);
+INSERT INTO election_department(election_id, department_id)
+VALUES (4, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (5, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (6, 1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (7, 2);
+INSERT INTO election_department(election_id, department_id)
+VALUES (8, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (9, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (10, 1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (11, 2);
+INSERT INTO election_department(election_id, department_id)
+VALUES (12, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (13, 7);
+INSERT INTO election_department(election_id, department_id)
+VALUES (14, 1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (15, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (16, 7);
+INSERT INTO election_department(election_id, department_id)
+VALUES (17, -1);
+INSERT INTO election_department(election_id, department_id)
+VALUES (18, 8);
+INSERT INTO election_department(election_id, department_id)
+VALUES (19, -1);
+
+

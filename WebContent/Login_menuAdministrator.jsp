@@ -23,7 +23,7 @@
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
     <s:actionmessage/>
     <h1>Menu da Administração</h1>
-    <s:form action="" method="post">
+    <s:form action="adminVote" method="post">
             <button>Votar</button>
     </s:form>
     <s:form action="" method="post">

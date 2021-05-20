@@ -16,7 +16,7 @@ public class VoteAction extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
     private int candidacy_id, blank_vote, null_vote;
     String message = "";
-    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v9.0/me";
+    private static final String PROTECTED_RESOURCE_URL = "https://www.facebook.com/dialog/share?";
     private static final Token EMPTY_TOKEN = null;
     private String code = null;
     private String authorizationUrl = null;
@@ -47,6 +47,7 @@ public class VoteAction extends ActionSupport implements SessionAware {
                             .scope("public_profile")
                             .build();
                     this.authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
+                    this.authorizationUrl  = "https://www.facebook.com/dialog/share?app_id=" + apiKey + "&display=popup&href=http://localhost:8080/webserver/index.action";
                     return SUCCESS;
                 } else {
                     message = "Já votou nesta eleição!";
@@ -88,7 +89,7 @@ public class VoteAction extends ActionSupport implements SessionAware {
         JSONObject json = (JSONObject) JSONValue.parse(response.getBody());
 
         String message = "Votei na eleição " + this.getHeyBean().getTitleElection() + "! Acede ao link para visitares a página e poderes votar!";
-        String postit = "https://graph.facebook.com/" + json.get("id") + "/share?is_published=false&message=" + message + "&access_token=" + accessToken.toString().split(",")[0].substring(6);
+        String postit = "https://www.facebook.com/dialog/share?app_id=" + apiKey + "&display=popup&href=http://localhost:8080/webserver/index.action";
         System.out.println(postit);
         postit = postit.replace(" ", "%20");
 

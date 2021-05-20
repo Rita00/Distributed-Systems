@@ -29,6 +29,7 @@
     <s:form action="createElectionConsole" method="post">
             <button title="Registar uma eleição nova na base de dados">Criar Eleição</button>
     </s:form>
+<%--    TODO BOTAO DE ESCOLHER ELEIÇÃO ESTÁ A VOLTAR PARA TRÁS--%>
     <s:form action="manageElection" method="post">
             <button title="Editar detalhes de uma eleição e adicionar listas">Gerir Eleição</button>
     </s:form>

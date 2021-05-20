@@ -25,43 +25,48 @@
     <h1>Registo de Pessoas</h1>
     <s:actionerror/>
     <s:form action="register" method="post">
-        <label>Nome
-            <s:textfield name="name" cssClass="input" placeholder="Alberto Caeiro"/>
-        </label>
-        <label>Cargo<br>
-            <select class="input" name="cargo" id="job">
-                <option value="Estudante">Estudante</option>
-                <option value="Docente">Docente</option>
-                <option value="Funcionário">Funcionário</option>
-            </select><br>
-        </label>
-        <label>Password
-            <s:textfield name="password" cssClass="input" type="password" placeholder="**********"/>
-        </label>
-        <label>Departamento<br>
-            <select class="input" name="dep" id="department">
-                <c:forEach items="${HeyBean.departments}" var="value">
-                    <option value="${value.id}">${value.name}</option>
-                </c:forEach>
-            </select><br>
-        </label>
-        <label>Telemóvel
-            <s:textfield name="phone" cssClass="input" placeholder="93XXXXXXX"/>
-        </label>
-        <label>Morada
-            <s:textfield name="address" cssClass="input" placeholder="Avenida Inês de Castro 69, 3040-390 Coimbra"/>
-        </label>
-        <label>Cartão de Cidadão
-            <s:textfield name="ccnumber" cssClass="input" placeholder="11223344"/>
-        </label>
-        <label>Validade
-            <s:textfield name="ccDate" cssClass="input" type="date" placeholder="2025-10-01"/>
-        </label>
-        <div class="row">
+    <label>Nome
+        <s:textfield name="name" cssClass="input" placeholder="Alberto Caeiro"/>
+    </label>
+    <label>Cargo<br>
+        <select class="input" name="cargo" id="job">
+            <option value="Estudante">Estudante</option>
+            <option value="Docente">Docente</option>
+            <option value="Funcionário">Funcionário</option>
+        </select><br>
+    </label>
+    <label>Password
+        <s:textfield name="password" cssClass="input" type="password" placeholder="**********"/>
+    </label>
+    <label>Departamento<br>
+        <select class="input" name="dep" id="department">
+            <c:forEach items="${HeyBean.departments}" var="value">
+                <option value="${value.id}">${value.name}</option>
+            </c:forEach>
+        </select><br>
+    </label>
+    <label>Telemóvel
+        <s:textfield name="phone" cssClass="input" placeholder="93XXXXXXX"/>
+    </label>
+    <label>Morada
+        <s:textfield name="address" cssClass="input" placeholder="Avenida Inês de Castro 69, 3040-390 Coimbra"/>
+    </label>
+    <label>Cartão de Cidadão
+        <s:textfield name="ccnumber" cssClass="input" placeholder="11223344"/>
+    </label>
+    <label>Validade
+        <s:textfield name="ccDate" cssClass="input" type="date" placeholder="2025-10-01"/>
+    </label>
+    <div class="row">
+        <input class="button" type="submit" id="register" value="Registar"/>
+        </s:form>
+
+        <s:form action="backSubMenusAdminMenu" method="post">
             <input class="button" type="submit" id="exit" value="Voltar"/>
-            <input class="button" type="submit" id="register" value="Registar"/>
-        </div>
-    </s:form>
+        </s:form>
+    </div>
+</div>
+
 
 </div>
 </body>

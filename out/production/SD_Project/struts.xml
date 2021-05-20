@@ -166,8 +166,6 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result>/AdminConsole_OP8_votesCount.jsp</result>
         </action>
 
-        <!--        TODO nao me posso esquecer das percentagens na apresentação dos resultados de uma eleição e faltam os volos brancos e nulos-->
-
         <action name="associateFacebook" class="webServer.action.AssociateFacebookAction" method="execute">
             <result name="success" type="redirect">${authorizationUrl}</result>
         </action>
@@ -184,6 +182,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="success" type="redirect">/login</result>
             <result name="error">/Login.jsp</result>
 
+        </action>
+
+        <action name="adminVote" class="webServer.action.RedirectAction" method="execute">
+            <result> /chooseElection.jsp</result>
         </action>
     </package>
 </struts>

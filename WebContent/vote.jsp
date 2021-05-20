@@ -61,11 +61,28 @@
             </div>
         </div>
     </div>
+
+    <div class="fb-share-button" data-href="https://www.telepizza.pt/" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.telepizza.pt/;src=sdkpreparse" class="fb-xfbml-parse-ignore">Partilhar no facebook!</a></div>
+
+    <%--<script>
+        document.getElementById('shareBtn').onclick = function() {
+            FB.ui({
+                display: 'popup',
+                method: 'share',
+                href: 'http://localhost:8080/webserver/login.action',
+            }, function(response){});
+        }
+    </script>--%>
+
     <c:if test="${HeyBean.associatedFbId == null}">
         <s:form action="associateFacebook" method="post">
             <s:submit cssClass="button" cssStyle="margin:5% 20%; width:60%" value="Associar Facebook!"/>
         </s:form>
     </c:if>
+
+    <s:form action="" method="post">
+        <button id="exit">Sign Out</button>
+    </s:form>
 </div>
 </body>
 </html>

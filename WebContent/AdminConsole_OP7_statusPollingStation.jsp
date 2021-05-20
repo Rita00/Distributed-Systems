@@ -75,7 +75,9 @@
     <div class="history" id="text">
         ${HeyBean.infoPollingStations}
     </div>
-    <button id="exit">Voltar</button>
+    <s:form action="backSubMenusAdminMenu" method="post">
+        <button id="exit">Voltar</button>
+    </s:form>
 </div>
 </body>
 </html>

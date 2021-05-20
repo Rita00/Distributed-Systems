@@ -711,6 +711,7 @@ public interface RMI extends Remote {
      * @throws InterruptedException     thread interrompida
      */
     ArrayList<InfoPolls> getInfoPolls() throws java.rmi.RemoteException, InterruptedException;
+
     /**
      * Devolve todas as mesas de voto ativas
      *

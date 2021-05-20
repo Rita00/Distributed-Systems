@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+
 /**
  * Classe do Objeto Eleição
  *
@@ -18,61 +19,106 @@ public class Election implements Serializable {
      * ID da eleição
      */
     private final int id;
+
     /**
      * Titulo da eleição
      */
     private String title;
+
     /**
      * Tipo da eleição (Estudantes, Docentes, Funcionarios)
      */
     private String type;
+
     /**
      * Descrição da eleição
      */
     private String description;
+
     /**
      * Data e hora de início da eleição
      */
     private LocalDateTime begin;
+
+    /**
+     * Dara e hora de inicio da eleição em formato string
+     */
     private String beginStr;
+
     /**
      * Data e hora de fim da eleição
      */
     private LocalDateTime end;
+
+    /**
+     * Dara e hora de fim da eleição em formato string
+     */
     private String endStr;
 
-    private int null_votes, blank_votes;
-    private float null_percent, blank_percent;
+    /**
+     * Número de votos nulos
+     */
+    private int null_votes;
+
+    /**
+     * Número de votos brancos
+     */
+    private int blank_votes;
+
+    /**
+     * Percentagem de votos nulos
+     */
+    private float null_percent;
+
+    /**
+     * Percentagem de votos brancos
+     */
+    private float blank_percent;
+
     /**
      * Construtor do Objeto Eleição
      *
-     * @param id identificador da eleicao
-     * @param title nome da eleicao
-     * @param type tipo que permite identificar para que grupo de pessoa a eleicao decorre (Estudantes, Docentes, Funcionarios)
+     * @param id          identificador da eleicao
+     * @param title       nome da eleicao
+     * @param type        tipo que permite identificar para que grupo de pessoa a eleicao decorre (Estudantes, Docentes, Funcionarios)
      * @param description descricao da eleicao
-     * @param begin data e hora de inicio da eleicao
-     * @param end data e hora de fim da eleicao
+     * @param begin       data e hora de inicio da eleicao
+     * @param end         data e hora de fim da eleicao
      */
     public Election(int id, String title, String type, String description, String begin, String end) {
         this.id = id;
         this.title = title;
         this.type = type;
         this.description = description;
-        this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
-        this.beginStr = begin.replace('T',' ');
-        this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
-        this.endStr = end.replace('T',' ');
+        this.begin = LocalDateTime.parse(begin.replace('T', ' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.beginStr = begin.replace('T', ' ');
+        this.end = LocalDateTime.parse(end.replace('T', ' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.endStr = end.replace('T', ' ');
     }
 
+    /**
+     * Construtor do Objeto Eleição
+     *
+     * @param id            identificador da eleicao
+     * @param title         nome da eleicao
+     * @param type          tipo que permite identificar para que grupo de pessoa a eleicao decorre (Estudantes, Docentes, Funcionarios)
+     * @param description   descricao da eleicao
+     * @param begin         data e hora de inicio da eleicao
+     * @param end           data e hora de fim da eleicao
+     * @param null_votes    número de votos nulos
+     * @param blank_votes   número de votos brancos
+     * @param null_percent  percentagem de votos nulos
+     * @param blank_percent percentagem de votos brancos
+     */
     public Election(int id, String title, String type, String description, String begin, String end, int null_votes, int blank_votes, float null_percent, float blank_percent) {
         this.id = id;
         this.title = title;
         this.type = type;
         this.description = description;
-        this.begin = LocalDateTime.parse(begin.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
-        this.beginStr = begin.replace('T',' ');
-        this.end = LocalDateTime.parse(end.replace('T',' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
-        this.endStr = end.replace('T',' ');
+        this.begin = LocalDateTime.parse(begin.replace('T', ' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.beginStr = begin.replace('T', ' ');
+        this.end = LocalDateTime.parse(end.replace('T', ' '), DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        this.endStr = end.replace('T', ' ');
         this.null_votes = null_votes;
         this.blank_votes = blank_votes;
         this.blank_percent = blank_percent;
@@ -86,15 +132,16 @@ public class Election implements Serializable {
      * @param time hora (hora:minutos:segundos)
      * @return objeto LocalDateTime com parse da string efetuado ou null se erro
      */
-	private LocalDateTime parseDateTime(String date, String time) {
-		LocalDateTime dateTime;
-		try {
-			dateTime = LocalDateTime.parse(date+" "+time,DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
-		} catch (DateTimeParseException e) {
-			return null;
-		}
-		return dateTime;
-	}
+    private LocalDateTime parseDateTime(String date, String time) {
+        LocalDateTime dateTime;
+        try {
+            dateTime = LocalDateTime.parse(date + " " + time, DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"));
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+        return dateTime;
+    }
+
     /**
      * Devolve uma string com informacoes relativas a uma eleicao
      *
@@ -109,34 +156,74 @@ public class Election implements Serializable {
                 "-----------------------------\n";
     }
 
+    /**
+     * Getter da percentagem de votos nulos
+     *
+     * @return percentagem de votos nulos
+     */
     public float getNull_percent() {
         return null_percent;
     }
 
+    /**
+     * Getter da percentagem de votos brancos
+     *
+     * @return percentagem de votos brancos
+     */
     public float getBlank_percent() {
         return blank_percent;
     }
 
+    /**
+     * Getter do número de votos nulos
+     *
+     * @return número de votos nulos
+     */
     public int getNull_votes() {
         return null_votes;
     }
 
+    /**
+     * Getter do número de votos brancos
+     *
+     * @return número de votos brancos
+     */
     public int getBlank_votes() {
         return blank_votes;
     }
 
+    /**
+     * Getter da data de inicio da eleição em formato String
+     *
+     * @return data de inicio da eleição
+     */
     public String getBeginStr() {
         return beginStr;
     }
 
+    /**
+     * Getter da data de fim da eleição em formato String
+     *
+     * @return data de fim da eleição
+     */
     public String getEndStr() {
         return endStr;
     }
 
+    /**
+     * Setter da data de início da eleição em formato String
+     *
+     * @return data de inicio da eleição
+     */
     public void setBeginStr(String beginStr) {
         this.beginStr = beginStr;
     }
 
+    /**
+     * Setter da data de fim da eleição em formato String
+     *
+     * @return data de fim da eleição
+     */
     public void setEndStr(String endStr) {
         this.endStr = endStr;
     }
@@ -149,6 +236,7 @@ public class Election implements Serializable {
     public int getId() {
         return this.id;
     }
+
     /**
      * Getter do nome da eleicao
      *
@@ -157,6 +245,7 @@ public class Election implements Serializable {
     public String getTitle() {
         return this.title;
     }
+
     /**
      * Getter do tipo da eleicao
      *
@@ -165,6 +254,7 @@ public class Election implements Serializable {
     public String getType() {
         return this.type;
     }
+
     /**
      * Getter da descricao da eleicao
      *
@@ -173,6 +263,7 @@ public class Election implements Serializable {
     public String getDescription() {
         return this.description;
     }
+
     /**
      * Getter da data de inicio da eleicao
      *
@@ -181,6 +272,7 @@ public class Election implements Serializable {
     public LocalDateTime getBegin() {
         return this.begin;
     }
+
     /**
      * Getter da data de fim da eleicao
      *
@@ -190,18 +282,38 @@ public class Election implements Serializable {
         return this.end;
     }
 
+    /**
+     * Setter da percentagem de votos nulos
+     *
+     * @param null_percent percentagem de votos nulos
+     */
     public void setNull_percent(float null_percent) {
         this.null_percent = null_percent;
     }
 
+    /**
+     * Setter da percentagem de votos brancos
+     *
+     * @param blank_percent percentagem de votos brancos
+     */
     public void setBlank_percent(float blank_percent) {
         this.blank_percent = blank_percent;
     }
 
+    /**
+     * Setter do número de votos nulos
+     *
+     * @param null_votes Número de votos nulos
+     */
     public void setNull_votes(int null_votes) {
         this.null_votes = null_votes;
     }
 
+    /**
+     * Setter do número de votos brancos
+     *
+     * @param blank_votes número de votos nulos
+     */
     public void setBlank_votes(int blank_votes) {
         this.blank_votes = blank_votes;
     }
@@ -214,11 +326,12 @@ public class Election implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+
     /**
      * Setter do tipo da eleicao
-     *  Se 1: Estudante
-     *  Se 2: Docente
-     *  Se 3: Funcionario
+     * Se 1: Estudante
+     * Se 2: Docente
+     * Se 3: Funcionario
      *
      * @param type tipo da eleicao
      */
@@ -235,6 +348,7 @@ public class Election implements Serializable {
                 break;
         }
     }
+
     /**
      * Setter da descricao da eleicao
      *
@@ -243,6 +357,7 @@ public class Election implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
     /**
      * Setter da data e hora de inicio da eleicao
      *
@@ -251,13 +366,14 @@ public class Election implements Serializable {
      * @return true se nao houve problemas ou false caso um problema ocorra
      */
     public boolean setBegin(String date, String time) {
-		LocalDateTime dateTime = parseDateTime(date, time);
-		if (dateTime!=null){
-			this.begin = dateTime;
-			return true;
-		}
-		return false;
-	}
+        LocalDateTime dateTime = parseDateTime(date, time);
+        if (dateTime != null) {
+            this.begin = dateTime;
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Setter da data e hora de fim da eleicao
      *
@@ -265,12 +381,12 @@ public class Election implements Serializable {
      * @param time hora de fim da eleicao
      * @return true se nao houve problemas ou false caso um problema ocorra
      */
-	public boolean setEnd(String date, String time) {
-		LocalDateTime dateTime = parseDateTime(date, time);
-		if (dateTime!=null){
-			this.end = dateTime;
-			return true;
-		}
-		return false;
-	}
+    public boolean setEnd(String date, String time) {
+        LocalDateTime dateTime = parseDateTime(date, time);
+        if (dateTime != null) {
+            this.end = dateTime;
+            return true;
+        }
+        return false;
+    }
 }

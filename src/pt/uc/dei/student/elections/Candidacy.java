@@ -22,14 +22,20 @@ public class Candidacy implements Serializable {
      */
     private String type;
 
+    /**
+     * Número de votos da lista
+     */
     private int votes;
 
+    /**
+     * Percentagem do número de votos da lista
+     */
     private float votes_percent;
 
     /**
      * Construtor do Objeto Lista(Candidatura)
      *
-     * @param id identificador da lista
+     * @param id   identificador da lista
      * @param name nome da lista
      * @param type tipo de lista (Estudante, Docente, Funcionario)
      */
@@ -39,6 +45,15 @@ public class Candidacy implements Serializable {
         this.type = type;
     }
 
+    /**
+     * Construtor do Objeto Lista(Candidatura)
+     *
+     * @param id            identificador da lista
+     * @param name          nome da lista
+     * @param type          tipo de lista (Estudante, Docente, Funcionario)
+     * @param votes         número de votos da lista
+     * @param votes_percent percentagem do número de votos da lista
+     */
     public Candidacy(int id, String name, String type, int votes, float votes_percent) {
         this.id = id;
         this.name = name;
@@ -46,17 +61,23 @@ public class Candidacy implements Serializable {
         this.votes = votes;
         this.votes_percent = votes_percent;
     }
+
     /**
      * Devolve uma string com informacoes relativas a uma lista
      *
      * @return string com informacoes relativas à lista
      */
     public String toString() {
-        return  "===========LISTA===========\n" +
+        return "===========LISTA===========\n" +
                 String.format("%s\t(%s)\n", this.name, this.type) +
                 "---------------------------\n";
     }
 
+    /**
+     * Getter da percentagem do número de votos da lista
+     *
+     * @return percentagem do número de votos da lista
+     */
     public float getVotes_percent() {
         return votes_percent;
     }
@@ -69,6 +90,7 @@ public class Candidacy implements Serializable {
     public int getId() {
         return this.id;
     }
+
     /**
      * Getter do nome da lista
      *
@@ -77,6 +99,7 @@ public class Candidacy implements Serializable {
     public String getName() {
         return this.name;
     }
+
     /**
      * Getter do tipo da lista
      *
@@ -86,10 +109,20 @@ public class Candidacy implements Serializable {
         return this.type;
     }
 
+    /**
+     * Getter do número de votos da lista
+     *
+     * @return número de votos da lisya
+     */
     public int getVotes() {
         return votes;
     }
 
+    /**
+     * Setter da percentagem de votos da lista
+     *
+     * @param votes_percent percentagem de votos da lista
+     */
     public void setVotes_percent(float votes_percent) {
         this.votes_percent = votes_percent;
     }
@@ -102,6 +135,7 @@ public class Candidacy implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
     /**
      * Setter do tipo da lista
      *
@@ -111,6 +145,11 @@ public class Candidacy implements Serializable {
         this.type = type;
     }
 
+    /**
+     * Setter do número de votos da lista
+     *
+     * @param votes número de votos da lista
+     */
     public void setVotes(int votes) {
         this.votes = votes;
     }

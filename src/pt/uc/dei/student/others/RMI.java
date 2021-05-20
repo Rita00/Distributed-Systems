@@ -704,6 +704,7 @@ public interface RMI extends Remote {
      */
     ArrayList<InfoElectors> getInfoElectors() throws java.rmi.RemoteException, InterruptedException;
 
+    ArrayList<InfoPolls> getInfoPolls() throws java.rmi.RemoteException, InterruptedException;
     /**
      * Devolve todas as mesas de voto ativas
      *

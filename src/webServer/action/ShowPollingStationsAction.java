@@ -5,18 +5,16 @@ import org.apache.struts2.interceptor.SessionAware;
 import pt.uc.dei.student.others.NotifierCallBack;
 import webServer.model.HeyBean;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.Map;
 
-public class ShowVotesCountAction extends ActionSupport implements SessionAware{
+public class ShowPollingStationsAction extends ActionSupport implements SessionAware{
     private Map<String, Object> session;
     private NotifierCallBack NOTIFIER;
 
     @Override
     public String execute() throws Exception {
         this.NOTIFIER = new NotifierCallBack();
-        this.getHeyBean().setRealTimeVotesOn(this.NOTIFIER);
+        this.getHeyBean().setRealTimePollingStationOn(this.NOTIFIER);
         return SUCCESS;
     }
 

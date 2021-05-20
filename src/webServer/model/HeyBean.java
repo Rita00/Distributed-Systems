@@ -1,10 +1,7 @@
 package webServer.model;
 
 import pt.uc.dei.student.elections.*;
-import pt.uc.dei.student.others.InfoElectors;
-import pt.uc.dei.student.others.NotifierCallBack;
-import pt.uc.dei.student.others.RMI;
-import pt.uc.dei.student.others.Utilitary;
+import pt.uc.dei.student.others.*;
 import webServer.ws.WebSocket;
 
 import javax.lang.model.type.ArrayType;
@@ -16,6 +13,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 
 public class HeyBean {
@@ -598,25 +596,6 @@ public class HeyBean {
         return candidaciesWithVotes;
     }
 
-    public void setRealTimeOn(NotifierCallBack NOTIFIER) {
-        while (true) {
-            try {
-                this.server.initializeRealTimeVotes(NOTIFIER);
-                break;
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void setRealTimeOff(NotifierCallBack NOTIFIER) {
-        try {
-            this.server.endRealTimeInfo(NOTIFIER);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public boolean associateFbId(String fbId) {
         if (getAssociatedFbId() == null) {
             try {
@@ -658,6 +637,77 @@ public class HeyBean {
         this.blank_percent = blank_percent;
     }
 
+    /*******************************************ESTADO MESAS DE VOTO****************************************/
+
+    public void setRealTimePollingStationOn(NotifierCallBack NOTIFIER) {
+        while (true) {
+            try {
+                this.server.initializeRealTimePolls(NOTIFIER);
+                break;
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setRealTimePoolingStationOff(NotifierCallBack NOTIFIER) {
+        try {
+            this.server.endRealTimeInfo(NOTIFIER);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public String getInfoPollingStations() {
+        ArrayList<InfoPolls> info = null;
+        try {
+            info = server.getInfoPolls();
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        String strWeb="";
+        String last = "";
+        for (InfoPolls i : info) {
+            if (!i.getDep_name().equals(last)) {
+                if (i.getStatusPoll() == 1) {
+                    strWeb = String.format("%s<label>%s 🟢</label>",strWeb,i.getDep_name());
+                } else {
+                    strWeb = String.format("%s<label>%s 🔴</label>",strWeb,i.getDep_name());
+                }
+            }
+            last = i.getDep_name();
+            if (i.getTerminal_id() != 0) {
+                if (i.getStatusTerminal() == 0) {
+                    strWeb = String.format("%s<p>Terminal #%s 🔴</p>",strWeb,i.getTerminal_id());
+                } else {
+                    strWeb = String.format("%s<p>Terminal #%s 🟢</p>",strWeb,i.getTerminal_id());
+                }
+            }
+        }
+        strWeb=strWeb.replace("</label><label>","</label><p></p><label>");
+        return strWeb;
+    }
+
+    /*******************************************VOTOS EM TEMPO REAL****************************************/
+
+
+    public void setRealTimeVotesOn(NotifierCallBack NOTIFIER) {
+        while (true) {
+            try {
+                this.server.initializeRealTimeVotes(NOTIFIER);
+                break;
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setRealTimeVotesOff(NotifierCallBack NOTIFIER) {
+        try {
+            this.server.endRealTimeInfo(NOTIFIER);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     public String getInfoVotes() {
         ArrayList<InfoElectors> info = null;
         try {
@@ -665,15 +715,21 @@ public class HeyBean {
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-        String str="";
-        if(info.size()>0){
+        String strWeb="";
+        if(info!=null && info.size()>0){
+            info.sort(Comparator.comparing(InfoElectors::getElection_title));
+            String before = "";
             for (InfoElectors i : info) {
-                str = String.format("%s%s\t%s\t%s<br>", str, i.getElection_title(), i.getDep_name(),i.getCount());
+                if(!before.equals(i.getElection_title())){
+                    strWeb = String.format("%s<label>%s</label>",strWeb, i.getElection_title());
+                }
+                strWeb = String.format("%s<p>%s: %s voto(s)</p>", strWeb, i.getDep_name(),i.getCount());
+                before = i.getElection_title();
             }
         }else{
-            str = "Sem dados para apresentar atualmente.\n";
+            strWeb = "<p>Sem dados para apresentar atualmente.<p>";
         }
-        return str;
+        return strWeb;
     }
 
     public boolean checkIfPollingStationIsActive() {

@@ -12,6 +12,7 @@
     <!-- css -->
     <link rel="stylesheet" type="text/css" href="style/main.css">
     <link rel="stylesheet" type="text/css" href="style/menu.css">
+    <link rel="stylesheet" type="text/css" href="style/realTime.css">
     <!-- title -->
     <title>UC eVoting | Consola de Administração | Constagem dos Votos</title>
     <!--icon-->
@@ -73,9 +74,9 @@
 
     <h1>Contagem dos Votos</h1>
 
-    <p style="color: black" id="text">
+    <div class="history" id="text">
         ${HeyBean.infoVotes}
-    </p>
+    </div>
 
     <s:form action="backSubMenusAdminMenu" method="post">
         <button id="exit">Voltar</button>

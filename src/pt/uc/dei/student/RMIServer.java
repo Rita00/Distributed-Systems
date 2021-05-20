@@ -765,6 +765,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     }
 
+    public ArrayList<Department> getPollingStation() {
+        return selectDepartments("SELECT id, name FROM department WHERE hasmulticastserver = 1");
+    }
 
     /**
      * Seleciona as mesas de voto que não estejam associadas a uma determinada eleição
@@ -773,10 +776,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return departamentos
      */
     public ArrayList<Department> selectNoAssociatedPollingStation(int election_id) {
-        return selectDepartments("SELECT id, name FROM department WHERE department.hasmulticastserver = 1 " +
-                "EXCEPT " +
-                "SELECT id, name FROM department, election_department " +
-                "WHERE department.id = election_department.department_id AND election_department.election_id != " + election_id + " AND department.name != 'Online'");
+        return selectDepartments("select id, name from department WHERE hasmulticastserver = 1 " +
+                "except select id, name from department, election_department " +
+                "where department.id = election_department.department_id " +
+                "and election_department.election_id = " + election_id + " and department_id != -1");
     }
 
     /**
@@ -838,7 +841,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param department_id ID do departamento
      */
     public boolean insertPollingStation(int election_id, int department_id) {
-        int checkRestriction = countRowsBD("election_department WHERE election_id = " + election_id, "department_id");
+        int checkRestriction = countRowsBD("election_department WHERE election_id = " + election_id + " and department_id = -1", "department_id");
         if (checkRestriction == -1) {
             insertElectionDepartment(election_id, department_id);
             return true;

@@ -33,7 +33,7 @@
             <button>TODO NOMES DOS DEPARTAMENTOS/MESAS DE VOTO PARA REMOVER</button>
     </s:form>
     <!-- END IF-->
-    <s:form action="" method="post">
+    <s:form action="btnBackAddRemovePollingStation" method="post">
         <button id="exit">Voltar</button>
     </s:form>
 </div>

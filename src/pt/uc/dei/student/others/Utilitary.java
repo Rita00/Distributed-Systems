@@ -5,6 +5,7 @@ import pt.uc.dei.student.elections.Department;
 import pt.uc.dei.student.elections.Election;
 import pt.uc.dei.student.elections.Person;
 
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -190,6 +191,15 @@ public class Utilitary {
         }
         return false;
     }
+
+    public static boolean hasDep(int id, ArrayList<Department> departments) {
+        for (Department dep : departments) {
+            if (dep.getId() == id) return true;
+        }
+        return false;
+    }
+
+
     /**
      * Verifica se uma string é um número
      *

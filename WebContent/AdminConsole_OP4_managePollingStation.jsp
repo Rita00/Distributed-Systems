@@ -22,6 +22,7 @@
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
     <s:actionmessage/>
+    <s:actionerror/>
     <h1>Gerir Mesa de Voto</h1>
     <h4>${HeyBean.title}</h4>
     <s:form action="addPollingStation" method="post">
@@ -31,7 +32,7 @@
             <button>Remover Mesa de Voto</button>
     </s:form>
 
-    <s:form action="backSubMenusAdminMenu" method="post">
+    <s:form action="backListPollingStation" method="post">
         <button id="exit">Voltar</button>
     </s:form>
 </div>

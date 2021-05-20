@@ -54,7 +54,8 @@ public class Utilitary {
                 }
                 try {
                     list.deleteCharAt(list.length() - 1);
-                }catch(StringIndexOutOfBoundsException ignore){}
+                } catch (StringIndexOutOfBoundsException ignore) {
+                }
                 hash.put(keyVal[0], list.toString());
             }
         }
@@ -76,6 +77,7 @@ public class Utilitary {
         }
         return d;
     }
+
     /**
      * Efetua a listagem dos departamentos pelo seu ID
      *
@@ -90,6 +92,7 @@ public class Utilitary {
             }
         }
     }
+
     /**
      * Efetua a listagem das eleições pelo seu ID
      *
@@ -105,6 +108,7 @@ public class Utilitary {
             System.out.println("Não existem eleições\n");
         }
     }
+
     /**
      * Efetua a listagem das eleições pelo indice do ArrayList
      *
@@ -114,14 +118,16 @@ public class Utilitary {
     public static void listElectionsByIndex(ArrayList<Election> elections) {
         if (elections.size() != 0) {
             for (Election e : elections) {
-                System.out.printf("\t(%d)- %s\n", elections.indexOf(e)+1, e.getTitle());
+                System.out.printf("\t(%d)- %s\n", elections.indexOf(e) + 1, e.getTitle());
             }
         } else {
             System.out.println("Não existem eleições\n");
         }
     }
+
     /**
      * Efetua listagem das pessoas pelo seu indice do ArrayList
+     *
      * @param people ArrayList com as pessoas
      * @see Person
      */
@@ -132,8 +138,10 @@ public class Utilitary {
             }
         }
     }
+
     /**
      * Efetua listagem das listas pelo seu ID
+     *
      * @param candidacies ArrayList com as listas
      * @see Candidacy
      */
@@ -142,6 +150,7 @@ public class Utilitary {
             System.out.printf("\t(%s)- %s%n", c.getId(), c.getName());
         }
     }
+
     /**
      * Função para decidir em formato String o cargo da pessoa
      * Usado para proteção de dados
@@ -161,11 +170,12 @@ public class Utilitary {
                 return null;
         }
     }
+
     /**
      * Percorre o ArrayList das listas para verificar
      * se o ID de entrada pertence a alguma das listas
      *
-     * @param candidacy ID da lista
+     * @param candidacy   ID da lista
      * @param candidacies ArrayList com as listas
      * @return true se pertencer, false caso contrário
      * @see Candidacy
@@ -176,11 +186,12 @@ public class Utilitary {
         }
         return false;
     }
+
     /**
      * Percorre o ArrayList das eleições para verificar
      * se o ID de entrada pertence a alguma das eleições
      *
-     * @param election ID da eleição
+     * @param election  ID da eleição
      * @param elections ArrayList com as eleições
      * @return true se pertencer, false caso contrário
      * @see Election
@@ -192,13 +203,21 @@ public class Utilitary {
         return false;
     }
 
+    /**
+     * Percorre o ArrayList dos departamentos para verificar
+     * se o ID de entrada pertence a alguma das eleições
+     *
+     * @param id          ID do departamento
+     * @param departments ArrayList com os departamentos
+     * @return true se pertencer, false caso contrário
+     * @see Election
+     */
     public static boolean hasDep(int id, ArrayList<Department> departments) {
         for (Department dep : departments) {
             if (dep.getId() == id) return true;
         }
         return false;
     }
-
 
     /**
      * Verifica se uma string é um número
@@ -214,6 +233,7 @@ public class Utilitary {
         }
         return true;
     }
+
     /**
      * Verifica se o numero de telemóvel tem a formatação correta:
      * 9 digitos;
@@ -228,6 +248,7 @@ public class Utilitary {
         int secondNum = num_phone / 10000000;
         return length == 9 && ((secondNum % 10) == 2 || (secondNum % 10) == 3 || (secondNum % 10) == 6 || (secondNum % 10) == 1) && secondNum / 10 == 9;
     }
+
     /**
      * Verifica se o numero de cartão de cidadão tem 8 dígitos
      *
@@ -238,6 +259,7 @@ public class Utilitary {
         int length = (int) (Math.log10(cc_number) + 1);
         return length == 8;
     }
+
     /**
      * Verifica se uma string tem o format de IPv4
      *
@@ -248,6 +270,7 @@ public class Utilitary {
         Pattern IPv4_PATTERN = Pattern.compile("^([0-9]?[0-9]?[0-9][.]){3}([0-9]?[0-9]?[0-9])$");
         return IPv4_PATTERN.matcher(ip).matches();
     }
+
     /**
      * Prepara uma string para poder ser enviada por multicast,
      * são retirados todos os caracteres pipe ("|") e ponto-virgula (";")
@@ -255,8 +278,8 @@ public class Utilitary {
      * @param original string original
      * @return string tratada
      */
-    public static String prepareForMulticast(String original){
-        String prepared = original.replace(";"," ");
+    public static String prepareForMulticast(String original) {
+        String prepared = original.replace(";", " ");
         return prepared.replace("|", " ");
     }
 

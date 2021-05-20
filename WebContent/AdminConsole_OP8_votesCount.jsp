@@ -42,7 +42,7 @@
         }
 
         function onOpen(event) {
-            alert('Connected to ' + window.location.host + '.');
+            //alert('Connected to ' + window.location.host + '.');
         }
 
         function onClose(event) {
@@ -50,7 +50,7 @@
         }
 
         function onMessage(message) { // print the received message
-            alert(message.data);
+            //alert(message.data);
             write(message.data);
         }
 
@@ -73,7 +73,9 @@
 
     <h1>Contagem dos Votos</h1>
 
-    <p id="text"></p>
+    <p style="color: black" id="text">
+        ${HeyBean.infoVotes}
+    </p>
 
     <s:form action="" method="post">
         <button id="exit">Voltar</button>

@@ -1,6 +1,7 @@
 package webServer.model;
 
 import pt.uc.dei.student.elections.*;
+import pt.uc.dei.student.others.InfoElectors;
 import pt.uc.dei.student.others.NotifierCallBack;
 import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
@@ -645,5 +646,23 @@ public class HeyBean {
 
     public void setBlank_percent(float blank_percent) {
         this.blank_percent = blank_percent;
+    }
+
+    public String getInfoVotes() {
+        ArrayList<InfoElectors> info = null;
+        try {
+            info = server.getInfoElectors();
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        String str="";
+        if(info.size()>0){
+            for (InfoElectors i : info) {
+                str = String.format("%s%s\t%s\t%s<br>", str, i.getElection_title(), i.getDep_name(),i.getCount());
+            }
+        }else{
+            str = "Sem dados para apresentar atualmente.\n";
+        }
+        return str;
     }
 }

@@ -1130,6 +1130,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param NOTIFIER notifier
      */
     public void sendRealTimeVotes(Notifier NOTIFIER) {
+        try {
+            NOTIFIER.updateAdmin(this.getInfoElectors());
+        } catch (RemoteException | InterruptedException e) {
+            //e.printStackTrace();
+        }
+
+    }
+
+    public ArrayList<InfoElectors> getInfoElectors() {
         String sql = "SELECT count(*), d.name as Name, e.title as Title" +
                 " FROM voting_record" +
                 " JOIN department d on voting_record.department = d.id" +
@@ -1149,15 +1158,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
             stmt.close();
             conn.close();
-            try {
-                NOTIFIER.updateAdmin(info);
-            } catch (RemoteException | InterruptedException e) {
-                //e.printStackTrace();
-            }
-
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        return info;
     }
 
     /**

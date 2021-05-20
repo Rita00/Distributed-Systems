@@ -20,6 +20,14 @@ public class ShowVotesCountAction extends ActionSupport implements SessionAware{
         return SUCCESS;
     }
 
+    public NotifierCallBack getNOTIFIER() {
+        return NOTIFIER;
+    }
+
+    public void setNOTIFIER(NotifierCallBack NOTIFIER) {
+        this.NOTIFIER = NOTIFIER;
+    }
+
     @Override
     public void setSession(Map<String, Object> session) {
         this.session = session;

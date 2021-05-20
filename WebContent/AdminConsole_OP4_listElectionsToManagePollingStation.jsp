@@ -26,12 +26,15 @@
     <h4>Escolha a eleição</h4>
     <s:actionerror/>
     <s:actionmessage/>
-    <s:form action="chooseElectionToManage" method="post">
-        <c:forEach items="${HeyBean.allElections}" var="value">
-            <button name="election_to_manage" value="${value.title}">${value.title}</button>
+    <s:form action="chooseElectionToManagePollingStation" method="post">
+        <c:forEach items="${HeyBean.electionsNotStarted}" var="value">
+            <button name="election_id" value="${value.id}">${value.title}</button>
+            <input type="hidden" name="election_title" value="${value.title}">
         </c:forEach>
     </s:form>
-    <button id="exit">Voltar</button>
+    <s:form name="backSubMenusAdminMenu" method="post">
+        <button id="exit">Voltar</button>
+    </s:form>
 </div>
 </body>
 </html>

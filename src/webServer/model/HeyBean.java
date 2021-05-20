@@ -6,6 +6,7 @@ import pt.uc.dei.student.others.RMI;
 import pt.uc.dei.student.others.Utilitary;
 import webServer.ws.WebSocket;
 
+import javax.lang.model.type.ArrayType;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
@@ -361,6 +362,26 @@ public class HeyBean {
             e.printStackTrace();
         }
         return votingRecords;
+    }
+
+    public ArrayList<Election> getElectionsNotStarted() {
+        ArrayList<Election> electionNotStarted = null;
+        try {
+            electionNotStarted = server.getElectionsNotStarted();
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return electionNotStarted;
+    }
+
+    ArrayList<Department> getNonAssociativePollingStations() {
+        ArrayList<Department> nonAssociativePollingStations = null;
+        try {
+            nonAssociativePollingStations = server.selectNoAssociatedPollingStation(this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return nonAssociativePollingStations;
     }
 
     /**

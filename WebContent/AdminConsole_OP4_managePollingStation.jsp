@@ -23,15 +23,15 @@
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
     <s:actionmessage/>
     <h1>Gerir Mesa de Voto</h1>
-    <h4>TODO NOME DA ELEICAO</h4>
-    <s:form action="" method="post">
+    <h4>${HeyBean.title}</h4>
+    <s:form action="addPollingStation" method="post">
             <button>Adicionar Mesa de Voto</button>
     </s:form>
-    <s:form action="" method="post">
+    <s:form action="removePollingStation" method="post">
             <button>Remover Mesa de Voto</button>
     </s:form>
 
-    <s:form action="" method="post">
+    <s:form action="backSubMenusAdminMenu" method="post">
         <button id="exit">Voltar</button>
     </s:form>
 </div>

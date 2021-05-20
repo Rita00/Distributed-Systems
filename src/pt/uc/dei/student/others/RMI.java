@@ -181,7 +181,7 @@ public interface RMI extends Remote {
      * @throws RemoteException      falha no RMI
      * @throws InterruptedException thread interrompida
      */
-    void insertPollingStation(int election_id, int department_id) throws java.rmi.RemoteException, InterruptedException;
+    boolean insertPollingStation(int election_id, int department_id) throws java.rmi.RemoteException, InterruptedException;
 
     /**
      * Inserir um registo de voto na base de dados

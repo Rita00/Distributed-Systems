@@ -212,7 +212,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return todas as eleições que não começaram
      */
     public ArrayList<Election> getElectionsNotStarted() {
-        return this.selectElections("SELECT * FROM election where begin_date > date('now') AND end_date > date('now')");
+        return this.selectElections("SELECT id, title, type, description, begin_date as begin, end_date as end FROM election where begin_date > date('now') AND end_date > date('now')");
     }
 
     /**
@@ -776,7 +776,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return selectDepartments("SELECT id, name FROM department WHERE department.hasmulticastserver = 1 " +
                 "EXCEPT " +
                 "SELECT id, name FROM department, election_department " +
-                "WHERE department.id = election_department.department_id AND election_department.election_id = " + election_id + " AND department.name != 'Online'");
+                "WHERE department.id = election_department.department_id AND election_department.election_id != " + election_id + " AND department.name != 'Online'");
     }
 
     /**
@@ -837,8 +837,13 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param election_id   ID da eleição
      * @param department_id ID do departamento
      */
-    public void insertPollingStation(int election_id, int department_id) {
-        insertElectionDepartment(election_id, department_id);
+    public boolean insertPollingStation(int election_id, int department_id) {
+        int checkRestriction = countRowsBD("election_department WHERE election_id = " + election_id, "department_id");
+        if (checkRestriction == -1) {
+            insertElectionDepartment(election_id, department_id);
+            return true;
+        }
+        return false;
     }
 
     /**

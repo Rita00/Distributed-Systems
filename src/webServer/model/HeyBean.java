@@ -933,7 +933,10 @@ public class HeyBean {
     }
 
     /*******************************************ESTADO MESAS DE VOTO****************************************/
-
+    /**
+     * Ativa o notifier para o estado das mesas de voto e respetivos terminais
+     * @param NOTIFIER notifier do estado das mesas de voto e respetivos terminais
+     */
     public void setRealTimePollingStationOn(NotifierCallBack NOTIFIER) {
         while (true) {
             try {
@@ -944,7 +947,10 @@ public class HeyBean {
             }
         }
     }
-
+    /**
+     * Desativa o notifier para o estado das mesas de voto e respetivos terminais
+     * @param NOTIFIER notifier do estado das mesas de voto e respetivos terminais
+     */
     public void setRealTimePoolingStationOff(NotifierCallBack NOTIFIER) {
         try {
             this.server.endRealTimeInfo(NOTIFIER);
@@ -952,7 +958,10 @@ public class HeyBean {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Devolve informação sobre as mesas de voto e respetivos termianais até ao momento
+     * @return informação sobre as mesas de voto e respetivos termianais
+     */
     public String getInfoPollingStations() {
         ArrayList<InfoPolls> info = null;
         try {
@@ -985,7 +994,10 @@ public class HeyBean {
 
     /*******************************************VOTOS EM TEMPO REAL****************************************/
 
-
+    /**
+     * Ativa o callback para os votos em tempo real
+     * @param NOTIFIER notifier dos votos em tempo real
+     */
     public void setRealTimeVotesOn(NotifierCallBack NOTIFIER) {
         while (true) {
             try {
@@ -996,7 +1008,10 @@ public class HeyBean {
             }
         }
     }
-
+    /**
+     * Desativa o callback para os votos em tempo real
+     * @param NOTIFIER notifier dos votos em tempo real
+     */
     public void setRealTimeVotesOff(NotifierCallBack NOTIFIER) {
         try {
             this.server.endRealTimeInfo(NOTIFIER);
@@ -1005,6 +1020,10 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Devolve informação sobre os votos até ao momento
+     * @return info sobre os votos
+     */
     public String getInfoVotes() {
         ArrayList<InfoElectors> info = null;
         try {

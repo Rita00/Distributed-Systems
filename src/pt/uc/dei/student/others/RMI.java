@@ -703,11 +703,10 @@ public interface RMI extends Remote {
      * @throws InterruptedException     thread interrompida
      */
     ArrayList<InfoElectors> getInfoElectors() throws java.rmi.RemoteException, InterruptedException;
-
     /**
-     * Devolve o registo de todas as eleições
+     * Devolve todos as mesas de voto e respetivos terminais de voto ativos
      *
-     * @return array com todos os registos de votos
+     * @return array com as mesas e terminais de voto ativos
      * @throws java.rmi.RemoteException falha no RMI
      * @throws InterruptedException     thread interrompida
      */

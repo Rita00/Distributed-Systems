@@ -51,14 +51,14 @@ public class WebSocket {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                /*
+
                 connections.remove(c);
                 try {
                     c.session.close();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                */
+                
                 //broadcast("Removed");
             }
         }

@@ -42,13 +42,13 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
         String str="";
         if(info.size()>0){
             for (InfoElectors i : info) {
-                str = String.format("%s%s\t%s\t%s\n", str, i.getElection_title(), i.getDep_name(),i.getCount());
+                str = String.format("%s%s\t%s\t%s<br>", str, i.getElection_title(), i.getDep_name(),i.getCount());
             }
         }else{
             str = "Sem dados para apresentar atualmente.\n";
         }
         //WebSocket.broadcast(str);
-        WebSocket.broadcast("AQUIIIIIIII");
+        WebSocket.broadcast(str);
         System.out.printf("%s", str);
     }
     /**

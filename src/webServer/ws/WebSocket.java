@@ -23,7 +23,9 @@ public class WebSocket {
     public void onOpen(Session session) {
         this.session=session;
         connections.add(this);
+/*
         broadcast("Hey");
+*/
     }
 
     @OnClose

@@ -86,6 +86,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result>/AdminConsole_OP2_createElection.jsp</result>
         </action>
 
+        <action name="managePollingStation" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP4_listElectionsToManagePollingStation.jsp</result>
+        </action>
+
         <action name="createElection" class="webServer.action.CreateElectionAction" method="execute">
             <result name="success">/AdminConsole_menu.jsp</result>
             <result name="error">/AdminConsole_OP2_createElection.jsp</result>
@@ -98,6 +102,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <action name="chooseElectionToManage" class="webServer.action.ChooseElectionToManage" method="execute">
             <result name="success">/AdminConsole_OP3_manageSelectedElection.jsp</result>
             <result name="error">/AdminConsole_OP3_manageElections.jsp</result>
+        </action>
+
+        <action name="chooseElectionToManagePollingStation" class="webServer.action.ChooseElectionToManage" method="execute">
+            <result name="success">/AdminConsole_OP4_managePollingStation.jsp</result>
         </action>
 
         <action name="seeDetailsList" class="webServer.action.ChooseCandidacyToSeeDetailsAction" method="execute">

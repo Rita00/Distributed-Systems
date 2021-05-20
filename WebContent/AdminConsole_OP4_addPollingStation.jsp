@@ -25,8 +25,11 @@
     <h1>Adicionar Mesa de Voto</h1>
     <h4>TODO NOME DA ELEICAO</h4>
 
-    <s:form action="" method="post">
-            <button>TODO NOMES DOS DEPARTAMENTOS/MESAS DE VOTO</button>
+    <s:form action="insertPollingStation" method="post">
+        <c:forEach items="${HeyBean.nonAssociativePollingStations}" var="value">
+            <button name="election_id" value="${value.id}">${value.title}</button>
+            <button></button>
+        </c:forEach>
     </s:form>
 
     <s:form action="" method="post">

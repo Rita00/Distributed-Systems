@@ -75,9 +75,8 @@ CREATE TABLE voting_record (
 );
 
 CREATE TABLE election_department (
-         election_id	 INTEGER UNIQUE,
+         election_id	 INTEGER,
          department_id INTEGER,
-         PRIMARY KEY(election_id,department_id),
          FOREIGN KEY (election_id) REFERENCES election(id),
          FOREIGN KEY (department_id) REFERENCES department(id)
 );

@@ -1410,31 +1410,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return getStrings("SELECT fbID FROM person WHERE cc_number = " + cc_number);
     }
 
-    public ArrayList<InfoElectors> getInfoElectors() {
-        String sql = "SELECT count(*), d.name as Name, e.title as Title" +
-                " FROM voting_record" +
-                " JOIN department d on voting_record.department = d.id" +
-                " JOIN election e on e.id = voting_record.election_id" +
-                " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by voting_record.department, voting_record.election_id";
-        ArrayList<InfoElectors> info = new ArrayList<>();
-        Connection conn = connectDB();
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                info.add(new InfoElectors(
-                        rs.getInt("count(*)"),
-                        rs.getString("Name"),
-                        rs.getString("Title")
-                ));
-            }
-            stmt.close();
-            conn.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return info;
-    }
+    /**
+     * Devolve o registo de todas as eleições
+     *
+     * @return array com todos os registos de votos
+     */
     public ArrayList<InfoPolls> getInfoPolls() {
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
                 "LEFT JOIN voting_terminal vt on department.id = vt.department_id WHERE hasmulticastserver not null";

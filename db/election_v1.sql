@@ -69,7 +69,7 @@ CREATE TABLE voting_record (
    department  INTEGER,
    person_cc_number INTEGER,
    election_id	    INTEGER,
-   PRIMARY KEY(person_cc_number,election_id, department),
+   PRIMARY KEY(person_cc_number,election_id),
    FOREIGN KEY (person_cc_number) REFERENCES person(cc_number),
    FOREIGN KEY (election_id) REFERENCES election(id)
 );

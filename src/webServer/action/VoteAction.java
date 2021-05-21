@@ -56,6 +56,8 @@ public class VoteAction extends ActionSupport implements SessionAware {
             } else {
                 if (!this.getHeyBean().checkIfAlreadyVoteOnVoteForm()) {
                     this.getHeyBean().updateVotes();
+                    message = "Voto efetuado com sucesso!";
+                    addActionMessage(message);
 
                     /*String apiKey = "1345313155825147";
                     String apiSecret = "f6c3ca41446cc2d017a37650223f581c";

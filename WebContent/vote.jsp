@@ -32,6 +32,7 @@
                     </h1>
                 </div>
                 <s:actionerror/>
+                <s:actionmessage/>
                 <s:form action="vote" method="post">
                     <div class="panel-body">
                         <c:forEach items="${HeyBean.candidacies}" var="value">
@@ -86,7 +87,7 @@
             </s:form>
         </c:if>
     </div>
-    <s:form action="" method="post">
+    <s:form action="logout" method="post">
         <button id="exit">Sign Out</button>
     </s:form>
 </div>

@@ -49,8 +49,14 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
 
 
         <!-- 'index' action leads to the view provided by Login.jsp -->
-        <action name="index">
-            <result>/index.jsp</result>
+        <action name="index" class="webServer.action.CheckLoginAction" method="execute">
+            <result name="success">/index.jsp</result>
+            <result name="hasLogin">/chooseElection.jsp</result>
+            <result name="hasLoginAdmin">/Login_menuAdministrator.jsp</result>
+        </action>
+
+        <action name="hasLogin" class="webServer.action.CheckLoginAction" method="execute">
+
         </action>
 
         <action name="login" class="webServer.action.LoginAction" method="execute">
@@ -65,7 +71,8 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="vote" class="webServer.action.VoteAction" method="execute">
-            <result name="success" type="redirect">${authorizationUrl}</result>
+            <!--<result name="success" type="redirect">${authorizationUrl}</result>-->
+            <result name="success">/chooseElection.jsp</result>
             <result name="error">/chooseElection.jsp</result>
         </action>
 
@@ -248,6 +255,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <action name="addPollingStation" class="webServer.action.CheckPollingStationToAddAction" method="execute">
             <result name="success">/AdminConsole_OP4_addPollingStation.jsp</result>
             <result name="error">/AdminConsole_OP4_managePollingStation.jsp</result>
+        </action>
+
+        <action name="logout" class="webServer.action.LogoutAction" method="execute">
+            <result>/Login.jsp</result>
         </action>
     </package>
 </struts>

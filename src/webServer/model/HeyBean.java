@@ -160,12 +160,17 @@ public class HeyBean {
      */
     public HeyBean() {
         // Connect to RMI Server
-        try {
-            server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
+        while(true) {
+            try {
+                server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
+                break;
 //            server = (RMI) Naming.lookup("server");
-        } catch (NotBoundException | RemoteException e) {
-            e.printStackTrace();
+            } catch (NotBoundException | RemoteException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
+
     }
 
     /**
@@ -528,11 +533,14 @@ public class HeyBean {
      */
     public Person getUserFb(String FbId) throws RemoteException {
         Person p = null;
-        try {
-            p = server.getPersonFb(FbId);
-        } catch (
-                InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                p = server.getPersonFb(FbId);
+                break;
+            } catch (InterruptedException | RemoteException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return p;
     }
@@ -545,10 +553,14 @@ public class HeyBean {
      */
     public Person getUser() throws RemoteException {
         Person p = null;
-        try {
-            p = server.getPerson(String.valueOf(this.ccnumber), password);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                p = server.getPerson(String.valueOf(this.ccnumber), password);
+                break;
+            } catch (InterruptedException | RemoteException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return p;
     }
@@ -560,10 +572,14 @@ public class HeyBean {
      */
     public ArrayList<Election> getElections() {
         ArrayList<Election> elections = null;
-        try {
-            elections = server.getCurrentElectionsPerson(String.valueOf(this.ccnumber));
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                elections = server.getCurrentElectionsPerson(String.valueOf(this.ccnumber));
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return elections;
     }
@@ -578,10 +594,14 @@ public class HeyBean {
      */
     public ArrayList<Election> getAllElections() {
         ArrayList<Election> allElections = null;
-        try {
-            allElections = server.getElections();
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                allElections = server.getElections();
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return allElections;
     }
@@ -593,10 +613,14 @@ public class HeyBean {
      */
     public ArrayList<Candidacy> getCandidacies() {
         ArrayList<Candidacy> candidacies = null;
-        try {
-            candidacies = server.getCandidacies(this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                candidacies = server.getCandidacies(this.election_id);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return candidacies;
     }
@@ -609,10 +633,14 @@ public class HeyBean {
      */
     public ArrayList<Department> getDepartments() {
         ArrayList<Department> departments = null;
-        try {
-            departments = server.getDepartments();
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                departments = server.getDepartments();
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return departments;
     }
@@ -624,10 +652,14 @@ public class HeyBean {
      */
     public ArrayList<VotingRecord> getVotingRecords() {
         ArrayList<VotingRecord> votingRecords = null;
-        try {
-            votingRecords = server.getVotingRecords();
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                votingRecords = server.getVotingRecords();
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return votingRecords;
     }
@@ -639,10 +671,14 @@ public class HeyBean {
      */
     public ArrayList<Election> getElectionsNotStarted() {
         ArrayList<Election> electionNotStarted = null;
-        try {
-            electionNotStarted = server.getElectionsNotStarted();
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                electionNotStarted = server.getElectionsNotStarted();
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return electionNotStarted;
     }
@@ -654,10 +690,14 @@ public class HeyBean {
      */
     public ArrayList<Department> getNonAssociativePollingStations() {
         ArrayList<Department> nonAssociativePollingStations = null;
-        try {
-            nonAssociativePollingStations = server.selectNoAssociatedPollingStation(this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                nonAssociativePollingStations = server.selectNoAssociatedPollingStation(this.election_id);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return nonAssociativePollingStations;
     }
@@ -669,10 +709,14 @@ public class HeyBean {
      */
     public ArrayList<Person> getCandidaciesPeople() {
         ArrayList<Person> candidaciesPeople = null;
-        try {
-            candidaciesPeople = server.getPeople(this.candidacy_id);
-        } catch (RemoteException | InterruptedException remoteException) {
-            remoteException.printStackTrace();
+        while (true) {
+            try {
+                candidaciesPeople = server.getPeople(this.candidacy_id);
+                break;
+            } catch (RemoteException | InterruptedException remoteException) {
+                /*remoteException.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return candidaciesPeople;
     }
@@ -682,17 +726,21 @@ public class HeyBean {
      * Na base de dados fica que o voto foi realizado online
      */
     public void updateVotes() {
-        try {
-            if (this.candidacy_id == -1) {
-                server.updateNullVotes(String.valueOf(this.election_id), String.valueOf(this.ccnumber), String.valueOf(12));
-            } else if (this.candidacy_id == -2) {
-                server.updateBlankVotes(String.valueOf(this.election_id), String.valueOf(this.ccnumber), String.valueOf(12));
-            } else {
-                server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(12));
+        while (true) {
+            try {
+                if (this.candidacy_id == -1) {
+                    server.updateNullVotes(String.valueOf(this.election_id), String.valueOf(this.ccnumber), String.valueOf(12));
+                } else if (this.candidacy_id == -2) {
+                    server.updateBlankVotes(String.valueOf(this.election_id), String.valueOf(this.ccnumber), String.valueOf(12));
+                } else {
+                    server.updateCandidacyVotes(String.valueOf(this.election_id), String.valueOf(this.candidacy_id), String.valueOf(this.ccnumber), String.valueOf(12));
+                }
+                server.updateAllVotes(this.election_id);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
             }
-            server.updateAllVotes(this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
@@ -703,12 +751,14 @@ public class HeyBean {
      * @return se já tiver votado devolve true, caso contrário devolve false
      */
     public boolean checkIfAlreadyVotes() {
-        try {
-            return server.checkIfAlreadyVote(this.ccnumber, this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                return server.checkIfAlreadyVote(this.ccnumber, this.election_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
-        return false;
     }
 
     /**
@@ -717,12 +767,14 @@ public class HeyBean {
      * @return devolve true ou false caso tenha tido sucesso ou não, respetivamente
      */
     public boolean insertRegister() {
-        try {
-            return server.insertPerson(this.name, this.cargo, this.password, this.dep, this.phone, this.address, this.ccnumber, this.ccDate);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                return server.insertPerson(this.name, this.cargo, this.password, this.dep, this.phone, this.address, this.ccnumber, this.ccDate);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
-        return false;
     }
 
     /**
@@ -732,14 +784,18 @@ public class HeyBean {
      */
     public int insertElection() {
         int id_election = -1;
-        try {
-            id_election = server.insertElection(this.iniDate, this.fimDate, this.title, this.description, this.type);
-            if (this.restriction.equals("yes")) {
-                server.insertElectionDepartment(id_election, this.dep);
-            } else
-                server.insertElectionDepartment(id_election, -1);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                id_election = server.insertElection(this.iniDate, this.fimDate, this.title, this.description, this.type);
+                if (this.restriction.equals("yes")) {
+                    server.insertElectionDepartment(id_election, this.dep);
+                } else
+                    server.insertElectionDepartment(id_election, -1);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return id_election;
     }
@@ -755,15 +811,17 @@ public class HeyBean {
      */
     public boolean checkIfAlreadyVoteOnVoteForm() {
         int election_id;
-        try {
-            election_id = server.getElectionFromCandidacy(this.candidacy_id);
-            // Pra simplificar considera-se que caso uma elição não exista o utilizador já tenha votado nela
-            if (election_id == 0 && server.checkIfAlreadyVote(this.ccnumber, election_id))
-                return true;
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                election_id = server.getElectionFromCandidacy(this.candidacy_id);
+                // Pra simplificar considera-se que caso uma elição não exista o utilizador já tenha votado nela
+                if (election_id == 0 && server.checkIfAlreadyVote(this.ccnumber, election_id))
+                    return true;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
-        return false;
     }
 
     /**
@@ -772,12 +830,14 @@ public class HeyBean {
      * @return título da eleição
      */
     public String getTitleElection() {
-        try {
-            return server.getElectionTitleFromCandidacy(this.candidacy_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                return server.getElectionTitleFromCandidacy(this.candidacy_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
-        return null;
     }
 
     /**
@@ -797,12 +857,16 @@ public class HeyBean {
      * @return true ou false consoante exista ou não, respetivamente
      */
     public boolean checkSelectedCandidacy_Election() {
-        try {
-            if (server.checkElectionHasCandidacy(this.election_id, this.candidacy_id) != 0) {
-                return true;
+        while (true) {
+            try {
+                if (server.checkElectionHasCandidacy(this.election_id, this.candidacy_id) != 0) {
+                    return true;
+                }
+                break;
+            } catch (RemoteException | InterruptedException remoteException) {
+                /*remoteException.printStackTrace();*/
+                this.reconnectRMI();
             }
-        } catch (RemoteException | InterruptedException remoteException) {
-            remoteException.printStackTrace();
         }
         return false;
     }
@@ -813,12 +877,14 @@ public class HeyBean {
      * @return devolve 1 caso ainda não tenha começado ou 0 se já tiver começado
      */
     public int checkIfCanEdit() {
-        try {
-            return server.checkIfElectionNotStarted(this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                return server.checkIfElectionNotStarted(this.election_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
-        return 0;
     }
 
     /**
@@ -828,10 +894,13 @@ public class HeyBean {
      */
     public boolean editElection() {
         if (checkIfSelectedElectionExists()) {
-            try {
-                return server.updateElectionOnEdit(this.election_id, this.title, this.type, this.description, this.iniDate, this.fimDate);
-            } catch (RemoteException | InterruptedException remoteException) {
-                remoteException.printStackTrace();
+            while (true) {
+                try {
+                    return server.updateElectionOnEdit(this.election_id, this.title, this.type, this.description, this.iniDate, this.fimDate);
+                } catch (RemoteException | InterruptedException remoteException) {
+                    /*remoteException.printStackTrace();*/
+                    this.reconnectRMI();
+                }
             }
         }
         return false;
@@ -843,12 +912,16 @@ public class HeyBean {
      * @return devolde false se ela já tiver começado e por isso não se poder adicionar lista ou true caso tenha conseguido adcionar
      */
     public boolean addListToAnElection() {
-        try {
-            if (server.checkIfElectionNotStarted(this.election_id) != 0) {
-                return server.insertCandidacyIntoElection(this.list_name, this.type, this.election_id);
+        while (true) {
+            try {
+                if (server.checkIfElectionNotStarted(this.election_id) != 0) {
+                    return server.insertCandidacyIntoElection(this.list_name, this.type, this.election_id);
+                }
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -860,13 +933,17 @@ public class HeyBean {
      * @return devolve erro caso não tenha sido adicionada ou null caso a pessoa não exista
      */
     public String checkIfPersonExists() {
-        try {
-            String name_person = server.checkIfPersonExists(this.person_cc);
-            if (name_person != null) {
-                return server.insertPersonIntoCandidacy(this.election_id, this.candidacy_id, this.person_cc);
+        while (true) {
+            try {
+                String name_person = server.checkIfPersonExists(this.person_cc);
+                if (name_person != null) {
+                    return server.insertPersonIntoCandidacy(this.election_id, this.candidacy_id, this.person_cc);
+                }
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -878,10 +955,14 @@ public class HeyBean {
      */
     public ArrayList<Election> getEndedElections() {
         ArrayList<Election> endedElections = null;
-        try {
-            endedElections = server.getEndedElections();
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                endedElections = server.getEndedElections();
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return endedElections;
     }
@@ -893,10 +974,14 @@ public class HeyBean {
      */
     public ArrayList<Candidacy> getCandidaciesWithVotes() {
         ArrayList<Candidacy> candidaciesWithVotes = null;
-        try {
-            candidaciesWithVotes = server.getCandidaciesWithVotes(this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                candidaciesWithVotes = server.getCandidaciesWithVotes(this.election_id);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return candidaciesWithVotes;
     }
@@ -909,10 +994,13 @@ public class HeyBean {
      */
     public boolean associateFbId(String fbId) {
         if (getAssociatedFbId() == null) {
-            try {
-                return server.associateFbId(this.ccnumber, fbId);
-            } catch (RemoteException | InterruptedException e) {
-                e.printStackTrace();
+            while (true) {
+                try {
+                    return server.associateFbId(this.ccnumber, fbId);
+                } catch (RemoteException | InterruptedException e) {
+                    /*e.printStackTrace();*/
+                    this.reconnectRMI();
+                }
             }
         }
         return false;
@@ -925,12 +1013,14 @@ public class HeyBean {
      */
     public String getAssociatedFbId() {
         String associatedFbId = null;
-        try {
-            return server.getAssociatedFbId(this.ccnumber);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                return server.getAssociatedFbId(this.ccnumber);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
-        return null;
     }
 
     /**
@@ -939,12 +1029,16 @@ public class HeyBean {
      * @return devolve true se for administrador ou fase caso contrário
      */
     public boolean checkIfIsAdmin() {
-        try {
-            if (server.checkIfIsAdmin(this.ccnumber) == 1) {
-                return true;
+        while (true) {
+            try {
+                if (server.checkIfIsAdmin(this.ccnumber) == 1) {
+                    return true;
+                }
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
             }
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -979,7 +1073,8 @@ public class HeyBean {
                 this.server.initializeRealTimePolls(NOTIFIER);
                 break;
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
             }
         }
     }
@@ -990,10 +1085,14 @@ public class HeyBean {
      * @param NOTIFIER notifier do estado das mesas de voto e respetivos terminais
      */
     public void setRealTimePoolingStationOff(NotifierCallBack NOTIFIER) {
-        try {
-            this.server.endRealTimeInfo(NOTIFIER);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                this.server.endRealTimeInfo(NOTIFIER);
+                break;
+            } catch (IOException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
     }
 
@@ -1004,10 +1103,14 @@ public class HeyBean {
      */
     public String getInfoPollingStations() {
         ArrayList<InfoPolls> info = null;
-        try {
-            info = server.getInfoPolls();
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                info = server.getInfoPolls();
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         String strWeb = "";
         String last = "";
@@ -1045,7 +1148,8 @@ public class HeyBean {
                 this.server.initializeRealTimeVotes(NOTIFIER);
                 break;
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
             }
         }
     }
@@ -1056,10 +1160,15 @@ public class HeyBean {
      * @param NOTIFIER notifier dos votos em tempo real
      */
     public void setRealTimeVotesOff(NotifierCallBack NOTIFIER) {
-        try {
-            this.server.endRealTimeInfo(NOTIFIER);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                this.server.endRealTimeInfo(NOTIFIER);
+                break;
+            } catch (IOException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+
+            }
         }
     }
 
@@ -1070,10 +1179,14 @@ public class HeyBean {
      */
     public String getInfoVotes() {
         ArrayList<InfoElectors> info = null;
-        try {
-            info = server.getDiferenciedInfoElectors();
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                info = server.getDiferenciedInfoElectors();
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         String strWeb = "";
         if (info != null && info.size() > 0) {
@@ -1099,12 +1212,16 @@ public class HeyBean {
      */
     public boolean checkIfPollingStationIsActive() {
         ArrayList<Department> pollingStations;
-        try {
-            pollingStations = server.getPollingStation();
-            if (pollingStations != null && Utilitary.hasDep(this.department_id, pollingStations))
-                return true;
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                pollingStations = server.getPollingStation();
+                if (pollingStations != null && Utilitary.hasDep(this.department_id, pollingStations))
+                    return true;
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return false;
     }
@@ -1115,12 +1232,14 @@ public class HeyBean {
      * @return true caso tenha conseguido adicionar, false caso contrário
      */
     public boolean addPollingStation() {
-        try {
-            return server.insertPollingStation(this.election_id, this.department_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                return server.insertPollingStation(this.election_id, this.department_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
-        return false;
     }
 
     /**
@@ -1130,10 +1249,14 @@ public class HeyBean {
      */
     public ArrayList<Department> getAssociatedPollingStations() {
         ArrayList<Department> associatedDepartments = null;
-        try {
-            associatedDepartments = server.selectPollingStation(this.election_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                associatedDepartments = server.selectPollingStation(this.election_id);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
         }
         return associatedDepartments;
     }
@@ -1142,10 +1265,25 @@ public class HeyBean {
      * Chama método no RMI que desassocia uma mesa de voto a uma determinada eleição
      */
     public void removePollingStation() {
-        try {
-            server.removePollingStation(this.department_id);
-        } catch (RemoteException | InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                server.removePollingStation(this.department_id);
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
+        }
+    }
+
+    public void reconnectRMI() {
+        while (true) {
+            try {
+                server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
+                break;
+            } catch (NotBoundException | IOException remoteException) {
+                remoteException.printStackTrace(); //TODO caso o porte ou o lookup estejam errados, mais vale parar o programa
+            }
         }
     }
 }

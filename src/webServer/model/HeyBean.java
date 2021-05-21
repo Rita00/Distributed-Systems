@@ -157,15 +157,26 @@ public class HeyBean {
      * Guarda o id de um departamento
      */
     private int department_id;
-
+    /**
+     * IPv4 do servidor RMI
+     */
+    private String HOST;
+    /**
+     * Port servidor RMI
+     */
+    private int PORT;
     /**
      * Conecta-se ao RMI
      */
+    Properties p = new Properties();
     public HeyBean() {
+        this.PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
+        this.HOST = p.getProperty("rmiServerAddress");
         // Connect to RMI Server
         while(true) {
+
             try {
-                server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
+                server = (RMI) LocateRegistry.getRegistry(this.HOST, this.PORT).lookup("server");
                 break;
 //            server = (RMI) Naming.lookup("server");
             } catch (NotBoundException | RemoteException e) {
@@ -1282,7 +1293,7 @@ public class HeyBean {
     public void reconnectRMI() {
         while (true) {
             try {
-                server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
+                server = (RMI) LocateRegistry.getRegistry(this.HOST, this.PORT).lookup("server");
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace(); //TODO caso o porte ou o lookup estejam errados, mais vale parar o programa

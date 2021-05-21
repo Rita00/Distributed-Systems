@@ -19,6 +19,7 @@
         </element>
       </element>
       <element id="javaee-facet-resources" facet="SD_Project/web/Web" />
+      <element id="artifact" artifact-name="config" />
     </root>
   </artifact>
 </component>

@@ -1,3 +1,7 @@
 pt.uc.dei.student
 pt.uc.dei.student.elections
 pt.uc.dei.student.others
+webServer.action
+webServer.Interceptors
+webServer.model
+webServer.ws

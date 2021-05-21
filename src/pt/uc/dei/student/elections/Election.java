@@ -213,7 +213,7 @@ public class Election implements Serializable {
     /**
      * Setter da data de início da eleição em formato String
      *
-     * @return data de inicio da eleição
+     * @param beginStr data de inicio da eleição
      */
     public void setBeginStr(String beginStr) {
         this.beginStr = beginStr;
@@ -222,7 +222,7 @@ public class Election implements Serializable {
     /**
      * Setter da data de fim da eleição em formato String
      *
-     * @return data de fim da eleição
+     * @param endStr  data de fim da eleição
      */
     public void setEndStr(String endStr) {
         this.endStr = endStr;

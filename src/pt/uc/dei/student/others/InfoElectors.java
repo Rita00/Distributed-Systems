@@ -49,6 +49,9 @@ public class InfoElectors implements Serializable {
      * Constutor do Objeto contendo Infomações sobre as Eleições diferenciação dos votos
      *
      * @param count contador de votos
+     * @param count_estudante contador de votos dos estudantes
+     * @param count_docente contador de votos dos docentes
+     * @param count_funcionario contador de votos dos funcionários
      * @param dep_name nome do departamento
      * @param election_title nome da eleição
      */

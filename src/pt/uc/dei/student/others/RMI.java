@@ -178,6 +178,7 @@ public interface RMI extends Remote {
      *
      * @param election_id   ID da eleição
      * @param department_id ID do departamento
+     * @return true em caso de sucesso na inserção, false caso contrário
      * @throws RemoteException      falha no RMI
      * @throws InterruptedException thread interrompida
      */

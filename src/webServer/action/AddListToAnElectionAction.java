@@ -25,6 +25,7 @@ public class AddListToAnElectionAction extends ActionSupport implements SessionA
     /**
      * Verifica se uma determinada eleição existe
      * Se existir tenta adicioná-la, caso contrário dá return de erro
+     *
      * @return String que informa o ficheiro struts que página deve ser apresentada
      * @throws Exception Processa o pedido para adicionar uma lista a uma eleição
      */
@@ -50,6 +51,7 @@ public class AddListToAnElectionAction extends ActionSupport implements SessionA
 
     /**
      * Setter para o nome da lista
+     *
      * @param list_name nome da lista
      */
     public void setList_name(String list_name) {
@@ -58,6 +60,7 @@ public class AddListToAnElectionAction extends ActionSupport implements SessionA
 
     /**
      * Getter para o nome da lista
+     *
      * @return nome da lista
      */
     public String getList_name() {
@@ -66,6 +69,7 @@ public class AddListToAnElectionAction extends ActionSupport implements SessionA
 
     /**
      * Setter para a sessão
+     *
      * @param session sessão
      */
     @Override
@@ -75,6 +79,7 @@ public class AddListToAnElectionAction extends ActionSupport implements SessionA
 
     /**
      * Getter para o bean
+     *
      * @return bean
      */
     public HeyBean getHeyBean() {
@@ -85,6 +90,7 @@ public class AddListToAnElectionAction extends ActionSupport implements SessionA
 
     /**
      * Setter para o Bean
+     *
      * @param heyBean Bean
      */
     public void setHeyBean(HeyBean heyBean) {

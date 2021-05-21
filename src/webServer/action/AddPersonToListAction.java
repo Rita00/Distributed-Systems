@@ -25,6 +25,7 @@ public class AddPersonToListAction extends ActionSupport implements SessionAware
     /**
      * Verifica se uma determinada pessoa existe
      * Se existir tenta adicioná-la como membro
+     *
      * @return String que informa o ficheiro struts que página deve ser apresentada
      * @throws Exception Processa o pedido para adicionar uma pessoa a uma lista
      */
@@ -44,6 +45,7 @@ public class AddPersonToListAction extends ActionSupport implements SessionAware
 
     /**
      * Getter para o número de cartão de cidadão
+     *
      * @return número do cartão de cidadão
      */
     public int getPerson_cc() {
@@ -52,6 +54,7 @@ public class AddPersonToListAction extends ActionSupport implements SessionAware
 
     /**
      * Setter para o número de cartão de cidadão
+     *
      * @param person_cc número do cartão de cidadão
      */
     public void setPerson_cc(int person_cc) {
@@ -60,6 +63,7 @@ public class AddPersonToListAction extends ActionSupport implements SessionAware
 
     /**
      * Setter para a sessão
+     *
      * @param session sessão
      */
     @Override
@@ -69,6 +73,7 @@ public class AddPersonToListAction extends ActionSupport implements SessionAware
 
     /**
      * Getter para o bean
+     *
      * @return bean
      */
     public HeyBean getHeyBean() {
@@ -79,6 +84,7 @@ public class AddPersonToListAction extends ActionSupport implements SessionAware
 
     /**
      * Setter para o Bean
+     *
      * @param heyBean Bean
      */
     public void setHeyBean(HeyBean heyBean) {

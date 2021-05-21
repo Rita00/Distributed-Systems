@@ -25,6 +25,7 @@ public class AddPollingStationAction extends ActionSupport implements SessionAwa
     /**
      * Verifica se a mesa de voto a adicionar está ativa
      * Se sim tenta adicioná-la, caso contrário dá erro
+     *
      * @return String que informa o ficheiro struts que página deve ser apresentada
      * @throws Exception Processa o pedido para associar uma mesa de voto a uma determinada eleiçáo
      */
@@ -50,6 +51,7 @@ public class AddPollingStationAction extends ActionSupport implements SessionAwa
 
     /**
      * Getter para o id do departamento
+     *
      * @return id do departamento
      */
     public int getDepartment_id() {
@@ -58,6 +60,7 @@ public class AddPollingStationAction extends ActionSupport implements SessionAwa
 
     /**
      * Setter para o id do departamento
+     *
      * @param department_id id do departamento
      */
     public void setDepartment_id(int department_id) {
@@ -66,6 +69,7 @@ public class AddPollingStationAction extends ActionSupport implements SessionAwa
 
     /**
      * Setter para a sessão
+     *
      * @param session sessão
      */
     @Override
@@ -75,6 +79,7 @@ public class AddPollingStationAction extends ActionSupport implements SessionAwa
 
     /**
      * Getter para o bean
+     *
      * @return bean
      */
     public HeyBean getHeyBean() {
@@ -85,6 +90,7 @@ public class AddPollingStationAction extends ActionSupport implements SessionAwa
 
     /**
      * Setter para o Bean
+     *
      * @param heyBean Bean
      */
     public void setHeyBean(HeyBean heyBean) {

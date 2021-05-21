@@ -39,6 +39,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
     /**
      * Redireciona o utilizador para a página de autorização
      * definindo que após a autorização será reencaminhado para o link: http://localhost:8080/webserver/associateFacebookForRealThisTime
+     *
      * @return String que informa o ficheiro struts que página deve ser apresentada
      * @throws Exception Processa o pedido para associar uma conta a um utilizador
      */
@@ -62,6 +63,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
 
     /**
      * Associa o facebook a um determinado utilizador
+     *
      * @return String que informa o ficheiro struts que página deve ser apresentada
      * @throws Exception Processa o pedido para associar uma conta a um utilizador
      */
@@ -100,6 +102,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
 
     /**
      * Getter para o URL de autorização
+     *
      * @return URL de autorização
      */
     public String getAuthorizationUrl() {
@@ -108,6 +111,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
 
     /**
      * Setter para o URL de autorização
+     *
      * @param authorizationUrl URL de autorização
      */
     public void setAuthorizationUrl(String authorizationUrl) {
@@ -116,6 +120,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
 
     /**
      * Getter para o código
+     *
      * @return código
      */
     public String getCode() {
@@ -124,6 +129,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
 
     /**
      * Setter para o código
+     *
      * @param code código
      */
     public void setCode(String code) {
@@ -132,6 +138,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
 
     /**
      * Setter para a sessão
+     *
      * @param session sessão
      */
     @Override
@@ -141,6 +148,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
 
     /**
      * Getter para o bean
+     *
      * @return bean
      */
     public HeyBean getHeyBean() {
@@ -151,6 +159,7 @@ public class AssociateFacebookAction extends ActionSupport implements SessionAwa
 
     /**
      * Setter para o Bean
+     *
      * @param heyBean Bean
      */
     public void setHeyBean(HeyBean heyBean) {

@@ -873,6 +873,7 @@ public class HeyBean {
 
     /**
      * Chama método remoto que devolve todas as elições que já terminaram
+     *
      * @return ArrayList com todas as eleições termindas
      */
     public ArrayList<Election> getEndedElections() {
@@ -887,6 +888,7 @@ public class HeyBean {
 
     /**
      * Chama método no RMI que devolve listas e respetivos votos
+     *
      * @return ArrayList com as listas de uma determinada eleição com os respetivos votos
      */
     public ArrayList<Candidacy> getCandidaciesWithVotes() {
@@ -901,6 +903,7 @@ public class HeyBean {
 
     /**
      * Chama método no RMI que insere o token do facebook a um determinado utilizador
+     *
      * @param fbId token de facebook
      * @return devolve true ou false caso tenha conseguido inserir o token na base de dados
      */
@@ -917,6 +920,7 @@ public class HeyBean {
 
     /**
      * Chama método no RMI que devolve o token de facebook associado a uma determinada pessoa
+     *
      * @return token do facebook
      */
     public String getAssociatedFbId() {
@@ -931,6 +935,7 @@ public class HeyBean {
 
     /**
      * Chama método no RMI que verifica se um determinado utilizador é administrador
+     *
      * @return devolve true se for administrador ou fase caso contrário
      */
     public boolean checkIfIsAdmin() {
@@ -946,6 +951,7 @@ public class HeyBean {
 
     /**
      * Setter da percentagem de votos nulos
+     *
      * @param null_percent percentagem de votos nulos
      */
     public void setNull_percent(float null_percent) {
@@ -954,6 +960,7 @@ public class HeyBean {
 
     /**
      * Setter da percentagem de votos brancos
+     *
      * @param blank_percent percentagem de votos brancos
      */
     public void setBlank_percent(float blank_percent) {
@@ -963,6 +970,7 @@ public class HeyBean {
     /*******************************************ESTADO MESAS DE VOTO****************************************/
     /**
      * Ativa o notifier para o estado das mesas de voto e respetivos terminais
+     *
      * @param NOTIFIER notifier do estado das mesas de voto e respetivos terminais
      */
     public void setRealTimePollingStationOn(NotifierCallBack NOTIFIER) {
@@ -975,8 +983,10 @@ public class HeyBean {
             }
         }
     }
+
     /**
      * Desativa o notifier para o estado das mesas de voto e respetivos terminais
+     *
      * @param NOTIFIER notifier do estado das mesas de voto e respetivos terminais
      */
     public void setRealTimePoolingStationOff(NotifierCallBack NOTIFIER) {
@@ -986,8 +996,10 @@ public class HeyBean {
             e.printStackTrace();
         }
     }
+
     /**
      * Devolve informação sobre as mesas de voto e respetivos termianais até ao momento
+     *
      * @return informação sobre as mesas de voto e respetivos termianais
      */
     public String getInfoPollingStations() {
@@ -1024,6 +1036,7 @@ public class HeyBean {
 
     /**
      * Ativa o callback para os votos em tempo real
+     *
      * @param NOTIFIER notifier dos votos em tempo real
      */
     public void setRealTimeVotesOn(NotifierCallBack NOTIFIER) {
@@ -1036,8 +1049,10 @@ public class HeyBean {
             }
         }
     }
+
     /**
      * Desativa o callback para os votos em tempo real
+     *
      * @param NOTIFIER notifier dos votos em tempo real
      */
     public void setRealTimeVotesOff(NotifierCallBack NOTIFIER) {
@@ -1050,6 +1065,7 @@ public class HeyBean {
 
     /**
      * Devolve informação sobre os votos até ao momento
+     *
      * @return info sobre os votos
      */
     public String getInfoVotes() {
@@ -1067,7 +1083,7 @@ public class HeyBean {
                 if (!before.equals(i.getElection_title())) {
                     strWeb = String.format("%s<label>%s</label>", strWeb, i.getElection_title());
                 }
-                strWeb = String.format("%s<p>%s: %s voto(s) (E:%s/D:%s/F:%s)</p>", strWeb, i.getDep_name(),i.getCount(),i.getCount_estudante(),i.getCount_docente(),i.getCount_funcionario());
+                strWeb = String.format("%s<p>%s: %s voto(s) (E:%s/D:%s/F:%s)</p>", strWeb, i.getDep_name(), i.getCount(), i.getCount_estudante(), i.getCount_docente(), i.getCount_funcionario());
                 before = i.getElection_title();
             }
         } else {
@@ -1078,6 +1094,7 @@ public class HeyBean {
 
     /**
      * Chama método no RMI que verifica se um determinada mesa de voto está ativa
+     *
      * @return true se estiver ativa, false caso contrário
      */
     public boolean checkIfPollingStationIsActive() {
@@ -1094,6 +1111,7 @@ public class HeyBean {
 
     /**
      * Chama método remoto que adiciona uma mesa de voto a uma determinada eleição
+     *
      * @return true caso tenha conseguido adicionar, false caso contrário
      */
     public boolean addPollingStation() {
@@ -1107,6 +1125,7 @@ public class HeyBean {
 
     /**
      * Chama método no RMI que devolve as mesas de voto associadas a uma determinada eleição
+     *
      * @return mesas de voto associadas a uma eleição
      */
     public ArrayList<Department> getAssociatedPollingStations() {

@@ -1197,6 +1197,8 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return countRowsBD("person WHERE cc_number = " + cc_number, "isAdmin");
     }
 
+
+
     /**
      * Envia informação sobre os votos via callback para todos os admins que estão a receber informação em tempo real
      */

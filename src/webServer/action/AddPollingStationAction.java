@@ -21,7 +21,7 @@ public class AddPollingStationAction extends ActionSupport implements SessionAwa
                 addActionMessage(message);
                 return SUCCESS;
             } else {
-                message = "Esta eleição está restringida, não pdoem ser adicionadas mesas de voto!";
+                message = "Esta eleição está restringida, não podem ser adicionadas mesas de voto!";
                 addActionError(message);
                 return "restrict";
             }

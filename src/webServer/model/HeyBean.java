@@ -1068,4 +1068,22 @@ public class HeyBean {
         }
         return false;
     }
+
+    public ArrayList<Department> getAssociatedPollingStations() {
+        ArrayList<Department> associatedDepartments = null;
+        try {
+            associatedDepartments = server.selectPollingStation(this.election_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return associatedDepartments;
+    }
+
+    public void removePollingStation() {
+        try {
+            server.removePollingStation(this.department_id);
+        } catch (RemoteException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

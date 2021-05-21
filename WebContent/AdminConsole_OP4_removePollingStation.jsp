@@ -25,14 +25,11 @@
     <h1>Remover Mesa de Voto</h1>
     <h4>TODO NOME DA ELEICAO</h4>
 
-    <!-- IF NAO TEM MESAS DE VOTO ASSOCIADAS -->
-
-    <h4>Não tem mesas de voto associadas</h4>
-    <!-- ELSE -->
-    <s:form action="" method="post">
-            <button>TODO NOMES DOS DEPARTAMENTOS/MESAS DE VOTO PARA REMOVER</button>
+    <s:form action="removePollingStationReally" method="post">
+        <c:forEach items="${HeyBean.associatedPollingStations}" var="value">
+            <button type="submit" class="button" name="department_id" value="${value.id}">${value.name}</button>
+        </c:forEach>
     </s:form>
-    <!-- END IF-->
     <s:form action="btnBackAddRemovePollingStation" method="post">
         <button id="exit">Voltar</button>
     </s:form>

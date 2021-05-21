@@ -169,29 +169,8 @@ public class HeyBean {
      * Conecta-se ao RMI
      */
     public HeyBean() {
-        /*
-         * PROPERTIES
-         */
-        FileReader reader=null;
-        Properties p = new Properties();
-        try {
-            //PARA OS JAR
-            reader = new FileReader("config.properties");
-        } catch (IOException e) {
-            //PARA CORRER NO IDE
-            try {
-                reader = new FileReader("src/pt/uc/dei/student/config.properties");
-            } catch (FileNotFoundException fileNotFoundException) {
-                fileNotFoundException.printStackTrace();
-            }
-        }
-        try {
-            p.load(reader);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
-        this.HOST = p.getProperty("rmiServerAddress");
+        this.PORT = 7000;
+        this.HOST = "192.168.1.86";
         // Connect to RMI Server
         while(true) {
             try {

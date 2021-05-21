@@ -168,10 +168,9 @@ public class HeyBean {
     /**
      * Conecta-se ao RMI
      */
-    Properties p = new Properties();
     public HeyBean() {
-        this.PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
-        this.HOST = p.getProperty("rmiServerAddress");
+        this.PORT = 7000;
+        this.HOST = "192.168.1.86";
         // Connect to RMI Server
         while(true) {
 

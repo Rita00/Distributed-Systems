@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="rmiserver:jar">
+  <artifact type="jar" build-on-make="true" name="rmiserver:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
     <root id="archive" name="rmiserver.jar">
       <element id="directory" name="META-INF">

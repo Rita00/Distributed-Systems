@@ -108,11 +108,13 @@ public class HeyBean {
      * Guarda o tipo de uma lista
      */
     private String candidacy_type;
+
     // Field for add a list to an election
     /**
      * Guarda o nome de uma nova lista a ser adicionada a uma eleição
      */
     private String list_name;
+
     /**
      * Guarda o cartão de cidadão de uma determinada pessoa que se candidata como membro a uma lista
      */
@@ -869,8 +871,10 @@ public class HeyBean {
         return null;
     }
 
-    //TODO CONTINUAR COM JAVADOC
-
+    /**
+     * Chama método remoto que devolve todas as elições que já terminaram
+     * @return ArrayList com todas as eleições termindas
+     */
     public ArrayList<Election> getEndedElections() {
         ArrayList<Election> endedElections = null;
         try {
@@ -881,6 +885,10 @@ public class HeyBean {
         return endedElections;
     }
 
+    /**
+     * Chama método no RMI que devolve listas e respetivos votos
+     * @return ArrayList com as listas de uma determinada eleição com os respetivos votos
+     */
     public ArrayList<Candidacy> getCandidaciesWithVotes() {
         ArrayList<Candidacy> candidaciesWithVotes = null;
         try {
@@ -891,6 +899,11 @@ public class HeyBean {
         return candidaciesWithVotes;
     }
 
+    /**
+     * Chama método no RMI que insere o token do facebook a um determinado utilizador
+     * @param fbId token de facebook
+     * @return devolve true ou false caso tenha conseguido inserir o token na base de dados
+     */
     public boolean associateFbId(String fbId) {
         if (getAssociatedFbId() == null) {
             try {
@@ -902,7 +915,10 @@ public class HeyBean {
         return false;
     }
 
-
+    /**
+     * Chama método no RMI que devolve o token de facebook associado a uma determinada pessoa
+     * @return token do facebook
+     */
     public String getAssociatedFbId() {
         String associatedFbId = null;
         try {
@@ -913,6 +929,10 @@ public class HeyBean {
         return null;
     }
 
+    /**
+     * Chama método no RMI que verifica se um determinado utilizador é administrador
+     * @return devolve true se for administrador ou fase caso contrário
+     */
     public boolean checkIfIsAdmin() {
         try {
             if (server.checkIfIsAdmin(this.ccnumber) == 1) {
@@ -924,10 +944,18 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Setter da percentagem de votos nulos
+     * @param null_percent percentagem de votos nulos
+     */
     public void setNull_percent(float null_percent) {
         this.null_percent = null_percent;
     }
 
+    /**
+     * Setter da percentagem de votos brancos
+     * @param blank_percent percentagem de votos brancos
+     */
     public void setBlank_percent(float blank_percent) {
         this.blank_percent = blank_percent;
     }
@@ -1048,6 +1076,10 @@ public class HeyBean {
         return strWeb;
     }
 
+    /**
+     * Chama método no RMI que verifica se um determinada mesa de voto está ativa
+     * @return true se estiver ativa, false caso contrário
+     */
     public boolean checkIfPollingStationIsActive() {
         ArrayList<Department> pollingStations;
         try {
@@ -1060,6 +1092,10 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Chama método remoto que adiciona uma mesa de voto a uma determinada eleição
+     * @return true caso tenha conseguido adicionar, false caso contrário
+     */
     public boolean addPollingStation() {
         try {
             return server.insertPollingStation(this.election_id, this.department_id);
@@ -1069,6 +1105,10 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Chama método no RMI que devolve as mesas de voto associadas a uma determinada eleição
+     * @return mesas de voto associadas a uma eleição
+     */
     public ArrayList<Department> getAssociatedPollingStations() {
         ArrayList<Department> associatedDepartments = null;
         try {
@@ -1079,6 +1119,9 @@ public class HeyBean {
         return associatedDepartments;
     }
 
+    /**
+     * Chama método no RMI que desassocia uma mesa de voto a uma determinada eleição
+     */
     public void removePollingStation() {
         try {
             server.removePollingStation(this.department_id);

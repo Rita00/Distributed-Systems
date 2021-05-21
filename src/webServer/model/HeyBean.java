@@ -732,7 +732,7 @@ public class HeyBean {
     public String getInfoVotes() {
         ArrayList<InfoElectors> info = null;
         try {
-            info = server.getInfoElectors();
+            info = server.getDiferenciedInfoElectors();
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -744,7 +744,7 @@ public class HeyBean {
                 if(!before.equals(i.getElection_title())){
                     strWeb = String.format("%s<label>%s</label>",strWeb, i.getElection_title());
                 }
-                strWeb = String.format("%s<p>%s: %s voto(s)</p>", strWeb, i.getDep_name(),i.getCount());
+                strWeb = String.format("%s<p>%s: %s voto(s) (E:%s/D:%s/F:%s)</p>", strWeb, i.getDep_name(),i.getCount(),i.getCount_estudante(),i.getCount_docente(),i.getCount_funcionario());
                 before = i.getElection_title();
             }
         }else{

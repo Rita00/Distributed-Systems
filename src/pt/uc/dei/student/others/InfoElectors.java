@@ -14,6 +14,18 @@ public class InfoElectors implements Serializable {
      */
     private int count;
     /**
+     * Contagem de votos dos estudantes na Eleição
+     */
+    private int count_estudante;
+    /**
+     * Contagem de votos dos docentes na Eleição
+     */
+    private int count_docente;
+    /**
+     * Contagem de votos dos funcionários na Eleição
+     */
+    private int count_funcionario;
+    /**
      * Nome do departamento
      */
     private String dep_name;
@@ -30,6 +42,21 @@ public class InfoElectors implements Serializable {
      */
     public InfoElectors(int count, String dep_name, String election_title) {
         this.count = count;
+        this.dep_name = dep_name;
+        this.election_title = election_title;
+    }
+    /**
+     * Constutor do Objeto contendo Infomações sobre as Eleições diferenciação dos votos
+     *
+     * @param count contador de votos
+     * @param dep_name nome do departamento
+     * @param election_title nome da eleição
+     */
+    public InfoElectors(int count,int count_estudante, int count_docente, int count_funcionario,String dep_name, String election_title) {
+        this.count = count;
+        this.count_estudante = count_estudante;
+        this.count_docente = count_docente;
+        this.count_funcionario = count_funcionario;
         this.dep_name = dep_name;
         this.election_title = election_title;
     }
@@ -57,6 +84,28 @@ public class InfoElectors implements Serializable {
     public String getElection_title() {
         return election_title;
     }
-
-
+    /**
+     * Getter da quantidade de votos de estudantes
+     *
+     * @return quantidade de votos
+     */
+    public int getCount_estudante() {
+        return count_estudante;
+    }
+    /**
+     * Getter da quantidade de votos de docentes
+     *
+     * @return quantidade de votos
+     */
+    public int getCount_docente() {
+        return count_docente;
+    }
+    /**
+     * Getter da quantidade de votos de funcionarios
+     *
+     * @return quantidade de votos
+     */
+    public int getCount_funcionario() {
+        return count_funcionario;
+    }
 }

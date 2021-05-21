@@ -54,7 +54,7 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
                     strConsole = String.format("%s\t",strConsole);
 
                 }
-                strWeb = String.format("%s<p>%s: %s voto(s)</p>", strWeb, i.getDep_name(),i.getCount());
+                strWeb = String.format("%s<p>%s: %s voto(s) (E:%s/D:%s/F:%s)</p>", strWeb, i.getDep_name(),i.getCount(),i.getCount_estudante(),i.getCount_docente(),i.getCount_funcionario());
                 strConsole = String.format("%s%s\t%s\n", strConsole, i.getDep_name(),i.getCount());
                 before = i.getElection_title();
             }

@@ -24,3 +24,20 @@ INSERT INTO voting_terminal(id,department_id) VALUES (65667544567,1);
 INSERT INTO voting_terminal(id,department_id) VALUES (35463456354,1);
 
 
+SELECT COUNT(job) as Total,
+       SUM(job='Estudante') as Estudante,
+       SUM(job='Docente') as Docente,
+       SUM(job='Funcionário') as Funcionario,
+       d.name as Name, e.title as Title
+FROM voting_record v
+JOIN department d on v.department = d.id
+JOIN election e on e.id = v.election_id
+JOIN person p on p.cc_number = v.person_cc_number
+WHERE e.begin_date < date('now') AND e.end_date > date('now') group by v.department, v.election_id,p.job;
+
+SELECT count(*),d.name as Name, e.title as Title
+FROM voting_record
+JOIN department d on voting_record.department = d.id
+JOIN election e on e.id = voting_record.election_id
+WHERE e.begin_date < date('now') AND e.end_date > date('now') group by voting_record.department, voting_record.election_id;
+

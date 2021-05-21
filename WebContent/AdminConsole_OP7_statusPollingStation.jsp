@@ -72,6 +72,8 @@
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
 
+    <h1>Estado das mesas de voto</h1>
+
     <div class="history" id="text">
         ${HeyBean.infoPollingStations}
     </div>

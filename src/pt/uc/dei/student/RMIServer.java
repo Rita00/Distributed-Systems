@@ -1201,11 +1201,12 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Envia informação sobre os votos via callback para todos os admins que estão a receber informação em tempo real
      */
     public void sendRealTimeVotes() {
-        String sql = "SELECT count(*), d.name as Name, e.title as Title" +
-                " FROM voting_record" +
-                " JOIN department d on voting_record.department = d.id" +
-                " JOIN election e on e.id = voting_record.election_id" +
-                " WHERE e.begin_date < date('now') AND e.end_date > date('now') GROUP BY voting_record.department, voting_record.election_id";
+        String sql = "SELECT COUNT(job) as Total, SUM(job='Estudante') as Estudante,SUM(job='Docente') as Docente, SUM(job='Funcionário') as Funcionario, d.name as Name, e.title as Title" +
+                " FROM voting_record v" +
+                " JOIN department d on v.department = d.id"+
+                " JOIN election e on e.id = v.election_id"+
+                " JOIN person p on p.cc_number = v.person_cc_number"+
+                " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by v.department, v.election_id,p.job";
         ArrayList<InfoElectors> info = new ArrayList<>();
         Connection conn = connectDB();
         try {
@@ -1213,7 +1214,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 info.add(new InfoElectors(
-                        rs.getInt("count(*)"),
+                        rs.getInt("Total"),
+                        rs.getInt("Estudante"),
+                        rs.getInt("Docente"),
+                        rs.getInt("Funcionario"),
                         rs.getString("Name"),
                         rs.getString("Title")
                 ));
@@ -1239,7 +1243,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public void sendRealTimeVotes(Notifier NOTIFIER) {
         try {
-            NOTIFIER.updateAdmin(this.getInfoElectors());
+            NOTIFIER.updateAdmin(this.getDiferenciedInfoElectors());
         } catch (RemoteException | InterruptedException e) {
             //e.printStackTrace();
         }
@@ -1384,7 +1388,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @return array com o registo dos votos
      */
     public ArrayList<InfoElectors> getInfoElectors() {
-        String sql = "SELECT count(*), d.name as Name, e.title as Title" +
+        String sql = "SELECT count(*),d.name as Name, e.title as Title" +
                 " FROM voting_record" +
                 " JOIN department d on voting_record.department = d.id" +
                 " JOIN election e on e.id = voting_record.election_id" +
@@ -1408,6 +1412,42 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return info;
     }
+
+    /**
+     * Devolve todos os registo de votos até ao momento
+     *
+     * @return array com o registo dos votos
+     */
+    public ArrayList<InfoElectors> getDiferenciedInfoElectors() {
+        String sql = "SELECT COUNT(job) as Total, SUM(job='Estudante') as Estudante,SUM(job='Docente') as Docente, SUM(job='Funcionário') as Funcionario, d.name as Name, e.title as Title" +
+                    " FROM voting_record v" +
+                    " JOIN department d on v.department = d.id"+
+                    " JOIN election e on e.id = v.election_id"+
+                    " JOIN person p on p.cc_number = v.person_cc_number"+
+                    " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by v.department, v.election_id,p.job";
+        ArrayList<InfoElectors> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoElectors(
+                        rs.getInt("Total"),
+                        rs.getInt("Estudante"),
+                        rs.getInt("Docente"),
+                        rs.getInt("Funcionario"),
+                        rs.getString("Name"),
+                        rs.getString("Title")
+                ));
+            }
+            stmt.close();
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return info;
+    }
+
     /**
      * Devolve todos as mesas de voto e respetivos terminais de voto ativos
      *

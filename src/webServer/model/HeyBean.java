@@ -165,7 +165,7 @@ public class HeyBean {
         // Connect to RMI Server
         while(true) {
             try {
-                server = (RMI) LocateRegistry.getRegistry("192.168.1.86", 7000).lookup("server");
+                server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
                 break;
 //            server = (RMI) Naming.lookup("server");
             } catch (NotBoundException | RemoteException e) {

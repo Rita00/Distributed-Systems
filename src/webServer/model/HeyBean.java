@@ -157,15 +157,45 @@ public class HeyBean {
      * Guarda o id de um departamento
      */
     private int department_id;
-
+    /**
+     * IPv4 do servidor RMI
+     */
+    private String HOST;
+    /**
+     * Port servidor RMI
+     */
+    private int PORT;
     /**
      * Conecta-se ao RMI
      */
     public HeyBean() {
+        /*
+         * PROPERTIES
+         */
+        FileReader reader=null;
+        Properties p = new Properties();
+        try {
+            //PARA OS JAR
+            reader = new FileReader("config.properties");
+        } catch (IOException e) {
+            //PARA CORRER NO IDE
+            try {
+                reader = new FileReader("src/pt/uc/dei/student/config.properties");
+            } catch (FileNotFoundException fileNotFoundException) {
+                fileNotFoundException.printStackTrace();
+            }
+        }
+        try {
+            p.load(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.PORT = Integer.parseInt(p.getProperty("rmiRegistryPort"));
+        this.HOST = p.getProperty("rmiServerAddress");
         // Connect to RMI Server
         while(true) {
             try {
-                server = (RMI) LocateRegistry.getRegistry("192.168.1.86", 7000).lookup("server");
+                server = (RMI) LocateRegistry.getRegistry(this.HOST, this.PORT).lookup("server");
                 break;
 //            server = (RMI) Naming.lookup("server");
             } catch (NotBoundException | RemoteException e) {
@@ -1279,10 +1309,10 @@ public class HeyBean {
         }
     }
 
-    public void reconnectRMI() {
+    public void reconnectRMI(){
         while (true) {
             try {
-                server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
+                server = (RMI) LocateRegistry.getRegistry(this.HOST, this.PORT).lookup("server");
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace(); //TODO caso o porte ou o lookup estejam errados, mais vale parar o programa

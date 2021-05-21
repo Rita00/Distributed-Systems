@@ -124,8 +124,7 @@ SELECT DISTINCT *
 FROM person
          JOIN election_department ed on person.department_id = ed.department_id
          JOIN election e on ed.election_id = e.id AND ed.department_id = 8 AND ed.election_id = 9 AND name = 'Rita';
-select *
-from election;
+select * from election;
 select *
 from person;
 select *
@@ -146,8 +145,7 @@ from candidacy,
 where candidacy.election_id = election.id
   and election.id = 8;
 
-select *
-from voting_record;
+select * from voting_record;
 select *
 from person;
 
@@ -353,6 +351,10 @@ SELECT id, name
 FROM department, election_department
 WHERE department.id = election_department.department_id
   AND election_department.election_id = 5 and department_id != -1;
+
+SELECT id, title, type, description, begin_date as begin, end_date as end FROM election, election_department WHERE election.id = election_department.election_id and begin_date <= date('now') AND end_date >= date('now') AND election.type = 'Funcionário' AND (election_department.department_id = 1 or election_department.department_id = -1)
+
+Select * from election_department;
 
 
 

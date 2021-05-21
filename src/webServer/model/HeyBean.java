@@ -5,6 +5,8 @@ import pt.uc.dei.student.others.*;
 import webServer.ws.WebSocket;
 
 import javax.lang.model.type.ArrayType;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
@@ -15,6 +17,7 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Properties;
 
 public class HeyBean {
     private RMI server;
@@ -158,10 +161,10 @@ public class HeyBean {
     /**
      * Conecta-se ao RMI
      */
-    public HeyBean() {
+    public HeyBean(){
         // Connect to RMI Server
         try {
-            server = (RMI) LocateRegistry.getRegistry("127.0.0.1", 7000).lookup("server");
+            server = (RMI) LocateRegistry.getRegistry("192.168.1.86", 7000).lookup("server");
 //            server = (RMI) Naming.lookup("server");
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();

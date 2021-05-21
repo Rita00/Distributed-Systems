@@ -64,8 +64,8 @@
         </div>
     </div>
     <div class="rowBtn">
-        <div style="margin-right:5%; width:45%" class="fb-share-button"  data-href="http://sd-dylanrita.ddns.net" data-layout="button" data-size="small">
-            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://sd-dylanrita.ddns.net;src=sdkpreparse" class="fb button center" style="width: 100%">
+        <div style="margin-right:5%; width:45%" class="fb-share-button"  data-href="http://sd-dylanrita.ddns.net:8080/webserver" data-layout="button" data-size="small">
+            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://sd-dylanrita.ddns.net:8080/webserver" class="fb button center" style="width: 100%">
                 <i class="fa fa-facebook fa-fw"></i>
                 Partilhar
             </a>

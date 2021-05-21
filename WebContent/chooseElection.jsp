@@ -59,7 +59,7 @@
         </s:form>
     </c:if>
 
-    <s:form action="" method="post">
+    <s:form action="logout" method="post">
         <button id="exit">Sign Out</button>
     </s:form>
 

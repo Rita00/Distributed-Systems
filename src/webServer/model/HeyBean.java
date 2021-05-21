@@ -34,22 +34,80 @@ public class HeyBean {
      * Guarda o id da lista que o eleitor votou
      */
     private int candidacy_id;
-    /**
-     * Guarda os campos necessários para efetuar o registo de um utilizador, que são recebidos através da view (ficheiro jsp)
-     */
+
     // Fields for register
-    private String name, cargo, address, ccDate, restriction;
-    private int phone, dep;
     /**
-     * Guarda os campos necessários para criar uma nova eleição, que são recebidos através da view (ficheiro jsp)
+     * Guarda o nome de um utilizador aquando o seu registo
      */
+    private String name;
+
+    /**
+     * Guarda o cargo de um utilizador aquando o seu registo
+     */
+    private String cargo;
+
+    /**
+     * Guarda a morada de um utilizador aquando o seu registo
+     */
+    private String address;
+
+    /**
+     * Guarda a data do cartão de cidadão de um utilizador aquando o seu registo
+     */
+    private String ccDate;
+
+    /**
+     * Guarda o número de telemóvel de um utilizador aquando o seu registo
+     */
+    private int phone;
+
+    /**
+     * Guarda o departamento de um utilizador aquando o seu registo
+     */
+    private int dep;
+
     // Fields for create an election
-    private String title, description, type, iniDate, fimDate;
+
+    /**
+     * Guarda o título de uma eleição aquando o sua criação
+     */
+    private String title;
+
+    /**
+     * Guarda a descrição de uma eleição aquando o sua criação
+     */
+    private String description;
+
+    /**
+     * Guarda o tipo de uma eleição aquando o sua criação
+     */
+    private String type;
+
+    /**
+     * Guarda a data de início de uma eleição aquando o sua criação
+     */
+    private String iniDate;
+
+    /**
+     * Guarda a data de fim de uma eleição aquando o sua criação
+     */
+    private String fimDate;
+
+    /**
+     * Guarda se uma eleição tem ou não restrição quanto ao departmento aquando o sua criação
+     */
+    private String restriction;
+
     // Fields for candidacies
     /**
-     * Guarda os campos de uma determinada lista para consultar os seus detalhes
+     * Guarda o nome de uma lista
      */
-    private String candidacy_name, candidacy_type;
+    private String candidacy_name;
+
+    /**
+     * Guarda o tipo de uma lista
+     */
+    private String candidacy_type;
     // Field for add a list to an election
     /**
      * Guarda o nome de uma nova lista a ser adicionada a uma eleição
@@ -59,22 +117,45 @@ public class HeyBean {
      * Guarda o cartão de cidadão de uma determinada pessoa que se candidata como membro a uma lista
      */
     // Field for add a person to a list
+    /**
+     * Guarda o cartão de cidadão de um utilizador para poder ser adicionado com membro de uma lista
+     */
     private int person_cc;
     //Fields for see details election
 
+    /**
+     * Guarda o link a ser redirecionado aqundo ações feitas com a API Rest
+     */
     private String authorizationURL;
 
+    /**
+     * Guarda o núemro de votos nulos de uma eleição
+     */
+    private int null_votes;
 
-    private int null_votes, blank_votes;
+    /**
+     * Guarda o núemro de votos brancos de uma eleição
+     */
+    private int blank_votes;
 
-    private float null_percent, blank_percent;
+    /**
+     * Guarda a percentagem de votos nulos de uma eleição
+     */
+    private float null_percent;
 
+    /**
+     * Guarda a percentagem de votos brancos de uma eleição
+     */
+    private float blank_percent;
+
+    /**
+     * Guarda o id de um departamento
+     */
     private int department_id;
 
     /**
      * Conecta-se ao RMI
      */
-
     public HeyBean() {
         // Connect to RMI Server
         try {
@@ -85,30 +166,65 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Getter para o id de um departamento
+     *
+     * @return id do departamento
+     */
     public int getDepartment_id() {
         return department_id;
     }
 
+    /**
+     * Setter do id do departamento
+     *
+     * @param department_id id do departamento
+     */
     public void setDepartment_id(int department_id) {
         this.department_id = department_id;
     }
 
+    /**
+     * Getter da percentagem de votos nulos
+     *
+     * @return percentagem de votos nulos
+     */
     public float getNull_percent() {
         return null_percent;
     }
 
+    /**
+     * Getter da percentagem de votos brancos
+     *
+     * @return percentagem de votos brancos
+     */
     public float getBlank_percent() {
         return blank_percent;
     }
 
+    /**
+     * Getter do número de votos nulos
+     *
+     * @return número de votos nulos
+     */
     public int getNull_votes() {
         return null_votes;
     }
 
+    /**
+     * Getter do número de votos brancos
+     *
+     * @return número de votos brancos
+     */
     public int getBlank_votes() {
         return blank_votes;
     }
 
+    /**
+     * Getter do id do departamento
+     *
+     * @return id do departamento
+     */
     public int getCandidacy_id() {
         return candidacy_id;
     }
@@ -120,6 +236,11 @@ public class HeyBean {
         return person_cc;
     }
 
+    /**
+     * Getter do número de cartão de cidadão
+     *
+     * @return número do cartão de cidadão
+     */
     public int getCcnumber() {
         return ccnumber;
     }
@@ -180,104 +301,229 @@ public class HeyBean {
         return fimDate;
     }
 
+    /**
+     * Getter do URL para redirecionamento
+     *
+     * @return URL
+     */
     public String getAuthorizationURL() {
         return authorizationURL;
     }
 
-
+    /**
+     * Setter de número de votos nulos
+     *
+     * @param null_votes número de votos nulos
+     */
     public void setNull_votes(int null_votes) {
         this.null_votes = null_votes;
     }
 
+    /**
+     * Setter no número de votos brancos
+     *
+     * @param blank_votes número de votos brancos
+     */
     public void setBlank_votes(int blank_votes) {
         this.blank_votes = blank_votes;
     }
 
+    /**
+     * Setter do nome de um utilizador
+     *
+     * @param name nome de utilizaor
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Setter do cargo de um utilizador
+     *
+     * @param cargo cargo do utilizador
+     */
     public void setCargo(String cargo) {
         this.cargo = cargo;
     }
 
+    /**
+     * Setter do departamento de um utilizador
+     *
+     * @param dep departamento do utilizador
+     */
     public void setDep(int dep) {
         this.dep = dep;
     }
 
+    /**
+     * Setter da morada de um utilizador
+     *
+     * @param address morada do utilizador
+     */
     public void setAddress(String address) {
         this.address = address;
     }
 
+    /**
+     * Setter do número de telefone de um utilizador
+     *
+     * @param phone telefone do utilizador
+     */
     public void setPhone(int phone) {
         this.phone = phone;
     }
 
+    /**
+     * Setter da validade do cartão de cidadão de um utilizador
+     *
+     * @param ccDate validade do cartão de cidadão de um utilizador
+     */
     public void setCcDate(String ccDate) {
         this.ccDate = ccDate;
     }
 
+    /**
+     * Setter do número de cartão de cidadão de um utilizador
+     *
+     * @param ccnumber número cartão de cidadão de um utilizador
+     */
     public void setCcnumber(int ccnumber) {
         this.ccnumber = ccnumber;
     }
 
+    /**
+     * Setter da password de um utilizador
+     *
+     * @param password password de um utilizador
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     * Setter do id de uma eleição
+     *
+     * @param election_id id de uma eleição
+     */
     public void setElection_id(int election_id) {
         this.election_id = election_id;
     }
 
+    /**
+     * Setter do id de uma lista
+     *
+     * @param candidacy_id id de uma lista
+     */
     public void setCandidacy_id(int candidacy_id) {
         this.candidacy_id = candidacy_id;
     }
 
+    /**
+     * Setter do título de uma eleição
+     *
+     * @param title título de uma eleição
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Setter da descrição de uma eleição
+     *
+     * @param description decrição de uma eleição
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Setter da tipo de uma eleição
+     *
+     * @param type tipo de uma eleição
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Setter da data de início de uma eleição
+     *
+     * @param iniDate data de início de uma eleição
+     */
     public void setIniDate(String iniDate) {
         this.iniDate = iniDate;
     }
 
+    /**
+     * Setter da data de fim de uma eleição
+     *
+     * @param fimDate data de fim de uma eleição
+     */
     public void setFimDate(String fimDate) {
         this.fimDate = fimDate;
     }
 
+    /**
+     * Setter do nome da lista
+     *
+     * @param list_name nome da lista
+     */
     public void setList_name(String list_name) {
         this.list_name = list_name;
     }
 
+    /**
+     * Setter da restrição de uma eleição
+     *
+     * @param restriction restrição de uma eleição
+     */
     public void setRestriction(String restriction) {
         this.restriction = restriction;
     }
 
+    /**
+     * Setter do nome de uma lista
+     *
+     * @param candidacy_name nome da lista
+     */
     public void setCandidacy_name(String candidacy_name) {
         this.candidacy_name = candidacy_name;
     }
 
+    /**
+     * Setter do tipo de uma lista
+     *
+     * @param candidacy_type tipo de uma lista
+     */
     public void setCandidacy_type(String candidacy_type) {
         this.candidacy_type = candidacy_type;
     }
 
+    /**
+     * Setter do cartão de cidadão de uma pessoa
+     *
+     * @param person_cc cartão de cidadão de uma pessoa
+     */
     public void setPerson_cc(int person_cc) {
         this.person_cc = person_cc;
     }
 
-
+    /**
+     * Setter do URL para rederecionamento
+     *
+     * @param authorizationURL URL
+     */
     public void setAuthorizationURL(String authorizationURL) {
         this.authorizationURL = authorizationURL;
     }
 
+    /**
+     * Procura uma determinada pessoa através do token do facebook
+     *
+     * @param FbId token do facebook
+     * @return Pessoa caso exista ou null caso não exista
+     * @throws RemoteException falha no RMI
+     */
     public Person getUserFb(String FbId) throws RemoteException {
         Person p = null;
         try {
@@ -289,6 +535,12 @@ public class HeyBean {
         return p;
     }
 
+    /**
+     * Procura uma determinada pessoa através do número de cartão de cidadão e password
+     *
+     * @return Pessoa caso exista, null caso contrário
+     * @throws RemoteException falha no RMI
+     */
     public Person getUser() throws RemoteException {
         Person p = null;
         try {
@@ -363,6 +615,11 @@ public class HeyBean {
         return departments;
     }
 
+    /**
+     * Chama método no RMI para obter todos os registos de voto
+     *
+     * @return ArrayList com todos os registos de voto
+     */
     public ArrayList<VotingRecord> getVotingRecords() {
         ArrayList<VotingRecord> votingRecords = null;
         try {
@@ -373,6 +630,11 @@ public class HeyBean {
         return votingRecords;
     }
 
+    /**
+     * Chama método no RMI para obter todas as eleições que ainda não tenham começado
+     *
+     * @return ArrayList com todas as eleições que ainda não começaram
+     */
     public ArrayList<Election> getElectionsNotStarted() {
         ArrayList<Election> electionNotStarted = null;
         try {
@@ -383,6 +645,11 @@ public class HeyBean {
         return electionNotStarted;
     }
 
+    /**
+     * Chama método no RMI que devolve todas as mesas de voto que estejama tivas
+     *
+     * @return ArrayList com todos os departamentos que têm mesa de voto ativa
+     */
     public ArrayList<Department> getNonAssociativePollingStations() {
         ArrayList<Department> nonAssociativePollingStations = null;
         try {
@@ -497,6 +764,11 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Chama método no RMI que devolve o título de uma eleição através de uma determinada lista dessa mesma eleição
+     *
+     * @return título da eleição
+     */
     public String getTitleElection() {
         try {
             return server.getElectionTitleFromCandidacy(this.candidacy_id);
@@ -533,6 +805,11 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Verifica se uma determinada eleição ainda não começou e se por isso pode ser editada
+     *
+     * @return devolve 1 caso ainda não tenha começado ou 0 se já tiver começado
+     */
     public int checkIfCanEdit() {
         try {
             return server.checkIfElectionNotStarted(this.election_id);
@@ -542,6 +819,11 @@ public class HeyBean {
         return 0;
     }
 
+    /**
+     * Chama método no RMI para atualizar uma determinda eleição
+     *
+     * @return devolve true se conseguir atualizar ou false caso contrário
+     */
     public boolean editElection() {
         if (checkIfSelectedElectionExists()) {
             try {
@@ -553,6 +835,11 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Chama método no RMI para adicionar uma lista a uma determinada eleição
+     *
+     * @return devolde false se ela já tiver começado e por isso não se poder adicionar lista ou true caso tenha conseguido adcionar
+     */
     public boolean addListToAnElection() {
         try {
             if (server.checkIfElectionNotStarted(this.election_id) != 0) {
@@ -564,6 +851,12 @@ public class HeyBean {
         return false;
     }
 
+    /**
+     * Chama método no RMI que verifica se uma determinada pessoa existe
+     * Se existir adiciona essa pessoa como membro de uma determinada lista
+     *
+     * @return devolve erro caso não tenha sido adicionada ou null caso a pessoa não exista
+     */
     public String checkIfPersonExists() {
         try {
             String name_person = server.checkIfPersonExists(this.person_cc);
@@ -575,6 +868,8 @@ public class HeyBean {
         }
         return null;
     }
+
+    //TODO CONTINUAR COM JAVADOC
 
     public ArrayList<Election> getEndedElections() {
         ArrayList<Election> endedElections = null;
@@ -674,26 +969,26 @@ public class HeyBean {
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-        String strWeb="";
+        String strWeb = "";
         String last = "";
         for (InfoPolls i : info) {
             if (!i.getDep_name().equals(last)) {
                 if (i.getStatusPoll() == 1) {
-                    strWeb = String.format("%s<label>%s 🟢</label>",strWeb,i.getDep_name());
+                    strWeb = String.format("%s<label>%s 🟢</label>", strWeb, i.getDep_name());
                 } else {
-                    strWeb = String.format("%s<label>%s 🔴</label>",strWeb,i.getDep_name());
+                    strWeb = String.format("%s<label>%s 🔴</label>", strWeb, i.getDep_name());
                 }
             }
             last = i.getDep_name();
             if (i.getTerminal_id() != 0) {
                 if (i.getStatusTerminal() == 0) {
-                    strWeb = String.format("%s<p>Terminal #%s 🔴</p>",strWeb,i.getTerminal_id());
+                    strWeb = String.format("%s<p>Terminal #%s 🔴</p>", strWeb, i.getTerminal_id());
                 } else {
-                    strWeb = String.format("%s<p>Terminal #%s 🟢</p>",strWeb,i.getTerminal_id());
+                    strWeb = String.format("%s<p>Terminal #%s 🟢</p>", strWeb, i.getTerminal_id());
                 }
             }
         }
-        strWeb=strWeb.replace("</label><label>","</label><p></p><label>");
+        strWeb = strWeb.replace("</label><label>", "</label><p></p><label>");
         return strWeb;
     }
 
@@ -736,18 +1031,18 @@ public class HeyBean {
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
-        String strWeb="";
-        if(info!=null && info.size()>0){
+        String strWeb = "";
+        if (info != null && info.size() > 0) {
             info.sort(Comparator.comparing(InfoElectors::getElection_title));
             String before = "";
             for (InfoElectors i : info) {
-                if(!before.equals(i.getElection_title())){
-                    strWeb = String.format("%s<label>%s</label>",strWeb, i.getElection_title());
+                if (!before.equals(i.getElection_title())) {
+                    strWeb = String.format("%s<label>%s</label>", strWeb, i.getElection_title());
                 }
                 strWeb = String.format("%s<p>%s: %s voto(s) (E:%s/D:%s/F:%s)</p>", strWeb, i.getDep_name(),i.getCount(),i.getCount_estudante(),i.getCount_docente(),i.getCount_funcionario());
                 before = i.getElection_title();
             }
-        }else{
+        } else {
             strWeb = "<p>Sem dados para apresentar atualmente.<p>";
         }
         return strWeb;

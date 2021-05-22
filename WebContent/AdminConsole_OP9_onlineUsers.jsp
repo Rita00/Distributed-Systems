@@ -1,3 +1,4 @@
+<jsp:useBean id="HeyBean" scope="request" type="webServer.model.HeyBean"/>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
@@ -42,7 +43,7 @@
         }
 
         function onOpen(event) {
-            alert('Connected to ' + window.location.host + '.');
+            //alert('Connected to ' + window.location.host + '.');
         }
 
         function onClose(event) {
@@ -50,7 +51,7 @@
         }
 
         function onMessage(message) { // print the received message
-            alert(message.data);
+            //alert(message.data);
             write(message.data);
         }
 
@@ -73,9 +74,11 @@
 
     <h1>Utilizadores Online</h1>
 
-    <p id="text"></p>
+    <div class="history" id="text">
+        ${HeyBean.infoOnlineUsers}
+    </div>
 
-    <s:form action="" method="post">
+    <s:form action="backSubMenusAdminMenu" method="post">
         <button id="exit">Voltar</button>
     </s:form>
 </div>

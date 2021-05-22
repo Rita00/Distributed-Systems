@@ -722,7 +722,14 @@ public interface RMI extends Remote {
      * @throws InterruptedException     thread interrompida
      */
     ArrayList<InfoPolls> getInfoPolls() throws java.rmi.RemoteException, InterruptedException;
-
+    /**
+     * Devolve todas as pessoas online
+     *
+     * @return array com as pessoas online
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
+    ArrayList<InfoOnline> getInfoOnlineUsers() throws java.rmi.RemoteException, InterruptedException;
     /**
      * Devolve todas as mesas de voto ativas
      *

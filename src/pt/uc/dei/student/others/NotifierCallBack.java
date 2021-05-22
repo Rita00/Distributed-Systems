@@ -100,4 +100,24 @@ public class NotifierCallBack extends UnicastRemoteObject implements Notifier {
         WebSocket.broadcast(strWeb);
         System.out.printf("%s",strConsole);
     }
+
+    /**
+     * Print das informações das pessoas online
+     *
+     * @param info ArrayList com informações pessoas online
+     * @see InfoOnline
+     */
+    public void updateOnline(ArrayList<InfoOnline> info) {
+        String last="";
+        String strWeb = "";
+        for (InfoOnline i : info) {
+            if (!i.getDep().equals(last)) {
+                strWeb = String.format("%s<label>%s</label>", strWeb, i.getDep());
+            }
+            last = i.getDep();
+            strWeb = String.format("%s<p>%s 🟢</p>", strWeb, i.getName());
+        }
+        strWeb = strWeb.replace("</label><label>", "</label><p></p><label>");
+        WebSocket.broadcast(strWeb);
+    }
 }

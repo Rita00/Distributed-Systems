@@ -1287,6 +1287,44 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             throwables.printStackTrace();
         }
     }
+    /**
+     * Envia informação sobre os votos via callback para todos os admins que estão a receber informação em tempo real
+     */
+    public void sendRealTimeOnlineUsers() {
+        String sql = "SELECT COUNT(job) as Total, SUM(job='Estudante') as Estudante,SUM(job='Docente') as Docente, SUM(job='Funcionário') as Funcionario, d.name as Name, e.title as Title" +
+                " FROM voting_record v" +
+                " JOIN department d on v.department = d.id"+
+                " JOIN election e on e.id = v.election_id"+
+                " JOIN person p on p.cc_number = v.person_cc_number"+
+                " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by v.department, v.election_id,p.job";
+        ArrayList<InfoElectors> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoElectors(
+                        rs.getInt("Total"),
+                        rs.getInt("Estudante"),
+                        rs.getInt("Docente"),
+                        rs.getInt("Funcionario"),
+                        rs.getString("Name"),
+                        rs.getString("Title")
+                ));
+            }
+            stmt.close();
+            conn.close();
+            for (Notifier notifier : notifiersVotesAdmin) {
+                try {
+                    notifier.updateAdmin(info);
+                } catch (RemoteException | InterruptedException e) {
+                    //e.printStackTrace();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 
     /**
      * Envia informação sobre as mesas de votos e respetivos terminais de voto via callback para o admin
@@ -1541,7 +1579,37 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         }
         return info;
     }
-
+    /**
+     * Devolve todas as pessoas online
+     *
+     * @return array com as pessoas online
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
+    public ArrayList<InfoOnline> getInfoOnlineUsers(){
+        String sql = "SELECT p.cc_number as id, p.name as name, d.name as department " +
+                    " FROM voting_terminal v,person p, department d " +
+                    " WHERE v.infoPerson=p.cc_number and v.department_id=d.id " +
+                    " ORDER BY d.name";
+            ArrayList<InfoOnline> info = new ArrayList<>();
+            Connection conn = connectDB();
+            try {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    info.add(new InfoOnline(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("department")
+                    ));
+                }
+                stmt.close();
+                conn.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            return info;
+    }
     /**
      * Manda mensagem para dizer que está a funcionar
      *

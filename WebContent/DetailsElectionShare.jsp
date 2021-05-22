@@ -27,9 +27,9 @@
     <p style="color: black">${HeyBean.iniDate} até ${HeyBean.fimDate}</p>
     <br>
 
-    <p style="color: black">Listas Candidatas</p>
+    <label>Listas Candidatas</label>
     <c:forEach items="${HeyBean.candidacies}" var="value">
-        <div style="width: 50%; margin-left: 200px ">
+        <div style="width: 50%; margin: 0 25% ">
             <p style="color: black"> ${value.name}</p>
         </div>
     </c:forEach>

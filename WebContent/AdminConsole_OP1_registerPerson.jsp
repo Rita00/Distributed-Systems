@@ -57,17 +57,14 @@
     <label>Validade
         <s:textfield name="ccDate" cssClass="input" type="date" placeholder="2025-10-01"/>
     </label>
-    <div class="row">
+    <div class="row" style="margin: 0 25%">
         <input class="button" type="submit" id="register" value="Registar"/>
         </s:form>
 
-        <s:form action="backSubMenusAdminMenu" method="post">
-            <input class="button" type="submit" id="exit" value="Voltar"/>
+        <s:form action="backSubMenusAdminMenu" method="post" cssStyle="width:48%">
+            <input class="button" type="submit" id="exit" value="Voltar" style="width:100%"/>
         </s:form>
     </div>
-</div>
-
-
 </div>
 </body>
 </html>

@@ -125,7 +125,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         begin_data = begin_data.replace('T', ' ');
         end_data = end_data.replace('T', ' ');
         String dataIni = String.format("%s:00", begin_data), dataFim = String.format("%s:00", end_data);
-        String sql = String.format("INSERT INTO election(title,type,description,begin_date,end_date) VALUES('%s','%s','%s','%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
+        String sql = null;
+        if (!titulo.equals(""))
+            sql = String.format("INSERT INTO election(title,type,description,begin_date,end_date) VALUES('%s','%s','%s','%s','%s')", titulo, type_ele, descricao, dataIni, dataFim);
         if (sql == null) return -1;
         Connection conn = connectDB();
         try {

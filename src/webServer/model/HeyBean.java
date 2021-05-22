@@ -171,8 +171,8 @@ public class HeyBean {
      */
     public HeyBean() {
         this.PORT = 7000;
-        this.HOST = "192.168.1.86";
-        /*this.HOST = "127.0.0.1";*/
+        /*this.HOST = "192.168.1.86";*/
+        this.HOST = "127.0.0.1";
         // Connect to RMI Server
         while (true) {
 

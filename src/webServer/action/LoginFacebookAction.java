@@ -127,6 +127,7 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware {
         Person p = this.getHeyBean().getUserFb(FBPerson_id);
         if (p != null) {
             this.getHeyBean().setCcnumber(p.getCc_number());
+            this.getHeyBean().updateStatusLogin();
             session.put("ccnumber", p.getCc_number());
             session.put("loggedin", true); // this marks the user as logged in
             return SUCCESS;

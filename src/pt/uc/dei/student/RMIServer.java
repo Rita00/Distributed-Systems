@@ -381,6 +381,9 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         sendRealTimeOnlineUsers();
     }
 
+    public void updateStatusOnline() {
+
+    }
     /**
      * Atualiza a informação sobre a eleição atribuida ao terminal de voto para votar
      *
@@ -1197,10 +1200,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
     public void addTerminal(int cc_number) {
-        int id = (int) -(Math.round(Math.random() * Integer.MAX_VALUE) + 1);
+        int id = -cc_number;
         updateOnDB(String.format("INSERT INTO voting_terminal (id, department_id, status, infoPerson) VALUES(%s,%s,0,%s)", id, 12, cc_number));
-
     }
+
     /**
      * Verifica se  utilizador que fez login é administrador
      *

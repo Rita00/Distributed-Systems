@@ -516,3 +516,34 @@ INSERT INTO election_department(election_id, department_id)
 VALUES (19, -1);
 
 
+insert into voting_terminal(id, infoPerson)
+VALUES(-11111111, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-12121212, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-13131313, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-15192525, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-21212121, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-21212122, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-22222222, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-31313131, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-33333333, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-44444444, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-55555555, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-66666666, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-77777777, 0);
+insert into voting_terminal(id, infoPerson)
+VALUES(-88888888, 0);
+
+
+

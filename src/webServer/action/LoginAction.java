@@ -39,6 +39,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
             if (this.getHeyBean().getUser() != null) {
                 session.put("ccnumber", ccnumber);
                 session.put("loggedin", true); // this marks the user as logged in
+                this.getHeyBean().updateStatusLogin();
                 if (this.getHeyBean().checkIfIsAdmin())
                     return "isAdmin";
                 return SUCCESS;

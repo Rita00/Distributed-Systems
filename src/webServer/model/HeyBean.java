@@ -1457,4 +1457,26 @@ public class HeyBean {
             }
         }
     }
+
+    public void updateStatusLogin() {
+        while(true) {
+            try {
+                server.updateTerminalInfoPerson(this.ccnumber, String.valueOf(-this.ccnumber));
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void updateStatusLogout() {
+        while(true) {
+            try {
+                server.updateTerminalInfoPerson(0, String.valueOf(-this.ccnumber));
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

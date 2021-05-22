@@ -21,6 +21,7 @@ public class LogoutAction extends ActionSupport implements SessionAware {
     public String execute() throws Exception {
         session.put("loggedin", false);
         session.put("ccnumber", 0);
+        this.getHeyBean().updateStatusLogout();
         this.getHeyBean().setCcnumber(0);
         this.getHeyBean().setPassword(null);
         return SUCCESS;

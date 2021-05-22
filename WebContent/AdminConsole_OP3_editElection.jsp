@@ -52,7 +52,10 @@
     <div class="row">
         <s:submit cssClass="button" value="Guardar"/>
         </s:form>
-        <s:submit cssClass="button" id="exit" value="Voltar"/>
+        <s:form action="backManageElection">
+            <s:submit cssClass="button" id="exit" value="Voltar"/>
+        </s:form>
+
 
     </div>
 

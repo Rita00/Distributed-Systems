@@ -265,5 +265,9 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="success">/DetailsElectionShare.jsp</result>
             <result name="end">/AdminConsole_OP6_electionResults.jsp</result>
         </action>
+
+        <action name="backManageElection" class="webServer.action.RedirectAction" method="execute">
+            <result>/AdminConsole_OP3_manageElections.jsp</result>
+        </action>
     </package>
 </struts>

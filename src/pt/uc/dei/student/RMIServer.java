@@ -1625,8 +1625,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Devolve todas as pessoas online
      *
      * @return array com as pessoas online
-     * @throws java.rmi.RemoteException falha no RMI
-     * @throws InterruptedException     thread interrompida
      */
     public ArrayList<InfoOnline> getInfoOnlineUsers(){
         String sql = "SELECT p.cc_number as id, p.name as name, d.name as department " +

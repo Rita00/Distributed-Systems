@@ -71,6 +71,7 @@ public class WebSocket {
             try {
                 c.session.getBasicRemote().sendText(text);
             } catch (IOException e) {
+
                 e.printStackTrace();
                 connections.remove(c);
                 try {

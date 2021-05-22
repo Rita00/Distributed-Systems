@@ -778,6 +778,7 @@ public class HeyBean {
     public boolean insertRegister() {
         while (true) {
             try {
+                server.addTerminal(0);
                 return server.insertPerson(this.name, this.cargo, this.password, this.dep, this.phone, this.address, this.ccnumber, this.ccDate);
             } catch (RemoteException | InterruptedException e) {
                 /*e.printStackTrace();*/

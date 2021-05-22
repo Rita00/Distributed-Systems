@@ -1196,6 +1196,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         this.sendRealTimeVotes();
     }
 
+    public void addTerminal(int cc_number) {
+        int id = (int) -(Math.round(Math.random() * Integer.MAX_VALUE) + 1);
+        updateOnDB(String.format("INSERT INTO voting_terminal (id, department_id, status, infoPerson) VALUES(%s,%s,0,%s)", id, 12, cc_number));
+
+    }
     /**
      * Verifica se  utilizador que fez login é administrador
      *
@@ -1386,6 +1391,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
             stmt.close();
             conn.close();
+
             try {
                 NOTIFIER.updateOnline(info);
             } catch (RemoteException | InterruptedException e) {

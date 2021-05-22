@@ -740,6 +740,7 @@ public interface RMI extends Remote {
      * @throws InterruptedException     thread interrompida
      */
     ArrayList<InfoPolls> getInfoPolls() throws java.rmi.RemoteException, InterruptedException;
+
     /**
      * Devolve todas as pessoas online
      *
@@ -748,6 +749,7 @@ public interface RMI extends Remote {
      * @throws InterruptedException     thread interrompida
      */
     ArrayList<InfoOnline> getInfoOnlineUsers() throws java.rmi.RemoteException, InterruptedException;
+
     /**
      * Devolve todas as mesas de voto ativas
      *
@@ -816,5 +818,7 @@ public interface RMI extends Remote {
      * @throws InterruptedException     thread interrompida
      */
     int checkEndElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
+    void addTerminal(int cc_number) throws java.rmi.RemoteException, InterruptedException;
 }
 

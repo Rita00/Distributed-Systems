@@ -12,12 +12,18 @@ public class ShareAction extends ActionSupport implements SessionAware {
      */
     private Map<String, Object> session;
 
+    /**
+     * Guarda o id da eleição na partilha no facebook
+     */
     private int election_id;
 
     /**
-     * Faz o redirecionado para uma página iniciando o Bean
+     * Faz o set de todas as variaveis necessárias para apresentar na view
+     * Verifica se a eleição em questão já terminou ou não
+     * Se terminou apresenta os resultados
+     * Se não, apresenta os seus detalhes
      * @return String que informa o ficheiro struts que página deve ser apresentada
-     * @throws Exception Processa o pedido para redirecionar para páginas
+     * @throws Exception Processa o pedido para visualizar o link de uma eleição partilhada no facebook
      */
     @Override
     public String execute() throws Exception {
@@ -32,10 +38,18 @@ public class ShareAction extends ActionSupport implements SessionAware {
         return SUCCESS;
     }
 
+    /**
+     * Getter para o id da eleição
+     * @return id da eleição
+     */
     public int getElection_id() {
         return election_id;
     }
 
+    /**
+     * Setter para o id da eleição
+     * @param election_id id da eleição
+     */
     public void setElection_id(int election_id) {
         this.election_id = election_id;
     }

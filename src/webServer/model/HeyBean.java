@@ -164,7 +164,7 @@ public class HeyBean {
         this.HOST = "192.168.1.86";
         /*this.HOST = "127.0.0.1";*/
         // Connect to RMI Server
-        while(true) {
+        while (true) {
 
             try {
                 server = (RMI) LocateRegistry.getRegistry(this.HOST, this.PORT).lookup("server");
@@ -1342,6 +1342,9 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Tenta reconectar-se ao RMI quando este falha
+     */
     public void reconnectRMI() {
         while (true) {
             try {
@@ -1353,8 +1356,13 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Chama método no RMI que devolve o título de uma eleição através do seu id
+     *
+     * @return título de uma eleição
+     */
     public String getTitleElectionShare() {
-        while(true) {
+        while (true) {
             try {
                 return server.getTitleElection(this.election_id);
             } catch (RemoteException | InterruptedException e) {
@@ -1364,8 +1372,13 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Chama método no RMI que devolve o tipo de uma eleição através do seu id
+     *
+     * @return tipo de uma eleição
+     */
     public String getTypeElectionShare() {
-        while(true) {
+        while (true) {
             try {
                 return server.getTypeElection(this.election_id);
             } catch (RemoteException | InterruptedException e) {
@@ -1375,8 +1388,13 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Chama método no RMI que devolve a descrição de uma eleição através do seu id
+     *
+     * @return descrição de uma eleição
+     */
     public String getDescriptionElectionShare() {
-        while(true) {
+        while (true) {
             try {
                 return server.getDescriptionElection(this.election_id);
             } catch (RemoteException | InterruptedException e) {
@@ -1386,8 +1404,13 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Chama método no RMI que devolve a data de início de uma eleição através do seu id
+     *
+     * @return data de início de uma eleição
+     */
     public String getIniDateElectionShare() {
-        while(true) {
+        while (true) {
             try {
                 return server.getIniDateElection(this.election_id);
             } catch (RemoteException | InterruptedException e) {
@@ -1397,8 +1420,13 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Chama método no RMI que devolve a data de fim de uma eleição através do seu id
+     *
+     * @return data de fim de uma eleição
+     */
     public String getEndDateElectionShare() {
-        while(true) {
+        while (true) {
             try {
                 return server.getEndDateElection(this.election_id);
             } catch (RemoteException | InterruptedException e) {
@@ -1408,8 +1436,13 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Chama método no RMI que verifica se uma eleição já terminou ou não
+     *
+     * @return se terminou devolve true, caso contrário devolve false
+     */
     public boolean checkEndElection() {
-        while(true) {
+        while (true) {
             try {
                 int res = server.checkEndElection(this.election_id);
                 return server.checkEndElection(this.election_id) > 0;

@@ -378,6 +378,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public void updateTerminalInfoPerson(int cc_number, String idTerminal) {
         updateOnDB("UPDATE voting_terminal SET infoPerson = " + cc_number + " WHERE id = " + idTerminal);
+        sendRealTimeOnlineUsers();
     }
 
     /**
@@ -1350,7 +1351,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
             stmt.close();
             conn.close();
-            for (Notifier notifier : notifiersVotesAdmin) {
+            for (Notifier notifier : notifiersOnline) {
                 try {
                     notifier.updateOnline(info);
                 } catch (RemoteException | InterruptedException e) {

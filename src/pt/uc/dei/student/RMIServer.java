@@ -1384,6 +1384,27 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public String getAssociatedFbId(int cc_number) {
         return getStrings("SELECT fbID FROM person WHERE cc_number = " + cc_number);
     }
+
+    public String getTitleElection(int election_id) {
+        return getStrings("SELECT title FROM election WHERE id = " + election_id);
+    }
+
+    public String getTypeElection(int election_id) {
+        return getStrings("SELECT type FROM election WHERE id = " + election_id);
+    }
+
+    public String getDescriptionElection(int election_id) {
+        return getStrings("SELECT description FROM election WHERE id = " + election_id);
+    }
+
+    public String getIniDateElection(int election_id) {
+        return getStrings("SELECT begin_date FROM election WHERE id = " + election_id);
+    }
+
+    public String getEndDateElection(int election_id) {
+        return getStrings("SELECT end_date FROM election WHERE id = " + election_id);
+    }
+
     /**
      * Devolve todos os registo de votos até ao momento
      *

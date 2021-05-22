@@ -260,5 +260,9 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <action name="logout" class="webServer.action.LogoutAction" method="execute">
             <result>/Login.jsp</result>
         </action>
+
+        <action name="shareElection" class="webServer.action.ShareAction" method="execute">
+            <result>/DetailsElectionShare.jsp</result>
+        </action>
     </package>
 </struts>

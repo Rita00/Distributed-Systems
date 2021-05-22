@@ -704,6 +704,7 @@ public interface RMI extends Remote {
      * @throws InterruptedException     thread interrompida
      */
     ArrayList<InfoElectors> getInfoElectors() throws java.rmi.RemoteException, InterruptedException;
+
     /**
      * Devolve todos os registo de votos até ao momento (diferenciados pelos jobs)
      *
@@ -730,5 +731,15 @@ public interface RMI extends Remote {
      * @throws InterruptedException     thread interrompida
      */
     ArrayList<Department> getPollingStation() throws java.rmi.RemoteException, InterruptedException;
+
+    String getTitleElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
+    String getTypeElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
+    String getDescriptionElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
+    String getIniDateElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
+
+    String getEndDateElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
 }
 

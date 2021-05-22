@@ -170,7 +170,8 @@ public class HeyBean {
      */
     public HeyBean() {
         this.PORT = 7000;
-        this.HOST = "192.168.1.86";
+        /*this.HOST = "192.168.1.86";*/
+        this.HOST = "127.0.0.1";
         // Connect to RMI Server
         while(true) {
 
@@ -184,6 +185,10 @@ public class HeyBean {
             }
         }
 
+    }
+
+    public int getElection_id() {
+        return election_id;
     }
 
     /**
@@ -1296,6 +1301,61 @@ public class HeyBean {
                 break;
             } catch (NotBoundException | IOException remoteException) {
                 remoteException.printStackTrace(); //TODO caso o porte ou o lookup estejam errados, mais vale parar o programa
+            }
+        }
+    }
+
+    public String getTitleElectionShare() {
+        while(true) {
+            try {
+                return server.getTitleElection(this.election_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                reconnectRMI();
+            }
+        }
+    }
+
+    public String getTypeElectionShare() {
+        while(true) {
+            try {
+                return server.getTypeElection(this.election_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                reconnectRMI();
+            }
+        }
+    }
+
+    public String getDescriptionElectionShare() {
+        while(true) {
+            try {
+                return server.getDescriptionElection(this.election_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                reconnectRMI();
+            }
+        }
+    }
+
+    public String getIniDateElectionShare() {
+        while(true) {
+            try {
+                return server.getIniDateElection(this.election_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                reconnectRMI();
+            }
+        }
+    }
+
+    public String getEndDateElectionShare() {
+        while(true) {
+            try {
+                return server.getEndDateElection(this.election_id);
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                reconnectRMI();
             }
         }
     }

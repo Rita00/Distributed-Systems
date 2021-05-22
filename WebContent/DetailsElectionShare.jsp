@@ -31,11 +31,9 @@
 
     <p style="color: black">Listas Candidatas</p>
     <c:forEach items="${HeyBean.candidacies}" var="value">
-        <s:form action="seeDetailsList" method="post">
-            <div style="width: 50%; margin-left: 200px ">
-                <p style="color: black"> ${value.name}</p>
-            </div>
-        </s:form>
+        <div style="width: 50%; margin-left: 200px ">
+            <p style="color: black"> ${value.name}</p>
+        </div>
     </c:forEach>
 
 </div>

@@ -378,6 +378,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public void updateTerminalInfoPerson(int cc_number, String idTerminal) {
         updateOnDB("UPDATE voting_terminal SET infoPerson = " + cc_number + " WHERE id = " + idTerminal);
+        sendRealTimeOnlineUsers();
     }
 
     /**
@@ -1195,6 +1196,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         this.sendRealTimeVotes();
     }
 
+    public void addTerminal(int cc_number) {
+        int id = (int) -(Math.round(Math.random() * Integer.MAX_VALUE) + 1);
+        updateOnDB(String.format("INSERT INTO voting_terminal (id, department_id, status, infoPerson) VALUES(%s,%s,0,%s)", id, 12, cc_number));
+
+    }
     /**
      * Verifica se  utilizador que fez login é administrador
      *
@@ -1350,7 +1356,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
             stmt.close();
             conn.close();
-            for (Notifier notifier : notifiersVotesAdmin) {
+            for (Notifier notifier : notifiersOnline) {
                 try {
                     notifier.updateOnline(info);
                 } catch (RemoteException | InterruptedException e) {
@@ -1385,6 +1391,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             }
             stmt.close();
             conn.close();
+
             try {
                 NOTIFIER.updateOnline(info);
             } catch (RemoteException | InterruptedException e) {

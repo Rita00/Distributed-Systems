@@ -34,7 +34,7 @@
         </s:form>
     </c:forEach>
 
-    <s:form name="backSubMenusAdminMenu" method="post">
+    <s:form action="backSubMenusAdminMenu" method="post">
         <button id="exit">Voltar</button>
     </s:form>
 </div>

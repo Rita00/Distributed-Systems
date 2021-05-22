@@ -80,8 +80,14 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware {
     public String execute() throws Exception {
         String apiKey = "1345313155825147";
         String apiSecret = "f6c3ca41446cc2d017a37650223f581c";
-
-
+        OAuthService service = new ServiceBuilder()
+                .provider(FacebookApi2.class)
+                .apiKey(apiKey)
+                .apiSecret(apiSecret)
+                .callback("http://127.0.0.1:8080/webserver/loginFacebookForRealThisTime") // Do not change this.
+                .scope("public_profile")
+                .build();
+        /*
         OAuthService service = new ServiceBuilder()
                 .provider(FacebookApi2.class)
                 .apiKey(apiKey)
@@ -89,7 +95,7 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware {
                 .callback("http://localhost:8080/webserver/loginFacebookForRealThisTime") // Do not change this.
                 .scope("public_profile")
                 .build();
-
+        */
         this.authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
         return SUCCESS;
     }

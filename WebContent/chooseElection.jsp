@@ -39,7 +39,7 @@
                             <div class="radio"
                                  style="border-radius:5px;background-color: #004E64; float:left; width: 90%; margin-bottom: 10px; margin-left: 25px">
                                 <label style="width: 100%; margin-left: 1px">
-                                    <input type="radio" name="election_id" value="${value.id}">
+                                    <input type="radio" name="election_id" value="${value.id}" style="width:0">
                                     <c:out value="${value.title}"/>
                                 </label>
                             </div>

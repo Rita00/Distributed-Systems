@@ -1251,7 +1251,7 @@ public class HeyBean {
                 this.server.initializeRealTimeOnlineUsers(NOTIFIER);
                 break;
             } catch (IOException | InterruptedException e) {
-                /*e.printStackTrace();*/
+                //e.printStackTrace();
                 this.reconnectRMI();
             }
         }
@@ -1268,7 +1268,7 @@ public class HeyBean {
                 this.server.endRealTimeOnlineUsers(NOTIFIER);
                 break;
             } catch (IOException | InterruptedException e) {
-                /*e.printStackTrace();*/
+                //e.printStackTrace();
                 this.reconnectRMI();
 
             }

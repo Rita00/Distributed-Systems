@@ -835,6 +835,7 @@ public class HeyBean {
                 // Pra simplificar considera-se que caso uma elição não exista o utilizador já tenha votado nela
                 if (election_id == 0 && server.checkIfAlreadyVote(this.ccnumber, election_id))
                     return true;
+                return false;
             } catch (RemoteException | InterruptedException e) {
                 /*e.printStackTrace();*/
                 this.reconnectRMI();

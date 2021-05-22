@@ -29,7 +29,7 @@
             <p style="color: black; font-size: 20px"> ${value.name}</p>
         </c:forEach>
         <s:form action="addPersonToList" method="post">
-            <input name="person_cc" placeholder="Número de cartão de cidadão" />
+            <input type="number" name="person_cc" placeholder="Número de cartão de cidadão" />
             <button>Adicionar Pessoa</button>
         </s:form>
         <s:form action="backSeeDetailsList" method="post">

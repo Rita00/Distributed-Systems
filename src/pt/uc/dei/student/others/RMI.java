@@ -65,6 +65,24 @@ public interface RMI extends Remote {
     void endRealTimePolls(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
 
     /**
+     * Adiciona callback para users online
+     *
+     * @param NOTIFIER notifier
+     * @throws RemoteException      falha no RMI
+     * @throws InterruptedException thread interrompida
+     */
+    void initializeRealTimeOnlineUsers(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    /**
+     * Remove callback de users online
+     *
+     * @param NOTIFIER notifier
+     * @throws RemoteException      falha no RMI
+     * @throws InterruptedException thread interrompida
+     */
+    void endRealTimeOnlineUsers(Notifier NOTIFIER) throws java.rmi.RemoteException, InterruptedException;
+
+    /**
      * Conta as linhas na base de dados consoante o comando e o atributo
      *
      * @param sql         comando sql

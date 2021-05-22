@@ -1,4 +1,3 @@
-<jsp:useBean id="HeyBean" scope="request" type="webServer.model.HeyBean"/>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>

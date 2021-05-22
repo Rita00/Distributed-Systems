@@ -59,6 +59,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * Array que contém callbacks para todas as consolas de administração que estão a receber o estado dasa mesas de voto e respetivos terminais de voto
      */
     static ArrayList<Notifier> notifiersPollsAdmin;
+    /**
+     * Array que contém callbacks para pessoas online
+     */
+    static ArrayList<Notifier> notifiersOnline;
 
     /**
      * Construtor do objeto Servidor RMI
@@ -78,6 +82,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         notifiersMulticast = new ConcurrentHashMap<>();
         notifiersVotesAdmin = new ArrayList<>();
         notifiersPollsAdmin = new ArrayList<>();
+        notifiersOnline = new ArrayList<>();
     }
 
     /**
@@ -1259,6 +1264,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * para todos os admins que estão a receber informação em tempo real
      */
     public void sendRealTimePolls() {
+        this.sendRealTimeOnlineUsers();
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
                 "LEFT JOIN voting_terminal vt on department.id = vt.department_id WHERE hasmulticastserver not null";
         ArrayList<InfoPolls> info = new ArrayList<>();
@@ -1287,44 +1293,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             throwables.printStackTrace();
         }
     }
-    /**
-     * Envia informação sobre os votos via callback para todos os admins que estão a receber informação em tempo real
-     */
-    public void sendRealTimeOnlineUsers() {
-        String sql = "SELECT COUNT(job) as Total, SUM(job='Estudante') as Estudante,SUM(job='Docente') as Docente, SUM(job='Funcionário') as Funcionario, d.name as Name, e.title as Title" +
-                " FROM voting_record v" +
-                " JOIN department d on v.department = d.id"+
-                " JOIN election e on e.id = v.election_id"+
-                " JOIN person p on p.cc_number = v.person_cc_number"+
-                " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by v.department, v.election_id,p.job";
-        ArrayList<InfoElectors> info = new ArrayList<>();
-        Connection conn = connectDB();
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                info.add(new InfoElectors(
-                        rs.getInt("Total"),
-                        rs.getInt("Estudante"),
-                        rs.getInt("Docente"),
-                        rs.getInt("Funcionario"),
-                        rs.getString("Name"),
-                        rs.getString("Title")
-                ));
-            }
-            stmt.close();
-            conn.close();
-            for (Notifier notifier : notifiersVotesAdmin) {
-                try {
-                    notifier.updateAdmin(info);
-                } catch (RemoteException | InterruptedException e) {
-                    //e.printStackTrace();
-                }
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
 
     /**
      * Envia informação sobre as mesas de votos e respetivos terminais de voto via callback para o admin
@@ -1332,6 +1300,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param NOTIFIER notifier
      */
     public void sendRealTimePolls(Notifier NOTIFIER) {
+        this.sendRealTimeOnlineUsers();
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
                 "LEFT JOIN voting_terminal vt on department.id = vt.department_id WHERE hasmulticastserver not null";
         ArrayList<InfoPolls> info = new ArrayList<>();
@@ -1359,7 +1328,73 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             throwables.printStackTrace();
         }
     }
+    /**
+     * Envia informação sobre users online via callback
+     */
+    public void sendRealTimeOnlineUsers() {
+        String sql = "SELECT p.cc_number as id, p.name as name, d.name as department " +
+                " FROM voting_terminal v,person p, department d " +
+                " WHERE v.infoPerson=p.cc_number and v.department_id=d.id " +
+                " ORDER BY d.name";
+        ArrayList<InfoOnline> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoOnline(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("department")
+                ));
+            }
+            stmt.close();
+            conn.close();
+            for (Notifier notifier : notifiersVotesAdmin) {
+                try {
+                    notifier.updateOnline(info);
+                } catch (RemoteException | InterruptedException e) {
+                    //e.printStackTrace();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+    /**
+     * Envia informação sobre as pessoas online
+     *
+     * @param NOTIFIER notifier
+     */
+    public void sendRealTimeOnlineUsers(Notifier NOTIFIER) {
+        String sql = "SELECT p.cc_number as id, p.name as name, d.name as department " +
+                " FROM voting_terminal v,person p, department d " +
+                " WHERE v.infoPerson=p.cc_number and v.department_id=d.id " +
+                " ORDER BY d.name";
+        ArrayList<InfoOnline> info = new ArrayList<>();
+        Connection conn = connectDB();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                info.add(new InfoOnline(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("department")
+                ));
+            }
+            stmt.close();
+            conn.close();
+            try {
+                NOTIFIER.updateOnline(info);
+            } catch (RemoteException | InterruptedException e) {
+                //e.printStackTrace();
+            }
 
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
     /**
      * Verifica se uma determinada pessoa já votou para uma eleição
      *
@@ -1725,7 +1760,25 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     public void endRealTimePolls(Notifier NOTIFIER) {
         notifiersPollsAdmin.remove(NOTIFIER);
     }
+    /**
+     * Adiciona callback de admin à lista de callbacks para envio de informação de tempo real sobre as mesas de voto
+     * e envia de imediato a informação mais recente disponível
+     *
+     * @param NOTIFIER notifier
+     */
+    public void initializeRealTimeOnlineUsers(Notifier NOTIFIER) {
+        notifiersOnline.add(NOTIFIER);
+        sendRealTimeOnlineUsers(NOTIFIER);
+    }
 
+    /**
+     * Remove callback de admin da lista de callbacks para envio de informação de tempo real sobre as mesas de voto
+     *
+     * @param NOTIFIER notifier
+     */
+    public void endRealTimeOnlineUsers(Notifier NOTIFIER) {
+        notifiersOnline.remove(NOTIFIER);
+    }
     /**
      * Inicializa a ligação do Servidor RMI com o Servidor Multicast
      */

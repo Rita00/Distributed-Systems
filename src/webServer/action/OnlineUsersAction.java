@@ -9,10 +9,21 @@ import java.util.Map;
 
 public class OnlineUsersAction extends ActionSupport implements SessionAware{
     private Map<String, Object> session;
+    private NotifierCallBack NOTIFIER;
 
     @Override
     public String execute() throws Exception {
+        this.NOTIFIER = new NotifierCallBack();
+        this.getHeyBean().setRealTimeOnlineUsersOn(this.NOTIFIER);
         return SUCCESS;
+    }
+
+    public NotifierCallBack getNOTIFIER() {
+        return NOTIFIER;
+    }
+
+    public void setNOTIFIER(NotifierCallBack NOTIFIER) {
+        this.NOTIFIER = NOTIFIER;
     }
 
     @Override
@@ -29,5 +40,4 @@ public class OnlineUsersAction extends ActionSupport implements SessionAware{
     public void setHeyBean(HeyBean heyBean) {
         this.session.put("heyBean", heyBean);
     }
-
 }

@@ -37,5 +37,14 @@ public interface Notifier extends Remote {
      * @see InfoPolls
      */
     void updatePollsAdmin(ArrayList<InfoPolls> info) throws RemoteException, InterruptedException;
-    }
+    /**
+     * Print das informações das pessoas online
+     *
+     * @param info ArrayList com informações pessoas online
+     * @throws RemoteException Falha do Servidor
+     * @throws InterruptedException Interrupção da thread
+     * @see InfoOnline
+     */
+    void updateOnline(ArrayList<InfoOnline> info) throws RemoteException, InterruptedException;
+}
 

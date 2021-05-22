@@ -156,6 +156,7 @@ public class HeyBean {
      * Port servidor RMI
      */
     private final int PORT;
+
     /**
      * Conecta-se ao RMI
      */
@@ -1224,9 +1225,9 @@ public class HeyBean {
                 this.reconnectRMI();
             }
         }
-        String last="";
+        String last = "";
         String strWeb = "";
-        if(info.size()>0) {
+        if (info.size() > 0) {
             for (InfoOnline i : info) {
                 if (!i.getDep().equals(last)) {
                     strWeb = String.format("%s<label>%s</label>", strWeb, i.getDep());
@@ -1235,8 +1236,8 @@ public class HeyBean {
                 strWeb = String.format("%s<p>%s 🟢</p>", strWeb, i.getName());
             }
             strWeb = strWeb.replace("</label><label>", "</label><p></p><label>");
-        }else{
-            strWeb="<p>Sem utilizadores online</p>";
+        } else {
+            strWeb = "<p>Sem utilizadores online</p>";
         }
         return strWeb;
     }
@@ -1458,8 +1459,11 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Dá update na base de dados a informar que determinado utilizador está online
+     */
     public void updateStatusLogin() {
-        while(true) {
+        while (true) {
             try {
                 server.updateTerminalInfoPerson(this.ccnumber, String.valueOf(-this.ccnumber));
                 break;
@@ -1469,8 +1473,11 @@ public class HeyBean {
         }
     }
 
+    /**
+     * Dá update na base de dados a informar que determinado utilizador está offline
+     */
     public void updateStatusLogout() {
-        while(true) {
+        while (true) {
             try {
                 server.updateTerminalInfoPerson(0, String.valueOf(-this.ccnumber));
                 break;

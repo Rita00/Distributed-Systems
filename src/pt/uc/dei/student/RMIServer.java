@@ -381,9 +381,6 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         sendRealTimeOnlineUsers();
     }
 
-    public void updateStatusOnline() {
-
-    }
     /**
      * Atualiza a informação sobre a eleição atribuida ao terminal de voto para votar
      *

@@ -2,22 +2,13 @@ package webServer.model;
 
 import pt.uc.dei.student.elections.*;
 import pt.uc.dei.student.others.*;
-import webServer.ws.WebSocket;
 
-import javax.lang.model.type.ArrayType;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.Properties;
 
 public class HeyBean {
     private RMI server;
@@ -160,18 +151,18 @@ public class HeyBean {
     /**
      * IPv4 do servidor RMI
      */
-    private String HOST;
+    private final String HOST;
     /**
      * Port servidor RMI
      */
-    private int PORT;
+    private final int PORT;
     /**
      * Conecta-se ao RMI
      */
     public HeyBean() {
         this.PORT = 7000;
-        /*this.HOST = "192.168.1.86";*/
-        this.HOST = "127.0.0.1";
+        this.HOST = "192.168.1.86";
+        /*this.HOST = "127.0.0.1";*/
         // Connect to RMI Server
         while(true) {
 
@@ -1080,7 +1071,6 @@ public class HeyBean {
         this.blank_percent = blank_percent;
     }
 
-    /*******************************************ESTADO MESAS DE VOTO****************************************/
     /**
      * Ativa o notifier para o estado das mesas de voto e respetivos terminais
      *
@@ -1154,8 +1144,6 @@ public class HeyBean {
         return strWeb;
     }
 
-    /*******************************************VOTOS EM TEMPO REAL****************************************/
-
     /**
      * Ativa o callback para os votos em tempo real
      *
@@ -1222,6 +1210,65 @@ public class HeyBean {
             strWeb = "<p>Sem dados para apresentar atualmente.<p>";
         }
         return strWeb;
+    }
+
+    public String getInfoOnlineUsers() {
+        ArrayList<InfoOnline> info = null;
+        while (true) {
+            try {
+                info = server.getInfoOnlineUsers();
+                break;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
+        }
+        String last="";
+        String strWeb = "";
+        for (InfoOnline i : info) {
+            if (!i.getDep().equals(last)) {
+                strWeb = String.format("%s<label>%s</label>", strWeb, i.getDep());
+            }
+            last = i.getDep();
+            strWeb = String.format("%s<p>%s 🟢</p>", strWeb, i.getName());
+        }
+        strWeb = strWeb.replace("</label><label>", "</label><p></p><label>");
+        return strWeb;
+    }
+
+    /**
+     * Ativa o callback para os votos em tempo real
+     *
+     * @param NOTIFIER notifier dos votos em tempo real
+     */
+    public void setRealTimeOnlineUsersOn(NotifierCallBack NOTIFIER) {
+        while (true) {
+            try {
+                this.server.initializeRealTimeVotes(NOTIFIER);
+                break;
+            } catch (IOException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+            }
+        }
+    }
+
+    /**
+     * Desativa o callback para os votos em tempo real
+     *
+     * @param NOTIFIER notifier dos votos em tempo real
+     */
+    public void setRealTimeOnlineUsersOff(NotifierCallBack NOTIFIER) {
+        while (true) {
+            try {
+                this.server.endRealTimeInfo(NOTIFIER);
+                break;
+            } catch (IOException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                this.reconnectRMI();
+
+            }
+        }
     }
 
     /**

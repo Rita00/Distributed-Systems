@@ -41,3 +41,12 @@ JOIN department d on voting_record.department = d.id
 JOIN election e on e.id = voting_record.election_id
 WHERE e.begin_date < date('now') AND e.end_date > date('now') group by voting_record.department, voting_record.election_id;
 
+
+INSERT INTO voting_terminal VALUES (1, 1, 1, 77777777,2);
+INSERT INTO voting_terminal VALUES (2, 1, 1, 11111111,2);
+INSERT INTO voting_terminal VALUES (4, 12, 1, 77777777,2);
+INSERT INTO voting_terminal VALUES (5, 12, 1, null,2);
+SELECT p.cc_number as id, p.name as name, d.name as department
+FROM voting_terminal v,person p, department d
+WHERE v.infoPerson=p.cc_number and v.department_id=d.id
+ORDER BY d.name

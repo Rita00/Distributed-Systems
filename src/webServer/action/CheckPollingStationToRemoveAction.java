@@ -26,7 +26,7 @@ public class CheckPollingStationToRemoveAction extends ActionSupport implements 
      */
     @Override
     public String execute() throws Exception {
-        if (this.getHeyBean().getAssociatedPollingStations() == null) {
+        if (this.getHeyBean().getAssociatedPollingStations().size() == 0) {
             message = "Não tem mesas de voto associadas!";
             addActionError(message);
             return ERROR;

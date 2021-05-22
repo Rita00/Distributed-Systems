@@ -732,16 +732,64 @@ public interface RMI extends Remote {
      */
     ArrayList<Department> getPollingStation() throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Obtém o título de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return título da eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     String getTitleElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Obtém o tipo de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return tipo da eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     String getTypeElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Obtém a descrição de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return descrição da eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     String getDescriptionElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Obtém a data de início de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return data de início da eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     String getIniDateElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Obtém a data de fim de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return data de fim da eleição
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     String getEndDateElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
+    /**
+     * Verifica se uma eleição já terminou ou não
+     *
+     * @param election_id id da eleição
+     * @return 1 se tiver terminado, 0 caso contrário
+     * @throws java.rmi.RemoteException falha no RMI
+     * @throws InterruptedException     thread interrompida
+     */
     int checkEndElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
-    }
+}
 

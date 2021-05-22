@@ -13,9 +13,9 @@ public class LogoutAction extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
 
     /**
-     * Faz o redirecionado para uma página iniciando o Bean
+     * Desliga a sessão de um determinado utilizador
      * @return String que informa o ficheiro struts que página deve ser apresentada
-     * @throws Exception Processa o pedido para redirecionar para páginas
+     * @throws Exception Processa o logout de um utilizador
      */
     @Override
     public String execute() throws Exception {

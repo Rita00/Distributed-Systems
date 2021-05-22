@@ -802,6 +802,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     /**
      * Devolve todas as mesas de voto ativas
+     *
      * @return Array com todas as mesas de voto ativas
      */
     public ArrayList<Department> getPollingStation() {
@@ -1198,16 +1199,15 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
     }
 
 
-
     /**
      * Envia informação sobre os votos via callback para todos os admins que estão a receber informação em tempo real
      */
     public void sendRealTimeVotes() {
         String sql = "SELECT COUNT(job) as Total, SUM(job='Estudante') as Estudante,SUM(job='Docente') as Docente, SUM(job='Funcionário') as Funcionario, d.name as Name, e.title as Title" +
                 " FROM voting_record v" +
-                " JOIN department d on v.department = d.id"+
-                " JOIN election e on e.id = v.election_id"+
-                " JOIN person p on p.cc_number = v.person_cc_number"+
+                " JOIN department d on v.department = d.id" +
+                " JOIN election e on e.id = v.election_id" +
+                " JOIN person p on p.cc_number = v.person_cc_number" +
                 " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by v.department, v.election_id,p.job";
         ArrayList<InfoElectors> info = new ArrayList<>();
         Connection conn = connectDB();
@@ -1385,26 +1385,62 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
         return getStrings("SELECT fbID FROM person WHERE cc_number = " + cc_number);
     }
 
+    /**
+     * Obtem o título de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return título da eleição
+     */
     public String getTitleElection(int election_id) {
         return getStrings("SELECT title FROM election WHERE id = " + election_id);
     }
 
+    /**
+     * Obtem o tipo de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return tipo da eleição
+     */
     public String getTypeElection(int election_id) {
         return getStrings("SELECT type FROM election WHERE id = " + election_id);
     }
 
+    /**
+     * Obtem a descrição de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return descrição da eleição
+     */
     public String getDescriptionElection(int election_id) {
         return getStrings("SELECT description FROM election WHERE id = " + election_id);
     }
 
+    /**
+     * Obtem a data de início de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return data de início da eleição
+     */
     public String getIniDateElection(int election_id) {
         return getStrings("SELECT begin_date FROM election WHERE id = " + election_id);
     }
 
+    /**
+     * Obtem a data de fim de uma eleição através do seu id
+     *
+     * @param election_id id da eleição
+     * @return data de fim da eleição
+     */
     public String getEndDateElection(int election_id) {
         return getStrings("SELECT end_date FROM election WHERE id = " + election_id);
     }
 
+    /**
+     * Verifica se uma determinada eleição já terminou
+     *
+     * @param election_id id da eleição
+     * @return 1 se terminou, 0 caso contrário
+     */
     public int checkEndElection(int election_id) {
         return countRowsBD("election WHERE id = " + election_id + " and date('now') > end_date", null);
     }
@@ -1447,11 +1483,11 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      */
     public ArrayList<InfoElectors> getDiferenciedInfoElectors() {
         String sql = "SELECT COUNT(job) as Total, SUM(job='Estudante') as Estudante,SUM(job='Docente') as Docente, SUM(job='Funcionário') as Funcionario, d.name as Name, e.title as Title" +
-                    " FROM voting_record v" +
-                    " JOIN department d on v.department = d.id"+
-                    " JOIN election e on e.id = v.election_id"+
-                    " JOIN person p on p.cc_number = v.person_cc_number"+
-                    " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by v.department, v.election_id,p.job";
+                " FROM voting_record v" +
+                " JOIN department d on v.department = d.id" +
+                " JOIN election e on e.id = v.election_id" +
+                " JOIN person p on p.cc_number = v.person_cc_number" +
+                " WHERE e.begin_date < date('now') AND e.end_date > date('now') group by v.department, v.election_id,p.job";
         ArrayList<InfoElectors> info = new ArrayList<>();
         Connection conn = connectDB();
         try {

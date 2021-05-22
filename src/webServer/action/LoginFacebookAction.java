@@ -135,8 +135,6 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware {
             addActionError(message);
             return ERROR;
         }
-
-
     }
 
     /**

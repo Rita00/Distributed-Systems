@@ -84,7 +84,7 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware {
                 .provider(FacebookApi2.class)
                 .apiKey(apiKey)
                 .apiSecret(apiSecret)
-                .callback("http://127.0.0.1:8080/webserver/loginFacebookForRealThisTime") // Do not change this.
+                .callback("http://localhost:8080/webserver/loginFacebookForRealThisTime") // Do not change this.
                 .scope("public_profile")
                 .build();
         /*

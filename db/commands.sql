@@ -358,5 +358,7 @@ Select * from election_department;
 
 select count(*) from election where id = 14 and date('now') > end_date;
 
+SELECT p.cc_number as id, p.name as name, d.name as department
+FROM voting_terminal v,person p, department d WHERE v.infoPerson=p.cc_number and v.department_id=d.id ORDER BY d.name;
 
 

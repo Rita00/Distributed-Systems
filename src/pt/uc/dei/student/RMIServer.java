@@ -1264,7 +1264,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * para todos os admins que estão a receber informação em tempo real
      */
     public void sendRealTimePolls() {
-        this.sendRealTimeOnlineUsers();
+        /*this.sendRealTimeOnlineUsers();*/
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
                 "LEFT JOIN voting_terminal vt on department.id = vt.department_id WHERE hasmulticastserver not null";
         ArrayList<InfoPolls> info = new ArrayList<>();
@@ -1300,7 +1300,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
      * @param NOTIFIER notifier
      */
     public void sendRealTimePolls(Notifier NOTIFIER) {
-        this.sendRealTimeOnlineUsers();
+        /*this.sendRealTimeOnlineUsers();*/
         String sql = "SELECT department.name as depname, department.hasmulticastserver as statusPoll, vt.id as terminalId, status as statusTerminal FROM department " +
                 "LEFT JOIN voting_terminal vt on department.id = vt.department_id WHERE hasmulticastserver not null";
         ArrayList<InfoPolls> info = new ArrayList<>();

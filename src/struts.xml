@@ -262,7 +262,8 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="shareElection" class="webServer.action.ShareAction" method="execute">
-            <result>/DetailsElectionShare.jsp</result>
+            <result name="success">/DetailsElectionShare.jsp</result>
+            <result name="end">/AdminConsole_OP6_electionResults.jsp</result>
         </action>
     </package>
 </struts>

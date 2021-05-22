@@ -1360,4 +1360,16 @@ public class HeyBean {
             }
         }
     }
+
+    public boolean checkEndElection() {
+        while(true) {
+            try {
+                int res = server.checkEndElection(this.election_id);
+                return server.checkEndElection(this.election_id) > 0;
+            } catch (RemoteException | InterruptedException e) {
+                /*e.printStackTrace();*/
+                reconnectRMI();
+            }
+        }
+    }
 }

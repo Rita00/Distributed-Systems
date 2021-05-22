@@ -21,8 +21,6 @@
 <div id="container" class="container">
     <img alt="UC Logo" width="100%" id="logo"
          src="https://www.uc.pt/identidadevisual/Marcas_UC_submarcas/marcas_submarcas/UC_H_FundoClaro-negro?hires">
-    <s:actionerror/>
-    <s:actionmessage/>
     <h1>${HeyBean.title}</h1>
     <p style="color: black">${HeyBean.type}</p>
     <p style="color: black">${HeyBean.description}</p>

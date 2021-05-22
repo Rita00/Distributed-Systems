@@ -841,7 +841,7 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
             conn.close();
             return count;
         } catch (Exception e) {
-            System.out.println("Erro a contar o número de linhas da tabela");
+            /*System.out.println("Erro a contar o número de linhas da tabela");*/
             //e.printStackTrace();
         }
         return 0;
@@ -1403,6 +1403,10 @@ public class RMIServer extends UnicastRemoteObject implements RMI {
 
     public String getEndDateElection(int election_id) {
         return getStrings("SELECT end_date FROM election WHERE id = " + election_id);
+    }
+
+    public int checkEndElection(int election_id) {
+        return countRowsBD("election WHERE id = " + election_id + " and date('now') > end_date", null);
     }
 
     /**

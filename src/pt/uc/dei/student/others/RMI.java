@@ -741,5 +741,7 @@ public interface RMI extends Remote {
     String getIniDateElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
 
     String getEndDateElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
-}
+
+    int checkEndElection(int election_id) throws java.rmi.RemoteException, InterruptedException;
+    }
 

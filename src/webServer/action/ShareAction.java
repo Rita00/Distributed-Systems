@@ -27,6 +27,8 @@ public class ShareAction extends ActionSupport implements SessionAware {
         this.getHeyBean().setDescription(this.getHeyBean().getDescriptionElectionShare());
         this.getHeyBean().setIniDate(this.getHeyBean().getIniDateElectionShare());
         this.getHeyBean().setFimDate(this.getHeyBean().getEndDateElectionShare());
+        if (this.getHeyBean().checkEndElection())
+            return "end";
         return SUCCESS;
     }
 

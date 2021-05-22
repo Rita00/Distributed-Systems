@@ -356,5 +356,7 @@ SELECT id, title, type, description, begin_date as begin, end_date as end FROM e
 
 Select * from election_department;
 
+select count(*) from election where id = 14 and date('now') > end_date;
+
 
 

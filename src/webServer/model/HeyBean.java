@@ -1225,14 +1225,18 @@ public class HeyBean {
         }
         String last="";
         String strWeb = "";
-        for (InfoOnline i : info) {
-            if (!i.getDep().equals(last)) {
-                strWeb = String.format("%s<label>%s</label>", strWeb, i.getDep());
+        if(info.size()>0) {
+            for (InfoOnline i : info) {
+                if (!i.getDep().equals(last)) {
+                    strWeb = String.format("%s<label>%s</label>", strWeb, i.getDep());
+                }
+                last = i.getDep();
+                strWeb = String.format("%s<p>%s 🟢</p>", strWeb, i.getName());
             }
-            last = i.getDep();
-            strWeb = String.format("%s<p>%s 🟢</p>", strWeb, i.getName());
+            strWeb = strWeb.replace("</label><label>", "</label><p></p><label>");
+        }else{
+            strWeb="<p>Sem utilizadores online</p>";
         }
-        strWeb = strWeb.replace("</label><label>", "</label><p></p><label>");
         return strWeb;
     }
 
@@ -1244,7 +1248,7 @@ public class HeyBean {
     public void setRealTimeOnlineUsersOn(NotifierCallBack NOTIFIER) {
         while (true) {
             try {
-                this.server.initializeRealTimeVotes(NOTIFIER);
+                this.server.initializeRealTimeOnlineUsers(NOTIFIER);
                 break;
             } catch (IOException | InterruptedException e) {
                 /*e.printStackTrace();*/
@@ -1261,7 +1265,7 @@ public class HeyBean {
     public void setRealTimeOnlineUsersOff(NotifierCallBack NOTIFIER) {
         while (true) {
             try {
-                this.server.endRealTimeInfo(NOTIFIER);
+                this.server.endRealTimeOnlineUsers(NOTIFIER);
                 break;
             } catch (IOException | InterruptedException e) {
                 /*e.printStackTrace();*/

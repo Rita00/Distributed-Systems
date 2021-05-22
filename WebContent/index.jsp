@@ -11,6 +11,6 @@
         <link rel="shortcut icon" href="images/favicon.ico">
     </head>
     <body>
-    <c:redirect url="AdminConsole_OP9_onlineUsers.jsp"/>
+    <c:redirect url="AdminConsole_OP3_editElection.jsp"/>
     </body>
 </html>

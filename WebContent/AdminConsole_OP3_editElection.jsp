@@ -49,11 +49,11 @@
         <s:textfield name="fimDate" type="text" onfocus="(this.type='datetime-local')" cssClass="input"
                      value="%{HeyBean.fimDate}"/>
     </label>
-    <div class="row">
+    <div class="row" style="margin: 0 25%">
         <s:submit cssClass="button" value="Guardar"/>
         </s:form>
-        <s:form action="backManageElection">
-            <s:submit cssClass="button" id="exit" value="Voltar"/>
+        <s:form action="backManageElection" cssStyle="width:48%">
+            <s:submit cssClass="button" id="exit" value="Voltar" style="width:100%"/>
         </s:form>
 
 

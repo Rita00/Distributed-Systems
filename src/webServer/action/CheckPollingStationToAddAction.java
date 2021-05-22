@@ -26,7 +26,7 @@ public class CheckPollingStationToAddAction extends ActionSupport implements Ses
      */
     @Override
     public String execute() throws Exception {
-        if (this.getHeyBean().getNonAssociativePollingStations() == null) {
+        if (this.getHeyBean().getNonAssociativePollingStations().size() == 0) {
             message = "Não há mesas de voto para associar!";
             addActionError(message);
             return ERROR;

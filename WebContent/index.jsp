@@ -11,6 +11,6 @@
         <link rel="shortcut icon" href="images/favicon.ico">
     </head>
     <body>
-    <c:redirect url="AdminConsole_OP1_registerPerson.jsp"/>
+    <c:redirect url="Login.jsp"/>
     </body>
 </html>

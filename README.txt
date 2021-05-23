@@ -7,6 +7,9 @@ Instalação
 3.  Abrir um terminal para cada maquina
 
 Configuração
+- Servidor Web
+
+Dar deploy do ficheiro .war no tomcat
 
 - Servidor RMI
 

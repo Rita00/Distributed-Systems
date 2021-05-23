@@ -20,3 +20,4 @@ Icon?
 *.classpath
 .idea/dataSources.xml
 .idea/sqldialects.xml
+*.zip

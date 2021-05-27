@@ -328,7 +328,7 @@ WHERE end_date < date('now');
 
 Update person
 set fbID = null
-WHERE cc_number = 77777777;
+WHERE cc_number = 44444444;
 
 SELECT id, name
 FROM department,
